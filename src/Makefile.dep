@@ -720,6 +720,9 @@
  ../src_plugins/export_stl/stl_models.c \
  ../src_plugins/export_stl/model_load_stl.c \
  ../src_plugins/export_stl/model_load_amf.c
+../src_plugins/export_svg/draw_svg.o: \
+ ../src_plugins/export_svg/draw_svg.c ../config.h \
+ ../src_plugins/export_svg/draw_svg.h
 ../src_plugins/export_svg/svg.o: ../src_plugins/export_svg/svg.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
@@ -729,7 +732,8 @@
  obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h layer.h \
- layer_vis.h funchash_core.h funchash_core_list.h hid_cam.h
+ layer_vis.h funchash_core.h funchash_core_list.h hid_cam.h \
+ ../src_plugins/export_svg/draw_svg.h
 ../src_plugins/export_vfs_fuse/export_vfs_fuse.o: \
  ../src_plugins/export_vfs_fuse/export_vfs_fuse.c \
  ../src_plugins/export_vfs_fuse/fuse_includes.h ../config.h conf_core.h \
