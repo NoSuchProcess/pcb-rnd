@@ -95,6 +95,7 @@ typedef struct {
 	/* public: config */
 	FILE *outf;
 	gds_t sbright, sdark, snormal, sclip; /* accumulators for various groups generated parallel */
+	int opacity;
 
 	/* private: cache */
 	int group_open;
@@ -102,7 +103,7 @@ typedef struct {
 
 static rnd_svg_t pctx_, *pctx = &pctx_;
 
-static int opacity = 100, drawing_mask, drawing_hole, photo_mode, photo_noise, flip;
+static int drawing_mask, drawing_hole, photo_mode, photo_noise, flip;
 
 static rnd_composite_op_t drawing_mode;
 static int comp_cnt, svg_true_size = 0;
@@ -223,10 +224,11 @@ static const rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
 	return svg_attribute_list;
 }
 
-void rnd_svg_init(rnd_svg_t *pctx, FILE *f)
+void rnd_svg_init(rnd_svg_t *pctx, FILE *f, int opacity)
 {
 	memset(pctx, 0, sizeof(rnd_svg_t));
 	pctx->outf = f;
+	pctx->opacity = opacity;
 }
 
 void rnd_svg_uninit(rnd_svg_t *pctx)
@@ -286,8 +288,6 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 		rnd_fprintf(pctx->outf, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, board_color);
 	}
-
-	opacity = options[HA_opacity].lng;
 
 	if (options[HA_as_shown].lng) {
 		pcb_draw_setup_default_gui_xform(xform);
@@ -410,7 +410,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	else
 		f = NULL;
 
-	rnd_svg_init(pctx, f);
+	rnd_svg_init(pctx, f, options[HA_opacity].lng);
 	if (f != NULL)
 		svg_header(pctx);
 
@@ -517,7 +517,7 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 		gds_uninit(&tmp_ln);
 	}
 
-	opa = opacity;
+	opa = pctx->opacity;
 	if (is_our_mask)
 		opa *= mask_opacity_factor;
 	if (opa != 100)
