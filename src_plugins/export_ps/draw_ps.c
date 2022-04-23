@@ -11,6 +11,7 @@
 #include <string.h>
 #include <assert.h>
 #include <time.h>
+#include <errno.h>
 
 #include <librnd/core/math_helper.h>
 #include <librnd/core/error.h>
@@ -267,14 +268,15 @@ int rnd_ps_is_new_page(rnd_ps_t *pctx, int group)
 
 int rnd_ps_new_file(rnd_ps_t *pctx, FILE *new_f, const char *fn)
 {
+	int ern = errno;
+
 	if (pctx->outf != NULL) {
 		rnd_ps_end_file(pctx);
 		fclose(pctx->outf);
 	}
 	pctx->outf = new_f;
 	if (pctx->outf == NULL) {
-		TODO("use rnd_message() and strerror instead");
-		perror(fn);
+		rnd_message(RND_MSG_ERROR, "rnd_ps_new_file(): failed to open %s: %s\n", fn, strerror(ern));
 		return -1;
 	}
 	return 0;

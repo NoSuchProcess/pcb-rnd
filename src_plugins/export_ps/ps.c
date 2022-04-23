@@ -567,7 +567,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 
 			gds_init(&tmp);
 			fn = ps_cam.active ? ps_cam.fn : pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed);
-			nr = rnd_ps_new_file(&global.ps, psopen(ps_cam.active ? fn : global.filename, fn), global.filename);
+			nr = rnd_ps_new_file(&global.ps, psopen(ps_cam.active ? fn : global.filename, fn), fn);
 			gds_uninit(&tmp);
 			if (nr != 0)
 				return 0;

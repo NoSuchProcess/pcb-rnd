@@ -62,7 +62,8 @@ int rnd_ps_printed_toc(rnd_ps_t *pctx, int group, const char *name);
 /* Call this in set_layer_group() to see if a new page needs to be stated */
 int rnd_ps_is_new_page(rnd_ps_t *pctx, int group);
 
-/* Announce a new file, check for file open error */
+/* Announce a new file, check for file open error. Call right after fopen()
+   because it depends on errno. */
 int rnd_ps_new_file(rnd_ps_t *pctx, FILE *new_f, const char *fn);
 
 /* Render frame and background of a new page, depending on pctx settings:
