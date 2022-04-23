@@ -334,7 +334,7 @@ static void group_close(rnd_svg_t *pctx)
 	fprintf(pctx->outf, "</g>\n");
 }
 
-static void svg_header(rnd_svg_t *pctx)
+void rnd_svg_header(rnd_svg_t *pctx)
 {
 	rnd_coord_t w, h, x1, y1, x2, y2;
 
@@ -360,7 +360,7 @@ static void svg_header(rnd_svg_t *pctx)
 	}
 }
 
-static void svg_footer(rnd_svg_t *pctx)
+void rnd_svg_footer(rnd_svg_t *pctx)
 {
 	while(pctx->group_open) {
 		group_close(pctx);
@@ -415,7 +415,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	rnd_svg_init(pctx, &PCB->hidlib, f, options[HA_opacity].lng, options[HA_flip].lng, options[HA_true_size].lng);
 	if (f != NULL)
-		svg_header(pctx);
+		rnd_svg_header(pctx);
 
 	if (!svg_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
@@ -427,7 +427,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		pcb_hid_restore_layer_ons(save_ons);
 
 	if (pctx->outf != NULL) {
-		svg_footer(pctx);
+		rnd_svg_footer(pctx);
 		fclose(pctx->outf);
 	}
 	pctx->outf = NULL;
@@ -466,7 +466,7 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 
 	if (svg_cam.fn_changed || (pctx->outf == NULL)) {
 		if (pctx->outf != NULL) {
-			svg_footer(pctx);
+			rnd_svg_footer(pctx);
 			fclose(pctx->outf);
 		}
 
@@ -475,7 +475,7 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 			perror(svg_cam.fn);
 			return 0;
 		}
-		svg_header(pctx);
+		rnd_svg_header(pctx);
 	}
 
 printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
