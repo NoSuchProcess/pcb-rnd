@@ -96,9 +96,14 @@ typedef struct {
 	FILE *outf;
 	gds_t sbright, sdark, snormal, sclip; /* accumulators for various groups generated parallel */
 	int opacity;
+	int flip;
+	int true_size;
+
+	/* public: result */
+	long drawn_objs;
 
 	/* private: cache */
-	int group_open, drawing_mask, drawing_hole;
+	int group_open, drawing_mask, drawing_hole, comp_cnt;
 	rnd_composite_op_t drawing_mode;
 
 	/* private: pcb-rnd leftover */
@@ -106,11 +111,6 @@ typedef struct {
 } rnd_svg_t;
 
 static rnd_svg_t pctx_, *pctx = &pctx_;
-
-static int flip;
-
-static int comp_cnt, svg_true_size = 0;
-static long svg_drawn_objs;
 
 /* Photo mode colors and hacks */
 static const char *board_color = "#464646";
@@ -208,7 +208,7 @@ Flip board, look at it from the bottom side
 #define TRX(x)
 #define TRY(y) \
 do { \
-	if (flip) \
+	if (pctx->flip) \
 		y = PCB->hidlib.size_y - y; \
 } while(0)
 
@@ -227,11 +227,13 @@ static const rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
 	return svg_attribute_list;
 }
 
-void rnd_svg_init(rnd_svg_t *pctx, FILE *f, int opacity)
+void rnd_svg_init(rnd_svg_t *pctx, FILE *f, int opacity, int flip, int true_size)
 {
 	memset(pctx, 0, sizeof(rnd_svg_t));
 	pctx->outf = f;
 	pctx->opacity = opacity;
+	pctx->flip = flip;
+	pctx->true_size = true_size;
 }
 
 void rnd_svg_uninit(rnd_svg_t *pctx)
@@ -274,7 +276,6 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 			rnd_layer_id_t topcop[32];
 			int n, v;
 
-			flip = 1;
 			rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 1);
 
 			/* make sure bottom side copper is top on visibility so it is rendered last */
@@ -283,8 +284,6 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 			for(n = 0; n < v; n++)
 				pcb_layervis_change_group_vis(&PCB->hidlib, topcop[n], 1, 1);
 		}
-		else
-			flip = 0;
 	}
 
 	if (pctx->photo_mode) {
@@ -303,7 +302,7 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 
 	rnd_app.expose_main(&svg_hid, &ctx, xform);
 
-	if (flip)
+	if (pctx->flip)
 		pcb_layervis_restore_stack();
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
@@ -347,7 +346,7 @@ static void svg_header(rnd_svg_t *pctx)
 
 	x2 = PCB->hidlib.size_x;
 	y2 = PCB->hidlib.size_y;
-	if (svg_true_size) {
+	if (pctx->true_size) {
 		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"0 0 %mm %mm\">\n", x2, y2, x2, y2);
 	}
 	else {
@@ -387,15 +386,14 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	rnd_xform_t xform;
 	FILE *f = NULL;
 
-	comp_cnt = 0;
+	pctx->comp_cnt = 0;
 
 	if (!options) {
 		svg_get_export_options(hid, 0);
 		options = svg_values;
 	}
 
-	svg_true_size = options[HA_true_size].lng;
-	svg_drawn_objs = 0;
+	;
 	pcb_cam_begin(PCB, &svg_cam, &xform, options[HA_cam].str, svg_attribute_list, NUM_OPTIONS, options);
 
 	if (svg_cam.fn_template == NULL) {
@@ -413,7 +411,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	else
 		f = NULL;
 
-	rnd_svg_init(pctx, f, options[HA_opacity].lng);
+	rnd_svg_init(pctx, f, options[HA_opacity].lng, options[HA_flip].lng, options[HA_true_size].lng);
 	if (f != NULL)
 		svg_header(pctx);
 
@@ -438,7 +436,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		if (!svg_cam.okempty_group)
 			rnd_message(RND_MSG_ERROR, "svg cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
-	else if (svg_drawn_objs == 0) {
+	else if (pctx->drawn_objs == 0) {
 		if (!svg_cam.okempty_content)
 			rnd_message(RND_MSG_ERROR, "svg cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
@@ -570,12 +568,12 @@ static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 
 	switch(op) {
 		case RND_HID_COMP_RESET:
-			comp_cnt++;
+			pctx->comp_cnt++;
 			gds_init(&pctx->sclip);
 			rnd_append_printf(&pctx->snormal, "<!-- Composite: reset -->\n");
 			rnd_append_printf(&pctx->snormal, "<defs>\n");
-			rnd_append_printf(&pctx->snormal, "<g id=\"comp_pixel_%d\">\n", comp_cnt);
-			rnd_append_printf(&pctx->sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", comp_cnt, PCB->hidlib.size_x, PCB->hidlib.size_y);
+			rnd_append_printf(&pctx->snormal, "<g id=\"comp_pixel_%d\">\n", pctx->comp_cnt);
+			rnd_append_printf(&pctx->sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", pctx->comp_cnt, PCB->hidlib.size_x, PCB->hidlib.size_y);
 			break;
 
 		case RND_HID_COMP_POSITIVE:
@@ -588,7 +586,7 @@ static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			rnd_append_printf(&pctx->sclip, "</mask>\n");
 			gds_append_str(&pctx->snormal, pctx->sclip.array);
 			rnd_append_printf(&pctx->snormal, "</defs>\n");
-			rnd_append_printf(&pctx->snormal, "<use xlink:href=\"#comp_pixel_%d\" mask=\"url(#comp_clip_%d)\"/>\n", comp_cnt, comp_cnt);
+			rnd_append_printf(&pctx->snormal, "<use xlink:href=\"#comp_pixel_%d\" mask=\"url(#comp_clip_%d)\"/>\n", pctx->comp_cnt, pctx->comp_cnt);
 			rnd_append_printf(&pctx->snormal, "<!-- Composite: finished -->\n");
 			gds_uninit(&pctx->sclip);
 			break;
@@ -693,7 +691,7 @@ static void draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord
 
 static void svg_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	svg_drawn_objs++;
+	pctx->drawn_objs++;
 	fix_rect_coords();
 	draw_rect(gc, x1, y1, x2-x1, y2-y1, gc->width);
 }
@@ -727,7 +725,7 @@ static void draw_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_
 
 static void svg_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	svg_drawn_objs++;
+	pctx->drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	fix_rect_coords();
 	draw_fill_rect(gc, x1, y1, x2-x1, y2-y1);
@@ -763,7 +761,7 @@ static void pcb_line_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 
 static void svg_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	svg_drawn_objs++;
+	pctx->drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	pcb_line_draw(gc, x1, y1, x2, y2);
 }
@@ -801,7 +799,7 @@ static void svg_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	rnd_coord_t x1, y1, x2, y2, diff = 0, diff2, maxdiff;
 	rnd_angle_t sa, ea;
 
-	svg_drawn_objs++;
+	pctx->drawn_objs++;
 
  /* degenerate case: r=0 means a single dot */
 	if ((width == 0) && (height == 0)) {
@@ -829,7 +827,7 @@ static void svg_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	/* calculate start and end angles considering flip */
 	start_angle = 180 - start_angle;
 	delta_angle = -delta_angle;
-	if (flip) {
+	if (pctx->flip) {
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
@@ -859,7 +857,7 @@ static void draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 {
 	const char *clip_color = svg_clip_color(gc);
 
-	svg_drawn_objs++;
+	pctx->drawn_objs++;
 
 	if (pctx->photo_mode) {
 		if (!pctx->drawing_hole) {
@@ -895,7 +893,7 @@ static void draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 
 static void svg_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
-	svg_drawn_objs++;
+	pctx->drawn_objs++;
 	TRX(cx); TRY(cy);
 	draw_fill_circle(gc, cx, cy, radius, 0);
 }
@@ -918,11 +916,11 @@ static void draw_poly(gds_t *s, rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, 
 static void svg_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	const char *clip_color = svg_clip_color(gc);
-	svg_drawn_objs++;
+	pctx->drawn_objs++;
 	if (pctx->photo_mode) {
 		rnd_coord_t photo_offs_x = photo_palette[photo_color].offs, photo_offs_y = photo_palette[photo_color].offs;
 		if (photo_offs_x != 0) {
-			if (flip)
+			if (pctx->flip)
 				photo_offs_y = -photo_offs_y;
 			draw_poly(&pctx->sbright, gc, n_coords, x, y, dx-photo_offs_x, dy-photo_offs_y, photo_palette[photo_color].bright);
 			draw_poly(&pctx->sdark, gc, n_coords, x, y, dx+photo_offs_x, dy+photo_offs_y, photo_palette[photo_color].dark);
