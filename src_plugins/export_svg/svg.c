@@ -105,11 +105,11 @@ typedef struct {
 	long drawn_objs;
 
 	/* private: cache */
-	int group_open, drawing_mask, drawing_hole, comp_cnt;
+	int group_open, comp_cnt;
 	rnd_composite_op_t drawing_mode;
 
 	/* private: pcb-rnd leftover */
-	int photo_mode, photo_noise;
+	int photo_mode, photo_noise, drawing_mask, drawing_hole;
 } rnd_svg_t;
 
 static rnd_svg_t pctx_, *pctx = &pctx_;
@@ -472,9 +472,29 @@ int rnd_svg_new_file(rnd_svg_t *pctx, FILE *f, const char *fn)
 	return 0;
 }
 
+void rnd_svg_layer_group_begin(rnd_svg_t *pctx, long group, const char *name, int is_our_mask)
+{
+	int opa;
+
+	while(pctx->group_open) {
+		group_close(pctx);
+		pctx->group_open--;
+	}
+	fprintf(pctx->outf, "<g id=\"layer_%ld_%s\"", group, name);
+
+	opa = pctx->opacity;
+	if (is_our_mask)
+		opa *= mask_opacity_factor;
+	if (opa != 100)
+		fprintf(pctx->outf, " opacity=\"%.2f\"", ((float)opa) / 100.0);
+	fprintf(pctx->outf, ">\n");
+	pctx->group_open = 1;
+
+}
+
 static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
-	int opa, is_our_mask = 0, is_our_silk = 0;
+	int is_our_mask = 0, is_our_silk = 0;
 
 	if (is_empty)
 		return 0;
@@ -491,8 +511,6 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 			return 0;
 		rnd_svg_header(pctx);
 	}
-
-printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 
 	if (!svg_cam.active) {
 		if (flags & PCB_LYT_INVIS)
@@ -520,27 +538,15 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 		return 1; /* photo mode drill: do not create a separate group */
 	}
 
-	while(pctx->group_open) {
-		group_close(pctx);
-		pctx->group_open--;
-	}
-
 	{
 		gds_t tmp_ln;
 		const char *name;
+
 		gds_init(&tmp_ln);
 		name = pcb_layer_to_file_name(&tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
-		fprintf(pctx->outf, "<g id=\"layer_%ld_%s\"", group, name);
+		rnd_svg_layer_group_begin(pctx, group, name, is_our_mask);
 		gds_uninit(&tmp_ln);
 	}
-
-	opa = pctx->opacity;
-	if (is_our_mask)
-		opa *= mask_opacity_factor;
-	if (opa != 100)
-		fprintf(pctx->outf, " opacity=\"%.2f\"", ((float)opa) / 100.0);
-	fprintf(pctx->outf, ">\n");
-	pctx->group_open = 1;
 
 	if (pctx->photo_mode) {
 		if (is_our_silk)
