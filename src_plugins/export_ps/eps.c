@@ -56,13 +56,13 @@ typedef struct {
 	rnd_coord_t linewidth;
 	int lastcap;
 	int lastcolor;
+	rnd_composite_op_t drawing_mode;
 } rnd_eps_t;
 
 static rnd_eps_t pctx_, *pctx = &pctx_;
 static int print_group[PCB_MAX_LAYERGRP];
 static int print_layer[PCB_MAX_LAYER];
 static int fast_erase = -1;
-static rnd_composite_op_t drawing_mode;
 
 static const rnd_export_opt_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -474,7 +474,7 @@ static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 {
 	if (direct)
 		return;
-	drawing_mode = op;
+	pctx->drawing_mode = op;
 	switch(op) {
 		case RND_HID_COMP_RESET:
 			fprintf(pctx->outf, "gsave\n");
@@ -495,7 +495,7 @@ static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 
 static void eps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
-	if (drawing_mode == RND_HID_COMP_NEGATIVE) {
+	if (pctx->drawing_mode == RND_HID_COMP_NEGATIVE) {
 		gc->color = 0xffffff;
 		gc->erase = 1;
 		return;
