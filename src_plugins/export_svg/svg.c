@@ -93,6 +93,7 @@ static const char *CAPS(rnd_cap_style_t cap)
 
 typedef struct {
 	/* public: config */
+	rnd_hidlib_t *hidlib;
 	FILE *outf;
 	gds_t sbright, sdark, snormal, sclip; /* accumulators for various groups generated parallel */
 	int opacity;
@@ -209,7 +210,7 @@ Flip board, look at it from the bottom side
 #define TRY(y) \
 do { \
 	if (pctx->flip) \
-		y = PCB->hidlib.size_y - y; \
+		y = pctx->hidlib->size_y - y; \
 } while(0)
 
 static rnd_hid_attr_val_t svg_values[NUM_OPTIONS];
@@ -227,9 +228,10 @@ static const rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
 	return svg_attribute_list;
 }
 
-void rnd_svg_init(rnd_svg_t *pctx, FILE *f, int opacity, int flip, int true_size)
+void rnd_svg_init(rnd_svg_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int opacity, int flip, int true_size)
 {
 	memset(pctx, 0, sizeof(rnd_svg_t));
+	pctx->hidlib = hidlib;
 	pctx->outf = f;
 	pctx->opacity = opacity;
 	pctx->flip = flip;
@@ -288,7 +290,7 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 
 	if (pctx->photo_mode) {
 		rnd_fprintf(pctx->outf, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
-			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, board_color);
+			0, 0, pctx->hidlib->size_x, pctx->hidlib->size_y, board_color);
 	}
 
 	if (options[HA_as_shown].lng) {
@@ -337,15 +339,15 @@ static void svg_header(rnd_svg_t *pctx)
 	rnd_coord_t w, h, x1, y1, x2, y2;
 
 	fprintf(pctx->outf, "<?xml version=\"1.0\"?>\n");
-	w = PCB->hidlib.size_x;
-	h = PCB->hidlib.size_y;
+	w = pctx->hidlib->size_x;
+	h = pctx->hidlib->size_y;
 	while((w < RND_MM_TO_COORD(1024)) && (h < RND_MM_TO_COORD(1024))) {
 		w *= 2;
 		h *= 2;
 	}
 
-	x2 = PCB->hidlib.size_x;
-	y2 = PCB->hidlib.size_y;
+	x2 = pctx->hidlib->size_x;
+	y2 = pctx->hidlib->size_y;
 	if (pctx->true_size) {
 		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"0 0 %mm %mm\">\n", x2, y2, x2, y2);
 	}
@@ -372,7 +374,7 @@ static void svg_footer(rnd_svg_t *pctx)
 		fprintf(pctx->outf, "</filter>\n");
 		fprintf(pctx->outf, "<g opacity=\"0.25\">\n");
 		rnd_fprintf(pctx->outf, "	<rect filter=\"url(#noise)\" x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"none\" stroke=\"none\"/>\n",
-			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+			0, 0, pctx->hidlib->size_x, pctx->hidlib->size_y);
 		fprintf(pctx->outf, "</g>\n");
 	}
 
@@ -411,7 +413,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	else
 		f = NULL;
 
-	rnd_svg_init(pctx, f, options[HA_opacity].lng, options[HA_flip].lng, options[HA_true_size].lng);
+	rnd_svg_init(pctx, &PCB->hidlib, f, options[HA_opacity].lng, options[HA_flip].lng, options[HA_true_size].lng);
 	if (f != NULL)
 		svg_header(pctx);
 
@@ -573,7 +575,7 @@ static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			rnd_append_printf(&pctx->snormal, "<!-- Composite: reset -->\n");
 			rnd_append_printf(&pctx->snormal, "<defs>\n");
 			rnd_append_printf(&pctx->snormal, "<g id=\"comp_pixel_%d\">\n", pctx->comp_cnt);
-			rnd_append_printf(&pctx->sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", pctx->comp_cnt, PCB->hidlib.size_x, PCB->hidlib.size_y);
+			rnd_append_printf(&pctx->sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", pctx->comp_cnt, pctx->hidlib->size_x, pctx->hidlib->size_y);
 			break;
 
 		case RND_HID_COMP_POSITIVE:
