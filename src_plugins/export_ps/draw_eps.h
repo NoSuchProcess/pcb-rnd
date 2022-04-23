@@ -21,8 +21,10 @@ typedef struct {
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_eps_t;
 
+/* Set up context before the file is open */
 void rnd_eps_init(rnd_eps_t *pctx, rnd_box_t bounds, double scale, int in_mono, int as_shown);
 
+/* Set up output file and print header before export, footer after export */
 void rnd_eps_print_header(rnd_eps_t *pctx, const char *outfn, int ymirror);
 void rnd_eps_print_footer(rnd_eps_t *pctx);
 
@@ -45,12 +47,4 @@ void rnd_eps_draw_arc(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coor
 void rnd_eps_fill_circle(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 void rnd_eps_fill_polygon_offs(rnd_eps_t *pctx, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);
 void rnd_eps_fill_rect(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-
-
-
-
-
-
-
-
 
