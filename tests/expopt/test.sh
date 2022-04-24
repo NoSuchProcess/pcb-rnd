@@ -1,6 +1,8 @@
 #!/bin/sh
 
 pcb=pcb-rnd
+CONVERT=convert
+COMPARE=compare
 
 test_svg='
 	base
@@ -21,13 +23,15 @@ test_png='
 	mono --dpi 200 --monochrome
 	alpha --dpi 200 --use-alpha
 	bloat --dpi 200 --png-bloat 0.5mm
-	ph --dpi 200 --photo-mode
-	phx --dpi 200 --photo-mode --photo-flip-x
-	phy --dpi 200 --photo-mode --photo-flip-y
-	phmr --dpi 200 --photo-mode --photo-mask-colour red
+	ph --dpi 200 --photo-mode --photo-plating copper
+	phx --dpi 200 --photo-mode --photo-flip-x --photo-plating copper
+	phy --dpi 200 --photo-mode --photo-flip-y --photo-plating copper
+	phmr --dpi 200 --photo-mode --photo-mask-colour red  --photo-plating copper
 	phpg --dpi 200 --photo-mode --photo-plating gold
-	phsb --dpi 200 --photo-mode --photo-silk-colour black
+	phsb --dpi 200 --photo-mode --photo-silk-colour black --photo-plating copper
 '
+# need to Use --photo-plating copper to avoid random noise
+
 
 # $1: test file
 # $2: output ext
@@ -43,10 +47,89 @@ gen_any()
 	done
 }
 
+
+need_convert()
+{
+	if test -z "`$CONVERT 2>/dev/null | grep ImageMagick`" -o -z "`$COMPARE 2>/dev/null | grep ImageMagick`"
+	then
+		echo "WARNING: ImageMagick convert(1) or compare(1) not found - bitmap compare will be skipped."
+		CONVERT=""
+	fi
+}
+
+cmp_fmt()
+{
+	local fmt="$1" ref="$2" out="$3" n bn otmp
+	case "$fmt" in
+		png)
+			if test ! -z "$CONVERT"
+			then
+				bn=`basename $out`
+				res=`$COMPARE "$ref" "$out"  -metric AE  diff/$bn 2>&1`
+#				case "$res" in
+#					*widths*)
+#						otmp=$out.599.png
+#						$CONVERT -crop 599x599+0x0 $out  $otmp
+#						res=`$COMPARE "$ref" "$otmp" -metric AE  diff/$bn 2>&1`
+#						;;
+#				esac
+				test "$res" -lt 8 && rm diff/$bn
+				test "$res" -lt 8
+			fi
+			;;
+		ps)
+			zcat "$ref.gz" > "$ref"
+			zcat "$out.gz" > "$out"
+			diff -u "$ref" "$out" && rm "$ref" "$out"
+			;;
+		svg)
+			zcat "$ref.gz" > "$ref"
+			diff -u "$ref" "$out" && rm "$ref"
+			;;
+		*)
+			# simple text files: byte-to-byte match required
+			diff -u "$ref" "$out"
+			;;
+	esac
+}
+
+# $1: test file
+# $2: output ext and format
+# $3: test args, one per line
+cmp_any()
+{
+	local rv=0
+
+	echo "$3" | while read name args 
+	do
+		if test ! -z "$name"
+		then
+			echo -n "$1.$name.$2... "
+			cmp_fmt $2 ref/$1.$name.$2 out/$1.$name.$2
+			if test "$?" -eq 0
+			then
+				echo "ok"
+			else
+				echo "BROKEN"
+				rv=1
+			fi
+		fi
+	done
+	return $rv
+}
+
+
+
+
 gen_svg()
 {
 	lead="-x svg --outfile"
 	gen_any layers svg "$test_svg"
+}
+
+cmp_svg()
+{
+	cmp_any layers svg "$test_svg"
 }
 
 gen_png()
@@ -55,9 +138,35 @@ gen_png()
 	gen_any layers png "$test_png"
 }
 
+cmp_png()
+{
+	cmp_any layers png "$test_png"
+}
 
-mkdir -p out
 
-gen_svg
-gen_png
+mkdir -p out diff
 
+case "$1" in
+	svg)
+		gen_svg
+		cmp_svg
+		;;
+	png)
+		need_convert
+		gen_png
+		cmp_png
+		;;
+	"")
+		echo "generating svg..."
+		gen_svg
+		cmp_svg
+
+		echo "generating png..."
+		need_convert
+		gen_png
+		cmp_png
+		;;
+	*)
+		echo "Invalid format to test" >&2
+		;;
+esac
