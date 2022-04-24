@@ -28,7 +28,7 @@
 
 /* Based on the png exporter by Dan McMahill */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <stdio.h>
 #include <stdarg.h>
