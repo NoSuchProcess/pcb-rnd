@@ -87,9 +87,9 @@ static void ts_bs_sm(gdImagePtr im)
 static void clip(rnd_png_color_struct_t * dest, rnd_png_color_struct_t * source)
 {
 #define CLIP(var) \
-  dest->var = source->var;	\
-  if (dest->var > 255) dest->var = 255;	\
-  if (dest->var < 0)   dest->var = 0;
+	dest->var = source->var; \
+	if (dest->var > 255) dest->var = 255; \
+	if (dest->var < 0)   dest->var = 0;
 
 	CLIP(r);
 	CLIP(g);
