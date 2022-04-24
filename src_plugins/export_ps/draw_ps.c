@@ -4,7 +4,7 @@
    gEDA/PCB as a whole in 2011.
 */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
