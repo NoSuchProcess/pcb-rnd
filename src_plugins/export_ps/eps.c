@@ -229,7 +229,7 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 	rnd_eps_init(pctx, the_file, *bnds, options_[HA_scale].dbl, options[HA_mono].lng, options[HA_as_shown].lng);
 
 	if (pctx->outf != NULL)
-		rnd_eps_print_header(pctx, rnd_hid_export_fn(filename), pctx->as_shown && conf_core.editor.show_solder_side);
+		rnd_eps_print_header(pctx, rnd_hid_export_fn(filename), pctx->as_shown && conf_core.editor.show_solder_side, 0);
 
 	if (pctx->as_shown) {
 		/* disable (exporter default) hiding overlay in as_shown */
@@ -320,7 +320,7 @@ static int eps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 			fclose(pctx->outf);
 		}
 		pctx->outf = rnd_fopen_askovr(&PCB->hidlib, eps_cam.fn, "w", NULL);
-		rnd_eps_print_header(pctx, eps_cam.fn, pctx->as_shown && conf_core.editor.show_solder_side);
+		rnd_eps_print_header(pctx, eps_cam.fn, pctx->as_shown && conf_core.editor.show_solder_side, 0);
 	}
 
 	if (!eps_cam.active) {

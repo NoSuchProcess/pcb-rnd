@@ -25,7 +25,7 @@ typedef struct {
 void rnd_eps_init(rnd_eps_t *pctx, FILE *f, rnd_box_t bounds, double scale, int in_mono, int as_shown);
 
 /* Set up output file and print header before export, footer after export */
-void rnd_eps_print_header(rnd_eps_t *pctx, const char *outfn, int ymirror);
+void rnd_eps_print_header(rnd_eps_t *pctx, const char *outfn, int xmirror, int ymirror);
 void rnd_eps_print_footer(rnd_eps_t *pctx);
 
 
