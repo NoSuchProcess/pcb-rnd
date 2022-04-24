@@ -82,27 +82,6 @@ static rnd_png_t pctx_, *pctx = &pctx_;
    register this HID and will refrain from doing so at the end of this
    file.  */
 
-#undef HAVE_SOME_FORMAT
-
-static const char *filetypes[] = {
-#ifdef PCB_HAVE_GDIMAGEPNG
-	RND_PNG_FMT_png,
-#define HAVE_SOME_FORMAT 1
-#endif
-
-#ifdef PCB_HAVE_GDIMAGEGIF
-	RND_PNG_FMT_gif,
-#define HAVE_SOME_FORMAT 1
-#endif
-
-#ifdef PCB_HAVE_GDIMAGEJPEG
-	RND_PNG_FMT_jpg,
-#define HAVE_SOME_FORMAT 1
-#endif
-
-	NULL
-};
-
 #include "png_photo1.c"
 
 static FILE *png_f;
@@ -218,7 +197,7 @@ File format to be exported. Parameter @code{<string>} can be @samp{PNG},
 %end-doc
 */
 	{"format", "Export file format",
-	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, filetypes},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, rnd_png_filetypes},
 #define HA_filetype 9
 
 /* %start-doc options "93 PNG Options"
@@ -318,31 +297,9 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 
 static rnd_hid_attr_val_t png_values[NUM_OPTIONS];
 
-static const char *get_file_suffix(void)
-{
-	const char *result = NULL;
-	const char *fmt;
-
-	fmt = filetypes[png_values[HA_filetype].lng];
-
-	if (fmt == NULL) { /* Do nothing */ }
-	else if (strcmp(fmt, RND_PNG_FMT_gif) == 0)
-		result = ".gif";
-	else if (strcmp(fmt, RND_PNG_FMT_jpg) == 0)
-		result = ".jpg";
-	else if (strcmp(fmt, RND_PNG_FMT_png) == 0)
-		result = ".png";
-
-	if (result == NULL) {
-		fprintf(stderr, "Error:  Invalid graphic file format\n");
-		result = ".???";
-	}
-	return result;
-}
-
 static const rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
 {
-	const char *suffix = get_file_suffix();
+	const char *suffix = rnd_png_get_file_suffix(png_values[HA_filetype].lng);
 	const char *val = png_values[HA_pngfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
@@ -405,7 +362,7 @@ static void png_finish(FILE *f)
 	if (pctx->photo_mode)
 		png_photo_foot();
 
-	rnd_png_finish(pctx, f, filetypes[png_options[HA_filetype].lng]);
+	rnd_png_finish(pctx, f, rnd_png_filetypes[png_options[HA_filetype].lng]);
 }
 
 
@@ -690,9 +647,9 @@ int pplg_check_ver_export_png(int ver_needed) { return 0; }
 void pplg_uninit_export_png(void)
 {
 	rnd_export_remove_opts_by_cookie(png_cookie);
-#ifdef HAVE_SOME_FORMAT
-	rnd_hid_remove_hid(&png_hid);
-#endif
+
+	if (rnd_png_has_any_format())
+		rnd_hid_remove_hid(&png_hid);
 }
 
 int pplg_init_export_png(void)
@@ -731,10 +688,10 @@ int pplg_init_export_png(void)
 
 	png_hid.usage = png_usage;
 
-#ifdef HAVE_SOME_FORMAT
-	rnd_hid_register_hid(&png_hid);
-	rnd_hid_load_defaults(&png_hid, png_attribute_list, NUM_OPTIONS);
-#endif
+	if (rnd_png_has_any_format()) {
+		rnd_hid_register_hid(&png_hid);
+		rnd_hid_load_defaults(&png_hid, png_attribute_list, NUM_OPTIONS);
+	}
 
 	return 0;
 }

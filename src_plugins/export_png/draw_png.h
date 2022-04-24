@@ -71,10 +71,6 @@ typedef struct rnd_png_s {
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_png_t;
 
-#define RND_PNG_FMT_gif "GIF"
-#define RND_PNG_FMT_jpg "JPEG"
-#define RND_PNG_FMT_png "PNG"
-
 void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib);
 void rnd_png_uninit(rnd_png_t *pctx);
 
@@ -84,6 +80,11 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha);
 
 void rnd_png_start(rnd_png_t *pctx);
 void rnd_png_finish(rnd_png_t *pctx, FILE *f, const char *fmt);
+
+/* Available file types (compile time configuration) */
+const char *rnd_png_get_file_suffix(int filetype_idx);
+extern const char *rnd_png_filetypes[];
+int rnd_png_has_any_format(void);
 
 /* HID API standard drawing calls */
 rnd_hid_gc_t rnd_png_make_gc(rnd_hid_t *hid);

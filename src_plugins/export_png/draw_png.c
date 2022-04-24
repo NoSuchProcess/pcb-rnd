@@ -46,6 +46,10 @@ TODO("^ replace this with librnd config.h, but that needs PCB_HAVE_GDIMAGE* ther
 
 #include <gd.h>
 
+#define RND_PNG_FMT_gif "GIF"
+#define RND_PNG_FMT_jpg "JPEG"
+#define RND_PNG_FMT_png "PNG"
+
 #define FROM_DRAW_PNG_C
 #include "draw_png.h"
 
@@ -136,6 +140,59 @@ void rnd_png_finish(rnd_png_t *pctx, FILE *f, const char *fmt)
 	if (format_error)
 		rnd_message(RND_MSG_ERROR, "rnd_png_finish(): Invalid graphic file format. This is a bug. Please report it.\n");
 }
+
+#undef HAVE_SOME_FORMAT
+const char *rnd_png_filetypes[] = {
+#ifdef PCB_HAVE_GDIMAGEPNG
+	RND_PNG_FMT_png,
+#define HAVE_SOME_FORMAT 1
+#endif
+
+#ifdef PCB_HAVE_GDIMAGEGIF
+	RND_PNG_FMT_gif,
+#define HAVE_SOME_FORMAT 1
+#endif
+
+#ifdef PCB_HAVE_GDIMAGEJPEG
+	RND_PNG_FMT_jpg,
+#define HAVE_SOME_FORMAT 1
+#endif
+
+	NULL
+};
+
+int rnd_png_has_any_format(void)
+{
+#ifdef HAVE_SOME_FORMAT
+	return 1;
+#else
+	return 0;
+#endif
+}
+
+const char *rnd_png_get_file_suffix(int filetype_idx)
+{
+	const char *result = NULL;
+	const char *fmt;
+
+	if ((filetype_idx >= 0) && (filetype_idx < (sizeof(rnd_png_filetypes)/sizeof(rnd_png_filetypes[0]))))
+		fmt = rnd_png_filetypes[filetype_idx];
+
+	if (fmt == NULL) { /* Do nothing */ }
+	else if (strcmp(fmt, RND_PNG_FMT_gif) == 0)
+		result = ".gif";
+	else if (strcmp(fmt, RND_PNG_FMT_jpg) == 0)
+		result = ".jpg";
+	else if (strcmp(fmt, RND_PNG_FMT_png) == 0)
+		result = ".png";
+
+	if (result == NULL) {
+		fprintf(stderr, "Error:  Invalid graphic file format\n");
+		result = ".???";
+	}
+	return result;
+}
+
 
 void rnd_png_uninit(rnd_png_t *pctx)
 {
