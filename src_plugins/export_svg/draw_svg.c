@@ -325,6 +325,8 @@ void rnd_svg_set_color(rnd_svg_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *colo
 		return;
 	free(gc->color);
 	gc->color = rnd_strdup(name);
+	if (strlen(gc->color) > 7)
+		gc->color[7] = '\0';
 }
 
 void rnd_svg_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
