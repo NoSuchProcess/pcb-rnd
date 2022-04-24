@@ -43,7 +43,7 @@ typedef struct rnd_png_s {
 	double scale; /* should be 1 by default */
 	double bloat;
 	rnd_coord_t x_shift, y_shift;
-	int show_solder_side, in_mono;
+	int ymirror, in_mono;
 
 	/* public: result */
 	long png_drawn_objs;

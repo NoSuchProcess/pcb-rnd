@@ -395,7 +395,7 @@ static rnd_hid_attr_val_t *png_options;
 
 static void png_head(void)
 {
-	pctx->show_solder_side = conf_core.editor.show_solder_side;
+	pctx->ymirror = conf_core.editor.show_solder_side;
 	rnd_png_start(pctx);
 	png_photo_head();
 }

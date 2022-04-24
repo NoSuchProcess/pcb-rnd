@@ -61,8 +61,8 @@ void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib)
 
 #define SCALE(w)   ((int)rnd_round((w)/pctx->scale))
 #define SCALE_X(x) ((int)rnd_round(((x) - pctx->x_shift)/pctx->scale))
-#define SCALE_Y(y) ((int)rnd_round(((pctx->show_solder_side ? (pctx->hidlib->size_y-(y)) : (y)) - pctx->y_shift)/pctx->scale))
-#define SWAP_IF_SOLDER(a,b) do { int c; if (pctx->show_solder_side) { c=a; a=b; b=c; }} while (0)
+#define SCALE_Y(y) ((int)rnd_round(((pctx->ymirror ? (pctx->hidlib->size_y-(y)) : (y)) - pctx->y_shift)/pctx->scale))
+#define SWAP_IF_SOLDER(a,b) do { int c; if (pctx->ymirror) { c=a; a=b; b=c; }} while (0)
 
 /* Used to detect non-trivial outlines */
 #define NOT_EDGE_X(x) ((x) != 0 && (x) != pctx->hidlib->size_x)
@@ -683,7 +683,7 @@ static void png_draw_arc_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_c
 		   in pcb, 0 degrees is to the left and +90 degrees is down */
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
-		if (pctx->show_solder_side) {
+		if (pctx->ymirror) {
 			start_angle = -start_angle;
 			delta_angle = -delta_angle;
 		}
