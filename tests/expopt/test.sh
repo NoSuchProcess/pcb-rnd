@@ -3,6 +3,10 @@
 pcb=pcb-rnd
 CONVERT=convert
 COMPARE=compare
+TRUNK=../..
+srcdir=$TRUNK/src
+
+global_args="-c rc/library_search_paths=lib -c plugins/draw_fab/omit_date=1 -c design/fab_author=TEST -c rc/quiet=1 -c rc/default_font_file=$srcdir/default_font"
 
 test_svg='
 	base
@@ -39,17 +43,53 @@ test_eps='
 	mono --monochrome
 '
 
+test_ps='
+	base
+	dh --drill-helper --drill-helper-size 0.1mm
+	am --no-align-marks
+	outl --no-outline
+	mirr --mirror
+	amirr --mirror --no-auto-mirror
+	fill --fill-page
+	clr --ps-color
+	inv --ps-invert
+	scale --scale 4
+	dcp --no-drill-copper
+	leg --no-show-legend --no-show-toc
+	1 --single-page --no-show-toc
+'
+
+# portable sed -i implementation with temp files
+sedi()
+{
+	local sc n
+	sc=$1
+	shift 1
+	for n in "$@"
+	do
+		sed "$sc" < "$n" > "$n.sedi" && mv "$n.sedi" "$n"
+	done
+}
+
 
 # $1: test file
 # $2: output ext
 # $3: test args, one per line
+# $4: optional sedi script to make the output portable
 gen_any()
 {
-	echo "$3" | while read name args 
+	local outfn
+
+	echo "$3" | while read name args
 	do
 		if test ! -z "$name"
 		then
-			$pcb $lead out/$1.$name.$2 $1.lht $args
+			outfn="out/$1.$name.$2"
+			$pcb $global_args $lead "$outfn" "$1.lht" $args
+			if test ! -z "$4"
+			then
+				sedi "$4" "$outfn"
+			fi
 		fi
 	done
 }
@@ -84,12 +124,7 @@ cmp_fmt()
 				test "$res" -lt 8
 			fi
 			;;
-		ps)
-			zcat "$ref.gz" > "$ref"
-			zcat "$out.gz" > "$out"
-			diff -u "$ref" "$out" && rm "$ref" "$out"
-			;;
-		svg|eps)
+		svg|eps|ps)
 			zcat "$ref.gz" > "$ref"
 			diff -u "$ref" "$out" && rm "$ref"
 			;;
@@ -150,7 +185,6 @@ cmp_png()
 	cmp_any layers png "$test_png"
 }
 
-
 gen_eps()
 {
 	lead="-x eps --eps-file"
@@ -160,6 +194,22 @@ gen_eps()
 cmp_eps()
 {
 	cmp_any layers eps "$test_eps"
+}
+
+gen_ps()
+{
+	lead="-x ps --psfile"
+	gen_any layers ps "$test_ps" '
+		s@%%CreationDate:.*@%%CreationDate: date@
+		s@%%Creator:.*@%%Creator: pcb-rnd@
+		s@%%Version:.*@%%Version: ver@
+		s@^[(]Created on.*@(Created on date@
+	'
+}
+
+cmp_ps()
+{
+	cmp_any layers ps "$test_ps"
 }
 
 mkdir -p out diff
@@ -178,6 +228,10 @@ case "$1" in
 		gen_eps
 		cmp_eps
 		;;
+	ps)
+		gen_ps
+		cmp_ps
+		;;
 	"")
 		echo "generating svg..."
 		gen_svg
@@ -187,6 +241,14 @@ case "$1" in
 		need_convert
 		gen_png
 		cmp_png
+
+		echo "generating eps..."
+		gen_eps
+		cmp_eps
+
+		echo "generating ps..."
+		gen_ps
+		cmp_ps
 		;;
 	*)
 		echo "Invalid format to test" >&2
