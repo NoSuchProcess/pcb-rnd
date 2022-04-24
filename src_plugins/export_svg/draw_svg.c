@@ -204,7 +204,7 @@ int rnd_svg_new_file(rnd_svg_t *pctx, FILE *f, const char *fn)
 	}
 
 	if (f == NULL) {
-		TODO("copy error print from ps");
+		rnd_message(RND_MSG_ERROR, "rnd_svg_new_file(): failed to open %s: %s\n", fn, strerror(ern));
 		perror(fn);
 		return -1;
 	}

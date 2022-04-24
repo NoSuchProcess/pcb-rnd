@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <errno.h>
 #include <math.h>
 #include <genvector/gds_char.h>
 
@@ -232,13 +233,17 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	pcb_cam_begin(PCB, &svg_cam, &xform, options[HA_cam].str, svg_attribute_list, NUM_OPTIONS, options);
 
 	if (svg_cam.fn_template == NULL) {
+		const char *fn;
+
 		filename = options[HA_svgfile].str;
 		if (!filename)
 			filename = "pcb.svg";
 
-		f = rnd_fopen_askovr(&PCB->hidlib, svg_cam.active ? svg_cam.fn : filename, "wb", NULL);
+		fn = svg_cam.active ? svg_cam.fn : filename;
+		f = rnd_fopen_askovr(&PCB->hidlib, fn, "wb", NULL);
 		if (f == NULL) {
-			TODO("copy error handling from ps");
+			int ern = errno;
+			rnd_message(RND_MSG_ERROR, "svg_do_export(): failed to open %s: %s\n", fn, strerror(ern));
 			perror(filename);
 			return;
 		}
