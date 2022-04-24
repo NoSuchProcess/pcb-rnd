@@ -79,7 +79,7 @@ int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, 
 int rnd_png_create(rnd_png_t *pctx, int use_alpha);
 
 void rnd_png_start(rnd_png_t *pctx);
-void rnd_png_finish(rnd_png_t *pctx, FILE *f, const char *fmt);
+void rnd_png_finish(rnd_png_t *pctx, FILE *f, int filetype_idx);
 
 /* Available file types (compile time configuration) */
 const char *rnd_png_get_file_suffix(int filetype_idx);

@@ -108,9 +108,37 @@ void rnd_png_start(rnd_png_t *pctx)
 	gdImageFilledRectangle(pctx->im, 0, 0, gdImageSX(pctx->im), gdImageSY(pctx->im), pctx->white->c);
 }
 
-void rnd_png_finish(rnd_png_t *pctx, FILE *f, const char *fmt)
+#undef HAVE_SOME_FORMAT
+const char *rnd_png_filetypes[] = {
+#ifdef PCB_HAVE_GDIMAGEPNG
+	RND_PNG_FMT_png,
+#define HAVE_SOME_FORMAT 1
+#endif
+
+#ifdef PCB_HAVE_GDIMAGEGIF
+	RND_PNG_FMT_gif,
+#define HAVE_SOME_FORMAT 1
+#endif
+
+#ifdef PCB_HAVE_GDIMAGEJPEG
+	RND_PNG_FMT_jpg,
+#define HAVE_SOME_FORMAT 1
+#endif
+
+	NULL
+};
+
+static const char *get_file_type(int filetype_idx)
+{
+	if ((filetype_idx >= 0) && (filetype_idx < (sizeof(rnd_png_filetypes)/sizeof(rnd_png_filetypes[0]))))
+		return rnd_png_filetypes[filetype_idx];
+	return NULL;
+}
+
+void rnd_png_finish(rnd_png_t *pctx, FILE *f, int filetype_idx)
 {
 	rnd_bool format_error = rnd_false;
+	const char *fmt = get_file_type(filetype_idx);
 
 	/* actually write out the image */
 
@@ -141,25 +169,6 @@ void rnd_png_finish(rnd_png_t *pctx, FILE *f, const char *fmt)
 		rnd_message(RND_MSG_ERROR, "rnd_png_finish(): Invalid graphic file format. This is a bug. Please report it.\n");
 }
 
-#undef HAVE_SOME_FORMAT
-const char *rnd_png_filetypes[] = {
-#ifdef PCB_HAVE_GDIMAGEPNG
-	RND_PNG_FMT_png,
-#define HAVE_SOME_FORMAT 1
-#endif
-
-#ifdef PCB_HAVE_GDIMAGEGIF
-	RND_PNG_FMT_gif,
-#define HAVE_SOME_FORMAT 1
-#endif
-
-#ifdef PCB_HAVE_GDIMAGEJPEG
-	RND_PNG_FMT_jpg,
-#define HAVE_SOME_FORMAT 1
-#endif
-
-	NULL
-};
 
 int rnd_png_has_any_format(void)
 {
@@ -173,10 +182,7 @@ int rnd_png_has_any_format(void)
 const char *rnd_png_get_file_suffix(int filetype_idx)
 {
 	const char *result = NULL;
-	const char *fmt;
-
-	if ((filetype_idx >= 0) && (filetype_idx < (sizeof(rnd_png_filetypes)/sizeof(rnd_png_filetypes[0]))))
-		fmt = rnd_png_filetypes[filetype_idx];
+	const char *fmt = get_file_type(filetype_idx);
 
 	if (fmt == NULL) { /* Do nothing */ }
 	else if (strcmp(fmt, RND_PNG_FMT_gif) == 0)

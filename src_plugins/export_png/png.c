@@ -362,7 +362,7 @@ static void png_finish(FILE *f)
 	if (pctx->photo_mode)
 		png_photo_foot();
 
-	rnd_png_finish(pctx, f, rnd_png_filetypes[png_options[HA_filetype].lng]);
+	rnd_png_finish(pctx, f, png_options[HA_filetype].lng);
 }
 
 
