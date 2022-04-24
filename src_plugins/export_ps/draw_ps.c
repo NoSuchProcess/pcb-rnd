@@ -327,9 +327,10 @@ double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, 
 	if (pctx->hidlib->size_x > pctx->hidlib->size_y) {
 		fprintf(pctx->outf, "90 rotate\n");
 		boffset = pctx->media_width / 2;
-		fprintf(pctx->outf, "%g %g scale %% calibration\n", pctx->calibration_y, pctx->calibration_x);
+		if ((pctx->calibration_y != 0) && (pctx->calibration_x != 0))
+			fprintf(pctx->outf, "%g %g scale %% calibration\n", pctx->calibration_y, pctx->calibration_x);
 	}
-	else
+	else if ((pctx->calibration_y != 0) && (pctx->calibration_x != 0))
 		fprintf(pctx->outf, "%g %g scale %% calibration\n", pctx->calibration_x, pctx->calibration_y);
 
 	if (mirror_this)
