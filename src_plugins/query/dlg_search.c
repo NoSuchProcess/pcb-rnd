@@ -40,7 +40,7 @@
 #define MAX_ROW 8
 #define MAX_COL 4
 
-static const char *search_acts[] = { "select", "unselect", "view", NULL };
+static const char *search_acts[] = { "select", "unselect", "view", "count", NULL };
 
 #define NEW_EXPR_LAB "<edit me>"
 
@@ -464,8 +464,12 @@ static void search_append_row_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 static void search_apply_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
-	if (ctx->dlg[ctx->wexpr_str].val.str != NULL)
-		rnd_actionva(&PCB->hidlib, "query", search_acts[ctx->dlg[ctx->wact].val.lng], ctx->dlg[ctx->wexpr_str].val.str, NULL);
+	if (ctx->dlg[ctx->wexpr_str].val.str != NULL) {
+		const char *op = search_acts[ctx->dlg[ctx->wact].val.lng];
+		long res = rnd_actionva(&PCB->hidlib, "query", op, ctx->dlg[ctx->wexpr_str].val.str, NULL);
+		if (strcmp(op, "count") == 0)
+			rnd_message(RND_MSG_INFO, "Advanced search: %ld matched.\n", res);
+	}
 }
 
 
