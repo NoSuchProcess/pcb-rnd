@@ -32,6 +32,13 @@ test_png='
 '
 # need to Use --photo-plating copper to avoid random noise
 
+test_eps='
+	base
+	sc --eps-scale 0.6
+	as --as-shown
+	mono --monochrome
+'
+
 
 # $1: test file
 # $2: output ext
@@ -82,7 +89,7 @@ cmp_fmt()
 			zcat "$out.gz" > "$out"
 			diff -u "$ref" "$out" && rm "$ref" "$out"
 			;;
-		svg)
+		svg|eps)
 			zcat "$ref.gz" > "$ref"
 			diff -u "$ref" "$out" && rm "$ref"
 			;;
@@ -144,6 +151,17 @@ cmp_png()
 }
 
 
+gen_eps()
+{
+	lead="-x eps --eps-file"
+	gen_any layers eps "$test_eps"
+}
+
+cmp_eps()
+{
+	cmp_any layers eps "$test_eps"
+}
+
 mkdir -p out diff
 
 case "$1" in
@@ -155,6 +173,10 @@ case "$1" in
 		need_convert
 		gen_png
 		cmp_png
+		;;
+	eps)
+		gen_eps
+		cmp_eps
 		;;
 	"")
 		echo "generating svg..."
