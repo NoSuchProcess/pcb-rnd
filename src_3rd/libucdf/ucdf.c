@@ -106,9 +106,9 @@ static long load_int(ucdf_ctx_t *ctx, unsigned const char *src, int len)
 		}
 	}
 
-	/* "sign extend" */
-	if (res >= (1UL << (len*8-1)))
-		res = -((1UL << (len*8)) - res);
+	/* sign extend */
+	if (((unsigned long)res) >> (len*8-1))
+		res |= ((unsigned long)-1) << (len*8-1);
 
 	return res;
 }
