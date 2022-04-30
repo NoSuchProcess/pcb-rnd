@@ -28,12 +28,13 @@
 
 #include <librnd/core/hid_dad_tree.h>
 #include "route_style.h"
+#include "data.h"
 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	int curr;
-	int wname, wlineth, wclr, wtxtscale, wtxtth, wfont, wproto, wattr;
+	int wname, wlineth, wclr, wtxtscale, wtxtth, wfont, wproto, wprotoname, wattr;
 
 	rnd_hidval_t name_timer;
 
@@ -110,6 +111,25 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	else
 		hv.str = "<unset>";
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wproto, &hv);
+
+	if (rst->via_proto_set) {
+		hv.str = "<invalid>";
+		if ((rst->via_proto >= 0) && (rst->via_proto < PCB->Data->ps_protos.used)) {
+			pcb_pstk_proto_t *proto = &PCB->Data->ps_protos.array[rst->via_proto];
+			if (proto->in_use) {
+				if ((proto->name != NULL) && (*proto->name != '\0'))
+					hv.str = proto->name;
+				else
+					hv.str = "<unnamed>";
+			}
+			else
+				hv.str = "<deleted>";
+		}
+	}
+	else
+		hv.str = "";
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wprotoname, &hv);
+
 
 	rnd_dad_tree_clear(tree);
 
@@ -376,11 +396,14 @@ static int pcb_dlg_rstdlg(int rst_idx)
 
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "Via padstack:");
-			RND_DAD_BUTTON(rstdlg_ctx.dlg, "<pid>");
-				rstdlg_ctx.wproto = RND_DAD_CURRENT(rstdlg_ctx.dlg);
-				RND_DAD_HELP(rstdlg_ctx.dlg, "Padstack prototype ID used for new vias with this style\n(button invokes the board padstack proto list dialog)");
-				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
-
+			RND_DAD_BEGIN_HBOX(rstdlg_ctx.dlg);
+				RND_DAD_BUTTON(rstdlg_ctx.dlg, "<pid>");
+					rstdlg_ctx.wproto = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+					RND_DAD_HELP(rstdlg_ctx.dlg, "Padstack prototype ID used for new vias with this style\n(button invokes the board padstack proto list dialog)");
+					RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+				RND_DAD_LABEL(rstdlg_ctx.dlg, "<name>");
+					rstdlg_ctx.wprotoname = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+			RND_DAD_END(rstdlg_ctx.dlg);
 
 		RND_DAD_END(rstdlg_ctx.dlg);
 		RND_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
