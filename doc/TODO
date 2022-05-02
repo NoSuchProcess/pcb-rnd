@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 + BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
 + BUG: pcb-rnd -x svg --photo-mode --flip --outfile A.svg bug_files/TODO/svg_arc.lht -> arc rendered at the wrong coord [report: cuvoodoo]
+- BUG: windows binaries: README.txt has the wrong path at the end: should be INSTALL.win32.txt
 - BUG: export bugs:
 	- segf: -x svg --opacity foo.lht
 	- segf: -x ps --psfade foo.lht
