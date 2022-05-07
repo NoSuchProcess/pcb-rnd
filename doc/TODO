@@ -4,6 +4,7 @@
 + BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
 + BUG: pcb-rnd -x svg --photo-mode --flip --outfile A.svg bug_files/TODO/svg_arc.lht -> arc rendered at the wrong coord [report: cuvoodoo]
 - BUG: windows binaries: README.txt has the wrong path at the end: should be INSTALL.win32.txt
+- BUG: {i c p}, edit board height - won't udpate until width is edited too
 - BUG: export bugs:
 	- segf: -x svg --opacity foo.lht
 	- segf: -x ps --psfade foo.lht
