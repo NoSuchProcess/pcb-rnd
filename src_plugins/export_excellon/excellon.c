@@ -38,7 +38,7 @@ typedef struct {
 static coord_format_t coord_format[] = {
 	{"INCH",            "%06.0mk", "%.3mi"}, /* decimil: inch in 00.0000 format, implicit leading-zero (LZ); max board size: 99 inch (2514mm) */
 	{"METRIC,000.000",  "%03.3mm", "%.6mm"}, /* micron: mm in 000.0000 format, implicit leading-zero (LZ); max board size: 999mm */
-	{"METRIC,0000.00",  "%04.2mm", "%.5mm"}, /* micron: mm in 000.0000 format, implicit leading-zero (LZ); max board size: 9999mm */
+	{"METRIC,0000.00",  "%04.2mm", "%.5mm"}, /* micron: mm in 0000.000 format, implicit leading-zero (LZ); max board size: 9999mm */
 };
 #define NUM_COORD_FORMATS (sizeof(coord_format)/sizeof(coord_format[0]))
 
