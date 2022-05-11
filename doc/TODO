@@ -16,6 +16,7 @@
 2. For later releases ===============================================================================
 - librnd 4.0.0:
 	- librnd 3.2.0+: build_run.c should print runtime librnd version the same way as sch-rnd does
+	- librnd 3.2.0+: use lib_exp_*
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
 - CLEANUP/FEATURE: new breadboard
