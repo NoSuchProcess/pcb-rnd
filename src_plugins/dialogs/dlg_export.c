@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,10 +26,7 @@
 
 #include "config.h"
 #include <librnd/core/actions.h>
-#include "board.h"
-#include "data.h"
-#include "layer_vis.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_unit.h>
@@ -68,26 +65,24 @@ static rnd_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
 	return r;
 }
 
+static void export_sess_pre(void);
+static void export_sess_post(void);
+
 static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	export_ctx_t *export_ctx = caller_data;
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	int h, wid;
-	int have_gui, currly = PCB_CURRLID(PCB);
-	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
-	
-	have_gui = (rnd_gui != NULL) && rnd_gui->gui;
-	if (have_gui) {
-		pcb_hid_save_and_show_layer_ons(save_l_ons);
-		pcb_hid_save_and_show_layergrp_ons(save_g_ons);
-	}
+
+	export_sess_pre();
 
 	wid = attr - export_ctx->dlg;
 	for(h = 0; h < export_ctx->len; h++) {
 		if (export_ctx->button[h] == wid) {
 			rnd_hid_attr_val_t *results = get_results(export_ctx, h);
-			rnd_event(&PCB->hidlib, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
+			rnd_event(hl, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 			export_ctx->hid[h]->do_export(export_ctx->hid[h], results);
-			rnd_event(&PCB->hidlib, RND_EVENT_EXPORT_SESSION_END, NULL);
+			rnd_event(hl, RND_EVENT_EXPORT_SESSION_END, NULL);
 			free(results);
 			rnd_message(RND_MSG_INFO, "Export done using exporter: %s\n", export_ctx->hid[h]->name);
 			goto done;
@@ -97,12 +92,7 @@ static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	rnd_message(RND_MSG_ERROR, "Internal error: can not find which exporter to call\n");
 	done:;
 
-	if (have_gui) {
-		pcb_hid_restore_layer_ons(save_l_ons);
-		pcb_hid_restore_layergrp_ons(save_g_ons);
-		pcb_layervis_change_group_vis(&PCB->hidlib, currly, 1, 1);
-		rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
-	}
+	export_sess_post();
 }
 
 /* copy back the attribute values from the DAD dialog to exporter dialog so
@@ -273,3 +263,5 @@ fgw_error_t pcb_act_PrintGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	pcb_dlg_export("Print", 0, 1);
 	return 0;
 }
+
+#include "dlg_export_pcb.c"
