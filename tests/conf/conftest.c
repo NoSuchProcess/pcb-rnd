@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include "config.h"
+#include <librnd/core/hidlib.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
@@ -325,6 +326,7 @@ int getline_cont(FILE *f)
 
 int main()
 {
+	rnd_app.package = "conftest";
 
 	hid_id = rnd_conf_hid_reg(hid_cookie, &global_cbs);
 
