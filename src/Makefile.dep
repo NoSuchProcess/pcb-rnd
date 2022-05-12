@@ -253,15 +253,15 @@
  ../src_plugins/dialogs/dlg_library.h \
  ../src_plugins/dialogs/dlg_loadsave.h \
  ../src_plugins/dialogs/dlg_padstack.h obj_pstk.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h ../src_plugins/dialogs/dlg_pinout.c build_run.h \
- obj_subc_parent.h data.h crosshair.h route.h buffer.h obj_rat_list.h \
- obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h draw.h obj_term.h search.h search_r.h netlist.h \
- ../src_plugins/dialogs/dlg_undo.c ../src_3rd/libuundo/uundo.h event.h \
- undo.h undo_old.h ../src_plugins/dialogs/dlg_fpmap.c actions_pcb.h \
- plug_footprint.h plug_io.h plug_footprint.h \
- ../src_plugins/dialogs/dlg_obj_list.c \
+ polygon.h vtpadstack_t.h ../src_plugins/dialogs/pcb_export.h \
+ ../src_plugins/dialogs/dlg_pinout.c build_run.h obj_subc_parent.h data.h \
+ crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
+ obj_pstk_list.h obj_pstk.h vtpadstack.h draw.h obj_term.h search.h \
+ search_r.h netlist.h ../src_plugins/dialogs/dlg_undo.c \
+ ../src_3rd/libuundo/uundo.h event.h undo.h undo_old.h \
+ ../src_plugins/dialogs/dlg_fpmap.c actions_pcb.h plug_footprint.h \
+ plug_io.h plug_footprint.h ../src_plugins/dialogs/dlg_obj_list.c \
  ../src_plugins/dialogs/dlg_netlist.c \
  ../src_plugins/dialogs/dlg_printcalib.c \
  ../src_plugins/dialogs/dlg_view.h ../src_plugins/dialogs/adialogs_conf.h \
@@ -270,15 +270,7 @@
 ../src_plugins/dialogs/dlg_about.o: ../src_plugins/dialogs/dlg_about.c \
  ../config.h build_run.h ../src_plugins/dialogs/dlg_about.h
 ../src_plugins/dialogs/dlg_export.o: ../src_plugins/dialogs/dlg_export.c \
- ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
- globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
- obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
- board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
- idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
- ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h layer_vis.h event.h \
- ../src_plugins/dialogs/dlg_export.h
+ ../config.h ../src_plugins/dialogs/dlg_export.h
 ../src_plugins/dialogs/dlg_flag_edit.o: \
  ../src_plugins/dialogs/dlg_flag_edit.c ../config.h flag.h globalconst.h \
  flag_str.h flag.h change.h board.h vtroutestyle.h attrib.h \
@@ -399,6 +391,16 @@
  obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
  board.h conf_core.h view.h idpath.h draw.h drc.h view.h actions_pcb.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h
+../src_plugins/dialogs/pcb_export.o: ../src_plugins/dialogs/pcb_export.c \
+ ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
+ globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
+ board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h layer_vis.h event.h \
+ ../src_plugins/dialogs/pcb_export.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
@@ -660,10 +662,9 @@
  ../src_plugins/export_png/png_photo1.c \
  ../src_plugins/export_png/png_photo2.c
 ../src_plugins/export_ps/draw_eps.o: ../src_plugins/export_ps/draw_eps.c \
- ../config.h conf_core.h globalconst.h \
  ../src_plugins/export_ps/draw_eps.h
 ../src_plugins/export_ps/draw_ps.o: ../src_plugins/export_ps/draw_ps.c \
- ../config.h ../src_plugins/export_ps/../lib_compat_help/media.h \
+ ../src_plugins/export_ps/../lib_compat_help/media.h \
  ../src_plugins/export_ps/draw_ps.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
@@ -721,7 +722,7 @@
  ../src_plugins/export_stl/model_load_stl.c \
  ../src_plugins/export_stl/model_load_amf.c
 ../src_plugins/export_svg/draw_svg.o: \
- ../src_plugins/export_svg/draw_svg.c ../config.h \
+ ../src_plugins/export_svg/draw_svg.c \
  ../src_plugins/export_svg/draw_svg.h
 ../src_plugins/export_svg/svg.o: ../src_plugins/export_svg/svg.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
@@ -1938,7 +1939,10 @@
  obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
  board.h conf_core.h route_style.h event.h \
  ../src_plugins/lib_hid_pcbui/routest.h \
- ../src_plugins/lib_hid_pcbui/routest_dlg.c
+ ../src_plugins/lib_hid_pcbui/routest_dlg.c data.h crosshair.h route.h \
+ buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h
 ../src_plugins/lib_hid_pcbui/status.o: \
  ../src_plugins/lib_hid_pcbui/status.c ../config.h board.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
