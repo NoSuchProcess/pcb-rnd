@@ -53,6 +53,7 @@ extern conf_dialogs_t dialogs_conf;
 #include "dlg_library.h"
 #include "dlg_loadsave.h"
 #include "dlg_padstack.h"
+#include "pcb_export.h"
 #include "dlg_pinout.c"
 #include "dlg_undo.c"
 #include "dlg_fpmap.c"
@@ -100,6 +101,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
+	pcb_export_uninit();
 	pcb_dlg_library_uninit();
 	pcb_dlg_netlist_uninit();
 	pcb_dlg_undo_uninit();
@@ -134,6 +136,7 @@ int pplg_init_dialogs(void)
 	pcb_view_dlg_init();
 	pcb_dlg_fontsel_init();
 	pcb_dlg_library_init();
+	pcb_export_init();
 
 	return 0;
 }

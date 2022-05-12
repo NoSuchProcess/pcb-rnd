@@ -14,6 +14,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dlg_padstack.o
  $(PLUGDIR)/dialogs/dlg_pref_apptab.o
  $(PLUGDIR)/dialogs/dlg_view.o
+ $(PLUGDIR)/dialogs/pcb_export.o
 @]
 
 put /local/pcb/mod/CONFFILE {adialogs.conf}

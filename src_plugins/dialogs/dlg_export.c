@@ -65,16 +65,12 @@ static rnd_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
 	return r;
 }
 
-static void export_sess_pre(void);
-static void export_sess_post(void);
-
 static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	export_ctx_t *export_ctx = caller_data;
 	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	int h, wid;
 
-	export_sess_pre();
 
 	wid = attr - export_ctx->dlg;
 	for(h = 0; h < export_ctx->len; h++) {
@@ -91,8 +87,6 @@ static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 
 	rnd_message(RND_MSG_ERROR, "Internal error: can not find which exporter to call\n");
 	done:;
-
-	export_sess_post();
 }
 
 /* copy back the attribute values from the DAD dialog to exporter dialog so
@@ -264,4 +258,3 @@ fgw_error_t pcb_act_PrintGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	return 0;
 }
 
-#include "dlg_export_pcb.c"
