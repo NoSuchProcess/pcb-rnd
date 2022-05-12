@@ -6,7 +6,6 @@
 #include <string.h>
 #include <assert.h>
 
-#include "data.h"
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
