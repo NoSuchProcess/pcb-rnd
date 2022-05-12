@@ -18,6 +18,7 @@
 	- librnd 3.2.0+: build_run.c should print runtime librnd version the same way as sch-rnd does
 	- librnd 3.2.0+: use lib_exp_* and lib_imp_*
 		- export_png, export_ps, export_svg
+		- remove import_pxm_* plugins in favor of librnd's import_pixmap_*
 		- remove gd stuff from config.h.in
 		- remove gd detection from scconfig
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
