@@ -33,6 +33,11 @@
 
 #include "pcb_export.h"
 
+/* pcb-rnd exporters rely on toggling GUI layer visibility; when exported
+   from the GUI, save and restore layer visibility around exports.
+   This is an ugly, non-reentrant hack and depends on there's only one
+   export session taking place at a time. */
+
 static const char pcb_export_cookie[] = "dialogs/pcb_export.c";
 
 static int have_gui, currly;
