@@ -22,6 +22,9 @@
 #include <librnd/src_3rd/puplug/scconfig_hooks.h>
 #include <librnd/src_3rd/libfungw/scconfig_hooks.h>
 
+/* we are doing /local/pcb/ */
+#define LIBRND_SCCONFIG_APP_TREE "pcb"
+
 #include <librnd/scconfig/plugin_3state.h>
 #include <librnd/scconfig/hooks_common.h>
 #include <librnd/scconfig/rnd_hook_detect.h>
