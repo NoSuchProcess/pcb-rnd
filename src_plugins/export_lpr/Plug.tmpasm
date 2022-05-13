@@ -1,5 +1,8 @@
 put /local/pcb/mod {export_lpr}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_lpr/lpr.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/export_lpr/lpr.o
+	$(PLUGDIR)/export_lpr/lpr_hid.o
+@]
 put /local/pcb/mod/CONF {$(PLUGDIR)/export_lpr/export_lpr_conf.h}
 
 switch /local/pcb/export_lpr/controls
