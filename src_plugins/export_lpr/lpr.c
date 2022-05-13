@@ -11,7 +11,6 @@
 #include <librnd/core/safe_fs.h>
 
 #include <librnd/core/hid.h>
-#include "../export_ps/ps.h"
 #include <librnd/core/hid_nogui.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid_attrib.h>
@@ -62,10 +61,10 @@ static void lpr_maybe_set_value(const char *name, double new_val)
 	}
 }
 
-static void lpr_ps_init()
+static void lpr_ps_init(rnd_hid_t *ps_hid)
 {
 	if (lpr_options == 0) {
-		const rnd_export_opt_t *ps_opts = ps_hid.get_export_options(&ps_hid, &num_lpr_options);
+		const rnd_export_opt_t *ps_opts = ps_hid->get_export_options(ps_hid, &num_lpr_options);
 		lpr_options = calloc(num_lpr_options, sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
@@ -103,6 +102,8 @@ static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 	return lpr_options;
 }
 
+
+static void (*rnd_lpr_hid_export_to_file)(FILE *, rnd_hid_attr_val_t *, rnd_xform_t *) = NULL;
 static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
@@ -122,7 +123,7 @@ static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		return;
 	}
 
-	ps_hid_export_to_file(f, options, NULL);
+	rnd_lpr_hid_export_to_file(f, options, NULL);
 
 	rnd_pclose(f);
 }
@@ -142,9 +143,8 @@ static int lpr_usage(rnd_hid_t *hid, const char *topic)
 	return 0;
 }
 
-int pplg_check_ver_export_lpr(int ver_needed) { return 0; }
 
-void pplg_uninit_export_lpr(void)
+void rnd_lpr_uninit(void)
 {
 	rnd_remove_actions_by_cookie(lpr_cookie);
 	rnd_hid_remove_hid(&lpr_hid);
@@ -153,9 +153,12 @@ void pplg_uninit_export_lpr(void)
 	lpr_hid.argument_array = NULL;
 }
 
-int pplg_init_export_lpr(void)
+int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_export_to_file)(FILE *, rnd_hid_attr_val_t *, rnd_xform_t *))
 {
 	RND_API_CHK_VER;
+
+	rnd_lpr_hid_export_to_file = hid_export_to_file;
+
 	memset(&lpr_hid, 0, sizeof(rnd_hid_t));
 
 	rnd_hid_nogui_init(&lpr_hid);
@@ -173,7 +176,7 @@ int pplg_init_export_lpr(void)
 
 	lpr_hid.usage = lpr_usage;
 
-	lpr_ps_init();
+	lpr_ps_init(ps_hid);
 
 	rnd_hid_register_hid(&lpr_hid);
 	rnd_hid_load_defaults(&lpr_hid, base_lpr_options, NUM_OPTIONS);
@@ -183,4 +186,22 @@ int pplg_init_export_lpr(void)
 #include "export_lpr_conf_fields.h"
 
 	return 0;
+}
+
+
+/*********/
+
+#include "../export_ps/ps.h"
+
+int pplg_check_ver_export_lpr(int ver_needed) { return 0; }
+
+
+void pplg_uninit_export_lpr(void)
+{
+	rnd_lpr_uninit();
+}
+
+int pplg_init_export_lpr(void)
+{
+	return rnd_lpr_init(&ps_hid, ps_ps_init, ps_hid_export_to_file);
 }
