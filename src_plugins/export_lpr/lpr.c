@@ -16,11 +16,10 @@
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/actions.h>
 
-#include "export_lpr_conf.h"
 const char *lpr_cookie = "lpr HID";
 static rnd_hid_t lpr_hid;
 
-conf_export_lpr_t conf_export_lpr;
+
 
 
 static const rnd_export_opt_t base_lpr_options[] = {
@@ -61,6 +60,7 @@ static void lpr_maybe_set_value(const char *name, double new_val)
 	}
 }
 
+static const double *lpr_xcalib, *lpr_ycalib;
 static void lpr_ps_init(rnd_hid_t *ps_hid)
 {
 	if (lpr_options == 0) {
@@ -75,8 +75,8 @@ static void lpr_ps_init(rnd_hid_t *ps_hid)
 
 		rnd_hid_load_defaults(&lpr_hid, lpr_options, num_lpr_options);
 
-		lpr_maybe_set_value("xcalib", conf_export_lpr.plugins.export_lpr.default_xcalib);
-		lpr_maybe_set_value("ycalib", conf_export_lpr.plugins.export_lpr.default_ycalib);
+		lpr_maybe_set_value("xcalib", (lpr_xcalib != NULL) ? *lpr_xcalib : 1.0);
+		lpr_maybe_set_value("ycalib", (lpr_ycalib != NULL) ? *lpr_ycalib : 1.0);
 	}
 }
 
@@ -148,16 +148,17 @@ void rnd_lpr_uninit(void)
 {
 	rnd_remove_actions_by_cookie(lpr_cookie);
 	rnd_hid_remove_hid(&lpr_hid);
-	rnd_conf_unreg_fields("plugins/export_lpr/");
 	free(lpr_hid.argument_array);
 	lpr_hid.argument_array = NULL;
 }
 
-int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_export_to_file)(FILE *, rnd_hid_attr_val_t *, rnd_xform_t *))
+int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_export_to_file)(FILE *, rnd_hid_attr_val_t *, rnd_xform_t *), const double *xcalib, const double *ycalib)
 {
 	RND_API_CHK_VER;
 
 	rnd_lpr_hid_export_to_file = hid_export_to_file;
+	lpr_xcalib = xcalib;
+	lpr_ycalib = ycalib;
 
 	memset(&lpr_hid, 0, sizeof(rnd_hid_t));
 
@@ -181,10 +182,6 @@ int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_
 	rnd_hid_register_hid(&lpr_hid);
 	rnd_hid_load_defaults(&lpr_hid, base_lpr_options, NUM_OPTIONS);
 
-#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	rnd_conf_reg_field(conf_export_lpr, field,isarray,type_name,cpath,cname,desc,flags);
-#include "export_lpr_conf_fields.h"
-
 	return 0;
 }
 
@@ -192,6 +189,9 @@ int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_
 /*********/
 
 #include "../export_ps/ps.h"
+#include "export_lpr_conf.h"
+
+conf_export_lpr_t conf_export_lpr;
 
 int pplg_check_ver_export_lpr(int ver_needed) { return 0; }
 
@@ -199,9 +199,16 @@ int pplg_check_ver_export_lpr(int ver_needed) { return 0; }
 void pplg_uninit_export_lpr(void)
 {
 	rnd_lpr_uninit();
+	rnd_conf_unreg_fields("plugins/export_lpr/");
 }
 
 int pplg_init_export_lpr(void)
 {
-	return rnd_lpr_init(&ps_hid, ps_ps_init, ps_hid_export_to_file);
+	int res = rnd_lpr_init(&ps_hid, ps_ps_init, ps_hid_export_to_file, &conf_export_lpr.plugins.export_lpr.default_xcalib, &conf_export_lpr.plugins.export_lpr.default_ycalib);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_export_lpr, field,isarray,type_name,cpath,cname,desc,flags);
+#include "export_lpr_conf_fields.h"
+
+	return res;
 }
