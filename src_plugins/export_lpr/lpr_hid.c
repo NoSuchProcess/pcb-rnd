@@ -94,11 +94,9 @@ static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 
 
 
-	/*
-	 * We initialize the default value in this manner because the GUI
-	 * HID's may want to free() this string value and replace it with a
-	 * new one based on how a user fills out a print dialog.
-	 */
+	/* We initialize the default value in this manner because the GUI
+	   HID's may want to free() this string value and replace it with a
+	   new one based on how a user fills out a print dialog. */
 	val = lpr_values[HA_lprcommand].str;
 	if ((val == NULL) || (*val == '\0')) {
 		free((char *)lpr_values[HA_lprcommand].str);
