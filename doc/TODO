@@ -21,6 +21,7 @@
 		- remove import_pxm_* plugins in favor of librnd's import_pixmap_*
 		- remove gd stuff from config.h.in
 		- remove gd detection from scconfig
+		- remove export_lpr/lpr_hid.[ch] in favor of librnd's
 	- librnd 3.2.0+: export dialog
 		- remove dialogs/dlg_export, make the old ExportGUI and PrintGUI call librnd's ExportDialog and PrintDialog
 	- librnd 3.2.0+: use centralized exec_prefix, see sch_rnd r3691
