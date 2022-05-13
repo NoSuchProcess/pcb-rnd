@@ -115,7 +115,7 @@ static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	filename = options[HA_lprcommand].str;
 
-	printf("LPR: open %s\n", filename);
+	rnd_trace("LPR: open %s\n", filename);
 	f = rnd_popen(NULL, filename, "w");
 	if (!f) {
 		perror(filename);
