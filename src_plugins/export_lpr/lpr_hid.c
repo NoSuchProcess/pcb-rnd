@@ -7,10 +7,7 @@
 #include "config.h"
 
 #include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
