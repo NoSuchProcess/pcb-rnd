@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title> pcb-rnd user manual </title>
+    <meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+    <link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2 id="" autotoc="yes"> The show_netnames Plugin </h2>
+<p>
+View netnames overlaid onto the traces of the current layout. 
+
+<h3 id="description" autotoc="yes"> Description </h3>
+<p>
+When working on the details of a layout it can be useful to observe the 
+netnames of the traces that you are working with. This is particularly true 
+when working with densely packed traces and at zoom levels where other 
+distinguishing features are not visible on screen. 
+
+<p>
+Note that due to the relatively high cost of rendering fonts there may be a 
+noticeable performance degradation using this feature. 
+
+<p>
+The show_netnames plugin can be accessed from the VIEW menu item. Use the 
+"Show netnames when zoomed in" checkbox to toggle the functionality.
+
+<p>
+To avoid cluttering the screen with netnames when zoomed out the plugin defines 
+a threshold zoom level. The default threshold is 0.02mm/pixel. This is a 
+configurable parameter.
+
+<p>
+Objects not belonging to any netlist, "nonets", can be omitted from display. 
+This is a configurable parameter.
+
+<p>
+It is also possible to add a list of regular expressions that match netnames 
+for omission from display.
+
+<h3 id="example-show_netnames-config-file" autotoc="yes"> Example show_netnames 
+Configuration File </h3>
+
+<p>
+Default installation location of the show_netnames.conf file is 
+$(PREFIX)/pcb-rnd/etc/pcb-rnd
+
+<pre><code>   
+li:pcb-rnd-conf-v1 {
+	ha:overwrite {
+		ha:plugins {
+			ha:show_netnames {
+				enable=0
+				zoom_level=0.02mm
+				omit_nonets=0
+				li:omit_netnames={
+					{^unnamed}
+				}
+			}
+		}
+	}
+}
+</code></pre>
+</body>
+</html>
