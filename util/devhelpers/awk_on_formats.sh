@@ -25,7 +25,7 @@ BEGIN {
 	mode = 1
 	plugin=$n
 	sub(".*/", "", plugin)
-	sub("\.pup", "", plugin)
+	sub("[.]pup", "", plugin)
 	fmt = plugin
 	sub("io_", "", fmt)
 	sub("import_", "", fmt)
