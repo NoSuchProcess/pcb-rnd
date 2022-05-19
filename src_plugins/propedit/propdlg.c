@@ -852,6 +852,17 @@ static void propedit_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 			prop_refresh(pd);
 }
 
+static void propedit_brd_unload(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	propdlg_t *pd, *next;
+
+	for(pd = gdl_first(&propdlgs); pd != NULL; pd = next) {
+		static rnd_dad_retovr_t ro;
+		next = gdl_next(&propdlgs, pd);
+		rnd_hid_dad_close(pd->dlg_hid_ctx, &ro, -1);
+	}
+}
+
 static rnd_conf_hid_id_t propdlg_conf_id;
 static const char *propdlg_cookie = "propdlg";
 void pcb_propdlg_init(void)
@@ -866,6 +877,7 @@ void pcb_propdlg_init(void)
 	}
 
 	rnd_event_bind(PCB_EVENT_BOARD_EDITED, propedit_brd_chg, NULL, pcb_propedit_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_CHANGED, propedit_brd_unload, NULL, pcb_propedit_cookie);
 }
 
 void pcb_propdlg_uninit(void)
