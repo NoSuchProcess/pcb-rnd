@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
-- BUG: segf: open propedit on an object on a board, start new board, propedit crashes [report: Igor2]
 - BUG: windows binaries: README.txt has the wrong path at the end: should be INSTALL.win32.txt
 - BUG: {i c p}, edit board height - won't udpate until width is edited too
 - BUG: drc compilation assert bug_files/TODO/outline* [report: cuvoodoo]
