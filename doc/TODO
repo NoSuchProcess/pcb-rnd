@@ -8,9 +8,6 @@
 - BUG: drc compilation assert bug_files/TODO/outline* [report: cuvoodoo]
 - BUG: drc geometry problem bug_files/TODO/pullback* [report: cuvoodoo]
 - BUG: import schematics GUI bug bug_files/TODO/usb_hub* [report: cuvoodoo]
-- BUG: export bugs:
-	- segf: -x svg --opacity foo.lht
-	- segf: -x ps --psfade foo.lht
 - BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
 - BUG: DRC: SIGSEGV when importing DRC rule (floating.tdx, and others). no crash when saved without conf and reopened: bug_files/TODO/drc_import_crash.lht [report: cuvoodoo]
