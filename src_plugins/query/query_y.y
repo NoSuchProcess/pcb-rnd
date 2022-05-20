@@ -139,13 +139,17 @@ static void link_user_funcs_(pcb_qry_node_t *root, int allow)
 
 }
 
-static void link_user_funcs(pcb_qry_node_t *root, int allow)
+static void uninit_user_funcs()
 {
-	link_user_funcs_(root, allow);
-
 	if (user_funcs != NULL)
 		htsp_free(user_funcs);
 	user_funcs = NULL;
+}
+
+static void link_user_funcs(pcb_qry_node_t *root, int allow)
+{
+	link_user_funcs_(root, allow);
+	uninit_user_funcs();
 }
 
 
@@ -196,8 +200,8 @@ static void link_user_funcs(pcb_qry_node_t *root, int allow)
 %%
 
 program:
-	  program_rules    { *prg_out = $1; link_user_funcs($1, 1); }
-	| program_expr     { *prg_out = $1; assert(user_funcs == NULL); link_user_funcs($1, 0); }
+	  program_rules    { *prg_out = $1; uninit_user_funcs(); link_user_funcs($1, 1); }
+	| program_expr     { *prg_out = $1; uninit_user_funcs(); link_user_funcs($1, 0); }
 	;
 
 /* The program is a single expression - useful for search */
