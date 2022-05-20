@@ -35,6 +35,7 @@
 #include "query.h"
 #include "query_l.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/error.h>
 #include "flag_str.h"
 #include "fields_sphash.h"
 
@@ -124,6 +125,9 @@ static void link_user_funcs_(pcb_qry_node_t *root, int allow)
 			if (fname->precomp.fnc.bui != NULL) /* builtin */
 				continue;
 
+			if (!allow)
+				rnd_message(RND_MSG_ERROR, "You shouldn't have user functions in query expressions, only in rules\n");
+
 			if (user_funcs != NULL)
 				f = htsp_get(user_funcs, fname->data.str);
 			else
@@ -200,8 +204,8 @@ static void link_user_funcs(pcb_qry_node_t *root, int allow)
 %%
 
 program:
-	  program_rules    { *prg_out = $1; uninit_user_funcs(); link_user_funcs($1, 1); }
-	| program_expr     { *prg_out = $1; uninit_user_funcs(); link_user_funcs($1, 0); }
+	  program_rules    { uninit_user_funcs(); *prg_out = $1; link_user_funcs($1, 1); }
+	| program_expr     { uninit_user_funcs(); *prg_out = $1; link_user_funcs($1, 0); }
 	;
 
 /* The program is a single expression - useful for search */
