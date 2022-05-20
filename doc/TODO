@@ -7,7 +7,7 @@
 - BUG: import schematics GUI bug bug_files/TODO/usb_hub* [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
-- BUG: DRC: SIGSEGV when importing DRC rule (floating.tdx, and others). no crash when saved without conf and reopened: bug_files/TODO/drc_import_crash.lht [report: cuvoodoo]
+? BUG: DRC: SIGSEGV when importing DRC rule (floating.tdx, and others). no crash when saved without conf and reopened: bug_files/TODO/drc_import_crash.lht [report: cuvoodoo] -> can't reproduce: need a precise list of steps and all files loaded/imported
 - BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: egale import bug: bug_files/TODO/eagle1.* [report: Erich]
