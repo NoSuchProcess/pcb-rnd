@@ -146,6 +146,7 @@ void pcb_qry_set_input(const char *script)
 {
 	while(isspace(*script)) script++;
 	pcb_qry_program = pcb_qry_program_ptr = script;
+	yy_flush_buffer(YY_CURRENT_BUFFER);
 }
 
 static pcb_qry_node_t *make_constant(char *str, long val)
