@@ -287,7 +287,7 @@ static int undo_board_size_swap(void *udata)
 {
 	undo_board_size_t *s = udata;
 
-	if ((s->w != s->pcb->hidlib.size_x) || (s->w != s->pcb->hidlib.size_y)) {
+	if ((s->w != s->pcb->hidlib.size_x) || (s->h != s->pcb->hidlib.size_y)) {
 		rnd_coord_t oldw = s->pcb->hidlib.size_x, oldh = s->pcb->hidlib.size_y;
 		pcb_board_resize_(s->pcb, s->w, s->h);
 		s->w = oldw;
