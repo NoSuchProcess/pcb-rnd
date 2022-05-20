@@ -35,6 +35,10 @@ static int qry_yy_input(char *buf, int buflen);
 static pcb_qry_node_t *make_constant(char *str, long val);
 static pcb_qry_node_t *make_const_obj(char *str, pcb_any_obj_t *obj);
 #define YY_INPUT(buf, res, buflen) (res = qry_yy_input(buf, buflen))
+
+static void qry_update_nl(const char *s);
+long pcb_qry_lex_lineno;
+
 %}
 
 %option prefix="qry_"
@@ -125,10 +129,17 @@ thus            { return T_THUS; }
 [$@().,<>!*+/~-] { return *yytext; }
 
 [\\][\r\n]      { continue; /* multiline rules */}
-[;\r\n]*        { return T_NL; }
+[;\r\n]*        { qry_update_nl(yytext); return T_NL; }
 [ \t]           { continue; }
 
 %%
+
+static void qry_update_nl(const char *s)
+{
+	for(; *s != '\0'; s++)
+		if (*s == '\n')
+			pcb_qry_lex_lineno++;
+}
 
 static int qry_yy_input(char *buf, int buflen)
 {
@@ -147,6 +158,7 @@ void pcb_qry_set_input(const char *script)
 	while(isspace(*script)) script++;
 	pcb_qry_program = pcb_qry_program_ptr = script;
 	yy_flush_buffer(YY_CURRENT_BUFFER);
+	pcb_qry_lex_lineno = 1;
 }
 
 static pcb_qry_node_t *make_constant(char *str, long val)

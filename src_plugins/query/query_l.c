@@ -907,8 +907,12 @@ static int qry_yy_input(char *buf, int buflen);
 static pcb_qry_node_t *make_constant(char *str, long val);
 static pcb_qry_node_t *make_const_obj(char *str, pcb_any_obj_t *obj);
 #define YY_INPUT(buf, res, buflen) (res = qry_yy_input(buf, buflen))
-#line 911 "query_l.c"
-#line 912 "query_l.c"
+
+static void qry_update_nl(const char *s);
+long pcb_qry_lex_lineno;
+
+#line 915 "query_l.c"
+#line 916 "query_l.c"
 
 #define INITIAL 0
 
@@ -1125,9 +1129,9 @@ YY_DECL
 		}
 
 	{
-#line 42 "query_l.l"
+#line 46 "query_l.l"
 
-#line 1131 "query_l.c"
+#line 1135 "query_l.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1187,388 +1191,388 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 43 "query_l.l"
+#line 47 "query_l.l"
 { qry_lval.s = rnd_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; /*"*/ }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 44 "query_l.l"
+#line 48 "query_l.l"
 { qry_lval.s = rnd_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 46 "query_l.l"
+#line 50 "query_l.l"
 { return T_LET; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 47 "query_l.l"
+#line 51 "query_l.l"
 { return T_ASSERT; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 48 "query_l.l"
+#line 52 "query_l.l"
 { return T_RULE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 49 "query_l.l"
+#line 53 "query_l.l"
 { return T_FUNCTION; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 50 "query_l.l"
+#line 54 "query_l.l"
 { return T_RETURN; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 51 "query_l.l"
+#line 55 "query_l.l"
 { return T_LIST; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 52 "query_l.l"
+#line 56 "query_l.l"
 { return T_INVALID; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 53 "query_l.l"
+#line 57 "query_l.l"
 { return T_FLD_P; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 54 "query_l.l"
+#line 58 "query_l.l"
 { return T_FLD_A; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 55 "query_l.l"
+#line 59 "query_l.l"
 { return T_FLD_FLAG; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 57 "query_l.l"
+#line 61 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_LINE_POINT); return T_CONST; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 58 "query_l.l"
+#line 62 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_POLY_POINT); return T_CONST; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 59 "query_l.l"
+#line 63 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_LINE); return T_CONST; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 60 "query_l.l"
+#line 64 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_TEXT); return T_CONST; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 61 "query_l.l"
+#line 65 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_POLY); return T_CONST; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 62 "query_l.l"
+#line 66 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_ARC); return T_CONST; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 63 "query_l.l"
+#line 67 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_GFX); return T_CONST; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 64 "query_l.l"
+#line 68 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_RAT); return T_CONST; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 65 "query_l.l"
+#line 69 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_PSTK); return T_CONST; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 66 "query_l.l"
+#line 70 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_PSTK); return T_CONST; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 67 "query_l.l"
+#line 71 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_SUBC); return T_CONST; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 68 "query_l.l"
+#line 72 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_SUBC); return T_CONST; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 69 "query_l.l"
+#line 73 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_NET); return T_CONST; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 70 "query_l.l"
+#line 74 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_LAYER); return T_CONST; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 71 "query_l.l"
+#line 75 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_OBJ_LAYERGRP); return T_CONST; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 73 "query_l.l"
+#line 77 "query_l.l"
 { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 74 "query_l.l"
+#line 78 "query_l.l"
 { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 75 "query_l.l"
+#line 79 "query_l.l"
 { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 76 "query_l.l"
+#line 80 "query_l.l"
 { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 78 "query_l.l"
+#line 82 "query_l.l"
 { qry_lval.n = make_constant(yytext, 0); return T_CONST; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 79 "query_l.l"
+#line 83 "query_l.l"
 { qry_lval.n = make_constant(yytext, 0); return T_CONST; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 80 "query_l.l"
+#line 84 "query_l.l"
 { qry_lval.n = make_constant(yytext, 0); return T_CONST; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 81 "query_l.l"
+#line 85 "query_l.l"
 { qry_lval.n = make_constant(yytext, 0); return T_CONST; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 83 "query_l.l"
+#line 87 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_TOP); return T_CONST; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 84 "query_l.l"
+#line 88 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_BOTTOM); return T_CONST; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 85 "query_l.l"
+#line 89 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_INTERN); return T_CONST; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 86 "query_l.l"
+#line 90 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_INTERN); return T_CONST; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 87 "query_l.l"
+#line 91 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_COPPER); return T_CONST; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 88 "query_l.l"
+#line 92 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_SILK); return T_CONST; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 89 "query_l.l"
+#line 93 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_MASK); return T_CONST; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 90 "query_l.l"
+#line 94 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_PASTE); return T_CONST; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 91 "query_l.l"
+#line 95 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_MECH); return T_CONST; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 92 "query_l.l"
+#line 96 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_DOC); return T_CONST; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 93 "query_l.l"
+#line 97 "query_l.l"
 { qry_lval.n = make_constant(yytext, PCB_LYT_BOUNDARY); return T_CONST; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 95 "query_l.l"
+#line 99 "query_l.l"
 { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_GRP1]); return T_CONST; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 96 "query_l.l"
+#line 100 "query_l.l"
 { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_GRP2]); return T_CONST; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 97 "query_l.l"
+#line 101 "query_l.l"
 { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_EXPECT]); return T_CONST; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 98 "query_l.l"
+#line 102 "query_l.l"
 { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_MEASURE]); return T_CONST; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 99 "query_l.l"
+#line 103 "query_l.l"
 { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_TEXT]); return T_CONST; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 101 "query_l.l"
+#line 105 "query_l.l"
 { qry_lval.c = PCB->hidlib.size_x; return T_INT; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 102 "query_l.l"
+#line 106 "query_l.l"
 { qry_lval.c = PCB->hidlib.size_y; return T_INT; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 104 "query_l.l"
+#line 108 "query_l.l"
 { qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_MM); return T_UNIT; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 105 "query_l.l"
+#line 109 "query_l.l"
 { qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_M); return T_UNIT; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 106 "query_l.l"
+#line 110 "query_l.l"
 { qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_UM); return T_UNIT; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 107 "query_l.l"
+#line 111 "query_l.l"
 { qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_CM); return T_UNIT; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 108 "query_l.l"
+#line 112 "query_l.l"
 { qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_NM); return T_UNIT; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 109 "query_l.l"
+#line 113 "query_l.l"
 { qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_MIL); return T_UNIT; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 110 "query_l.l"
+#line 114 "query_l.l"
 { qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_IN); return T_UNIT; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 112 "query_l.l"
+#line 116 "query_l.l"
 { return T_THUS; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 113 "query_l.l"
+#line 117 "query_l.l"
 { return T_OR; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 114 "query_l.l"
+#line 118 "query_l.l"
 { return T_AND; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 115 "query_l.l"
+#line 119 "query_l.l"
 { return T_EQ; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 116 "query_l.l"
+#line 120 "query_l.l"
 { return T_NEQ; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 117 "query_l.l"
+#line 121 "query_l.l"
 { return T_GTEQ; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 118 "query_l.l"
+#line 122 "query_l.l"
 { return T_LTEQ; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 120 "query_l.l"
+#line 124 "query_l.l"
 { qry_lval.c = strtol(yytext, NULL, 10); return T_INT; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 121 "query_l.l"
+#line 125 "query_l.l"
 { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 122 "query_l.l"
+#line 126 "query_l.l"
 { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 123 "query_l.l"
+#line 127 "query_l.l"
 { qry_lval.s = rnd_strdup(yytext); return T_STR; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 125 "query_l.l"
+#line 129 "query_l.l"
 { return *yytext; }
 	YY_BREAK
 case 73:
 /* rule 73 can match eol */
 YY_RULE_SETUP
-#line 127 "query_l.l"
+#line 131 "query_l.l"
 { continue; /* multiline rules */}
 	YY_BREAK
 case 74:
 /* rule 74 can match eol */
 YY_RULE_SETUP
-#line 128 "query_l.l"
-{ return T_NL; }
+#line 132 "query_l.l"
+{ qry_update_nl(yytext); return T_NL; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 129 "query_l.l"
+#line 133 "query_l.l"
 { continue; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 131 "query_l.l"
+#line 135 "query_l.l"
 ECHO;
 	YY_BREAK
-#line 1572 "query_l.c"
+#line 1576 "query_l.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2573,8 +2577,15 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 131 "query_l.l"
+#line 135 "query_l.l"
 
+
+static void qry_update_nl(const char *s)
+{
+	for(; *s != '\0'; s++)
+		if (*s == '\n')
+			pcb_qry_lex_lineno++;
+}
 
 static int qry_yy_input(char *buf, int buflen)
 {
@@ -2593,6 +2604,7 @@ void pcb_qry_set_input(const char *script)
 	while(isspace(*script)) script++;
 	pcb_qry_program = pcb_qry_program_ptr = script;
 	yy_flush_buffer(YY_CURRENT_BUFFER);
+	pcb_qry_lex_lineno = 1;
 }
 
 static pcb_qry_node_t *make_constant(char *str, long val)

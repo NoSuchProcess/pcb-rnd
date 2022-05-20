@@ -427,9 +427,10 @@ const char *pcb_qry_fnc_name(pcb_qry_fnc_t fnc)
 }
 
 /******** parser helper ********/
+extern long pcb_qry_lex_lineno;
 void qry_error(void *prog, const char *err)
 {
-	rnd_message(RND_MSG_ERROR, "query: %s\n", err);
+	rnd_message(RND_MSG_ERROR, "query: %s (in line %ld)\n", err, pcb_qry_lex_lineno);
 }
 
 int qry_wrap()
