@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,48 +31,53 @@
 #include "board.h"
 #include "conf_core.h"
 
+#define PCB do not use
+
 static gds_t title_buf;
 static int gui_inited = 0, brd_changed;
 
-static void update_title(void)
+static void update_title(rnd_hidlib_t *hl, int changed, int is_footprint)
 {
 	const char *filename, *name;
 
 	if ((rnd_gui == NULL) || (rnd_gui->set_top_title == NULL) || (!gui_inited))
 		return;
 
-	if ((PCB->hidlib.name == NULL) || (*PCB->hidlib.name == '\0'))
+	if ((hl->name == NULL) || (*hl->name == '\0'))
 		name = "Unnamed";
 	else
-		name = PCB->hidlib.name;
+		name = hl->name;
 
-	if ((PCB->hidlib.filename == NULL) || (*PCB->hidlib.filename == '\0'))
+	if ((hl->filename == NULL) || (*hl->filename == '\0'))
 		filename = "<board with no file name or format>";
 	else
-		filename = PCB->hidlib.filename;
+		filename = hl->filename;
 
 	title_buf.used = 0;
-	rnd_append_printf(&title_buf, "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", name, filename, PCB->is_footprint ? "footprint" : "board");
+	rnd_append_printf(&title_buf, "%s%s (%s) - %s - pcb-rnd", changed ? "*" : "", name, filename, is_footprint ? "footprint" : "board");
 	rnd_gui->set_top_title(rnd_gui, title_buf.array);
 }
 
 static void pcb_title_board_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	brd_changed = 0;
-	update_title();
+	update_title(hidlib, pcb->Changed, pcb->is_footprint);
 }
 
 static void pcb_title_meta_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if (brd_changed == PCB->Changed)
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
+	if (brd_changed == pcb->Changed)
 		return;
-	brd_changed = PCB->Changed;
-	update_title();
+	brd_changed = pcb->Changed;
+	update_title(hidlib, pcb->Changed, pcb->is_footprint);
 }
 
 static void pcb_title_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	gui_inited = 1;
-	update_title();
+	update_title(hidlib, pcb->Changed, pcb->is_footprint);
 }
 
