@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 + BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
 - BUG: drc geometry problem bug_files/TODO/pullback* [report: cuvoodoo]
+- BUG: "Error: can't rnd_conf_set() plugins/import_sch/args[7]: 7 is beyond the end of the array (1)" reported when pressing "Del last" in import schematic configure window for bug_files/TODO/usb_hub.lht [report: cuvoodoo]
 / BUG: import schematics GUI bug bug_files/TODO/usb_hub* [report: cuvoodoo] -> batched bugreport refused: please split this up in two separate bugreports, one for the delete button problem, the other for the remove text problem
 - BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
