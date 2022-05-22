@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
-+ BUG: drc compilation assert bug_files/TODO/outline* [report: cuvoodoo]
 - BUG: drc geometry problem bug_files/TODO/pullback* [report: cuvoodoo]
 / BUG: import schematics GUI bug bug_files/TODO/usb_hub* [report: cuvoodoo] -> batched bugreport refused: please split this up in two separate bugreports, one for the delete button problem, the other for the remove text problem
 - BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
