@@ -325,7 +325,7 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 		char *path = rnd_concat(DRC_CONF_PATH_DISABLE, nd->name, NULL);
 
 		if (rnd_conf_get_field(path) == NULL) {
-			const char *sdesc;
+			const char *sdesc = "";
 			rnd_conf_native_t *nat;
 			rnd_bool_t *b;
 			lht_node_t *ndesc;
