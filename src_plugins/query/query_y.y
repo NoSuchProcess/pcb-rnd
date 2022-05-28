@@ -204,8 +204,8 @@ static void link_user_funcs(pcb_qry_node_t *root, int allow)
 %%
 
 program:
-	  program_rules    { uninit_user_funcs(); *prg_out = $1; link_user_funcs($1, 1); }
-	| program_expr     { uninit_user_funcs(); *prg_out = $1; link_user_funcs($1, 0); }
+	  { uninit_user_funcs(); } program_rules    { *prg_out = $2; link_user_funcs($2, 1); }
+	| { uninit_user_funcs(); } program_expr     { *prg_out = $2; link_user_funcs($2, 0); }
 	;
 
 /* The program is a single expression - useful for search */
