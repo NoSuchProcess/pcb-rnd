@@ -4,7 +4,7 @@
 + BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
 - BUG: drc_query: edakrill netvianum broke by user function reset [report: cuvoodoo]
 - BUG: drc geometry problem bug_files/TODO/pullback* [report: cuvoodoo]
-- BUG: "Error: can't rnd_conf_set() plugins/import_sch/args[7]: 7 is beyond the end of the array (1)" reported when pressing "Del last" in import schematic configure window for bug_files/TODO/usb_hub.lht [report: cuvoodoo]
++ BUG: "Error: can't rnd_conf_set() plugins/import_sch/args[7]: 7 is beyond the end of the array (1)" reported when pressing "Del last" in import schematic configure window for bug_files/TODO/usb_hub.lht [report: cuvoodoo] -> please svn up in librnd first!
 + BUG: windows manager (X11/i3) becomes completely not interactable when erasing path of last entry in import schematic configure window for bug_files/TODO/usb_hub.lht [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
