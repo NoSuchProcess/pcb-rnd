@@ -52,8 +52,10 @@ static void isch_arg2pcb(void)
 		if (newval == NULL)
 			newval = "";
 		if (strcmp(ci->val.string[0], newval) != 0) {
-			rnd_conf_set(RND_CFR_DESIGN, "plugins/import_sch/args", n, newval, RND_POL_OVERWRITE);
-			goto restart; /* elements may be deleted and added with different pointers... */
+			if (rnd_conf_set(RND_CFR_DESIGN, "plugins/import_sch/args", n, newval, RND_POL_OVERWRITE) == 0)
+				goto restart; /* elements may be deleted and added with different pointers... */
+			else
+				rnd_message(RND_MSG_ERROR, "isch_arg2pcb(): Internal error: can't set conf [%d] to '%s'\n", n, newval);
 		}
 	}
 	isch_conf_lock--;
