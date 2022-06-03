@@ -502,7 +502,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			}
 #else
 			cmd = malloc(strlen(libshell) + strlen(fullname) + strlen(params) + 16);
-			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
+			sprintf(cmd, "%s%s'%s' %s", libshell, sep, fullname, params);
 #endif
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
 			/* Make a copy of the output of the parametric so rewind() can be called on it */

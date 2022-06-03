@@ -571,7 +571,7 @@ static FILE *library_param_get_help(library_param_ctx_t *ctx, library_ent_t *l)
 				*s = '/';
 	}
 #else
-	cmd = rnd_strdup_printf("%s --help", library_ent_path(l));
+	cmd = rnd_strdup_printf("'%s' --help", library_ent_path(l));
 #endif
 	f = rnd_popen(NULL, cmd, "r");
 	free(cmd);
