@@ -614,6 +614,7 @@ static void library_select_show_param_example(library_ctx_t *ctx, library_ent_t 
 static void library_param_dialog(library_param_ctx_t *ctx, library_ent_t *l, const char *filter_txt)
 {
 	FILE *f;
+	char *tmp;
 
 	if (ctx->last_l != l) {
 		if (ctx->pactive) {
@@ -648,7 +649,9 @@ static void library_param_dialog(library_param_ctx_t *ctx, library_ent_t *l, con
 	}
 	rnd_pclose(f);
 
-	RND_DAD_NEW("lib_param", ctx->pdlg, "pcb-rnd parametric footprint", ctx, rnd_false, library_param_close_cb);
+	tmp = rnd_strdup_printf("%s parametric lib item editor", rnd_app.package);
+	RND_DAD_NEW("lib_param", ctx->pdlg, tmp, ctx, rnd_false, library_param_close_cb);
+	free(tmp);
 
 	update_edit_button(ctx->lib_ctx);
 	pcb_library_param_fillin(ctx, l, filter_txt);
