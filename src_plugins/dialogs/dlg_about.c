@@ -104,7 +104,6 @@ static void pcb_dlg_about(void)
 	/* set up the context */
 	about_ctx.active = 1;
 
-	/* this is the modal version - please consider using the non-modal version */
 	RND_DAD_NEW("about", about_ctx.dlg, "About pcb-rnd", &about_ctx, rnd_false, about_close_cb);
 }
 
