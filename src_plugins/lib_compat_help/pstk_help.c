@@ -113,6 +113,10 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet,
 		}
 		res = 0;
 	}
+
+	if (res == 0)
+		pcb_pstk_proto_update(&proto);
+
 	vtp0_uninit(&tmp);
 	return res;
 }
