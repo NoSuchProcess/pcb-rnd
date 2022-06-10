@@ -75,10 +75,14 @@ static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	wid = attr - export_ctx->dlg;
 	for(h = 0; h < export_ctx->len; h++) {
 		if (export_ctx->button[h] == wid) {
+			rnd_hid_t *render_save = rnd_render;
 			rnd_hid_attr_val_t *results = get_results(export_ctx, h);
+
+			rnd_render = export_ctx->hid[h];
 			rnd_event(hl, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 			export_ctx->hid[h]->do_export(export_ctx->hid[h], results);
 			rnd_event(hl, RND_EVENT_EXPORT_SESSION_END, NULL);
+			rnd_render = render_save;
 			free(results);
 			rnd_message(RND_MSG_INFO, "Export done using exporter: %s\n", export_ctx->hid[h]->name);
 			goto done;
