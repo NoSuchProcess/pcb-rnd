@@ -867,7 +867,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 	}
 
 	/* now the difficult case of bloated for each island vs. island */
-	if (Bloat > 0) {
+	if (Bloat != 0) {
 		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
 			rnd_pline_t *c1 = pcb_poly_contour(&it1);
 			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
