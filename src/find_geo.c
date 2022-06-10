@@ -722,7 +722,7 @@ static rnd_bool pcb_isc_line_poly_blt(const pcb_find_t *ctx, pcb_line_t *Line, p
 		return pcb_poly_is_rect_in_p(x1, y1, x2, y2, Polygon);
 	}
 	if (box_isc_poly_any_island_bbox(ctx, Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
-		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + bloat)))
+		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + bloat*2)))
 			return rnd_false; /* error generating the line */
 		return box_isc_poly_any_island_free(lp, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon));
 	}
