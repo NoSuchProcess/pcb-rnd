@@ -166,9 +166,11 @@ TODO("Use rich text for this with explicit wrap marks\n");
 				gds_append_str(&tmp, name);
 			}
 		}
-		gds_append_str(&tmp, "\nLocation:\n ");
-		gds_append_str(&tmp, l->data.fp.loc_info);
-		gds_append_str(&tmp, "\n");
+		if (l->type != PCB_LIB_DIR) {
+			gds_append_str(&tmp, "\nLocation:\n ");
+			gds_append_str(&tmp, l->data.fp.loc_info);
+			gds_append_str(&tmp, "\n");
+		}
 
 		hv.str = tmp.array;
 	}
