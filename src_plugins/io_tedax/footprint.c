@@ -670,6 +670,13 @@ pcb_subc_t *tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_siz
 		return NULL;
 	}
 
+	pcb_data_bbox(&sc->BoundingBox, sc->data, rnd_true);
+	pcb_data_bbox_naked(&sc->bbox_naked, sc->data, rnd_true);
+
+	if (!data->subc_tree)
+		data->subc_tree = rnd_r_create_tree();
+	rnd_r_insert_entry(data->subc_tree, (rnd_box_t *)sc);
+
 	return sc;
 }
 
