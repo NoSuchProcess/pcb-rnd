@@ -2138,6 +2138,15 @@ static int io_eagle_parse_footprint_any(read_state_t *st, pcb_plug_io_t *ctx, pc
 	if (npkg != NULL)
 		res = eagle_read_package(st, npkg);
 
+	if (res == 0) {
+		pcb_subc_t *subc = st->fp_parent_data->subc.lst.first;
+		if (subc != NULL) {
+			pcb_undo_freeze_add();
+			pcb_data_mirror(st->fp_data, -PCB->hidlib.size_y, PCB_TXM_COORD | PCB_TXM_ROT, 0, 0);
+			pcb_undo_unfreeze_add();
+		}
+	}
+
 	error:;
 	st_uninit(st);
 	return res;
