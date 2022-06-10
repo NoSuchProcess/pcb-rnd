@@ -884,6 +884,20 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 		}
 	}
 
+	/* corner case: one poly is fully within the other; by now partial overlaps
+	   are found by edge intersections, so only full embedding remains which means
+	   it's enough to check one random point and ignore bloat */
+		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
+			rnd_pline_t *c1 = pcb_poly_contour(&it1);
+			if ( pcb_poly_is_point_in_p(c1->head->point[0], c1->head->point[1], 0, P2))
+				return rnd_true;
+		}
+		for(pa2 = pcb_poly_island_first(P1, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
+			rnd_pline_t *c2 = pcb_poly_contour(&it2);
+			if ( pcb_poly_is_point_in_p(c2->head->point[0], c2->head->point[1], 0, P1))
+				return rnd_true;
+		}
+
 	return rnd_false;
 }
 
