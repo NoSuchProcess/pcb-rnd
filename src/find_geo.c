@@ -723,7 +723,7 @@ static rnd_bool pcb_isc_line_poly_blt(const pcb_find_t *ctx, pcb_line_t *Line, p
 	}
 	if (box_isc_poly_any_island_bbox(ctx, Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
 		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + bloat)))
-			return rnd_false;							/* error */
+			return rnd_false; /* error generating the line */
 		return box_isc_poly_any_island_free(lp, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon));
 	}
 	return rnd_false;
