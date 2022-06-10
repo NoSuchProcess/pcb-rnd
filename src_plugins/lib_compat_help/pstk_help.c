@@ -121,6 +121,13 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet,
 	return res;
 }
 
+static void clear_found(vtp0_t *objs)
+{
+	long n;
+	for(n = 0; n < objs->used; n++)
+		PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
+}
+
 int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 {
 	int l, n, plated, done = 0, ci;
@@ -130,7 +137,7 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 	int num_cand[NUM_LYTS];
 
 	/* output padstacks are going to be marked with the FOUND flag */
-	for(n = 0; n < objs->used; n++) PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
+	clear_found(objs);
 
 	for(n = 0; n < objs->used; n++) {
 		pcb_any_obj_t *h = objs->array[n];
@@ -206,8 +213,8 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 		}
 	}
 
-	/* output padstacks are going to be marked with the FOUND flag */
-	for(n = 0; n < objs->used; n++) PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
+	/* output padstacks shouldn't be FOUND */
+	clear_found(objs);
 
 	return done;
 }
@@ -220,7 +227,7 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 	int num_cand[NUM_LYTS];
 
 	/* output padstacks are going to be marked with the FOUND flag */
-	for(n = 0; n < objs->used; n++) PCB_FLAG_CLEAR(PCB_FLAG_FOUND, (pcb_any_obj_t *)(objs->array[n]));
+	clear_found(objs);
 
 	for(n = 0; n < objs->used; n++) {
 		pcb_any_obj_t *o = objs->array[n];
@@ -276,6 +283,9 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 			}
 		}
 	}
+
+	/* output padstacks shouldn't be FOUND */
+	clear_found(objs);
 
 	return done;
 }
