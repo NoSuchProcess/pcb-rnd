@@ -658,6 +658,11 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 pcb_subc_t *tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
 	pcb_subc_t *sc = pcb_subc_alloc();
+
+	if (data->padstack_tree == NULL)
+		data->padstack_tree = rnd_r_create_tree();
+	sc->data->padstack_tree = data->padstack_tree;
+
 	pcb_subc_reg(data, sc);
 
 	if (tedax_parse_1fp_(sc, fn, buff, buff_size, argv, argv_size) != 0) {
