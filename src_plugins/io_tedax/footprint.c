@@ -346,13 +346,17 @@ typedef struct {
 	vtp0_t objs;
 } term_t;
 
-static term_t *term_new(const char *pinid, const char *name)
+static term_t *term_get(htsp_t *terms, const char *term_id)
 {
-	term_t *t = calloc(sizeof(term_t), 1);
-	t->pinid = rnd_strdup(pinid);
-	t->name = rnd_strdup(name);
-	return t;
+	term_t *res = htsp_get(terms, term_id);
+
+	if (res == NULL) {
+		res = calloc(sizeof(term_t), 1);
+		htsp_set(terms, rnd_strdup(term_id), res);
+	}
+	return res;
 }
+
 
 static void term_destroy(term_t *t)
 {
@@ -392,16 +396,13 @@ do { \
 	} \
 } while(0)
 
-#define load_term(obj, src, msg) \
+#define load_term(obj, src) \
 do { \
 	term_t *term; \
 	if ((src[0] == '-') && (src[1] == '\0')) break; \
-	term = htsp_get(&terms, src); \
-	if (term == NULL) { \
-		rnd_message(RND_MSG_ERROR, msg, src); \
-		return -1; \
-	} \
-	pcb_attribute_put(&obj->Attributes, "term", term->name); \
+	term = term_get(&terms, src); \
+	if (term->name != NULL) \
+		pcb_attribute_put(&obj->Attributes, "term", term->name); \
 	vtp0_append(&term->objs, obj); \
 } while(0)
 
@@ -479,6 +480,18 @@ static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const ch
 	return layers;
 }
 
+/* Assign term attribute to all objects of term, assuming objects are not yet
+   term-labelled */
+static void assign_term_name(term_t *term)
+{
+	long n;
+
+	for(n = 0; n < term->objs.used; n++) {
+		pcb_any_obj_t *obj = term->objs.array[n];
+		pcb_attribute_put(&obj->Attributes, "term", term->name);
+	}
+}
+
 /* Parse one footprint block */
 static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
@@ -492,8 +505,14 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	htsp_init(&terms, strhash, strkeyeq);
 	while((argc = tedax_getline(fn, buff, buff_size, argv, argv_size)) >= 0) {
 		if ((argc == 5) && (strcmp(argv[0], "term") == 0)) {
-			term = term_new(argv[2], argv[4]);
-			htsp_set(&terms, rnd_strdup(argv[1]), term);
+			term = term_get(&terms, argv[1]);
+			if ((term->pinid != NULL) || (term->name != NULL)) {
+				rnd_message(RND_MSG_ERROR, "tEDAx footprint load: terminal %s is redeclared (two or more term lines creating it)\n", argv[1]);
+				return -1;
+			}
+			term->pinid = rnd_strdup(argv[2]);
+			term->name = rnd_strdup(argv[4]);
+			assign_term_name(term);
 		}
 		else if ((argc >= 12) && (strcmp(argv[0], "polygon") == 0)) {
 			pcb_poly_t *p;
@@ -520,7 +539,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 				for(n = 0; n < numpt; n++)
 					pcb_poly_point_new(p, px[n], py[n]);
 
-				load_term(p, argv[3], "invalid term ID for polygon: '%s', skipping footprint\n");
+				load_term(p, argv[3]);
 
 				pcb_add_poly_on_layer(*ly, p);
 			}
@@ -544,7 +563,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 
 			for(; *ly != NULL; ly++) {
 				l = pcb_line_new(*ly, x1, y1, x2, y2, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
-				load_term(l, argv[3], "invalid term ID for line: '%s', skipping footprint\n");
+				load_term(l, argv[3]);
 			}
 		}
 		else if ((argc == 11) && (strcmp(argv[0], "arc") == 0)) {
@@ -567,7 +586,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 
 			for(; *ly != NULL; ly++) {
 				a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE), rnd_true);
-				load_term(a, argv[3], "invalid term ID for arc: '%s', skipping footprint\n");
+				load_term(a, argv[3]);
 			}
 		}
 		else if ((argc == 6) && (strcmp(argv[0], "hole") == 0)) {
@@ -581,7 +600,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			plated = !(strcmp(argv[5], "unplated") == 0);
 
 			ps = pcb_pstk_new_hole(subc->data, cx, cy, d, plated);
-			load_term(ps, argv[1], "invalid term ID for hole: '%s', skipping footprint\n");
+			load_term(ps, argv[1]);
 		}
 		else if ((argc == 8) && (strcmp(argv[0], "fillcircle") == 0)) {
 			rnd_coord_t cx, cy, r, clr;
@@ -600,7 +619,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 
 			for(; *ly != NULL; ly++) {
 				l = pcb_line_new(*ly, cx, cy, cx, cy, r*2, clr, pcb_flag_make(PCB_FLAG_CLEARLINE));
-				load_term(l, argv[3], "invalid term ID for fillcircle: '%s', skipping footprint\n");
+				load_term(l, argv[3]);
 			}
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "footprint") == 0)) {
@@ -619,6 +638,11 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	for(ei = htsp_first(&terms); ei; ei = htsp_next(&terms, ei)) {
 		term = ei->value;
 		pcb_pstk_vect2pstk(subc->data, &term->objs, rnd_true);
+		if (term->name == NULL) { /* missing term line */
+			rnd_message(RND_MSG_ERROR, "tEDAx footprint load: term line missing for %s; using ID for name\n", ei->key);
+			term->name = rnd_strdup(ei->key);
+			assign_term_name(term);
+		}
 		term_destroy(term);
 		free(ei->key);
 	}
