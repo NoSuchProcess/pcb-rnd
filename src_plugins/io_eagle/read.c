@@ -903,6 +903,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 }
 
 typedef enum {
+	EAGLE_PSH_NONE,    /* for holes */
 	EAGLE_PSH_SQUARE,
 	EAGLE_PSH_ROUND,
 	EAGLE_PSH_OCTAGON,
@@ -923,6 +924,9 @@ TODO("{clearance} need to establish how paste clearance, if any, is defined and 
 	rnd_coord_t paste_gap = 0;
 
 	switch (shape) {
+		case EAGLE_PSH_NONE:
+			shapes[0].layer_mask = 0;
+			break;
 		case EAGLE_PSH_SQUARE:
 			shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
 			shapes[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
@@ -1091,7 +1095,7 @@ TODO("{clearance} this should be coming from the eagle file")
 	return 0;
 }
 
-static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj, int type, int hole)
+static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj, int type, int is_hole)
 {
 	eagle_loc_t loc = type;
 	rnd_coord_t x, y, drill, diax, diay, clr, mask;
@@ -1116,7 +1120,8 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	y = eagle_get_attrc(st, subtree, "y", 0);
 	drill = eagle_get_attrc(st, subtree, "drill", 0);
 	diax = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
-	shape = eagle_get_attrs(st, subtree, "shape", 0);
+	if (!is_hole)
+		shape = eagle_get_attrs(st, subtree, "shape", 0);
 
 	clr = conf_core.design.clearance; /* eagle doesn't seem to support per via clearance */
 	mask = (loc == IN_SUBC) ? conf_core.design.clearance : 0; /* board vias don't have mask */
@@ -1128,7 +1133,9 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	TODO("{plating} check how to determine plated");
 	TODO("bin: test the binary numbers for offset and long: shape = {square, round, octagon, long, offset} binary");
 	diay = diax;
-	if (shape != NULL) {
+	if (is_hole)
+		sh = EAGLE_PSH_NONE;
+	else if (shape != NULL) {
 		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
 			sh = EAGLE_PSH_OCTAGON;
 		else if ((strcmp(shape, "square") == 0) || (strcmp(shape, "0") == 0))
