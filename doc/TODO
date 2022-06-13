@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
 + BUG: drc geometry problem bug_files/TODO/pullback* [report: cuvoodoo]
 + BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 + BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
