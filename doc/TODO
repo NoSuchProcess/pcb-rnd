@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: drc geometry problem bug_files/TODO/pullback* [report: cuvoodoo]
 + BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 + BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
 - BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
