@@ -4,6 +4,10 @@
 # New parametric footprints should use common_subc.awk because that uses lihata
 # subcircuits instead of obsolete element format.
 
+# Copyright (C) 2015..2022 Tibor 'Igor2' Palinkas
+# License: GNU LGPL 2.1 or later
+# (Output generated using this script is not affected by the license of the script)
+
 #@@param:pin_ringdia pin's copper ring (annulus) outer diameter (in mil by default, mm suffix can be used)
 #@@optional:pin_ringdia
 #@@dim:pin_ringdia
