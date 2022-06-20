@@ -480,7 +480,7 @@ rnd_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name)
 {
 	rnd_layer_id_t n;
 	for (n = 0; n < data->LayerN; n++)
-		if (strcmp(data->Layer[n].name, name) == 0)
+		if ((data->Layer[n].name != NULL) && (strcmp(data->Layer[n].name, name) == 0))
 			return n;
 	return -1;
 }
