@@ -1491,7 +1491,7 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb)
 		if (pcb_layer_flags(pcb, n) & PCB_LYT_SILK)
 			pcb->Data->Layer[n].comb |= PCB_LYC_AUTO;
 		if (pcb->Data->Layer[n].name == NULL)
-			pcb->Data->Layer[n].name = "<anon>";
+			pcb->Data->Layer[n].name = rnd_strdup("<anon>");
 	}
 }
 
