@@ -1487,9 +1487,12 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb)
 	rnd_layer_id_t n;
 
 	/* old silk layers are always auto */
-	for(n = 0; n < pcb->Data->LayerN; n++)
+	for(n = 0; n < pcb->Data->LayerN; n++) {
 		if (pcb_layer_flags(pcb, n) & PCB_LYT_SILK)
 			pcb->Data->Layer[n].comb |= PCB_LYC_AUTO;
+		if (pcb->Data->Layer[n].name == NULL)
+			pcb->Data->Layer[n].name = "<anon>";
+	}
 }
 
 int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty, rnd_xform_t **xform)
