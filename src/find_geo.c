@@ -892,7 +892,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 			if (pcb_poly_is_point_in_p(c1->head->point[0], c1->head->point[1], 0, P2))
 				return rnd_true;
 		}
-		for(pa2 = pcb_poly_island_first(P1, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
+		for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
 			rnd_pline_t *c2 = pcb_poly_contour(&it2);
 			if (pcb_poly_is_point_in_p(c2->head->point[0], c2->head->point[1], 0, P1))
 				return rnd_true;
