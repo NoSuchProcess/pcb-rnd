@@ -838,7 +838,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 
 	/* cheat: poly-clear-poly means we did generate the clearance; this
 	   shall happen only if there's exactly one poly that is clearing the other */
-	if ((Bloat == 0) && !ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P1) && !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P2)) {
+	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P1) && !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P2)) {
 		pcp_cnt++;
 		pcp_gap = pcb_obj_clearance_p2(P1, P2) / 2.0;
 	}
