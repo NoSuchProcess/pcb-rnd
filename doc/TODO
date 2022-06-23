@@ -4,12 +4,16 @@
 + BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 + BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
 + BUG: DRC: insufficient overlap still appears, but now on unconnected poly bug_files/TODO/overlap3.lht [report: cuvoodoo]
-- BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
-	- same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
-- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 + BUG: io_tedax bug: bug_files/TODO/sns* [report: SnakesAndStuff]
 
 2. For later releases ===============================================================================
+- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
+- BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
+	- we should display layer IDs somewhere: useful for debugging and for the user for query()
+	- same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
+	- pcb_layer_move_delete_() doesn't do anything to update thermals
+	- see swap_one_thermal() on how to fix this
+	- probably won't break on new layers or layer moves as those won't change LIDs of existing layers
 - librnd API upgrade:
 	- merge sch-rnd r4212 [report: Alain]
 	- librnd 3.2.0+: build_run.c should print runtime librnd version the same way as sch-rnd does
