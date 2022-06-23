@@ -3,9 +3,9 @@
 1. For the upcoming release ===============================================================================
 + BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 + BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
-- BUG: DRC: insufficient overlap still appears, but now on unconnected poly bug_files/TODO/overlap3.lht [report: cuvoodoo]
-- BUG: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo]
++ BUG: DRC: insufficient overlap still appears, but now on unconnected poly bug_files/TODO/overlap3.lht [report: cuvoodoo]
 - BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
+	- same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 + BUG: io_tedax bug: bug_files/TODO/sns* [report: SnakesAndStuff]
 
