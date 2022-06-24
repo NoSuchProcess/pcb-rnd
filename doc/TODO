@@ -1,9 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
-+ BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
-+ BUG: DRC: insufficient overlap still appears, but now on unconnected poly bug_files/TODO/overlap3.lht [report: cuvoodoo]
 + BUG: io_tedax bug: bug_files/TODO/sns* [report: SnakesAndStuff]
 
 2. For later releases ===============================================================================
