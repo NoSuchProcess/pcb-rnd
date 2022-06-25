@@ -4,6 +4,7 @@
 + BUG: io_tedax bug: bug_files/TODO/sns* [report: SnakesAndStuff]
 
 2. For later releases ===============================================================================
+- FEATURE: dip() should have a pitch parameter, defaulting to 100mil so non-100-mil can be done too [report: barjac]
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
 	- we should display layer IDs somewhere: useful for debugging and for the user for query()
