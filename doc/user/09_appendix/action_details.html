@@ -2240,7 +2240,7 @@ PCB_MAX_BUFFER
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-PstkProto([noundo,] unite|isect|sub, [poly1, poly2, [poly...]])
+PolyBool([noundo,] unite|isect|sub, [poly1, poly2, [poly...]])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
@@ -3901,11 +3901,11 @@ script plugin
 <i>id</i>
  is an arbitrary string assigned by the user. 
 <i>id</i>
- must be unique per pcb-rnd session per script and may contain alphanumeric characters and undescrore. 
+ must be unique per application session per script and may contain alphanumeric characters and undescrore. 
 <p>
  
 <i>fn</i>
- is the file name of the script, which is a path. Pcb-rnd does not do any search, it only opens the path as specified. 
+ is the file name of the script, which is a path. Librnd does not do any search, it only opens the path as specified. 
 <p>
  
 <i>lang</i>
@@ -3927,7 +3927,7 @@ Writes a message to the log window.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
-This action displays a message to the log window.  This action is primarily provided for use by scripts and external programs which may interface with pcb-rnd. If multiple arguments are given, each one is sent to the log window followed by a newline. 
+This action displays a message to the log window.  This action is primarily provided for use by scripts and external programs which may interface with the application. If multiple arguments are given, each one is sent to the log window followed by a newline. 
 <p>
  If there are 2 or more arguments and the first argument matches, in a case sensitive manner, one of the below keywords, the message is registered on the specified error level. Else the PCB_MSG_INFO error level is used. 
 <p>
@@ -4120,11 +4120,11 @@ during script initialization
 </b>
  and save the resulting cookie string  
 <li>
- may use the cookie string to register to core pcb-rnd infrastructure that requires cookie, such as 
+ may use the cookie string to register to core application or librnd infrastructure that requires cookie, such as 
 <a href="#createmenu">createmenu</a>
   
 <li>
- can depend on pcb-rnd to call any unregistering associated with this specific cookie atomatically after script unload (
+ can depend on the application to call any unregistering associated with this specific cookie atomatically after script unload (
 <a href="#preunload">preunload</a>
 ). 
 </ul>
@@ -4265,43 +4265,13 @@ Selects the tool or changes tool related global states.
 <tr>
 
 <th>
- Arc 
-<br>
- Arrow 
-<br>
- Copy 
-<br>
- InsertPoint 
-<br>
- Line 
-<br>
- Lock           
-<br>
- Move 
-<br>
- None 
-<br>
- PasteBuffer 
-<br>
- Poly 
-<br>
- PolyHole 
-<br>
- Rectangle           
-<br>
- Remove 
-<br>
- Rotate 
-<br>
- Text 
-<br>
- Thermal 
-<br>
- Via 
-<br>
- ...  
+ &lt;app-specific-tool-name&gt;  
 <td>
- Select the indicated tool.   
+ Select the indicated tool. Tool names depend on the application and       plugins loaded. For example in pcb-rnd one of the valid tool names       is 
+<b>
+Line
+</b>
+.   
 <tr>
 
 <th>
@@ -4331,7 +4301,7 @@ Selects the tool or changes tool related global states.
 <th>
  Stroke  
 <td>
- If pcb-rnd was built with libstroke, this invokes the stroke       input method.  If not, this will restart a drawing mode if you were       drawing, else it will select objects.   
+ If librnd was built with libstroke, this invokes the stroke       input method.  If not, this will restart a drawing mode if you were       drawing, else it will select objects.   
 <tr>
 
 <th>
