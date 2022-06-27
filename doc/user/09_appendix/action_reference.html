@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.0.3-dev (svn r35940) an interactive printed circuit board editor from the Ringdove EDA suite using librnd version 3.1.0-rc1 ,  Revision: 36005
+This is pcb-rnd 3.0.5-dev (svn r36326) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 3.2.0-dev ,  Revision: 36429
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -145,6 +145,7 @@ This is pcb-rnd 3.0.3-dev (svn r35940) an interactive printed circuit board edit
 <tr><td>ExpFeatTmp</td><td>Experimental Feature Template.</td><td>ExpFeatTmp(...)</td><td>experimental features plugin</td>
 <tr><td>Export</td><td>Export the current layout, e.g. Export(png, --dpi, 600)</td><td>Export(exporter, [exporter-args])</td><td></td>
 <tr><td>ExportcpcbTo</td><td>Dumps the current board in c-pcb format.</td><td>ExportcpcbTo(filename)</td><td>cpcb plugin</td>
+<tr><td>ExportDialog</td><td>Open the export dialog.</td><td>ExportDialog()</td><td>lib_hid_common plugin</td>
 <tr><td>ExportGUI</td><td>Open the export dialog.</td><td>ExportGUI()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#exportoldconn">ExportOldConn</a></td><td>Export galvanic connection data in an old, custom file format.</td><td>ExportOldConn(AllConnections|AllUnusedPins|ElementConnections,filename)</td><td>export_oldconn HID</td>
 <tr><td>ExportScadPoly</td><td>exports all selected polygons to an openscad script; only the outmost contour of each poly is exported</td><td>ScadExportPoly(filename)</td><td>openscad HID</td>
@@ -322,6 +323,7 @@ This is pcb-rnd 3.0.3-dev (svn r35940) an interactive printed circuit board edit
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
 <tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>DEPRECATED: Calibrate the printer.</td><td>PrintCalibrate()</td><td>dialogs plugin</td>
 <tr><td>PrintCopyright</td><td>Print copyright notice.</td><td>PrintCopyright()</td><td></td>
+<tr><td>PrintDialog</td><td>Open the print dialog.</td><td>PrintDialog()</td><td>lib_hid_common plugin</td>
 <tr><td>PrintFiles</td><td>Print files currently loaded.</td><td>PrintFiles()</td><td></td>
 <tr><td>PrintGUI</td><td>Open the print dialog.</td><td>PrintGUI()</td><td>dialogs plugin</td>
 <tr><td>PrintPaths</td><td>Print full paths and search paths.</td><td>PrintPaths()</td><td></td>
