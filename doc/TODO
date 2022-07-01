@@ -5,6 +5,9 @@
 
 2. For later releases ===============================================================================
 - FEATURE: dip() should have a pitch parameter, defaulting to 100mil so non-100-mil can be done too [report: barjac]
+- BUG: doc/developer:
+	- make install doesn't install everything
+	- use sccbox -d instead of / at the end
 - BUG: back annotation:
 	- footprint change saved as (null); import sch, select subc, back-annot-replace footprint to 0805, export back annot list; new value not saved in the board file either
 	- re-import with the old footprint doesn't realize there's an active back-annotation request on footprint change and replaces subcircuits
