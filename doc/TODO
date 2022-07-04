@@ -4,6 +4,9 @@
 + BUG: io_tedax bug: bug_files/TODO/sns* [report: SnakesAndStuff]
 
 2. For later releases ===============================================================================
+- import schematics:
+	- FEATURE: when import schematics GUI choose file names, use relative path if possible
+	- FEATURE: sch-rnd import path with top prio (maybe ringdove project too)
 - FEATURE: dip() should have a pitch parameter, defaulting to 100mil so non-100-mil can be done too [report: barjac]
 - BUG: doc/developer:
 	- make install doesn't install everything
