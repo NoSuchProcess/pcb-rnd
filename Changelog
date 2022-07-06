@@ -1,3 +1,204 @@
+pcb-rnd 3.0.5 (r36436)
+~~~~~~~~~~~~~~~~~~~~~~
+	[ar_extern]
+		-Fix: don't crash if freerouting method is NULL
+
+	[core]
+		-Fix: poly: when unsubtracting objects from a poly, recalculating local clipping, do not ignore padstacks
+		-Fix: poly: clearance recalc in remove: do padstacks only once and flush
+		-Fix: ignore design/drc/ conf node binary backing missing: these are created dynamically
+		-Fix: typo caused undoable vertical board size change misbehaving
+		-Fix: layer name lookup should survive NULL layer name: io_pcb calls it before layer names are fixed up
+		-Add: comment explaining what clearPoly is doing
+		-Add: fix up broken input with layer names == NULL to layer name "<anon>" in pcb_layer_auto_fixup()
+
+	[dialogs]
+		-Fix: parametric dialog: don't crash when no row is selected, fall back using the filter text
+		-Fix: quote parametric footprint name with '' so it can contain space and ;
+		-Fix: parametric library editor window title uses application name from rnd_app instead of hardwiring pcb-rnd as sch-rnd uses the same code too
+		-Fix: export dialog: set rnd_render to the exporter before calling do_export() - most exporters will depend on rnd_render when using GCs
+		-Fix: library dialog: don't try to generate location info in preview for directories
+		-Cleanup: generalize the parametric library code by moving out its states to a separate struct
+		-Cleanup: abstract footprint struct away from the parametric window code so it can be used with any type
+		-Cleanup: abstract library entry's path for the parametric dialog so it can be reused in sch-rnd
+		-Cleanup: detach the pcb-specific export code from the generic export dialog code using librnd events
+		-Split: library parameter struct to a header so it can be reused in sch-rnd
+		-Split: pcb-rnd-specific code from the export dialog
+		-Move: dlg_library_param.[ch] to src_3rd - it would be reused by sch-rnd as an svn extern
+		-Move: parametric help query from lib dialog code to parametric code for reuse in sch-rnd
+		-Add: explain the role of pcb_export.c
+
+	[doc]
+		-Add: text tool video tutorial links
+		-Add: added documentation for the show_netnames plugin
+		-Update: action ref for the latest librnd action doc fixes
+
+	[drc_query]
+		-Fix: uninitialized memory strdup() in GUI code when drc rule has no desc
+
+	[export_lpr]
+		-Cleanup: don't include pcb-rnd-specific data.h, it's not required
+		-Cleanup: use rnd_trace() for debug messages
+		-Cleanup: remove doxygen from comment and remove unnecessary #includes
+		-Split: generalize the plugin code so it can be moved out to librnd later
+		-Split: move config from generic to pcb-rnd-specific part, other ringdove apps won't need it
+		-Split: move out generic parts of the lpr hid implementation to a separate file that does not depend on pcb-rnd code and can be moved to librnd
+		-Add: dummy copyright banner
+
+	[export_png]
+		-Cleanup: move config-like global vars in a struct
+		-Cleanup: move caches and output count from global vars to context struct
+		-Cleanup: split out dpi, width/height calculation and gd pixmap setup into a generic reusable function
+		-Cleanup: move color cache initialization to image creation call
+		-Cleanup: move image cache uninit into the free_caches call to separate low level from high level
+		-Cleanup: move xmax/ymax size logics out to a generic function
+		-Cleanup: simplify the API by merging bbox and size setup function
+		-Cleanup: move black and white cached colors into the context struct
+		-Cleanup: move ims to context struct
+		-Cleanup: move mian im into the context struct
+		-Cleanup: split generic part of the FILE * file handling from pcb-rnd and photo mode
+		-Cleanup: separate generic png states from pcb-rnd states, remove unused ones
+		-Cleanup: move gc cache from global vars into the context struct
+		-Cleanup: move brush cache from global to context struct
+		-Cleanup: move last line width cache from global to context struct
+		-Cleanup: separate generic and specific parts of the initialization API
+		-Cleanup: move "in_mono" cfg from global var to the context struct
+		-Cleanup: generic low level png uninit API
+		-Cleanup: generalize gc make/free
+		-Cleanup: remove unused drawing mode cache
+		-Cleanup: generalize more gc setters
+		-Cleanup: move unerase_override from global var to context struct
+		-Cleanup: pass context struct to use_gc so it won't depend on globals
+		-Cleanup: split high level drawing calls from low level, generalize low level calls with the context struct
+		-Cleanup: low level, generic png draw functionality into a reusable minilib for librnd
+		-Cleanup: move rgb() from plain png export to photo mode export as nothing else needs it
+		-Cleanup: remove stale #includes
+		-Cleanup: cut the last tie between the low level generic png draw part and pcb-rnd specific board.h
+		-Cleanup: reoarganize color #includes
+		-Cleanup: namespace prefix in the low level png API
+		-Cleanup: use the standard error reporting mechanism instead of stderr
+		-Cleanup: unify error report format in low level png draw
+		-Cleanup: remove old tunables/rounding-hacks from low level png draw (they were no-ops by now)
+		-Cleanup: low level draw shouldn't depend on pcb-rnd config
+		-Cleanup: rename "show_solder_side" config field to ymirror - more portable across different apps
+		-Cleanup: fully move file format list into low level so that the caller doesn't need to do any compile-time configuration per format
+		-Cleanup: go by file type index instead of string in finish() for API consistency
+		-Add: librnd spare fields in public API struct
+
+	[export_ps]
+		-Fix: reset all pctx fields on init()
+		-Fix: better error reporting when a ps file fails to open
+		-Fix: do not write scale 0*0; that combination means "not set", no calibration is required
+		-Cleanup: remove dead code (disbaled hardwired paste bloat - use cam instead)
+		-Cleanup: split out the FILE * field of global into a low level ps ctx
+		-Cleanup: sort out what's really needed in ps.h and why
+		-Cleanup: rename low level calls to have the rnd_ prefix
+		-Cleanup: move config fields from global to context
+		-Cleanup: move size/scale calculation heuristics to low level init
+		-Cleanup: reentrancy of low level ps draw: lastcap and lastcolor should be part of the context struct
+		-Cleanup: resolve which parts of the ToC generation would be done by the low level
+		-Cleanup: split ToC generation to low level
+		-Cleanup: move out the non-cam part of the new page logic to low level for reuse
+		-Cleanup: split out switching over to a new file to low level
+		-Cleanup: dedoxygene comment
+		-Cleanup: split out page frame rendering to low level
+		-Cleanup: split out page background rendering to low level code
+		-Cleanup: split low level draw out from ps.c to draw_ps.[ch]
+		-Cleanup: remove unnecessary #includes
+		-Cleanup: move eps config/state from globals to context struct
+		-Cleanup: remove conf_core ref from low level eps code
+		-Cleanup: move the as_shown vs. solder side logic out from low level, let the caller decide if we need to mirror
+		-Cleanup: split low level functions from high level in eps rendering
+		-Cleanup: split the eps code into a high level and a low level drawing part; the low level should have an API as it will move to librnd
+		-Cleanup: eps low level API: take FILE * at init, don't depend on the caller setting it up in pctx
+		-Cleanup: low level draw should depend on librnd config.h not pcb-rnd's
+		-Add: low level draw API in a header for all the forward declarations
+		-Add: notice on missing copyright banner
+		-Add: spares in public structs that are going to be in librnd
+		-Add: low level eps draw: option for y-mirror (original flip is x-mirror)
+
+	[export_svg]
+		-Fix: missing transformation in arc render
+		-Fix: truncate #rrggbb color to 7 bytes long, in case it also included alpha in set-color API
+		-Cleanup: move config/state from globals to context struct
+		-Cleanup: remove PCB references from the low level code
+		-Cleanup: namespace for low level
+		-Cleanup: split out new svg file creation to low level
+		-Cleanup: split out the generic part of starting a new layer into low level
+		-Cleanup: split low level generic drawing functions from the plugin glue functions
+		-Cleanup: split out low level svg rendering code to separate files that can be eventually moved to librnd
+		-Cleanup: better error reporting on file open failure
+		-Cleanup: low level draw should depend on librnd config.h not pcb-rnd's
+
+	[find.c]
+		-Fix: enable proper poly overlap check on negative bloat
+		-Fix: poly-poly intersect returns true if one poly is fully embedded in another
+		-Fix: line-poly isc: bloat has to be added to line thickness twice, because at the end we pass diameter, not radius
+		-Fix: typo in poly-in-poly (cheked the wrong polygon)
+		-Fix: do not skip proper polygon calculation in poly-poly-isc if both polygons have the PCB_FLAG_CLEARPOLYPOLY set (the won't guarantee clearing in that situation)
+		-Fix: reliably identify the poly-clear-poly case in both directions and skip expensive checks when we know we are clearing the other polygon
+		-Cleanup: better comment explaining an error condition on line poly generation
+
+	[footprint]
+		-Add: license banner in common*.awk for parametrics
+
+	[fp_fs]
+		-Fix: quote parametric footprint name with '' so it can contain space and ;
+
+	[import_sch2]
+		-Fix: avoid infinite loop when conf array set fails in gui->conf conversion
+
+	[io_dsn]
+		-Add: extend the error message about invalid padstack proto for vias
+
+	[io_eagle]
+		-Fix: read holes as hole padstack, without copper rings
+		-Fix: make unpladet hole for <hole>
+		-Fix: footprints need to be Y-mirrored after load because of eagle coord system vs. pcb-rnd coord system
+		-Fix: add aux layer vectors after loading a footprint
+
+	[io_tedax]
+		-Fix: don't require term line to precede term geometry
+		-Fix: bind data padstack rtree when loading subc-as-board so padstacks appear
+		-Fix: finish registering the subc after load, when loading a footprint-as-board
+
+	[lib_compat_help]
+		-Fix: remove FOUND flag from smd padstacks after conversion
+
+	[lib_hid_pcbui]
+		-Add: route style dialog displays padstack proto name
+		-Cleanup: top window title management shouldn't depend on global PCB
+
+	[libucdf]
+		-Fix: replace the sketchy "sign extend" algorithm with a better one, which does not fail on armv7 with -O3
+
+	[propedit]
+		-Fix: close propedits when board is unloaded
+
+	[query]
+		-Fix: make sure bloat is always set to 0 in overlap()
+		-Fix: clean up user functions before compilation instead of expecting the previous compilation succeeded
+		-Fix: throw error message if there's user function in expression
+		-Fix: report compilation errors using rnd_message() instead of --debug-only trace
+		-Fix: reset lex buffer before parsing a new script (matters after a compilation error)
+		-Add: advanced search: count matches operation
+		-Add: include last seen line number in compilation error report
+
+	[rtt]
+		-Update: flag_colors refs for change of polygon point order caused by r36185
+
+	[scconfig]
+		-Add: #define LIBRND_SCCONFIG_APP_TREE, will be mandatory for librnd4
+
+	[tests]
+		-Add: expopt: script for png and svg, reference output
+		-Add: expopt: compare tests for png, svg, ps and eps
+		-Fix: conftest needs to set rnd_app (required from librnd 3.2.0 on)
+
+	[util]
+		-Fix: replace \ with [] for more portable regex on "." for awk pkg format parser
+
+
 pcb-rnd 3.0.4 (r36160)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[core]

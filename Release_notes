@@ -1,15 +1,14 @@
-pcb-rnd 3.0.4
+pcb-rnd 3.0.5
 ~~~~~~~~~~~~~
 
 This is a minor bugfix release with focus on fixing various bugs reported
-(see the Changelog for detaisl).
+(see the Changelog for details).
 
-Other than the bugfixes, changeset highlights are:
+Other than the bugfixes, feature highlights are:
 
-1. 'auto place via' is now disabled by default; this means if you are drawing
-   a trace with the line tool and switch layer, via is not automatically
-   placed. Can be re-enabled from the preferences dialog config tree tab.
+1. svg, ps, eps and png export plugins got a major code reorganization so
+   that the generic (low level) parts could be copied to librnd to be reused
+   in sch-rnd and camv-rnd later
 
-2. changing the thermal scale in the preferences dialog is now undoable
-
-3. configurable mask/paste generation in the bga() footprint
+2. the library dialog (including parametric editor dialog) and export dialog
+   got generalized to be reused in sch-rnd
