@@ -4,7 +4,7 @@
 
 trunk=$(dirname $0)/../..
 
-grep PCB_DAD_NEW $trunk/src/*.c $trunk/src_plugins/*/*.c | awk '
+grep RND_DAD_NEW $trunk/src/*.c $trunk/src_plugins/*/*.c | awk '
 	($1 ~ "TEMPLATE") { next }
 	{
 		file=$1
