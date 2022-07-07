@@ -12,7 +12,7 @@ grep RND_DAD_NEW $trunk/src/*.c $trunk/src_plugins/*/*.c | awk '
 		sub(":$", "", file)
 		sub(".*src/", "src/", file)
 		sub(".*src_plugins/", "src_plugins/", file)
-		sub(".*PCB_DAD_NEW[^(]*[(]", "", name)
+		sub(".*RND_DAD_NEW[^(]*[(]", "", name)
 		title=name
 		if (name ~ "^\"") {
 			sub("\"", "", name)
