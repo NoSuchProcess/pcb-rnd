@@ -1,9 +1,14 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.0.4
+  ver=3.0.5
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
+
+Packaging changes between 3.0.5 and 3.0.4
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+No change in packaging.
 
 Packaging changes between 3.0.4 and 3.0.3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
