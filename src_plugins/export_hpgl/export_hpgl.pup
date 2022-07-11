@@ -4,6 +4,5 @@ $long draw one pen or one file per layer in thin-draw mode
 $fmt-native no
 $fmt-feature-w hpgl
 $state WIP
-$package export
 default disable-all
 autoload 1
