@@ -7,6 +7,7 @@
 	- FEATURE: when import schematics GUI choose file names, use relative path if possible
 	- FEATURE: sch-rnd import path with top prio (maybe ringdove project too)
 - FEATURE: dip() should have a pitch parameter, defaulting to 100mil so non-100-mil can be done too [report: barjac]
+- BUG: segf: in the library make a symlink cycle: mkdir foo; cd foo; ln -s ../foo foo; pcb-rnd -> stack overflow
 - BUG: doc/developer:
 	- make install doesn't install everything
 	- use sccbox -d instead of / at the end
