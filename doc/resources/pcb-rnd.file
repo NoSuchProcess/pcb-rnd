@@ -29,16 +29,16 @@
 
 # tEDAx (modular format)
 0	regex/1l	tEDAx[\ \t\r\n]v	tEDAx (Trivial EDA eXchange)
->0	regex	begin\ symbol	with schematic symbol
->0	regex	begin\ board	with Printed Circuit Board
->0	regex	begin\ route_req	with PCB routing request
->0	regex	begin\ route_res	with PCB routing result
->0	regex	begin\ camv_layer	with camv-rnd exported layer
->0	regex	begin\ netlist	with netlist
->0	regex	begin\ backann	with Ringdove EDA back annotation
->0	regex	begin\ footprint	with PCB footprint
->0	regex	begin\ drc	with PCB DRC script
->0	regex	begin\ etest	with PCB electric test
+>0	regex	begin\ symbol\ v	with schematic symbol
+>0	regex	begin\ board\ v	with Printed Circuit Board
+>0	regex	begin\ route_req\ v	with PCB routing request
+>0	regex	begin\ route_res\ v	with PCB routing result
+>0	regex	begin\ camv_layer\ v	with camv-rnd exported layer
+>0	regex	begin\ netlist\ v	with netlist
+>0	regex	begin\ backann\ v	with Ringdove EDA back annotation
+>0	regex	begin\ footprint\ v	with PCB footprint
+>0	regex	begin\ drc\ v	with PCB DRC script
+>0	regex	begin\ etest\ v	with PCB electric test
 
 
 
