@@ -1,16 +1,18 @@
-# pcb-rnd data file magic(5) patterns to be used with file(1)
+# RingdoveEDA data file magic(5) patterns to be used with file(1)
 # Copy the content of this file in /etc/magic
 
 0	regex/128l	ha:pcb-rnd-board-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd board file (lihata)
 0	regex/128l	li:pcb-rnd-subcircuit-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd subcircuit/footprint file (lihata)
-0	regex/128l	li:pcb-rnd-buffer-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd paste buffer content (lihata)
+0	regex/128l	ha:pcb-rnd-buffer-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd paste buffer content (lihata)
 0	regex/128l	li:pcb-rnd-conf-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd configuration (lihata)
 0	regex/128l	ha:rnd-menu-v[0-9]+[\ \t\r\n]*[{]	librnd menu system (lihata)
 0	regex/128l	ha:rnd-menu-patch-v[0-9]+[\ \t\r\n]*[{]	librnd menu patch (lihata)
 0	regex/128l	ha:pcb-rnd-drc-query-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd drc query string (lihata)
-0	regex/128l	li:pcb-rnd-font-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd configuration (lihata)
+0	regex/128l	li:pcb-rnd-font-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd vector font (lihata)
 0	regex/128l	ha:pcb-rnd-log-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd message log dump (lihata)
-0	regex/128l	li:pcb-rnd-padstack-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd padstack (lihata)
-0	regex/128l	ha:coraleda-project-v[0-9]+[\ \t\r\n]*[{]	CoralEDA project file (lihata)
+0	regex/128l	ha:pcb-rnd-padstack-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd padstack (lihata)
+0	regex/128l	ha:coraleda-project-v[0-9]+[\ \t\r\n]*[{]	CoralEDA/Ringdove project file (lihata)
+0	regex/128l	ha:ringdove-project-v[0-9]+[\ \t\r\n]*[{]	Ringdove project file (lihata)
 0	regex/128l	li:pcb-rnd-view-list-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd view list (lihata)
+0	regex/128l	li:view-list-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd view list (lihata)
 0	search	Netlist(Freeze)	pcb-rnd or gEDA/PCB netlist forward annotation action script
