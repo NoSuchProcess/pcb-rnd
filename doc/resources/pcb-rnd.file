@@ -38,6 +38,8 @@
 >0	regex	begin\ backann\ v	with Ringdove EDA back annotation
 >0	regex	begin\ footprint\ v	with PCB footprint
 >0	regex	begin\ drc\ v	with PCB DRC script
+>0	regex	begin\ drc_query_rule\ v	with pcb-rnd drc_query rules
+>0	regex	begin\ drc_query_def\ v	with pcb-rnd drc_query value/config definitions
 >0	regex	begin\ etest\ v	with PCB electric test
 
 
