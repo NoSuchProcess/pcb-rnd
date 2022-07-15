@@ -19,3 +19,10 @@
 0	regex/128l	li:pcb-rnd-view-list-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd view list (lihata)
 0	regex/128l	li:view-list-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd view list (lihata)
 0	search	Netlist(Freeze)	pcb-rnd or gEDA/PCB netlist forward annotation action script
+
+# sch-rnd (cschem data model)
+0	regex/128l	li:cschem-buffer-v[0-9]+[\ \t\r\n]*[{]	sch-rnd/cschem buffer content (lihata)
+0	regex/128l	li:sch-rnd-conf-v[0-9]+[\ \t\r\n]*[{]	sch-rnd configuration (lihata)
+0	regex/128l	ha:std_devmap.v[0-9]+[\ \t\r\n]*[{]	sch-rnd devmap (device mapping; lihata)
+0	regex/128l	li:cschem-group-v[0-9]+[\ \t\r\n]*[{]	sch-rnd/cschem group or symbol (lihata)
+0	regex/128l	ha:cschem-sheet-v[0-9]+[\ \t\r\n]*[{]	sch-rnd/cschem schematic sheet (lihata)
