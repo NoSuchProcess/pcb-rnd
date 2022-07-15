@@ -4,6 +4,7 @@
 
 2. For later releases ===============================================================================
 - BUG: scconfig: replicate librnd r34332 (detect cc first) [report: Igor2]
+- BUG: doc: lihata format doc: menu, menu_patch got rnd- prefix
 - io_lihata: modify default board ext to .rp
 - import schematics:
 	- FEATURE: when import schematics GUI choose file names, use relative path if possible
