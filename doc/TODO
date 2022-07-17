@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 
 2. For later releases ===============================================================================
+- FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
 - BUG: scconfig: replicate librnd r34332 (detect cc first) [report: Igor2]
 - BUG: doc: lihata format doc: menu, menu_patch got rnd- prefix
 - io_lihata: modify default board ext to .rp
