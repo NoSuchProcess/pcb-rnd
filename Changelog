@@ -1,4 +1,4 @@
-pcb-rnd 3.0.5 (r36436)
+pcb-rnd 3.0.5 (r36457)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[ar_extern]
 		-Fix: don't crash if freerouting method is NULL
@@ -29,8 +29,12 @@ pcb-rnd 3.0.5 (r36436)
 		-Add: explain the role of pcb_export.c
 
 	[doc]
+		-Fix: restore dialog box listing lost in librnd transition
 		-Add: text tool video tutorial links
 		-Add: added documentation for the show_netnames plugin
+		-Add: file(1) magic for sch-rnd files
+		-Add: file(1) magic for common tEDAx blocks
+		-Update: file(1) magic for pcb-rnd and librnd changes
 		-Update: action ref for the latest librnd action doc fixes
 
 	[drc_query]
@@ -197,6 +201,8 @@ pcb-rnd 3.0.5 (r36436)
 
 	[util]
 		-Fix: replace \ with [] for more portable regex on "." for awk pkg format parser
+		-Fix: list_dialogs should go for RND_ instead of PCB_ prefix when looking for DAD calls
+		-Fix: more PCB->RND renames in dialog lister
 
 
 pcb-rnd 3.0.4 (r36160)
