@@ -70,7 +70,7 @@ typedef union rnd_glyph_atom_s {
 typedef struct rnd_glyph_s {
 	unsigned valid:1;
 	rnd_coord_t width, height; /* total size of glyph */
-	rnd_coord_t xdelta;        /* distance to next symbol */
+	rnd_coord_t xdelta;        /* extra distance after width to next symbol */
 	vtgla_t atoms;
 } rnd_glyph_t;
 
