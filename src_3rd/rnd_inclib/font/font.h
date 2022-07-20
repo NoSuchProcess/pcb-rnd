@@ -1,7 +1,7 @@
 /*
  *                            COPYRIGHT
  *
- *  librnd, modular 2D CAD framework
+ *  librnd, modular 2D CAD framework - vector font rendering
  *  librnd Copyright (C) 2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -33,12 +33,16 @@
 #include <librnd/core/box.h>
 #include <rnd_inclib/font/glyph.h>
 
+#define RND_FONT_MAX_GLYPHS 255
+
+typedef long int rnd_font_id_t;      /* safe reference */
+
 typedef struct rnd_font_s {          /* complete set of symbols */
-	rnd_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
-	rnd_box_t DefaultSymbol;     /* the default symbol is a filled box */
-	pcb_symbol_t Symbol[PCB_MAX_FONTPOSITION + 1];
-	char *name;
-	pcb_font_id_t id;
+	rnd_coord_t max_height, max_width; /* maximum glyph width and height */
+	rnd_box_t unknown_glyph;           /* drawn when a glyph is not found (filled box) */
+	rnd_glyph_t glyph[RND_FONT_MAX_GLYPHS+1];
+	char *name;                        /* not unique */
+	rnd_font_id_t id;                  /* unique for safe reference */
 } rnd_font_t;
 
 
