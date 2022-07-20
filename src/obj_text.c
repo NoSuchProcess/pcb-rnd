@@ -55,6 +55,8 @@
 #include "obj_text_draw.h"
 #include "conf_core.h"
 
+#include <rnd_inclib/font/font.h>
+
 TODO("ui_layer parent fix: remove this")
 #include "layer_ui.h"
 

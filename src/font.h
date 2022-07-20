@@ -38,6 +38,8 @@
 #include "obj_arc_list.h"
 #include <librnd/core/box.h>
 
+#include <rnd_inclib/font/font.h>
+
 /* ---------------------------------------------------------------------------
  * symbol and font related stuff
  */
