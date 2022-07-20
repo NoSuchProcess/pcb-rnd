@@ -25,6 +25,9 @@
  *
  */
 
+#ifndef RND_XFORM_MX
+#define RND_XFORM_MX
+
 typedef double rnd_xform_mx_t[9];
 #define RND_XFORM_MX_IDENT {1,0,0,   0,1,0,   0,0,1}
 
@@ -37,3 +40,5 @@ void rnd_xform_mx_translate(rnd_xform_mx_t mx, double xt, double yt);
 void rnd_xform_mx_scale(rnd_xform_mx_t mx, double st, double sy);
 void rnd_xform_mx_shear(rnd_xform_mx_t mx, double sx, double sy);
 void rnd_xform_mx_mirrorx(rnd_xform_mx_t mx); /* mirror over the x axis (flip y coords) */
+
+#endif
