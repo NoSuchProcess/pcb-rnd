@@ -33,6 +33,10 @@
 #include <librnd/core/box.h>
 #include <rnd_inclib/font/glyph.h>
 
+#ifndef RND_FONT_DRAW_API
+#define RND_FONT_DRAW_API
+#endif
+
 #define RND_FONT_MAX_GLYPHS 255
 
 typedef long int rnd_font_id_t;      /* safe reference */
@@ -45,6 +49,12 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 	rnd_font_id_t id;                  /* unique for safe reference */
 } rnd_font_t;
 
+
+typedef enum { /* bitfield - order matters for backward compatibility */
+	RND_TXT_MIRROR_NO = 0,
+	RND_TXT_MIRROR_Y = 1, /* change Y coords (mirror over the X axis) */
+	RND_TXT_MIRROR_X = 2  /* change X coords (mirror over the Y axis) */
+} rnd_font_mirror_t;
 
 void rnd_font_set_info(rnd_font_t *dst);
 
@@ -59,6 +69,10 @@ void rnd_font_free(rnd_font_t *f);
 void rnd_font_clear_glyph(rnd_glyph_t *g);
 
 
+
+typedef void (*rnd_font_draw_atom_cb)(void *cb_ctx, const rnd_glyph_atom_t *a);
+
+RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx);
 
 #endif
 
