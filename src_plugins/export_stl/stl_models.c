@@ -188,7 +188,7 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 	parse_utrans(uxlate, user_xlate);
 	xlate[0] = RND_COORD_TO_MM(ox) + uxlate[0];
 	xlate[1] = RND_COORD_TO_MM(maxy - (oy)) + uxlate[1];
-	xlate[2] = RND_COORD_TO_MM((on_bottom ? z0 : z1)) + uxlate[3];
+	xlate[2] = RND_COORD_TO_MM((on_bottom ? z0 : z1)) + uxlate[2];
 
 	if (on_bottom)
 		rotdeg = -rotdeg;
