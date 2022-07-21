@@ -77,9 +77,17 @@ static const rnd_export_opt_t debug_attribute_list[] = {
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_debugfile 0
 
+	{"compact", "Single line per object",
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
+#define HA_compact 1
+
+	{"stateless", "For stateless parsing: include gc in every object as a suffix instead of printing separate color/width/cap commands",
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
+#define HA_stateless 2
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0}
-#define HA_cam 1
+#define HA_cam 3
 };
 
 #define NUM_OPTIONS (sizeof(debug_attribute_list)/sizeof(debug_attribute_list[0]))
@@ -246,7 +254,8 @@ static void debug_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 static void use_gc(rnd_hid_gc_t gc)
 {
 	if (gc->color.packed != gc->last_color.packed) {
-		fprintf(f, "color %d %d %d %d\n", gc->color.r, gc->color.g, gc->color.b, gc->color.a);
+		if (!debug_values[HA_stateless].lng)
+			fprintf(f, "color %d %d %d %d\n", gc->color.r, gc->color.g, gc->color.b, gc->color.a);
 		gc->last_color = gc->color;
 	}
 	if (gc->style != gc->last_style) {
@@ -256,14 +265,32 @@ static void use_gc(rnd_hid_gc_t gc)
 			case rnd_cap_square:  caps = "square"; break;
 			case rnd_cap_round:   caps = "round"; break;
 		}
-		fprintf(f, "cap %s\n", caps);
+		if (!debug_values[HA_stateless].lng)
+			fprintf(f, "cap %s\n", caps);
 		gc->last_style = gc->style;
 	}
 	if (gc->capw != gc->last_capw) {
-		rnd_fprintf(f, "width %mm\n", gc->capw);
+		if (!debug_values[HA_stateless].lng)
+			rnd_fprintf(f, "width %mm\n", gc->capw);
 		gc->last_capw = gc->capw;
 	}
+}
 
+static void end_gc(rnd_hid_gc_t gc)
+{
+	if (debug_values[HA_stateless].lng) {
+		const char *caps = "<unknown>";
+
+		switch(gc->style) {
+			case rnd_cap_invalid: caps = "invalid"; break;
+			case rnd_cap_square:  caps = "square"; break;
+			case rnd_cap_round:   caps = "round"; break;
+		}
+
+		rnd_fprintf(f, "    @ %d %d %d %d %s %mm\n", gc->color.r, gc->color.g, gc->color.b, gc->color.a, caps, gc->capw);
+	}
+	else
+		fprintf(f, "\n");
 }
 
 static void debug_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
@@ -284,25 +311,29 @@ static void debug_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 static void debug_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
-	rnd_fprintf(f, "rect %mm %mm %mm %mm\n", x1, y1, x2, y2);
+	rnd_fprintf(f, "rect %mm %mm %mm %mm", x1, y1, x2, y2);
+	end_gc(gc);
 }
 
 static void debug_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
-	rnd_fprintf(f, "fillrect %mm %mm %mm %mm\n", x1, y1, x2, y2);
+	rnd_fprintf(f, "fillrect %mm %mm %mm %mm", x1, y1, x2, y2);
+	end_gc(gc);
 }
 
 static void debug_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
-	rnd_fprintf(f, "line %mm %mm %mm %mm\n", x1, y1, x2, y2);
+	rnd_fprintf(f, "line %mm %mm %mm %mm", x1, y1, x2, y2);
+	end_gc(gc);
 }
 
 static void debug_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	use_gc(gc);
-	rnd_fprintf(f, "arc %mm %mm %mm %mm %f %f\n", cx, cy, width, height, start_angle, delta_angle);
+	rnd_fprintf(f, "arc %mm %mm %mm %mm %f %f", cx, cy, width, height, start_angle, delta_angle);
+	end_gc(gc);
 }
 
 static void debug_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
@@ -317,10 +348,18 @@ static void debug_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *
 
 	use_gc(gc);
 
-	rnd_fprintf(f, "poly %d\n", n_coords, dx, dy);
-	for(n = 0; n < n_coords; n++)
-		rnd_fprintf(f, " pt %mm %mm\n", x[n]+dx, y[n]+dy);
-	rnd_fprintf(f, " endpoly\n");
+	rnd_fprintf(f, "poly %d", n_coords, dx, dy);
+	if (debug_values[HA_compact].lng) {
+		for(n = 0; n < n_coords; n++)
+			rnd_fprintf(f, " %mm %mm", x[n]+dx, y[n]+dy);
+	}
+	else {
+		rnd_printf("\n");
+		for(n = 0; n < n_coords; n++)
+			rnd_fprintf(f, " pt %mm %mm\n", x[n]+dx, y[n]+dy);
+		rnd_fprintf(f, " endpoly");
+	}
+	end_gc(gc);
 }
 
 static void debug_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
