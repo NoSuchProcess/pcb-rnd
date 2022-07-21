@@ -31,6 +31,8 @@
 
 #include "config.h"
 
+#include "brave.h"
+
 #include "rotate.h"
 #include "board.h"
 #include "data.h"
@@ -1420,7 +1422,7 @@ RND_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 	return 0;
 }
 
-RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
+RND_INLINE void pcb_text_draw_string_orig(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
 {
 	rnd_coord_t x = 0;
 	rnd_cardinal_t n;
@@ -1558,6 +1560,75 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 		string++;
 	}
 }
+
+typedef struct {
+	rnd_coord_t xordx, xordy;
+	pcb_draw_info_t *info;
+} font_draw_rnd_t;
+
+static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
+{
+	font_draw_rnd_t *ctx = cb_ctx;
+	switch(a->type) {
+		case RND_GLYPH_LINE:
+			{
+				pcb_line_t newline = {0};
+				newline.Point1.X = a->line.x1;
+				newline.Point1.Y = a->line.y1;
+				newline.Point2.X = a->line.x2;
+				newline.Point2.Y = a->line.y2;
+				newline.Thickness = a->line.thickness;
+				pcb_line_draw_(ctx->info, &newline, 0);
+			}
+			break;
+		case RND_GLYPH_ARC:
+			break;
+		case RND_GLYPH_POLY:
+			break;
+	}
+}
+
+static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
+{
+	font_draw_rnd_t *ctx = cb_ctx;
+	switch(a->type) {
+		case RND_GLYPH_LINE:
+			rnd_render->draw_line(pcb_crosshair.GC, ctx->xordx + a->line.x1, ctx->xordy + a->line.y1, ctx->xordx + a->line.x2, ctx->xordy + a->line.y2);
+			break;
+		case RND_GLYPH_ARC:
+			break;
+		case RND_GLYPH_POLY:
+			break;
+	}
+}
+
+
+RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
+{
+	font_draw_rnd_t ctx;
+	int poly_thin = info->xform->thin_draw || info->xform->wireframe;
+
+
+	if (cb == NULL) {
+		cb = xordraw ? font_draw_atom_xor : font_draw_atom;
+		cb_ctx = &ctx;
+		ctx.xordx = xordx;
+		ctx.xordy = xordy;
+		ctx.info = info;
+	}
+
+	rnd_font_draw_string(&font->rnd_font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, cb, cb_ctx);
+}
+
+
+RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
+{
+	if (pcb_brave & PCB_BRAVE_NEWFONT)
+		pcb_text_draw_string_rnd(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, cb, cb_ctx);
+	else
+		pcb_text_draw_string_orig(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, cb, cb_ctx);
+}
+
 
 void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny)
 {
