@@ -487,6 +487,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op;
 	char *name;
 	pcb_objtype_t type;
+	rnd_coord_t x, y;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, ChangeName, op = fgw_keyword(&argv[1]));
 
@@ -494,7 +495,6 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* change the refdes of a subcircuit */
 		case F_Subc:
 		{
-			rnd_coord_t x, y;
 			rnd_hid_get_coords("Select a subcircuit", &x, &y, 0);
 			type = op = PCB_OBJ_SUBC;
 			goto do_chg_name;
@@ -503,7 +503,6 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Object:
 		case F_Refdes:
 			{
-				rnd_coord_t x, y;
 				void *ptr1, *ptr2, *ptr3;
 				rnd_hid_get_coords("Select an Object", &x, &y, 0);
 				type = op == F_Refdes ? PCB_OBJ_SUBC : PCB_CHANGENAME_TYPES;
