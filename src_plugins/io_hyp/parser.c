@@ -433,7 +433,7 @@ pcb_subc_t *hyp_create_subc_by_name(char *refdes, rnd_coord_t x, rnd_coord_t y)
 	unsigned int text_direction = 0;
 	int text_scale = 100;
 	device_t *dev;
-	int on_bottom;
+	int on_bottom = 0; /* assume component side by default */
 
 	/* does the device already exist? */
 	subc = pcb_subc_by_refdes(hyp_dest, refdes);
