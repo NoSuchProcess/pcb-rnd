@@ -1178,7 +1178,7 @@ rnd_bool pcb_is_point_on_arc(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 		return rnd_false;
 	}
 
-	if ((Arc->Width == Arc->Height) || (fabs(Arc->Width - Arc->Height) < RND_MM_TO_COORD(0.1))) {
+	if ((Arc->Width == Arc->Height) || (RND_ABS(Arc->Width - Arc->Height) < RND_MM_TO_COORD(0.1))) {
 		/* Simple circular case: if point is inside the arc range, just compare it to the arc */
 		return fabs(rnd_distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
 	}
