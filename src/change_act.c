@@ -676,7 +676,7 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(2, FGW_STR, SetThermal, style = argv[2].val.str);
 
 	if (function && *function && style && *style) {
-		rnd_bool absolute;
+		rnd_bool absolute = 1;
 
 		if (rnd_strcasecmp(style, "noshape") == 0)
 			kind = PCB_THERMAL_NOSHAPE | PCB_THERMAL_ON;
