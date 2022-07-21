@@ -367,7 +367,7 @@ static void make_int_cop(rctx_t *rctx, altium_layer_t *layers, int n)
 	rnd_layer_id_t lid = pcb_layer_create(rctx->pcb, g - rctx->pcb->LayerGroups.grp, lyname, 0);
 
 	rctx->midly[n-2] = pcb_get_layer(rctx->pcb->Data, lid);
-	if ((n >= 39) || (n <= 54)) {
+	if ((n >= 39) && (n <= 54)) {
 		/* internal plane layer - draw a poly at the end */
 		pcb_attribute_put(&(rctx->midly[n-2]->Attributes), "altium::plane", "1");
 	}
