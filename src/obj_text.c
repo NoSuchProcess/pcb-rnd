@@ -1561,13 +1561,9 @@ RND_INLINE void pcb_text_draw_string_orig(pcb_draw_info_t *info, pcb_font_t *fon
 	}
 }
 
-typedef struct {
-	pcb_draw_info_t *info;
-} font_draw_rnd_t;
-
 static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 {
-	font_draw_rnd_t *ctx = cb_ctx;
+	pcb_draw_info_t *info = cb_ctx;
 	switch(a->type) {
 		case RND_GLYPH_LINE:
 			{
@@ -1577,7 +1573,7 @@ static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 				newline.Point2.X = a->line.x2;
 				newline.Point2.Y = a->line.y2;
 				newline.Thickness = a->line.thickness;
-				pcb_line_draw_(ctx->info, &newline, 0);
+				pcb_line_draw_(info, &newline, 0);
 			}
 			break;
 		case RND_GLYPH_ARC:
@@ -1589,7 +1585,7 @@ static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 				newarc.Delta = a->arc.delta;
 				newarc.Height = newarc.Width = a->arc.r;
 				newarc.Thickness = a->arc.thickness;
-				pcb_arc_draw_(ctx->info, &newarc, 0);
+				pcb_arc_draw_(info, &newarc, 0);
 			}
 			break;
 		case RND_GLYPH_POLY:
@@ -1603,7 +1599,6 @@ static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 
 static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 {
-	font_draw_rnd_t *ctx = cb_ctx;
 	switch(a->type) {
 		case RND_GLYPH_LINE:
 			rnd_render->draw_line(pcb_crosshair.GC, a->line.x1, a->line.y1, a->line.x2, a->line.y2);
@@ -1623,7 +1618,6 @@ static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 
 RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
 {
-	font_draw_rnd_t ctx;
 	int poly_thin = info->xform->thin_draw || info->xform->wireframe;
 
 
@@ -1636,9 +1630,10 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font
 		}
 		else
 			cb = font_draw_atom;
-		cb_ctx = &ctx;
-		ctx.info = info;
+		cb_ctx = info;
 	}
+/*	else
+		cb = font_draw_atom_user_cb;*/
 
 	rnd_font_draw_string(&font->rnd_font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, cb, cb_ctx);
 }
