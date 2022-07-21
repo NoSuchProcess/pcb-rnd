@@ -688,7 +688,14 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			switch (rnd_funchash_get(function, NULL)) {
 			case F_Object:
 				rnd_hid_get_coords("Click on object for SetThermal", &gx, &gy, 0);
-				if ((type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+				/* prefer padstacks */
+				type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES | PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3);
+#if 0
+This would need extra checks for object being on a copper layer
+				if (type == PCB_OBJ_VOID) /* fall back on any thermal */
+					type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES | PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3);
+#endif
+				if (type != PCB_OBJ_VOID) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind, PCB_CURRLID(PCB_ACT_BOARD));
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -700,7 +707,7 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				break;
 			case F_Selected:
 			case F_SelectedElements:
-				pcb_chg_selected_thermals(PCB_CHANGETHERMAL_TYPES, kind, PCB_CURRLID(PCB_ACT_BOARD));
+				pcb_chg_selected_thermals(PCB_CHANGETHERMAL_TYPES | PCB_OBJ_PSTK, kind, PCB_CURRLID(PCB_ACT_BOARD));
 				break;
 			default:
 				err = 1;
