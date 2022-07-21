@@ -1113,7 +1113,7 @@ static rnd_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, rnd_coord_t hdi
 
 	switch(shp->shape) {
 		case PCB_PSSH_HSHADOW:
-			break;
+			return 0; /* there's no copper that could break */
 		case PCB_PSSH_CIRC:
 			dist = sqrt((double)shp->data.circ.x*(double)shp->data.circ.x + (double)shp->data.circ.y*(double)shp->data.circ.y);
 			neck = (double)(shp->data.circ.dia - hdia) / 2.0 - dist;
