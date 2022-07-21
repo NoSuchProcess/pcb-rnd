@@ -517,7 +517,7 @@ int pcb_load_padstack(rnd_hidlib_t *hidlib, pcb_pstk_proto_t *proto, const char 
 
 int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_idx)
 {
-	int res, newfmt = 0;
+	int res = -1, newfmt = 0;
 	pcb_plug_io_t *p = e->loader;
 
 	if ((p == NULL) || ((fmt != NULL) && (*fmt != '\0'))) {
