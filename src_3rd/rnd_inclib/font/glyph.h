@@ -54,7 +54,7 @@ typedef struct rnd_glyph_arc_s {
 
 typedef struct rnd_glyph_poly_s {
 	rnd_glyph_atom_type_t type;
-	vtc0_t xy;                /* odd: x, even: y */
+	vtc0_t pts;                /* first half is all x, second half is all y; npts is .used/2 */
 } rnd_glyph_poly_t;
 
 typedef union rnd_glyph_atom_s {

@@ -100,7 +100,7 @@ static int rnd_font_lht_parse_glyph(rnd_glyph_t *glp, lht_node_t *nd)
 			a->arc.thickness = th;
 		}
 		else if (strncmp(obj->name, "simplepoly.", 11) == 0) {
-			int len;
+			int len, h, i;
 
 			if (obj->type != LHT_LIST) {
 				LHT_ERROR(obj, "Symbol error: simplepoly is not a list! (ignoring this poly)\n");
@@ -114,15 +114,16 @@ static int rnd_font_lht_parse_glyph(rnd_glyph_t *glp, lht_node_t *nd)
 
 			a = vtgla_alloc_append(&glp->atoms, 1);
 			a->poly.type = RND_GLYPH_POLY;
-			vtc0_enlarge(&a->poly.xy, len);
-			a->poly.xy.used = len;
+			vtc0_enlarge(&a->poly.pts, len);
+			a->poly.pts.used = len;
 
-			for(len = 0, n = obj->data.list.first; n != NULL; n = n->next) {
+			h = len/2;
+			for(i = 0, n = obj->data.list.first; n != NULL; n = n->next,i++) {
 				PARSE_COORD(&x1, n);
 				n = n->next;
 				PARSE_COORD(&y1, n);
-				a->poly.xy.array[len++] = x1;
-				a->poly.xy.array[len++] = y1;
+				a->poly.pts.array[i]   = x1;
+				a->poly.pts.array[h+i] = y1;
 			}
 		}
 	}

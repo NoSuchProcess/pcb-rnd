@@ -7,7 +7,7 @@
 
 RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coord_t dx, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
-	long n;
+	long nx, ny, h;
 	rnd_glyph_atom_t res;
 	rnd_coord_t tmp[2*MAX_SIMPLE_POLY_POINTS];
 
@@ -44,12 +44,13 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 			break;
 
 		case RND_GLYPH_POLY:
-			res.poly.xy.used = res.poly.xy.alloced = a->poly.xy.used;
-			res.poly.xy.array = tmp;
-			for(n = 0; n < a->poly.xy.used; n+=2) {
-				rnd_coord_t px = a->poly.xy.array[n], py = a->poly.xy.array[n+1];
-				res.poly.xy.array[n]   = rnd_round(rnd_xform_x(mx, px + dx, py));
-				res.poly.xy.array[n+1] = rnd_round(rnd_xform_y(mx, px + dx, py));
+			res.poly.pts.used = res.poly.pts.alloced = a->poly.pts.used;
+			res.poly.pts.array = tmp;
+			h = a->poly.pts.used/2;
+			for(nx = 0, ny = h; nx < h; nx++,ny++) {
+				rnd_coord_t px = a->poly.pts.array[nx], py = a->poly.pts.array[ny];
+				res.poly.pts.array[nx] = rnd_round(rnd_xform_x(mx, px + dx, py));
+				res.poly.pts.array[ny] = rnd_round(rnd_xform_y(mx, px + dx, py));
 			}
 			break;
 	}
@@ -87,40 +88,40 @@ RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned cha
 			rnd_coord_t p[8];
 			rnd_glyph_atom_t tmp;
 
-			p[0] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1));
-			p[1] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1));
-			p[2] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1));
-			p[3] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1));
-			p[4] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2));
-			p[5] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2));
-			p[6] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2));
-			p[7] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2));
+			p[0+0] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1));
+			p[4+0] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1));
+			p[0+1] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1));
+			p[4+1] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1));
+			p[0+2] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2));
+			p[4+2] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2));
+			p[0+3] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2));
+			p[4+3] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2));
 
 			/* draw move on to next cursor position */
 			if (poly_thin) {
 				tmp.line.type = RND_GLYPH_LINE;
 				tmp.line.thickness = -1;
 
-				tmp.line.x1 = p[0]; tmp.line.y1 = p[1];
-				tmp.line.x2 = p[2]; tmp.line.y2 = p[3];
+				tmp.line.x1 = p[0+0]; tmp.line.y1 = p[4+0];
+				tmp.line.x2 = p[0+1]; tmp.line.y2 = p[4+1];
 				cb(cb_ctx, &tmp);
 
-				tmp.line.x1 = p[2]; tmp.line.y1 = p[3];
-				tmp.line.x2 = p[4]; tmp.line.y2 = p[5];
+				tmp.line.x1 = p[0+1]; tmp.line.y1 = p[4+1];
+				tmp.line.x2 = p[0+2]; tmp.line.y2 = p[4+2];
 				cb(cb_ctx, &tmp);
 
-				tmp.line.x1 = p[4]; tmp.line.y1 = p[5];
-				tmp.line.x2 = p[6]; tmp.line.y2 = p[7];
+				tmp.line.x1 = p[0+2]; tmp.line.y1 = p[4+2];
+				tmp.line.x2 = p[0+3]; tmp.line.y2 = p[4+3];
 				cb(cb_ctx, &tmp);
 
-				tmp.line.x1 = p[6]; tmp.line.y1 = p[7];
-				tmp.line.x2 = p[0]; tmp.line.y2 = p[1];
+				tmp.line.x1 = p[0+3]; tmp.line.y1 = p[4+3];
+				tmp.line.x2 = p[0+0]; tmp.line.y2 = p[4+0];
 				cb(cb_ctx, &tmp);
 			}
 			else {
 				tmp.poly.type = RND_GLYPH_POLY;
-				tmp.poly.xy.used = tmp.poly.xy.alloced = 8;
-				tmp.poly.xy.array = p;
+				tmp.poly.pts.used = tmp.poly.pts.alloced = 8;
+				tmp.poly.pts.array = p;
 				cb(cb_ctx, &tmp);
 			}
 			x += size;
