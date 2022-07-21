@@ -1597,6 +1597,59 @@ static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 	}
 }
 
+typedef struct {
+	pcb_draw_text_cb cb;
+	void *cb_ctx;
+} font_draw_atom_user_cb_t;
+
+static void font_draw_atom_user_cb(void *cb_ctx, const rnd_glyph_atom_t *a)
+{
+	font_draw_atom_user_cb_t *ctx = cb_ctx;
+	switch(a->type) {
+		case RND_GLYPH_LINE:
+			{
+				pcb_line_t newline = {0};
+				newline.Point1.X = a->line.x1;
+				newline.Point1.Y = a->line.y1;
+				newline.Point2.X = a->line.x2;
+				newline.Point2.Y = a->line.y2;
+				newline.Thickness = a->line.thickness;
+				ctx->cb(ctx->cb_ctx, (pcb_any_obj_t *)&newline);
+			}
+			break;
+		case RND_GLYPH_ARC:
+			{
+				pcb_arc_t newarc = {0};
+				newarc.X = a->arc.cx;
+				newarc.Y = a->arc.cy;
+				newarc.StartAngle = a->arc.start;
+				newarc.Delta = a->arc.delta;
+				newarc.Height = newarc.Width = a->arc.r;
+				newarc.Thickness = a->arc.thickness;
+				ctx->cb(ctx->cb_ctx, (pcb_any_obj_t *)&newarc);
+			}
+			break;
+		case RND_GLYPH_POLY:
+			{
+				rnd_point_t *p;
+				pcb_poly_t po;
+				rnd_point_t pt[MAX_SIMPLE_POLY_POINTS];
+				int n, half = a->poly.pts.used/2;
+
+				memset(&po, 0, sizeof(po));
+				po.type = PCB_OBJ_POLY;
+				po.PointN = half;
+				po.Points = pt;
+				for(n = 0, p = po.Points; n < half; n++,p++) {
+					p->X = a->poly.pts.array[n];
+					p->Y = a->poly.pts.array[n+half];
+				}
+				ctx->cb(ctx->cb_ctx, (pcb_any_obj_t *)&po);
+			}
+			break;
+	}
+}
+
 static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 {
 	switch(a->type) {
@@ -1618,8 +1671,8 @@ static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 
 RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
 {
+	font_draw_atom_user_cb_t ucb;
 	int poly_thin = info->xform->thin_draw || info->xform->wireframe;
-
 
 	if (cb == NULL) {
 		if (xordraw) {
@@ -1632,8 +1685,12 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font
 			cb = font_draw_atom;
 		cb_ctx = info;
 	}
-/*	else
-		cb = font_draw_atom_user_cb;*/
+	else {
+		ucb.cb = cb;
+		ucb.cb_ctx = cb_ctx;
+		cb = font_draw_atom_user_cb;
+		cb_ctx = &ucb;
+	}
 
 	rnd_font_draw_string(&font->rnd_font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, cb, cb_ctx);
 }
