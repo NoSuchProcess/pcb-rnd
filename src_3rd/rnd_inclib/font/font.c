@@ -45,9 +45,33 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 			break;
 
 		case RND_GLYPH_POLY:
+			h = a->poly.pts.used/2;
+
+			if (poly_thin) {
+				rnd_coord_t lpx, lpy, tx, ty;
+
+				res.line.thickness = -1;
+				res.line.type = RND_GLYPH_LINE;
+
+				tx = a->poly.pts.array[h-1];
+				ty = a->poly.pts.array[a->poly.pts.used-1];
+				lpx = rnd_round(rnd_xform_x(mx, tx + dx, ty));
+				lpy = rnd_round(rnd_xform_y(mx, tx + dx, ty));
+
+				for(nx = 0, ny = h; nx < h; nx++,ny++) {
+					rnd_coord_t npx, npy, px = a->poly.pts.array[nx], py = a->poly.pts.array[ny];
+					npx = rnd_round(rnd_xform_x(mx, px + dx, py));
+					npy = rnd_round(rnd_xform_y(mx, px + dx, py));
+					res.line.x1 = lpx; res.line.y1 = lpy;
+					res.line.x2 = npx; res.line.y2 = npy;
+					cb(cb_ctx, &res);
+					lpx = npx;
+					lpy = npy;
+				}
+				return; /* don't let the original cb() at the end run */
+			}
 			res.poly.pts.used = res.poly.pts.alloced = a->poly.pts.used;
 			res.poly.pts.array = tmp;
-			h = a->poly.pts.used/2;
 			for(nx = 0, ny = h; nx < h; nx++,ny++) {
 				rnd_coord_t px = a->poly.pts.array[nx], py = a->poly.pts.array[ny];
 				res.poly.pts.array[nx] = rnd_round(rnd_xform_x(mx, px + dx, py));
