@@ -557,7 +557,7 @@ int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt)
 
 static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_filename, const char *fmt, rnd_bool emergency)
 {
-	int res, newfmt = 0;
+	int res = -1, newfmt = 0;
 	pcb_plug_io_t *p = PCB->Data->loader;
 
 	if ((p == NULL) || ((fmt != NULL) && (*fmt != '\0'))) {
