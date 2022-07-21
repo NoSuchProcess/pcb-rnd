@@ -1562,7 +1562,6 @@ RND_INLINE void pcb_text_draw_string_orig(pcb_draw_info_t *info, pcb_font_t *fon
 }
 
 typedef struct {
-	rnd_coord_t xordx, xordy;
 	pcb_draw_info_t *info;
 } font_draw_rnd_t;
 
@@ -1607,10 +1606,10 @@ static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 	font_draw_rnd_t *ctx = cb_ctx;
 	switch(a->type) {
 		case RND_GLYPH_LINE:
-			rnd_render->draw_line(pcb_crosshair.GC, ctx->xordx + a->line.x1, ctx->xordy + a->line.y1, ctx->xordx + a->line.x2, ctx->xordy + a->line.y2);
+			rnd_render->draw_line(pcb_crosshair.GC, a->line.x1, a->line.y1, a->line.x2, a->line.y2);
 			break;
 		case RND_GLYPH_ARC:
-			rnd_render->draw_arc(pcb_crosshair.GC, ctx->xordx + a->arc.cx, ctx->xordy + a->arc.cy, a->arc.r, a->arc.r, a->arc.start, a->arc.delta);
+			rnd_render->draw_arc(pcb_crosshair.GC, a->arc.cx, a->arc.cy, a->arc.r, a->arc.r, a->arc.start, a->arc.delta);
 			break;
 		case RND_GLYPH_POLY:
 			{
@@ -1629,10 +1628,15 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font
 
 
 	if (cb == NULL) {
-		cb = xordraw ? font_draw_atom_xor : font_draw_atom;
+		if (xordraw) {
+			cb = font_draw_atom_xor;
+			x0 += xordx;
+			y0 += xordy;
+			poly_thin = 1;
+		}
+		else
+			cb = font_draw_atom;
 		cb_ctx = &ctx;
-		ctx.xordx = xordx;
-		ctx.xordy = xordy;
 		ctx.info = info;
 	}
 
