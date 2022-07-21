@@ -59,11 +59,13 @@ struct pcb_font_s {          /* complete set of symbols */
 	pcb_symbol_t Symbol[PCB_MAX_FONTPOSITION + 1];
 	char *name;
 	pcb_font_id_t id;
+
+	rnd_font_t rnd_font; /* temporary */
 };
 
 struct pcb_fontkit_s {          /* a set of unrelated fonts */
 	pcb_font_t dflt;              /* default, fallback font, also the sysfont */
-	htip_t fonts;
+	htip_t fonts;                 /* key: ->id; val: (pcb_font_t *) */
 	rnd_bool valid, hash_inited;
 	pcb_font_id_t last_id;        /* highest font id ever seen in this kit */
 };

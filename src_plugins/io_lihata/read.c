@@ -2291,6 +2291,8 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 
 		if (parse_font(f, n) != 0)
 			return -1;
+		if (rnd_font_lht_parse_font(&f->rnd_font, n) != 0)
+			return -1;
 	}
 
 	return 0;
