@@ -77,7 +77,7 @@ RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned cha
 			long n;
 			rnd_glyph_t *g = &font->glyph[*s];
 			
-			for(n = 0; n < g->atoms.used; g++)
+			for(n = 0; n < g->atoms.used; n++)
 				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
