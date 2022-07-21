@@ -1,0 +1,9 @@
+$class export
+$short export debug draw
+$long simple positional file format to compare exports
+$fmt-native no
+$fmt-feature-w debug draw output
+$state works
+#$package export - do not include this in the packaging
+default disable-all
+autoload 1
