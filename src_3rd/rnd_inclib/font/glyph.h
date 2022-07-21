@@ -58,10 +58,10 @@ typedef struct rnd_glyph_poly_s {
 } rnd_glyph_poly_t;
 
 typedef union rnd_glyph_atom_s {
-		rnd_glyph_atom_type_t type;
-		rnd_glyph_line_t line;
-		rnd_glyph_arc_t arc;
-		rnd_glyph_poly_t poly;
+	rnd_glyph_atom_type_t type;
+	rnd_glyph_line_t line;
+	rnd_glyph_arc_t arc;
+	rnd_glyph_poly_t poly;
 } rnd_glyph_atom_t;
 
 
