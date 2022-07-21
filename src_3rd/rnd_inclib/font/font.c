@@ -102,19 +102,19 @@ RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned cha
 				tmp.line.thickness = -1;
 
 				tmp.line.x1 = p[0]; tmp.line.y1 = p[1];
-				tmp.line.x2 = p[2]; tmp.line.y1 = p[3];
+				tmp.line.x2 = p[2]; tmp.line.y2 = p[3];
 				cb(cb_ctx, &tmp);
 
 				tmp.line.x1 = p[2]; tmp.line.y1 = p[3];
-				tmp.line.x2 = p[4]; tmp.line.y1 = p[5];
+				tmp.line.x2 = p[4]; tmp.line.y2 = p[5];
 				cb(cb_ctx, &tmp);
 
 				tmp.line.x1 = p[4]; tmp.line.y1 = p[5];
-				tmp.line.x2 = p[6]; tmp.line.y1 = p[7];
+				tmp.line.x2 = p[6]; tmp.line.y2 = p[7];
 				cb(cb_ctx, &tmp);
 
 				tmp.line.x1 = p[6]; tmp.line.y1 = p[7];
-				tmp.line.x2 = p[0]; tmp.line.y1 = p[1];
+				tmp.line.x2 = p[0]; tmp.line.y2 = p[1];
 				cb(cb_ctx, &tmp);
 			}
 			else {
