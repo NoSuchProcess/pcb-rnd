@@ -174,8 +174,8 @@ RND_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, rnd_hid_
 #define pcb_exto_dlg_coord(dlg, subc, vis_name, attr_name, help) \
 do { \
 	rnd_hid_dad_spin_t *spin; \
-	double d; \
-	rnd_coord_t currval = 0; \
+	double d = 0; \
+	rnd_coord_t currval; \
 	const rnd_unit_t *unit_out = NULL; \
 	int wid; \
 	char *sval = pcb_attribute_get(&subc->Attributes, attr_name); \
