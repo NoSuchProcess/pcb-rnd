@@ -1594,6 +1594,10 @@ static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 			}
 			break;
 		case RND_GLYPH_POLY:
+			{
+				int half = a->poly.pts.used/2;
+				rnd_render->fill_polygon(pcb_draw_out.fgGC, half, &a->poly.pts.array[0], &a->poly.pts.array[half]);
+			}
 			break;
 	}
 }
@@ -1609,6 +1613,10 @@ static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 			rnd_render->draw_arc(pcb_crosshair.GC, ctx->xordx + a->arc.cx, ctx->xordy + a->arc.cy, a->arc.r, a->arc.r, a->arc.start, a->arc.delta);
 			break;
 		case RND_GLYPH_POLY:
+			{
+				int half = a->poly.pts.used/2;
+				rnd_render->fill_polygon(pcb_crosshair.GC, half, &a->poly.pts.array[0], &a->poly.pts.array[half]);
+			}
 			break;
 	}
 }
