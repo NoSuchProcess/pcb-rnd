@@ -33,6 +33,7 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 			res.arc.r  = rnd_round(a->arc.r * scx);
 			res.arc.start = a->arc.start + rotdeg;
 			res.arc.delta = a->arc.delta;
+			res.arc.thickness = rnd_round(a->arc.thickness * (scx+scy) / 4.0);
 			if (mirror) {
 				res.arc.start = RND_SWAP_ANGLE(res.arc.start);
 				res.arc.delta = RND_SWAP_DELTA(res.arc.delta);
