@@ -1582,6 +1582,16 @@ static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 			}
 			break;
 		case RND_GLYPH_ARC:
+			{
+				pcb_arc_t newarc = {0};
+				newarc.X = a->arc.cx;
+				newarc.Y = a->arc.cy;
+				newarc.StartAngle = a->arc.start;
+				newarc.Delta = a->arc.delta;
+				newarc.Height = newarc.Width = a->arc.r;
+				newarc.Thickness = a->arc.thickness;
+				pcb_arc_draw_(ctx->info, &newarc, 0);
+			}
 			break;
 		case RND_GLYPH_POLY:
 			break;
@@ -1596,6 +1606,7 @@ static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 			rnd_render->draw_line(pcb_crosshair.GC, ctx->xordx + a->line.x1, ctx->xordy + a->line.y1, ctx->xordx + a->line.x2, ctx->xordy + a->line.y2);
 			break;
 		case RND_GLYPH_ARC:
+			rnd_render->draw_arc(pcb_crosshair.GC, ctx->xordx + a->arc.cx, ctx->xordy + a->arc.cy, a->arc.r, a->arc.r, a->arc.start, a->arc.delta);
 			break;
 		case RND_GLYPH_POLY:
 			break;
