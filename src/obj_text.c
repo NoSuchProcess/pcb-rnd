@@ -498,9 +498,9 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 
 			for(arc = arclist_first(&symbol[*s].arcs); arc != NULL; arc = arclist_next(arc)) {
 				pcb_arc_bbox(arc);
-				minx = MIN(minx, arc->bbox_naked.X1);
+				minx = MIN(minx, arc->bbox_naked.X1 + tx);
 				miny = MIN(miny, arc->bbox_naked.Y1);
-				maxx = MAX(maxx, arc->bbox_naked.X2);
+				maxx = MAX(maxx, arc->bbox_naked.X2 + tx);
 				maxy = MAX(maxy, arc->bbox_naked.Y2);
 			}
 
