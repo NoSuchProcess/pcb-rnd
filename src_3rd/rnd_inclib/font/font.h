@@ -56,6 +56,12 @@ typedef enum { /* bitfield - order matters for backward compatibility */
 	RND_TXT_MIRROR_X = 2  /* change X coords (mirror over the Y axis) */
 } rnd_font_mirror_t;
 
+typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */
+	RND_FONT_TINY_HIDE,          /* do not draw it at all */
+	RND_FONT_TINY_CHEAP,         /* draw a cheaper, simplified approximation that shows there's something there */
+	RND_FONT_TINY_ACCURATE       /* always draw text accurately, even if it will end up unreadable */
+} rnd_font_tiny_t;
+
 void rnd_font_set_info(rnd_font_t *dst);
 
 rnd_glyph_line_t *rnd_font_new_line_in_glyph(rnd_glyph_t *glyph, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness);
@@ -72,7 +78,7 @@ void rnd_font_clear_glyph(rnd_glyph_t *g);
 
 typedef void (*rnd_font_draw_atom_cb)(void *cb_ctx, const rnd_glyph_atom_t *a);
 
-RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx);
+RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx);
 
 #endif
 
