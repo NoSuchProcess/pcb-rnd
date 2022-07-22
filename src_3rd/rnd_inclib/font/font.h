@@ -75,10 +75,17 @@ void rnd_font_free(rnd_font_t *f);
 void rnd_font_clear_glyph(rnd_glyph_t *g);
 
 
+/* Very rough (but quick) estimation on the full size of the text */
+rnd_coord_t rnd_font_string_width(rnd_font_t *font, double scx, const unsigned char *string);
+rnd_coord_t rnd_font_string_height(rnd_font_t *font, double scy, const unsigned char *string);
+
 
 typedef void (*rnd_font_draw_atom_cb)(void *cb_ctx, const rnd_glyph_atom_t *a);
 
 RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx);
+
+/* Calculate all 4 corners of the transformed (e.g. rotated) box in cx;cy */
+void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width);
 
 #endif
 

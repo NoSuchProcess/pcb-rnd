@@ -6,7 +6,6 @@
 
 #define MAX_SIMPLE_POLY_POINTS 256
 
-/* Very rough estimation on the full width of the text */
 rnd_coord_t rnd_font_string_width(rnd_font_t *font, double scx, const unsigned char *string)
 {
 	rnd_coord_t w = 0;
@@ -163,17 +162,22 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 	cb(cb_ctx, &res);
 }
 
+#define rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, mirror) \
+do { \
+	rnd_xform_mx_translate(mx, x0, y0); \
+	if (mirror != RND_FONT_MIRROR_NO) \
+		rnd_xform_mx_scale(mx, (mirror & RND_FONT_MIRROR_X) ? -1 : 1, (mirror & RND_FONT_MIRROR_Y) ? -1 : 1); \
+	rnd_xform_mx_rotate(mx, rotdeg); \
+	rnd_xform_mx_scale(mx, scx, scy); \
+} while(0)
+
 RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 	const unsigned char *s;
 	rnd_coord_t x = 0;
 
-	rnd_xform_mx_translate(mx, x0, y0);
-	if (mirror != RND_FONT_MIRROR_NO)
-		rnd_xform_mx_scale(mx, (mirror & RND_FONT_MIRROR_X) ? -1 : 1, (mirror & RND_FONT_MIRROR_Y) ? -1 : 1);
-	rnd_xform_mx_rotate(mx, rotdeg);
-	rnd_xform_mx_scale(mx, scx, scy);
+	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, mirror);
 
 	/* Text too small at this zoom level: cheap draw */
 	if (tiny != RND_FONT_TINY_ACCURATE) {
@@ -238,4 +242,171 @@ RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned cha
 			x += size;
 		}
 	}
+}
+
+RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
+{
+	double ca1, ca2, sa1, sa2, minx, maxx, miny, maxy, delta;
+	rnd_angle_t ang1, ang2;
+	rnd_coord_t width;
+
+	/* first put angles into standard form: ang1 < ang2, both angles between 0 and 720 */
+	delta = RND_CLAMP(a->delta, -360, 360);
+
+	if (delta > 0) {
+		ang1 = rnd_normalize_angle(a->start);
+		ang2 = rnd_normalize_angle(a->start + delta);
+	}
+	else {
+		ang1 = rnd_normalize_angle(a->start + delta);
+		ang2 = rnd_normalize_angle(a->start);
+	}
+
+	if (ang1 > ang2)
+		ang2 += 360;
+
+	/* Make sure full circles aren't treated as zero-length arcs */
+	if (delta == 360 || delta == -360)
+		ang2 = ang1 + 360;
+
+	/* calculate sines, cosines */
+	sa1 = sin(RND_M180 * ang1); ca1 = cos(RND_M180 * ang1);
+	sa2 = sin(RND_M180 * ang2); ca2 = cos(RND_M180 * ang2);
+
+	minx = MIN(ca1, ca2); miny = MIN(sa1, sa2);
+	maxx = MAX(ca1, ca2); maxy = MAX(sa1, sa2);
+
+	/* Check for extreme angles */
+	if ((ang1 <= 0 && ang2 >= 0) || (ang1 <= 360 && ang2 >= 360))
+		maxx = 1;
+	if ((ang1 <= 90 && ang2 >= 90) || (ang1 <= 450 && ang2 >= 450))
+		maxy = 1;
+	if ((ang1 <= 180 && ang2 >= 180) || (ang1 <= 540 && ang2 >= 540))
+		minx = -1;
+	if ((ang1 <= 270 && ang2 >= 270) || (ang1 <= 630 && ang2 >= 630))
+		miny = -1;
+
+	/* Finally, calculate bounds, converting sane geometry into rnd geometry */
+	dst->X1 = a->cx - a->r * maxx;
+	dst->X2 = a->cx - a->r * minx;
+	dst->Y1 = a->cy + a->r * miny;
+	dst->Y2 = a->cy + a->r * maxy;
+}
+
+void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width)
+{
+	const unsigned char *s;
+	int space, width;
+	rnd_coord_t minx, miny, maxx, maxy, tx, min_unscaled_radius;
+	rnd_bool first_time = rnd_true;
+	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
+
+	if (string == NULL) {
+		int n;
+		for(n = 0; n < 4; n++) {
+			cx[n] = x0;
+			cy[n] = y0;
+		}
+		return;
+	}
+
+	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, mirror);
+
+	minx = miny = maxx = maxy = tx = 0;
+
+	/* We are initially computing the bbox of the un-scaled text but
+	   min_line_width is interpreted on the scaled text. */
+	min_unscaled_radius = (min_line_width / (scx+scy)/2) / 2;
+
+	/* calculate size of the bounding box */
+	for (s = string; *s != '\0'; s++) {
+		if ((*s <= RND_FONT_MAX_GLYPHS) && font->glyph[*s].valid) {
+			long n;
+			rnd_glyph_t *g = &font->glyph[*s];
+
+			width = g->width + space;
+			for(n = 0; n < g->atoms.used; n++) {
+				rnd_glyph_atom_t *a = &g->atoms.array[n];
+				rnd_coord_t unscaled_radius;
+				rnd_box_t b;
+
+				switch(a->type) {
+					case RND_GLYPH_LINE:
+							/* Clamp the width of text lines at the minimum thickness.
+							   NB: Divide 4 in thickness calculation is comprised of a factor
+							       of 1/2 to get a radius from the center-line, and a factor
+							       of 1/2 because some stupid reason we render our glyphs
+							       at half their defined stroke-width. */
+						unscaled_radius = RND_MAX(min_unscaled_radius, a->line.thickness / 4);
+
+						if (first_time) {
+							minx = maxx = a->line.x1;
+							miny = maxy = a->line.y1;
+							first_time = rnd_false;
+						}
+
+						minx = MIN(minx, a->line.x1 - unscaled_radius + tx);
+						miny = MIN(miny, a->line.y1 - unscaled_radius);
+						minx = MIN(minx, a->line.x2 - unscaled_radius + tx);
+						miny = MIN(miny, a->line.y2 - unscaled_radius);
+						maxx = MAX(maxx, a->line.x1 + unscaled_radius + tx);
+						maxy = MAX(maxy, a->line.y1 + unscaled_radius);
+						maxx = MAX(maxx, a->line.x2 + unscaled_radius + tx);
+						maxy = MAX(maxy, a->line.y2 + unscaled_radius);
+					break;
+
+					case RND_GLYPH_ARC:
+						font_arc_bbox(&b, a);
+						minx = MIN(minx, b.X1 + tx - unscaled_radius);
+						miny = MIN(miny, b.Y1 - unscaled_radius);
+						maxx = MAX(maxx, b.X2 + tx + unscaled_radius);
+						maxy = MAX(maxy, b.Y2 + unscaled_radius);
+						break;
+
+					case RND_GLYPH_POLY:
+						{
+							int i, h = a->poly.pts.used/2;
+							rnd_coord_t *px = &a->poly.pts.array[0], *py = &a->poly.pts.array[h];
+
+							for(i = 0; i < h; i++,px++,py++) {
+								minx = MIN(minx, *px + tx);
+								miny = MIN(miny, *py);
+								maxx = MAX(maxx, *px + tx);
+								maxy = MAX(maxy, *py);
+							}
+						}
+						break;
+				}
+			}
+			space = g->xdelta;
+		}
+		else {
+			rnd_box_t *ds = &font->unknown_glyph;
+			rnd_coord_t w = ds->X2 - ds->X1;
+
+			minx = MIN(minx, ds->X1 + tx);
+			miny = MIN(miny, ds->Y1);
+			minx = MIN(minx, ds->X2 + tx);
+			miny = MIN(miny, ds->Y2);
+			maxx = MAX(maxx, ds->X1 + tx);
+			maxy = MAX(maxy, ds->Y1);
+			maxx = MAX(maxx, ds->X2 + tx);
+			maxy = MAX(maxy, ds->Y2);
+
+			space = w / 5;
+		}
+		tx += width + space;
+	}
+
+	/* it is enough to do the transformations only once, on the raw bounding box:
+	   calculate the transformed coordinates of all 4 corners of the raw
+	   (non-axis-aligned) bounding box */
+	cx[0] = rnd_round(rnd_xform_x(mx, minx, miny));
+	cy[0] = rnd_round(rnd_xform_y(mx, minx, miny));
+	cx[1] = rnd_round(rnd_xform_x(mx, maxx, miny));
+	cy[1] = rnd_round(rnd_xform_y(mx, maxx, miny));
+	cx[2] = rnd_round(rnd_xform_x(mx, maxx, maxy));
+	cy[2] = rnd_round(rnd_xform_y(mx, maxx, maxy));
+	cx[3] = rnd_round(rnd_xform_x(mx, minx, maxy));
+	cy[3] = rnd_round(rnd_xform_y(mx, minx, maxy));
 }
