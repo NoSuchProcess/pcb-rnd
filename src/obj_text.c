@@ -498,6 +498,8 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 
 			for(arc = arclist_first(&symbol[*s].arcs); arc != NULL; arc = arclist_next(arc)) {
 				pcb_arc_bbox(arc);
+				minx = MIN(minx, arc->bbox_naked.X1);
+				miny = MIN(miny, arc->bbox_naked.Y1);
 				maxx = MAX(maxx, arc->bbox_naked.X2);
 				maxy = MAX(maxy, arc->bbox_naked.Y2);
 			}
@@ -506,6 +508,8 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 				int n;
 				rnd_point_t *pnt;
 				for(n = 0, pnt = poly->Points; n < poly->PointN; n++,pnt++) {
+					minx = MIN(minx, pnt->X + tx);
+					miny = MIN(miny, pnt->Y);
 					maxx = MAX(maxx, pnt->X + tx);
 					maxy = MAX(maxy, pnt->Y);
 				}
