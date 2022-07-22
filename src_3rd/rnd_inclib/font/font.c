@@ -293,7 +293,7 @@ RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
 	dst->Y2 = a->cy + a->r * maxy;
 }
 
-void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width)
+RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int compat, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
 {
 	const unsigned char *s;
 	int space, width;
@@ -316,7 +316,10 @@ void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font
 
 	/* We are initially computing the bbox of the un-scaled text but
 	   min_line_width is interpreted on the scaled text. */
-	min_unscaled_radius = (min_line_width * (2/(scx+scy))) / 2;
+	if (compat)
+		min_unscaled_radius = (min_line_width * (100.0 / (double)scale)) / 2;
+	else
+		min_unscaled_radius = (min_line_width * (2/(scx+scy))) / 2;
 
 	/* calculate size of the bounding box */
 	for (s = string; *s != '\0'; s++) {
@@ -412,4 +415,14 @@ void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font
 	cy[2] = rnd_round(rnd_xform_y(mx, maxx, maxy));
 	cx[3] = rnd_round(rnd_xform_x(mx, minx, maxy));
 	cy[3] = rnd_round(rnd_xform_y(mx, minx, maxy));
+}
+
+void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width)
+{
+	rnd_font_string_bbox_(cx, cy, 0, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, 0);
+}
+
+void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
+{
+	rnd_font_string_bbox_(cx, cy, 1, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, scale);
 }
