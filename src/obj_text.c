@@ -1609,6 +1609,7 @@ static void font_draw_atom_user_cb(void *cb_ctx, const rnd_glyph_atom_t *a)
 		case RND_GLYPH_LINE:
 			{
 				pcb_line_t newline = {0};
+				newline.type = PCB_OBJ_LINE;
 				newline.Point1.X = a->line.x1;
 				newline.Point1.Y = a->line.y1;
 				newline.Point2.X = a->line.x2;
@@ -1620,6 +1621,7 @@ static void font_draw_atom_user_cb(void *cb_ctx, const rnd_glyph_atom_t *a)
 		case RND_GLYPH_ARC:
 			{
 				pcb_arc_t newarc = {0};
+				newarc.type = PCB_OBJ_ARC;
 				newarc.X = a->arc.cx;
 				newarc.Y = a->arc.cy;
 				newarc.StartAngle = a->arc.start;
