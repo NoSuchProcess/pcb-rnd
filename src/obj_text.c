@@ -1632,11 +1632,10 @@ static void font_draw_atom_user_cb(void *cb_ctx, const rnd_glyph_atom_t *a)
 		case RND_GLYPH_POLY:
 			{
 				rnd_point_t *p;
-				pcb_poly_t po;
+				pcb_poly_t po = {0};
 				rnd_point_t pt[MAX_SIMPLE_POLY_POINTS];
 				int n, half = a->poly.pts.used/2;
 
-				memset(&po, 0, sizeof(po));
 				po.type = PCB_OBJ_POLY;
 				po.PointN = half;
 				po.Points = pt;
