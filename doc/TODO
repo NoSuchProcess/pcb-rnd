@@ -2,14 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - font rewrite:
-	- test rendering to ensure matching behavior
-		- bbox tests:
-			- scale
-			- scx, scy
-			- rot
-		- test with real font
-			- pcb+arc
-			- osifont for polygons
+	- default-arc font, '2': results in different bbox height
 
 2. For later releases ===============================================================================
 - FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
