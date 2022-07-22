@@ -316,7 +316,7 @@ void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font
 
 	/* We are initially computing the bbox of the un-scaled text but
 	   min_line_width is interpreted on the scaled text. */
-	min_unscaled_radius = (min_line_width * (scx+scy)/2) / 2;
+	min_unscaled_radius = (min_line_width * (2/(scx+scy))) / 2;
 
 	/* calculate size of the bounding box */
 	for (s = string; *s != '\0'; s++) {
