@@ -1697,7 +1697,7 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font
 		cb_ctx = &ucb;
 	}
 
-	rnd_font_draw_string(&font->rnd_font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, cb, cb_ctx);
+	rnd_font_draw_string(&font->rnd_font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, cb, cb_ctx);
 }
 
 
