@@ -50,10 +50,10 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 } rnd_font_t;
 
 
-typedef enum { /* bitfield - order matters for backward compatibility */
-	RND_TXT_MIRROR_NO = 0,
-	RND_TXT_MIRROR_Y = 1, /* change Y coords (mirror over the X axis) */
-	RND_TXT_MIRROR_X = 2  /* change X coords (mirror over the Y axis) */
+typedef enum {                 /* bitfield - order matters for backward compatibility */
+	RND_FONT_MIRROR_NO = 0,
+	RND_FONT_MIRROR_Y = 1,       /* change Y coords (mirror over the X axis) */
+	RND_FONT_MIRROR_X = 2        /* change X coords (mirror over the Y axis) */
 } rnd_font_mirror_t;
 
 typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */

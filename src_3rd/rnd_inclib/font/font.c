@@ -170,8 +170,8 @@ RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned cha
 	rnd_coord_t x = 0;
 
 	rnd_xform_mx_translate(mx, x0, y0);
-	if (mirror != RND_TXT_MIRROR_NO)
-		rnd_xform_mx_scale(mx, (mirror & RND_TXT_MIRROR_X) ? -1 : 1, (mirror & RND_TXT_MIRROR_Y) ? -1 : 1);
+	if (mirror != RND_FONT_MIRROR_NO)
+		rnd_xform_mx_scale(mx, (mirror & RND_FONT_MIRROR_X) ? -1 : 1, (mirror & RND_FONT_MIRROR_Y) ? -1 : 1);
 	rnd_xform_mx_rotate(mx, rotdeg);
 	rnd_xform_mx_scale(mx, scx, scy);
 
