@@ -1191,6 +1191,24 @@ void pcb_line_mirror(pcb_line_t *line, rnd_coord_t y_offs, rnd_bool undoable)
 	if (undoable) pcb_undo_inc_serial();
 }
 
+void pcb_line_modify(pcb_line_t *line, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2, rnd_coord_t *thick, rnd_coord_t *clr, rnd_bool undoable)
+{
+	undo_line_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(line->parent.layer->parent.data), &undo_line_geo, sizeof(undo_line_geo_t));
+
+	g->line = line;
+	g->Point1.X  = (x1 == NULL) ? line->Point1.X : *x1;
+	g->Point1.Y  = (y1 == NULL) ? line->Point1.Y : *y1;
+	g->Point2.X  = (x2 == NULL) ? line->Point2.X : *x2;
+	g->Point2.Y  = (y2 == NULL) ? line->Point2.Y : *y2;
+	g->Thickness = (thick == NULL) ? line->Thickness : *thick;
+	g->Clearance = (clr == NULL) ? line->Clearance : *clr;
+
+	undo_line_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+}
+
 void pcb_line_scale(pcb_line_t *line, double sx, double sy, double sth)
 {
 	int onbrd = (line->parent.layer != NULL) && (!line->parent.layer->is_bound);
