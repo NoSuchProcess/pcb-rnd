@@ -570,6 +570,19 @@
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h draw.h layer.h layer_vis.h funchash_core.h \
  funchash_core_list.h hid_cam.h
+../src_plugins/export_debug/export_debug.o: \
+ ../src_plugins/export_debug/export_debug.c ../config.h conf_core.h \
+ globalconst.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/rnd_inclib/font/font.h \
+ ../src_3rd/rnd_inclib/font/glyph.h ../src_3rd/rnd_inclib/font/vtgla.h \
+ obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h data.h \
+ crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
+ obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h draw.h layer.h layer_vis.h funchash_core.h \
+ funchash_core_list.h hid_cam.h
 ../src_plugins/export_dxf/dxf.o: ../src_plugins/export_dxf/dxf.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
@@ -799,6 +812,29 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
  netlist.h plug_io.h plug_footprint.h obj_pstk_inlines.h thermal.h \
  operation.h hid_cam.h
+../src_plugins/export_stl/export_stl.o: \
+ ../src_plugins/export_stl/export_stl.c ../config.h hid_cam.h layer.h \
+ globalconst.h attrib.h global_typedefs.h obj_common.h flag.h \
+ data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/glyph.h \
+ ../src_3rd/rnd_inclib/font/vtgla.h obj_gfx_list.h obj_gfx.h data.h \
+ crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h layer_grp.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h funchash_core.h funchash_core_list.h layer.h \
+ obj_pstk_inlines.h board.h vtroutestyle.h rats_patch.h data.h thermal.h \
+ operation.h plug_io.h plug_footprint.h conf_core.h \
+ ../src_plugins/export_stl/../lib_polyhelp/topoly.h board.h obj_common.h \
+ ../src_plugins/export_stl/../lib_polyhelp/triangulate.h \
+ ../src_3rd/fast89-poly2tri/fast89_poly2tri.h \
+ ../src_plugins/export_stl/verthash.c \
+ ../src_plugins/export_stl/exp_fmt_stl.c \
+ ../src_plugins/export_stl/exp_fmt_amf.c \
+ ../src_plugins/export_stl/exp_fmt_proj.c \
+ ../src_plugins/export_stl/stl_models.c \
+ ../src_plugins/export_stl/model_load_stl.c \
+ ../src_plugins/export_stl/model_load_amf.c
 ../src_plugins/export_svg/draw_svg.o: \
  ../src_plugins/export_svg/draw_svg.c \
  ../src_plugins/export_svg/draw_svg.h
@@ -3682,9 +3718,9 @@ obj_term.o: obj_term.c ../config.h change.h board.h vtroutestyle.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h
-obj_text.o: obj_text.c ../config.h rotate.h global_typedefs.h board.h \
- vtroutestyle.h attrib.h layer.h globalconst.h obj_common.h flag.h \
- data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+obj_text.o: obj_text.c ../config.h brave.h rotate.h global_typedefs.h \
+ board.h vtroutestyle.h attrib.h layer.h globalconst.h obj_common.h \
+ flag.h data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/glyph.h \
  ../src_3rd/rnd_inclib/font/vtgla.h obj_gfx_list.h obj_gfx.h layer_grp.h \
