@@ -324,7 +324,7 @@ void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font
 			long n;
 			rnd_glyph_t *g = &font->glyph[*s];
 
-			width = g->width + space;
+			width = g->width;
 			for(n = 0; n < g->atoms.used; n++) {
 				rnd_glyph_atom_t *a = &g->atoms.array[n];
 				rnd_coord_t unscaled_radius;
