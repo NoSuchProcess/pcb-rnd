@@ -357,6 +357,7 @@ void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font
 
 					case RND_GLYPH_ARC:
 						font_arc_bbox(&b, a);
+						unscaled_radius = RND_MAX(min_unscaled_radius, a->arc.thickness / 4);
 						minx = MIN(minx, b.X1 + tx - unscaled_radius);
 						miny = MIN(miny, b.Y1 - unscaled_radius);
 						maxx = MAX(maxx, b.X2 + tx + unscaled_radius);
