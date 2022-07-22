@@ -428,7 +428,7 @@ int pcb_text_old_scale(pcb_text_t *text, int *scale_out)
 }
 
 /* creates the bounding box of a text object */
-void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
+static void pcb_text_bbox_orig(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
 	pcb_symbol_t *symbol;
 	unsigned char *s, *rendered = pcb_text_render_str(Text);
@@ -573,6 +573,55 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	rnd_close_box(&Text->BoundingBox);
 	pcb_text_free_str(Text, rendered);
 }
+
+static void pcb_text_bbox_rnd(pcb_font_t *FontPtr, pcb_text_t *Text)
+{
+
+}
+
+void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
+{
+	pcb_text_bbox_orig(FontPtr, Text);
+
+	if (pcb_brave & PCB_BRAVE_NEWFONT) {
+		rnd_coord_t cx[4], cy[4];
+		unsigned char *rendered = pcb_text_render_str(Text);
+		double scx, scy;
+		rnd_coord_t min_line_width;
+		pcb_font_t *font = pcb_font(PCB, Text->fid, 1);
+
+	/* Calculate the bounding box based on the larger of the thicknesses
+	 * the text might clamped at on silk or copper layers. */
+		min_line_width = MAX(conf_core.design.min_wid, conf_core.design.min_slk);
+
+		pcb_text_get_scale_xy(Text, &scx, &scy);
+		rnd_font_string_bbox(cx, cy, &font->rnd_font, rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width);
+		pcb_text_free_str(Text, rendered);
+
+		rnd_trace("orig   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);
+
+		/* calculate the axis-aligned version */
+		Text->bbox_naked.X1 = Text->bbox_naked.X2 = cx[0];
+		Text->bbox_naked.Y1 = Text->bbox_naked.Y2 = cy[0];
+		rnd_box_bump_point(&Text->bbox_naked, cx[1], cy[1]);
+		rnd_box_bump_point(&Text->bbox_naked, cx[2], cy[2]);
+		rnd_box_bump_point(&Text->bbox_naked, cx[3], cy[3]);
+		rnd_close_box(&Text->bbox_naked);
+
+		/* the bounding box covers the extent of influence
+		 * so it must include the clearance values too
+		 */
+		Text->BoundingBox.X1 = Text->bbox_naked.X1 - conf_core.design.bloat;
+		Text->BoundingBox.Y1 = Text->bbox_naked.Y1 - conf_core.design.bloat;
+		Text->BoundingBox.X2 = Text->bbox_naked.X2 + conf_core.design.bloat;
+		Text->BoundingBox.Y2 = Text->bbox_naked.Y2 + conf_core.design.bloat;
+		rnd_close_box(&Text->BoundingBox);
+
+		rnd_trace(" new   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);
+
+	}
+}
+
 
 int pcb_text_eq(const pcb_host_trans_t *tr1, const pcb_text_t *t1, const pcb_host_trans_t *tr2, const pcb_text_t *t2)
 {
