@@ -339,9 +339,148 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static void font_xform(pcb_xform_mx_t mx)
+{
+	pcb_line_t *l;
+	pcb_arc_t *a;
+	pcb_poly_t *p;
+	gdl_iterator_t it;
+	pcb_layer_t *lfont, *lwidth;
+	rnd_coord_t s, ox, oy;
+
+	lfont = PCB->Data->Layer + 0;
+	lwidth = PCB->Data->Layer + 2;
+
+	/* xform lines */
+	linelist_foreach(&lfont->Line, &it, l) {
+		rnd_coord_t x1, y1, x2, y2, nx1, ny1, nx2, ny2;
+		s = XYtoSym(l->Point1.X, l->Point1.Y);
+		ox = (s % 16 + 1) * CELL_SIZE;
+		oy = (s / 16 + 1) * CELL_SIZE;
+
+		x1 = l->Point1.X - ox; y1 = l->Point1.Y - oy;
+		x2 = l->Point2.X - ox; y2 = l->Point2.Y - oy;
+
+		nx1 = rnd_round(pcb_xform_x(mx, x1, y1));
+		ny1 = rnd_round(pcb_xform_y(mx, x1, y1));
+		nx2 = rnd_round(pcb_xform_x(mx, x2, y2));
+		ny2 = rnd_round(pcb_xform_y(mx, x2, y2));
+
+		if ((nx1 != x1) || (ny1 != y1) || (nx2 != x2) || (ny2 != y2)) {
+			nx1 += ox; ny1 += oy;
+			nx2 += ox; ny2 += oy;
+			pcb_line_modify(l, &nx1, &ny1, &nx2, &ny2, NULL, NULL, 1);
+		}
+	}
+
+	/* xform arcs */
+	arclist_foreach(&lfont->Arc, &it, a) {
+		int cx = (a->BoundingBox.X1 + a->BoundingBox.X2)/2;
+		int cy = (a->BoundingBox.Y1 + a->BoundingBox.Y2)/2;
+		rnd_coord_t x, y, nx, ny;
+
+		s = XYtoSym(cx, cy);
+		ox = (s % 16 + 1) * CELL_SIZE;
+		oy = (s / 16 + 1) * CELL_SIZE;
+
+		x = a->X - ox; y = a->Y - oy;
+
+		nx = rnd_round(pcb_xform_x(mx, x, y));
+		ny = rnd_round(pcb_xform_y(mx, x, y));
+
+		if ((nx != x) || (ny != y))
+			pcb_move_obj(PCB_OBJ_ARC, a->parent.layer, a, a, nx-x, ny-y);
+	}
+
+	/* xform polygons */
+	polylist_foreach(&lfont->Polygon, &it, p) {
+		rnd_coord_t x1 = p->Points[0].X;
+		rnd_coord_t y1 = p->Points[0].Y;
+		int n;
+
+		s = XYtoSym(x1, y1);
+		ox = (s % 16 + 1) * CELL_SIZE;
+		oy = (s / 16 + 1) * CELL_SIZE;
+
+		for(n = 0; n < p->PointN; n++) {
+			/*np->Points[n].X*/
+		}
+	}
+
+	/* xform delta */
+	linelist_foreach(&lwidth->Line, &it, l) {
+		rnd_coord_t x1, y1, x2, y2, nx1, ny1, nx2, ny2, nx;
+
+		s = XYtoSym(l->Point1.X, l->Point1.Y);
+		ox = (s % 16 + 1) * CELL_SIZE;
+		oy = (s / 16 + 1) * CELL_SIZE;
+
+		x1 = l->Point1.X - ox; y1 = l->Point1.Y - oy;
+		x2 = l->Point2.X - ox; y2 = l->Point2.Y - oy;
+
+		nx1 = rnd_round(pcb_xform_x(mx, x1, y1));
+		ny1 = rnd_round(pcb_xform_y(mx, x1, y1));
+		nx2 = rnd_round(pcb_xform_x(mx, x2, y2));
+		ny2 = rnd_round(pcb_xform_y(mx, x2, y2));
+
+		nx = RND_MAX(nx1, nx2);
+
+		if ((nx != x1) || (ny1 != y1) || (nx != x2) || (ny2 != y2)) {
+			ny1 += oy;
+			ny2 += oy;
+			nx += ox;
+			pcb_line_modify(l, &nx, &ny1, &nx, &ny2, NULL, NULL, 1);
+		}
+
+	}
+}
+
+
+static const char pcb_acts_FontXform[] = "FontXform(xform1, params..., [xform2, params...], ...)";
+static const char pcb_acth_FontXform[] = "Transform font graphics in fontmode (FontEdit)";
+static fgw_error_t pcb_act_FontXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int n;
+	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
+
+	for(n = 1; n < argc;) {
+		const char *cmd;
+		RND_ACT_CONVARG(n, FGW_STR, FontXform, cmd = argv[n].val.str);
+		if (strcmp(cmd, "move") == 0) {
+			rnd_coord_t dx, dy;
+			RND_ACT_CONVARG(n+1, FGW_COORD, FontXform, dx = fgw_coord(&argv[n+1]));
+			RND_ACT_CONVARG(n+2, FGW_COORD, FontXform, dy = fgw_coord(&argv[n+2]));
+
+			pcb_xform_mx_translate(mx, dx, dy);
+			n += 3;
+		}
+		else if (strcmp(cmd, "shear") == 0) {
+			double sx, sy;
+			RND_ACT_CONVARG(n+1, FGW_DOUBLE, FontXform, sx = argv[n+1].val.nat_double);
+			RND_ACT_CONVARG(n+2, FGW_DOUBLE, FontXform, sy = argv[n+2].val.nat_double);
+			pcb_xform_mx_shear(mx, sx, sy);
+			n += 3;
+		}
+		else {
+			rnd_message(RND_MSG_ERROR, "FontXform(): invalid transformation name '%s'\n", cmd);
+			return FGW_ERR_ARG_CONV;
+		}
+	}
+
+	pcb_undo_freeze_serial();
+	font_xform(mx);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
+
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 rnd_action_t fontmode_action_list[] = {
 	{"FontEdit", pcb_act_FontEdit, pcb_acth_fontedit, pcb_acts_fontedit},
-	{"FontSave", pcb_act_FontSave, pcb_acth_fontsave, pcb_acts_fontsave}
+	{"FontSave", pcb_act_FontSave, pcb_acth_fontsave, pcb_acts_fontsave},
+	{"FontXform", pcb_act_FontXform, pcb_acth_FontXform, pcb_acts_FontXform},
+
 };
 
 static const char *fontmode_cookie = "fontmode plugin";
