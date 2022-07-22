@@ -336,7 +336,9 @@ void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font
 							   NB: Divide 4 in thickness calculation is comprised of a factor
 							       of 1/2 to get a radius from the center-line, and a factor
 							       of 1/2 because some stupid reason we render our glyphs
-							       at half their defined stroke-width. */
+							       at half their defined stroke-width. 
+							   WARNING: need to keep it for pcb-rnd backward compatibility
+							*/
 						unscaled_radius = RND_MAX(min_unscaled_radius, a->line.thickness / 4);
 
 						if (first_time) {
@@ -357,7 +359,7 @@ void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font
 
 					case RND_GLYPH_ARC:
 						font_arc_bbox(&b, a);
-						unscaled_radius = RND_MAX(min_unscaled_radius, a->arc.thickness / 4);
+						unscaled_radius = RND_MAX(min_unscaled_radius, a->arc.thickness / 2);
 						minx = MIN(minx, b.X1 + tx - unscaled_radius);
 						miny = MIN(miny, b.Y1 - unscaled_radius);
 						maxx = MAX(maxx, b.X2 + tx + unscaled_radius);
