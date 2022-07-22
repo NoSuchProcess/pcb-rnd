@@ -9,7 +9,7 @@
 			- pcb+arc
 			- osifont for polygons
 	- implement simplified draw
-	- test user callback on pcb-rnd level: pcb_text_decompose_string()
+	- test user callback on pcb-rnd level: pcb_text_decompose_string() in detailed poly clearance
 
 2. For later releases ===============================================================================
 - FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
