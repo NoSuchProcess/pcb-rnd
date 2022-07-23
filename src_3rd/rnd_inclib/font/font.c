@@ -363,7 +363,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 					break;
 
 					case RND_GLYPH_ARC:
-						font_arc_bbox(&b, a);
+						font_arc_bbox(&b, &a->arc);
 
 						if (compat)
 							unscaled_radius = a->arc.thickness / 2;
