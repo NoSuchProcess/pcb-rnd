@@ -388,10 +388,14 @@ void pcb_font_free(pcb_font_t *f)
 void pcb_fontkit_free(pcb_fontkit_t *fk)
 {
 	pcb_font_free(&fk->dflt);
+	rnd_font_free(&fk->dflt.rnd_font);
 	if (fk->hash_inited) {
 		htip_entry_t *e;
-		for (e = htip_first(&fk->fonts); e; e = htip_next(&fk->fonts, e))
-			pcb_font_free(e->value);
+		for (e = htip_first(&fk->fonts); e; e = htip_next(&fk->fonts, e)) {
+			pcb_font_t *f = e->value;
+			pcb_font_free(f);
+			rnd_font_free(&f->rnd_font);
+		}
 		htip_uninit(&fk->fonts);
 		fk->hash_inited = 0;
 	}
@@ -403,7 +407,9 @@ void pcb_fontkit_reset(pcb_fontkit_t *fk)
 	if (fk->hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&fk->fonts); e; e = htip_first(&fk->fonts)) {
-			pcb_font_free(e->value);
+			pcb_font_t *f = e->value;
+			pcb_font_free(f);
+			rnd_font_free(&f->rnd_font);
 			htip_delentry(&fk->fonts, e);
 		}
 	}
@@ -423,12 +429,15 @@ static void update_last_id(pcb_fontkit_t *fk)
 int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
 {
 	htip_entry_t *e;
+	pcb_font_t *f;
 
 	if ((id == 0) || (!fk->hash_inited) || (htip_get(&fk->fonts, id) == NULL))
 		return -1;
 
 	e = htip_popentry(&fk->fonts, id);
-	pcb_font_free(e->value);
+	f = e->value;
+	pcb_font_free(f);
+	rnd_font_free(&f->rnd_font);
 	rnd_event(&PCB->hidlib, PCB_EVENT_FONT_CHANGED, "i", id);
 	if (id == fk->last_id)
 		update_last_id(fk);
