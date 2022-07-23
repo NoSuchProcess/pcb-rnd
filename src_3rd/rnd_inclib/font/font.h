@@ -91,6 +91,8 @@ void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font
    is at the zero position. The y coordinates are moved so that min(y) = 0 */
 void rnd_font_normalize(rnd_font_t *f);
 
+/* Count the number of characters in s that wouldn't render with the given font */
+int rnd_font_invalid_chars(rnd_font_t *font, const unsigned char *s);
 
 void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src);
 

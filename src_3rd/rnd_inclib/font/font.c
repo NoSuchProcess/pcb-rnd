@@ -626,6 +626,18 @@ void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)
 		dst->name = rnd_strdup(src->name);
 }
 
+int rnd_font_invalid_chars(rnd_font_t *font, const unsigned char *s)
+{
+	int ctr;
+
+	for(ctr = 0; *s != '\0'; s++)
+		if ((*s > RND_FONT_MAX_GLYPHS) || (!font->glyph[*s].valid))
+			ctr++;
+
+	return ctr;
+}
+
+
 rnd_glyph_line_t *rnd_font_new_line_in_glyph(rnd_glyph_t *glyph, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness)
 {
 	rnd_glyph_atom_t *a = vtgla_alloc_append(&glyph->atoms, 1);
