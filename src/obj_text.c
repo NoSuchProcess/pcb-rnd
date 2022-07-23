@@ -574,11 +574,6 @@ static void pcb_text_bbox_orig(pcb_font_t *FontPtr, pcb_text_t *Text)
 	pcb_text_free_str(Text, rendered);
 }
 
-static void pcb_text_bbox_rnd(pcb_font_t *FontPtr, pcb_text_t *Text)
-{
-
-}
-
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
 	pcb_text_bbox_orig(FontPtr, Text);
