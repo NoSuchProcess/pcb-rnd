@@ -434,9 +434,6 @@ void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font
 	rnd_font_string_bbox_(cx, cy, 1, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, scale);
 }
 
-
-/* transforms symbol coordinates so that the left edge of each symbol
-   is at the zero position. The y coordinates are moved so that min(y) = 0 */
 void rnd_font_normalize(rnd_font_t *f)
 {
 	long i, n, m, h;

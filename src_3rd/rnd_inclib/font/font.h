@@ -63,8 +63,6 @@ typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readab
 	RND_FONT_TINY_ACCURATE       /* always draw text accurately, even if it will end up unreadable */
 } rnd_font_tiny_t;
 
-void rnd_font_set_info(rnd_font_t *dst);
-
 rnd_glyph_line_t *rnd_font_new_line_in_glyph(rnd_glyph_t *glyph, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness);
 rnd_glyph_arc_t *rnd_font_new_arc_in_glyph(rnd_glyph_t *glyph, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_angle_t start, rnd_angle_t delta, rnd_coord_t thickness);
 rnd_glyph_poly_t *rnd_font_new_poly_in_glyph(rnd_glyph_t *glyph, int num_points);
@@ -88,6 +86,10 @@ RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned cha
 /* Calculate all 4 corners of the transformed (e.g. rotated) box in cx;cy */
 void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width);
 void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale);
+
+/* transforms symbol coordinates so that the left edge of each symbol
+   is at the zero position. The y coordinates are moved so that min(y) = 0 */
+void rnd_font_normalize(rnd_font_t *f);
 
 
 /*** embedded (internal) font ***/
