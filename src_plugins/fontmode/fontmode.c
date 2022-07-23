@@ -461,6 +461,13 @@ static fgw_error_t pcb_act_FontXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_xform_mx_shear(mx, sx, sy);
 			n += 3;
 		}
+		else if (strcmp(cmd, "scale") == 0) {
+			double sx, sy;
+			RND_ACT_CONVARG(n+1, FGW_DOUBLE, FontXform, sx = argv[n+1].val.nat_double);
+			RND_ACT_CONVARG(n+2, FGW_DOUBLE, FontXform, sy = argv[n+2].val.nat_double);
+			pcb_xform_mx_scale(mx, sx, sy);
+			n += 3;
+		}
 		else {
 			rnd_message(RND_MSG_ERROR, "FontXform(): invalid transformation name '%s'\n", cmd);
 			return FGW_ERR_ARG_CONV;
