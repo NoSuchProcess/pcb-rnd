@@ -49,6 +49,7 @@
 #include <librnd/core/compat_misc.h>
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "netlist.h"
+#include <rnd_inclib/font/font.h>
 
 #include "rst_parse.c"
 
@@ -67,6 +68,7 @@
 static	pcb_layer_t *Layer;
 static	pcb_poly_t *Polygon;
 static	pcb_symbol_t *Symbol;
+static	rnd_glyph_t *Glyph;
 static	int		pin_num;
 static pcb_net_t *currnet;
 static	rnd_bool			LayerFlag[PCB_MAX_LAYER + 2];
@@ -79,6 +81,7 @@ extern	pcb_data_t *	yyData;
 extern	pcb_subc_t *yysubc;
 extern	rnd_coord_t yysubc_ox, yysubc_oy;
 extern	pcb_font_t *	yyFont;
+extern	rnd_font_t *	yyRndFont;
 extern	rnd_bool	yyFontReset;
 extern	int				pcb_lineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
@@ -171,6 +174,7 @@ parsepcb
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
 					LayerFlag[i] = rnd_false;
 				yyFont = &yyPCB->fontkit.dflt;
+				yyRndFont = &yyPCB->fontkit.dflt.rnd_font;
 				yyFontkitValid = &yyPCB->fontkit.valid;
 				yyData = yyPCB->Data;
 				PCB_SET_PARENT(yyData, board, yyPCB);
@@ -290,14 +294,16 @@ parsefont
 				}
 				if (yyFontReset) {
 					pcb_font_free (yyFont);
+					rnd_font_free (yyRndFont);
 					yyFont->id = 0;
 				}
 				*yyFontkitValid = rnd_false;
 			}
-		  symbols
+			symbols
 			{
 				*yyFontkitValid = rnd_true;
-		  		pcb_font_set_info(yyFont);
+				pcb_font_set_info(yyFont);
+				rnd_font_font_normalize(yyRndFont);
 			}
 		;
 
@@ -1209,6 +1215,7 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 					YYABORT;
 				}
 				Symbol = &yyFont->Symbol[$3];
+				Glyph = &yyRndFont->glyph[$3];
 				if (Symbol->Valid)
 				{
 					yyerror("symbol ID used twice");
@@ -1216,6 +1223,8 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 				}
 				Symbol->Valid = rnd_true;
 				Symbol->Delta = NU ($4);
+				Glyph->valid = rnd_true;
+				Glyph->xdelta = NU ($4);
 			}
 		| T_SYMBOL '(' symbolid measure ')' '('
 			{
@@ -1225,6 +1234,7 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 					YYABORT;
 				}
 				Symbol = &yyFont->Symbol[$3];
+				Glyph = &yyRndFont->glyph[$3];
 				if (Symbol->Valid)
 				{
 					yyerror("symbol ID used twice");
@@ -1232,6 +1242,8 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 				}
 				Symbol->Valid = rnd_true;
 				Symbol->Delta = OU ($4);
+				Glyph->valid = rnd_true;
+				Glyph->xdelta = OU ($4);
 			}
 		;
 
@@ -1251,6 +1263,7 @@ symboldefinition
 		: T_SYMBOLLINE '(' measure measure measure measure measure ')'
 			{
 				pcb_font_new_line_in_sym(Symbol, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
+				rnd_font_new_line_in_glyph(Glyph, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
 			}
 		;
 hiressymbol
@@ -1258,6 +1271,7 @@ hiressymbol
 		: T_SYMBOLLINE '[' measure measure measure measure measure ']'
 			{
 				pcb_font_new_line_in_sym(Symbol, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
+				rnd_font_new_line_in_glyph(Glyph, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
 			}
 		;
 

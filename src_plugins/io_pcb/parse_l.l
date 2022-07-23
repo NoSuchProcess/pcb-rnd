@@ -74,6 +74,7 @@ pcb_data_t *	yyData;
 pcb_subc_t *yysubc;
 rnd_coord_t yysubc_ox, yysubc_oy;
 pcb_font_t *	yyFont;
+rnd_font_t *	yyRndFont;
 rnd_conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
 int *yyFontkitValid;
@@ -325,6 +326,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, c
 	yyData = Ptr;
 	pcb_data_set_layer_parents(Ptr);
 	yyFont = pcb_font(PCB, 0, 1);
+	yyRndFont = &yyFont->rnd_font;
 	yyFontReset = rnd_false;
 	yyFontkitValid = NULL;
 	yysubc = NULL;
@@ -375,6 +377,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yyPCB = Ptr;
 	yyData = NULL;
 	yyFont = NULL;
+	yyRndFont = NULL;
 	yyFontReset = rnd_true;
 	yyFontkitValid = NULL;
 	yysubc = NULL;
@@ -482,6 +485,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yy_parse_tags = 1;
 	yyPCB = NULL;
 	yyFont = Ptr;
+	yyRndFont = &yyFont->rnd_font;
 	yyFontkitValid = &valid;
 	yysubc = NULL;
 	yyFontReset = rnd_false;

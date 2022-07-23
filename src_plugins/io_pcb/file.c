@@ -784,6 +784,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 extern pcb_board_t *yyPCB;
 extern pcb_data_t *yyData;
 extern pcb_font_t *yyFont;
+extern	rnd_font_t *yyRndFont;
 extern int yyElemFixLayers;
 
 void PreLoadElementPCB()
@@ -793,6 +794,7 @@ void PreLoadElementPCB()
 		return;
 
 	yyFont = &yyPCB->fontkit.dflt;
+	yyRndFont = &yyPCB->fontkit.dflt.rnd_font;
 	yyData = yyPCB->Data;
 	PCB_SET_PARENT(yyData, board, yyPCB);
 	yyData->LayerN = 0;
