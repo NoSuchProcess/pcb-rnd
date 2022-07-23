@@ -2881,8 +2881,10 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 			rnd_message(RND_MSG_ERROR, "Not a font lihata.\n");
 		res = -1;
 	}
-	else
+	else {
 		res = parse_font(Ptr, doc->root->data.list.first);
+		rnd_font_lht_parse_font(&Ptr->rnd_font, doc->root->data.list.first);
+	}
 
 	free(errmsg);
 	lht_dom_uninit(doc);
