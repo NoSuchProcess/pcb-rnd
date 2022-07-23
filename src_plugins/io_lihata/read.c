@@ -2284,7 +2284,8 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 				return iolht_error(nd, "Failed to allocate font id %d (name '%s').\n", id, n->name);
 		}
 		else {
-			pcb_font_free (&fk->dflt);
+			pcb_font_free(&fk->dflt);
+			rnd_font_free(&fk->dflt.rnd_font);
 			fk->dflt.id = 0; /* restore default font's ID */
 			f = &fk->dflt;
 		}
