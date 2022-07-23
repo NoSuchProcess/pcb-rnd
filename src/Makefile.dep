@@ -3730,7 +3730,7 @@ obj_text.o: obj_text.c ../config.h brave.h rotate.h global_typedefs.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h event.h obj_text_op.h operation.h \
  obj_poly_draw.h draw.h obj_arc_draw.h obj_subc_parent.h obj_hash.h \
- obj_line_draw.h obj_text_draw.h conf_core.h layer_ui.h
+ obj_line_draw.h obj_text_draw.h conf_core.h layer_ui.h obj_text_old.c
 obj_text_list.o: obj_text_list.c obj_poly_list.h obj_poly.h ../config.h \
  obj_common.h flag.h globalconst.h attrib.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_text_list.h obj_text.h font.h \
