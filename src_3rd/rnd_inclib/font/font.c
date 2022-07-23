@@ -588,6 +588,44 @@ void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, r
 	rnd_font_normalize(font);
 }
 
+void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)
+{
+	int n, m;
+	rnd_glyph_t *dg;
+	const rnd_glyph_t *sg;
+
+	memcpy(dst, src, sizeof(rnd_font_t));
+
+	/* dup each glyph (copy all atoms) */
+	for(n = 0, sg = src->glyph, dg = dst->glyph; n <= RND_FONT_MAX_GLYPHS; n++,sg++,dg++) {
+		rnd_glyph_atom_t *da;
+		const rnd_glyph_atom_t *sa;
+		long size = sizeof(rnd_glyph_atom_t) * sg->atoms.used;
+
+		dg->atoms.array = malloc(size);
+		memcpy(dg->atoms.array, sg->atoms.array, size);
+		dg->atoms.used = dg->atoms.alloced = sg->atoms.used;
+
+		/* dup allocated fields of atoms */
+		for(m = 0, sa = sg->atoms.array, da = dg->atoms.array; m < dg->atoms.used; m++,sa++,da++) {
+			switch(sa->type) {
+				case RND_GLYPH_LINE:
+				case RND_GLYPH_ARC:
+					break; /* no allocated fields */
+				case RND_GLYPH_POLY:
+					size = sizeof(rnd_coord_t) * sa->poly.pts.used;
+					da->poly.pts.array = malloc(size);
+					memcpy(da->poly.pts.array, sa->poly.pts.array, size);
+					da->poly.pts.used = da->poly.pts.alloced = sa->poly.pts.used;
+					break;
+			}
+		}
+	}
+
+	if (src->name != NULL)
+		dst->name = rnd_strdup(src->name);
+}
+
 rnd_glyph_line_t *rnd_font_new_line_in_glyph(rnd_glyph_t *glyph, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness)
 {
 	rnd_glyph_atom_t *a = vtgla_alloc_append(&glyph->atoms, 1);

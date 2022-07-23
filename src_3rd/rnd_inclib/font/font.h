@@ -92,6 +92,8 @@ void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font
 void rnd_font_normalize(rnd_font_t *f);
 
 
+void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src);
+
 /*** embedded (internal) font ***/
 
 typedef struct embf_line_s {
