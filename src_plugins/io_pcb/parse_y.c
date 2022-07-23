@@ -1952,8 +1952,8 @@ yyreduce:
 					YYABORT;
 				}
 				if (yyFontReset) {
-					pcb_font_free (yyFont);
-					rnd_font_free (yyRndFont);
+					pcb_font_free(yyFont);
+					rnd_font_free(yyRndFont);
 					yyFont->id = 0;
 				}
 				*yyFontkitValid = rnd_false;

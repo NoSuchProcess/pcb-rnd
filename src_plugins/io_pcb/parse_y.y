@@ -293,8 +293,8 @@ parsefont
 					YYABORT;
 				}
 				if (yyFontReset) {
-					pcb_font_free (yyFont);
-					rnd_font_free (yyRndFont);
+					pcb_font_free(yyFont);
+					rnd_font_free(yyRndFont);
 					yyFont->id = 0;
 				}
 				*yyFontkitValid = rnd_false;
@@ -303,7 +303,7 @@ parsefont
 			{
 				*yyFontkitValid = rnd_true;
 				pcb_font_set_info(yyFont);
-				rnd_font_font_normalize(yyRndFont);
+				rnd_font_normalize(yyRndFont);
 			}
 		;
 
