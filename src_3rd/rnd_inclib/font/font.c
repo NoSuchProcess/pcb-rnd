@@ -590,3 +590,35 @@ void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, r
 	}
 	rnd_font_normalize(font);
 }
+
+rnd_glyph_line_t *rnd_font_new_line_in_glyph(rnd_glyph_t *glyph, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness)
+{
+	rnd_glyph_atom_t *a = vtgla_alloc_append(&glyph->atoms, 1);
+	a->line.type = RND_GLYPH_LINE;
+	a->line.x1 = x1;
+	a->line.y1 = y1;
+	a->line.x2 = x2;
+	a->line.y2 = y2;
+	a->line.thickness = thickness;
+	return &a->line;
+}
+
+rnd_glyph_arc_t *rnd_font_new_arc_in_glyph(rnd_glyph_t *glyph, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_angle_t start, rnd_angle_t delta, rnd_coord_t thickness)
+{
+	rnd_glyph_atom_t *a = vtgla_alloc_append(&glyph->atoms, 1);
+	a->arc.type = RND_GLYPH_ARC;
+	a->arc.cx = cx;
+	a->arc.cy = cy;
+	a->arc.r = r;
+	a->arc.start = start;
+	a->arc.delta = delta;
+	a->arc.thickness = thickness;
+	return &a->arc;
+}
+
+
+void rnd_font_free(rnd_font_t *f)
+{
+	TODO("implement");
+}
+
