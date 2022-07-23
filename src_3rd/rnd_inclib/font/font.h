@@ -38,6 +38,7 @@
 #endif
 
 #define RND_FONT_MAX_GLYPHS 255
+#define RND_FONT_DEFAULT_CELLSIZE 50
 
 typedef long int rnd_font_id_t;      /* safe reference */
 
@@ -87,6 +88,21 @@ RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned cha
 /* Calculate all 4 corners of the transformed (e.g. rotated) box in cx;cy */
 void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width);
 void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale);
+
+
+/*** embedded (internal) font ***/
+
+typedef struct embf_line_s {
+	int x1, y1, x2, y2, th;
+} embf_line_t;
+
+typedef struct embf_font_s {
+	int delta;
+	embf_line_t *lines;
+	int num_lines;
+} embf_font_t;
+
+void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, rnd_coord_t embf_minx, rnd_coord_t embf_miny, rnd_coord_t embf_maxx, rnd_coord_t embf_maxy);
 
 #endif
 

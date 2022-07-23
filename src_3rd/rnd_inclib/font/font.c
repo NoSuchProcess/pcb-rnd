@@ -1,6 +1,7 @@
 #include <librnd/core/config.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hid.h>
+#include <librnd/core/globalconst.h>
 #include <rnd_inclib/font/font.h>
 #include <rnd_inclib/font/xform_mx.h>
 
@@ -244,6 +245,7 @@ RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned cha
 	}
 }
 
+/* Calculates accurate centerline bbox */
 RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
 {
 	double ca1, ca2, sa1, sa2, minx, maxx, miny, maxy, delta;
@@ -430,4 +432,161 @@ void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font
 void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
 {
 	rnd_font_string_bbox_(cx, cy, 1, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, scale);
+}
+
+
+/* transforms symbol coordinates so that the left edge of each symbol
+   is at the zero position. The y coordinates are moved so that min(y) = 0 */
+void rnd_font_normalize(rnd_font_t *f)
+{
+	long i, n, m, h;
+	rnd_glyph_t *g;
+	rnd_coord_t *px, *py;
+	rnd_coord_t totalminy = RND_MAX_COORD;
+	rnd_box_t b;
+
+	/* calculate cell width and height (is at least RND_FONT_DEFAULT_CELLSIZE)
+	   maximum cell width and height
+	   minimum x and y position of all lines */
+	f->max_width = RND_FONT_DEFAULT_CELLSIZE;
+	f->max_height = RND_FONT_DEFAULT_CELLSIZE;
+	for(i = 0, g = f->glyph; i <= RND_FONT_MAX_GLYPHS; i++, g++) {
+		rnd_coord_t minx, miny, maxx, maxy;
+
+		/* skip if index isn't used or symbol is empty (e.g. space) */
+		if (!g->valid || (g->atoms.used == 0))
+			continue;
+
+		minx = miny = RND_MAX_COORD;
+		maxx = maxy = 0;
+		for(n = 0; n < g->atoms.used; n++) {
+			rnd_glyph_atom_t *a = &g->atoms.array[n];
+			switch(a->type) {
+				case RND_GLYPH_LINE:
+					minx = MIN(minx, a->line.x1);
+					miny = MIN(miny, a->line.y1);
+					minx = MIN(minx, a->line.x2);
+					miny = MIN(miny, a->line.y2);
+					maxx = MAX(maxx, a->line.x1);
+					maxy = MAX(maxy, a->line.y1);
+					maxx = MAX(maxx, a->line.x2);
+					maxy = MAX(maxy, a->line.y2);
+					break;
+				case RND_GLYPH_ARC:
+					font_arc_bbox(&b, &a->arc);
+					minx = MIN(minx, b.X1);
+					miny = MIN(miny, b.Y1);
+					maxx = MAX(maxx, b.X2);
+					maxy = MAX(maxy, b.Y2);
+					break;
+				case RND_GLYPH_POLY:
+					h = a->poly.pts.used/2;
+					px = &a->poly.pts.array[0];
+					py = &a->poly.pts.array[h];
+					for(m = 0; m < h; m++,px++,py++) {
+						minx = MIN(minx, *px);
+						miny = MIN(miny, *py);
+						maxx = MAX(maxx, *px);
+						maxy = MAX(maxy, *py);
+					}
+					break;
+		}
+	}
+
+		/* move glyphs to left edge */
+		if (minx != 0) {
+			for(n = 0; n < g->atoms.used; n++) {
+				rnd_glyph_atom_t *a = &g->atoms.array[n];
+				switch(a->type) {
+					case RND_GLYPH_LINE:
+						a->line.x1 -= minx;
+						a->line.x2 -= minx;
+						break;
+					case RND_GLYPH_ARC:
+						a->arc.cx -= minx;
+						break;
+					case RND_GLYPH_POLY:
+						h = a->poly.pts.used/2;
+						px = &a->poly.pts.array[0];
+						for(m = 0; m < h; m++,px++)
+							*px -= minx;
+						break;
+				}
+			}
+		}
+
+		/* set symbol bounding box with a minimum cell size of (1,1) */
+		g->width = maxx - minx + 1;
+		g->height = maxy + 1;
+
+		/* check total min/max  */
+		f->max_width = MAX(f->max_width, g->width);
+		f->max_height = MAX(f->max_height, g->height);
+		totalminy = MIN(totalminy, miny);
+	}
+
+	/* move coordinate system to the upper edge (lowest y on screen) */
+	if (totalminy != 0) {
+		for(i = 0, g = f->glyph; i <= RND_FONT_MAX_GLYPHS; i++, g++) {
+
+			if (!g->valid) continue;
+			g->height -= totalminy;
+
+			for(n = 0; n < g->atoms.used; n++) {
+				rnd_glyph_atom_t *a = &g->atoms.array[n];
+				switch(a->type) {
+					case RND_GLYPH_LINE:
+						a->line.y1 -= totalminy;
+						a->line.y2 -= totalminy;
+						break;
+					case RND_GLYPH_ARC:
+						a->arc.cy -= totalminy;
+						break;
+					case RND_GLYPH_POLY:
+						h = a->poly.pts.used/2;
+						py = &a->poly.pts.array[h];
+						for(m = 0; m < h; m++,py++)
+							*py -= totalminy;
+						break;
+				}
+			}
+		}
+	}
+
+	/* setup the box for the unknown glyph */
+	f->unknown_glyph.X1 = f->unknown_glyph.Y1 = 0;
+	f->unknown_glyph.X2 = f->unknown_glyph.X1 + f->max_width;
+	f->unknown_glyph.Y2 = f->unknown_glyph.Y1 + f->max_height;
+}
+
+
+void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, rnd_coord_t embf_minx, rnd_coord_t embf_miny, rnd_coord_t embf_maxx, rnd_coord_t embf_maxy)
+{
+	int n, l;
+	memset(font, 0, sizeof(rnd_font_t));
+	font->max_width  = embf_maxx - embf_minx;
+	font->max_height = embf_maxy - embf_miny;
+
+	for(n = 0; n < len; n++) {
+		if (embf_font[n].delta != 0) {
+			rnd_glyph_t *g = font->glyph + n;
+			embf_line_t *lines = embf_font[n].lines;
+
+			vtgla_enlarge(&g->atoms, embf_font[n].num_lines);
+			for(l = 0; l < embf_font[n].num_lines; l++) {
+				rnd_glyph_atom_t *a = &g->atoms.array[l];
+				a->line.type = RND_GLYPH_LINE;
+				a->line.x1 = RND_MIL_TO_COORD(lines[l].x1);
+				a->line.y1 = RND_MIL_TO_COORD(lines[l].y1);
+				a->line.x2 = RND_MIL_TO_COORD(lines[l].x2);
+				a->line.y2 = RND_MIL_TO_COORD(lines[l].y2);
+				a->line.thickness = RND_MIL_TO_COORD(lines[l].th);
+			}
+			g->atoms.used = embf_font[n].num_lines;
+
+			g->valid = 1;
+			g->xdelta = RND_MIL_TO_COORD(embf_font[n].delta);
+		}
+	}
+	rnd_font_normalize(font);
 }
