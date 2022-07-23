@@ -50,16 +50,6 @@
 
 #define STEP_SYMBOLLINE 10
 
-typedef struct embf_line_s {
-	int x1, y1, x2, y2, th;
-} embf_line_t;
-
-typedef struct embf_font_s {
-	int delta;
-	embf_line_t *lines;
-	int num_lines;
-} embf_font_t;
-
 #include "font_internal.c"
 
 static void pcb_font_load_internal(pcb_font_t *font)
@@ -113,6 +103,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		s = rnd_conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
 		rnd_message(RND_MSG_WARNING, "Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n", s);
 		pcb_font_load_internal(&pcb->fontkit.dflt);
+		rnd_font_load_internal(&pcb->fontkit.dflt.rnd_font, embf_font, sizeof(embf_font) / sizeof(embf_font[0]), embf_minx, embf_miny, embf_maxx, embf_maxy);
 		rnd_file_loaded_set_at("font", "default", "<internal>", "original default font");
 		gds_uninit(&buff);
 	}
