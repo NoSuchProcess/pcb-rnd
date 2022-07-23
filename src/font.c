@@ -481,6 +481,11 @@ int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 		pcb_font_free(&fk->dflt);
 		copy_font(&fk->dflt, src_font);
 		pcb_font_free(src_font);
+
+		rnd_font_free(&fk->dflt.rnd_font);
+		rnd_font_copy(&fk->dflt.rnd_font, &src_font->rnd_font);
+		rnd_font_free(&src_font->rnd_font);
+
 		fk->dflt.id = 0;
 	} else {
 		htip_set(&fk->fonts, dst, src_font);
