@@ -32,14 +32,14 @@
  ../src_3rd/rnd_inclib/font/vtgla.h obj_gfx_list.h obj_gfx.h layer_grp.h \
  rats_patch.h board.h flag_str.h obj_arc.h obj_line.h obj_pstk.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h obj_text.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h obj_text_draw.h draw.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h \
+ funchash_core_list.h remove.h operation.h obj_text_draw.h draw.h \
  obj_line_draw.h layer_ui.h data.h crosshair.h route.h buffer.h \
  obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h ../src_plugins/act_draw/keywords_sphash.h \
  ../src_plugins/act_draw/act_pstk_proto.c obj_pstk_inlines.h thermal.h \
- operation.h ../src_plugins/act_draw/act_polybool.c search.h obj_poly.h \
- data_list.h
+ ../src_plugins/act_draw/act_polybool.c search.h obj_poly.h data_list.h
 ../src_plugins/act_draw/keywords_sphash.o: \
  ../src_plugins/act_draw/keywords_sphash.c
 ../src_plugins/act_read/act_read.o: ../src_plugins/act_read/act_read.c \
