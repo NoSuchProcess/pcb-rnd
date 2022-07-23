@@ -678,6 +678,8 @@ void rnd_font_free_glyph(rnd_glyph_t *g)
 		}
 	}
 	vtgla_uninit(&g->atoms);
+	g->valid = 0;
+	g->width = g->height = g->xdelta = 0;
 }
 
 void rnd_font_free(rnd_font_t *f)
