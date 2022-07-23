@@ -652,8 +652,30 @@ rnd_glyph_arc_t *rnd_font_new_arc_in_glyph(rnd_glyph_t *glyph, rnd_coord_t cx, r
 }
 
 
+void rnd_font_free_glyph(rnd_glyph_t *g)
+{
+	int n;
+	rnd_glyph_atom_t *a;
+	for(n = 0, a = g->atoms.array; n < g->atoms.used; n++,a++) {
+		switch(a->type) {
+			case RND_GLYPH_LINE:
+			case RND_GLYPH_ARC:
+				break; /* no allocated fields */
+			case RND_GLYPH_POLY:
+				vtc0_uninit(&a->poly.pts);
+		}
+	}
+	vtgla_uninit(&g->atoms);
+}
+
 void rnd_font_free(rnd_font_t *f)
 {
-	TODO("implement");
+	int n;
+	for(n = 0; n <= RND_FONT_MAX_GLYPHS; n++)
+		rnd_font_free_glyph(&f->glyph[n]);
+
+	free(f->name);
+	f->name = NULL;
+	f->id = -1;
 }
 
