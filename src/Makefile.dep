@@ -3330,7 +3330,7 @@ font.o: font.c ../config.h ../src_3rd/rnd_inclib/font/vtgla.c \
  route.h buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- event.h font_internal.c
+ event.h font_internal.c font_old.c
 font_act.o: font_act.c ../config.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
