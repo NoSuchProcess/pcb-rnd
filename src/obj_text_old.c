@@ -212,7 +212,7 @@ rnd_coord_t pcb_text_height(pcb_font_t *font, double scy, const unsigned char *s
 	return rnd_round((double)h * scy);
 }
 
-int pcb_text_invalid_chars(pcb_board_t *pcb, pcb_font_t *FontPtr, pcb_text_t *Text)
+static int pcb_text_invalid_chars_orig(pcb_board_t *pcb, pcb_font_t *FontPtr, pcb_text_t *Text)
 {
 	unsigned char *s, *rendered;
 	int ctr = 0;
