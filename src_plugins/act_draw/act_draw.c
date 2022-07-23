@@ -37,6 +37,8 @@
 #include "obj_text.h"
 #include <librnd/core/plugins.h>
 #include "undo.h"
+#include "funchash_core.h"
+#include "remove.h"
 
 #include "obj_text.h"
 #include "obj_line.h"
@@ -669,6 +671,95 @@ static fgw_error_t pcb_act_InvalidateAll(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
+typedef struct {
+	pcb_arc_t *arc;
+	rnd_coord_t last_x, last_y;
+	unsigned has_last:1;
+} arc2lines_t;
+
+static int arc2lines_cb(void *uctx, rnd_coord_t x, rnd_coord_t y)
+{
+	arc2lines_t *ctx = uctx;
+	if (ctx->has_last) {
+		pcb_line_t *line = pcb_line_new(ctx->arc->parent.layer, ctx->last_x, ctx->last_y, x, y, ctx->arc->Thickness, ctx->arc->Clearance, ctx->arc->Flags);
+		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ctx->arc->parent.layer, line, line);
+	}
+	ctx->has_last = 1;
+	ctx->last_x = x;
+	ctx->last_y = y;
+	return 0;
+}
+
+static int arc2lines(pcb_arc_t *arc, rnd_coord_t linelen)
+{
+	arc2lines_t ctx = {0};
+
+	ctx.arc = arc;
+
+	pcb_arc_approx(arc, -linelen, 0, &ctx, arc2lines_cb);
+	pcb_remove_object(PCB_OBJ_ARC, arc->parent.layer, arc, arc);
+
+	return 0;
+}
+
+static const char pcb_acts_Arc2Lines[] = "Arc2Lines(object|selected, [linelen])";
+static const char pcb_acth_Arc2Lines[] = "Convert arc(s) into lines using approximation. If linelen is specified, resulting line segment length will not exceed that value.";
+static fgw_error_t pcb_act_Arc2Lines(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	int op, ares = 0;
+	rnd_coord_t linelen = RND_MM_TO_COORD(0.5);
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Arc2Lines, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_COORD, Arc2Lines, linelen = fgw_coord(&argv[2]));
+
+	switch(op) {
+		case F_Object:
+			{
+				pcb_arc_t *arc;
+				void *p1, *p3;
+				rnd_coord_t x, y;
+				rnd_hid_get_coords("Click on arc to approximate", &x, &y, 0);
+				arc = NULL;
+				if (pcb_search_screen(x, y, PCB_OBJ_ARC, &p1, (void **)&arc, &p3) == 0) {
+					rnd_message(RND_MSG_ERROR, "Arc2Lines: arc not found (no object under the cursor)\n");
+					RND_ACT_IRES(-1);
+					return 0;
+				}
+				pcb_undo_freeze_serial();
+				ares = arc2lines(arc, linelen);
+				pcb_undo_unfreeze_serial();
+				pcb_undo_inc_serial();
+			}
+			break;
+		case F_Selected:
+			{
+				long l;
+				pcb_layer_t *layer = pcb->Data->Layer;
+
+				pcb_undo_freeze_serial();
+				for (l = 0; l < pcb->Data->LayerN; l++, layer++) {
+					pcb_arc_t *arc;
+					gdl_iterator_t it;
+					arclist_foreach(&layer->Arc, &it, arc) {
+						if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc))
+							ares |= arc2lines(arc, linelen);
+					}
+				}
+				pcb_undo_unfreeze_serial();
+				pcb_undo_inc_serial();
+			}
+
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "Wrong first arg for Arc2Lines()\n");
+			return FGW_ERR_ARG_CONV;
+	}
+
+	RND_ACT_IRES(ares);
+	return 0;
+}
+
 rnd_action_t act_draw_action_list[] = {
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
@@ -688,7 +779,8 @@ rnd_action_t act_draw_action_list[] = {
 	{"DrawPoly", pcb_act_DrawPoly, pcb_acth_DrawPoly, pcb_acts_DrawPoly},
 	{"DrawColor", pcb_act_DrawColor, pcb_acth_DrawColor, pcb_acts_DrawColor},
 	{"PolyBool", pcb_act_PolyBool, pcb_acth_PolyBool, pcb_acts_PolyBool},
-	{"InvalidateAll", pcb_act_InvalidateAll, pcb_acth_InvalidateAll, pcb_acts_InvalidateAll}
+	{"InvalidateAll", pcb_act_InvalidateAll, pcb_acth_InvalidateAll, pcb_acts_InvalidateAll},
+	{"Arc2Lines", pcb_act_Arc2Lines, pcb_acth_Arc2Lines, pcb_acts_Arc2Lines}
 };
 
 static const char *act_draw_cookie = "act_draw";
