@@ -364,6 +364,7 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, rnd_coord_t dx, rn
 	return obj;
 }
 
+/* font: remove */
 static lht_node_t *build_simplearc(pcb_arc_t *arc, int local_id)
 {
 	char buff[128];
@@ -381,7 +382,7 @@ static lht_node_t *build_simplearc(pcb_arc_t *arc, int local_id)
 	return obj;
 }
 
-
+/* font: remove */
 static lht_node_t *build_simplepoly(pcb_poly_t *poly, int local_id)
 {
 	char buff[128];
@@ -1395,6 +1396,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 	return ndt;
 }
 
+/* font: remove */
 static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 {
 	lht_node_t *lst, *ndt;
@@ -1422,7 +1424,8 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 	return ndt;
 }
 
-static lht_node_t *build_font(pcb_font_t *font)
+/* font: remove */
+static lht_node_t *build_font_old(pcb_font_t *font)
 {
 	lht_node_t *syms, *ndt;
 	char *sid, sidbuff[64];
@@ -1462,6 +1465,133 @@ static lht_node_t *build_font(pcb_font_t *font)
 	}
 	return ndt;
 }
+
+static lht_node_t *build_glyph_line(rnd_glyph_line_t *line, long local_id)
+{
+	char buff[128];
+	lht_node_t *obj;
+
+	sprintf(buff, "line.%ld", local_id);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, line->thickness));
+	lht_dom_hash_put(obj, build_textf("x1", CFMT, line->x1));
+	lht_dom_hash_put(obj, build_textf("y1", CFMT, line->y1));
+	lht_dom_hash_put(obj, build_textf("x2", CFMT, line->x2));
+	lht_dom_hash_put(obj, build_textf("y2", CFMT, line->y2));
+
+	return obj;
+}
+
+static lht_node_t *build_glyph_arc(rnd_glyph_arc_t *arc, long local_id)
+{
+	char buff[128];
+	lht_node_t *obj;
+
+	sprintf(buff, "simplearc.%ld", local_id);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+	lht_dom_hash_put(obj, build_textf("x", CFMT, arc->cx));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, arc->cy));
+	lht_dom_hash_put(obj, build_textf("r", CFMT, arc->r));
+	lht_dom_hash_put(obj, build_textf("astart", "%f", arc->start));
+	lht_dom_hash_put(obj, build_textf("adelta", "%f", arc->delta));
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, arc->thickness));
+
+	return obj;
+}
+
+static lht_node_t *build_glyph_poly(rnd_glyph_poly_t *poly, long local_id)
+{
+	char buff[128];
+	lht_node_t *obj;
+	int n, h = poly->pts.used/2;
+	rnd_coord_t *px, *py;
+
+	sprintf(buff, "simplepoly.%ld", local_id);
+	obj = lht_dom_node_alloc(LHT_LIST, buff);
+
+	for(n = 0, px = &poly->pts.array[0], py = &poly->pts.array[h]; n < h; n++,px++,py++) {
+		lht_dom_list_append(obj, build_textf(NULL, CFMT, *px));
+		lht_dom_list_append(obj, build_textf(NULL, CFMT, *py));
+	}
+	return obj;
+}
+
+
+static lht_node_t *build_glyph(rnd_glyph_t *g, const char *name)
+{
+	lht_node_t *lst, *ndt;
+	rnd_glyph_atom_t *a;
+	int n;
+
+	ndt = lht_dom_node_alloc(LHT_HASH, name);
+	lht_dom_hash_put(ndt, build_textf("width", CFMT, g->width));
+	lht_dom_hash_put(ndt, build_textf("height", CFMT, g->height));
+	lht_dom_hash_put(ndt, build_textf("delta", CFMT, g->xdelta));
+
+	lst = lht_dom_node_alloc(LHT_LIST, "objects");
+	lht_dom_hash_put(ndt, lst);
+	for(n = 0, a = g->atoms.array; n < g->atoms.used; n++,a++) {
+		switch(a->type) {
+			case RND_GLYPH_LINE: lht_dom_list_append(lst, build_glyph_line(&a->line, n)); break;
+			case RND_GLYPH_ARC:  lht_dom_list_append(lst, build_glyph_arc(&a->arc, n)); break;
+			case RND_GLYPH_POLY: lht_dom_list_append(lst, build_glyph_poly(&a->poly, n)); break;
+		}
+	}
+
+	return ndt;
+}
+
+static lht_node_t *build_font_rnd(rnd_font_t *font)
+{
+	lht_node_t *syms, *ndt;
+	char *sid, sidbuff[64];
+	int n;
+
+	if (font->id > 0) {
+		sprintf(sidbuff, "%ld", font->id);
+		sid = sidbuff;
+	}
+	else
+		sid = "geda_pcb"; /* special case for comaptibility: font 0 is the geda_pcb font */
+
+	ndt = lht_dom_node_alloc(LHT_HASH, sid);
+
+	lht_dom_hash_put(ndt, build_textf("cell_height", CFMT, font->max_height));
+	lht_dom_hash_put(ndt, build_textf("cell_width", CFMT, font->max_width));
+	lht_dom_hash_put(ndt, build_textf("id", "%ld", font->id));
+	if (font->name != NULL)
+		lht_dom_hash_put(ndt, build_text("name", font->name));
+
+	syms = lht_dom_node_alloc(LHT_HASH, "symbols");
+	lht_dom_hash_put(ndt, syms);
+	for(n = 0; n < RND_FONT_MAX_GLYPHS + 1; n++) {
+		char sname[32];
+		if (!font->glyph[n].valid)
+			continue;
+		if ((n <= 32) || (n > 126) || (n == '&') || (n == '#') || (n == '{') || (n == '}') || (n == '/') || (n == ':') || (n == ';') || (n == '=') || (n == '\\') || (n == ':')) {
+			sprintf(sname, "&%02x", n);
+		}
+		else {
+			sname[0] = n;
+			sname[1] = '\0';
+		}
+		lht_dom_hash_put(syms, build_glyph(&font->glyph[n], sname));
+	}
+
+	return ndt;
+}
+
+#include "brave.h"
+
+static lht_node_t *build_font(pcb_font_t *font)
+{
+	if (pcb_brave & PCB_BRAVE_NEWFONT)
+		return build_font_rnd(&font->rnd_font);
+	else
+		return build_font_old(font);
+}
+
 
 static lht_node_t *build_fontkit(pcb_fontkit_t *fk)
 {
