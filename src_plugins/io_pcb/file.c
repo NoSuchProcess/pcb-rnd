@@ -356,6 +356,9 @@ static void WritePCBFontData_rnd(FILE * FP)
 	rnd_font_t *font = &font_->rnd_font;
 	int warned = 0;
 
+	if (PCB->fontkit.fonts.used > 0)
+		pcb_io_incompat_save(PCB->Data, NULL, "font", "Can't save multiple fonts", "Only the default font is saved, all text objecst will use the default font.");
+
 	for(i = 0; i <= RND_FONT_MAX_GLYPHS; i++) {
 		rnd_glyph_atom_t *a;
 
