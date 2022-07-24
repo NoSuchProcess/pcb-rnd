@@ -67,11 +67,12 @@ rnd_glyph_line_t *rnd_font_new_line_in_glyph(rnd_glyph_t *glyph, rnd_coord_t x1,
 rnd_glyph_arc_t *rnd_font_new_arc_in_glyph(rnd_glyph_t *glyph, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_angle_t start, rnd_angle_t delta, rnd_coord_t thickness);
 rnd_glyph_poly_t *rnd_font_new_poly_in_glyph(rnd_glyph_t *glyph, int num_points);
 
+/* Free all font content in f; doesn't free f itself */
 void rnd_font_free(rnd_font_t *f);
 
 /* Remove all content (atoms and geometry, except for ->height) of
-   the glyph and mark it invalid */
-void rnd_font_clear_glyph(rnd_glyph_t *g);
+   the glyph and mark it invalid; doesn't free g itself */
+void rnd_font_free_glyph(rnd_glyph_t *g);
 
 
 /* Very rough (but quick) estimation on the full size of the text */
