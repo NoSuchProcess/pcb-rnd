@@ -672,6 +672,14 @@ rnd_glyph_arc_t *rnd_font_new_arc_in_glyph(rnd_glyph_t *glyph, rnd_coord_t cx, r
 	return &a->arc;
 }
 
+rnd_glyph_poly_t *rnd_font_new_poly_in_glyph(rnd_glyph_t *glyph, long num_points)
+{
+	rnd_glyph_atom_t *a = vtgla_alloc_append(&glyph->atoms, 1);
+	a->poly.type = RND_GLYPH_POLY;
+	vtc0_enlarge(&a->poly.pts, num_points*2);
+	return &a->poly;
+}
+
 
 void rnd_font_free_glyph(rnd_glyph_t *g)
 {

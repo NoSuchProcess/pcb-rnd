@@ -65,7 +65,7 @@ typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readab
 
 rnd_glyph_line_t *rnd_font_new_line_in_glyph(rnd_glyph_t *glyph, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness);
 rnd_glyph_arc_t *rnd_font_new_arc_in_glyph(rnd_glyph_t *glyph, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_angle_t start, rnd_angle_t delta, rnd_coord_t thickness);
-rnd_glyph_poly_t *rnd_font_new_poly_in_glyph(rnd_glyph_t *glyph, int num_points);
+rnd_glyph_poly_t *rnd_font_new_poly_in_glyph(rnd_glyph_t *glyph, long num_points);
 
 /* Free all font content in f; doesn't free f itself */
 void rnd_font_free(rnd_font_t *f);
