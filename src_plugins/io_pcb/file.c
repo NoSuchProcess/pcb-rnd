@@ -324,8 +324,9 @@ static void WritePCBDataHeader(FILE * FP)
 	}
 }
 
+/* font: remove */
 /* writes font data of non empty symbols */
-static void WritePCBFontData(FILE * FP)
+static void WritePCBFontData_old(FILE * FP)
 {
 	rnd_cardinal_t i, j;
 	pcb_line_t *line;
@@ -347,6 +348,48 @@ static void WritePCBFontData(FILE * FP)
 		fputs(")\n", FP);
 	}
 }
+
+static void WritePCBFontData_rnd(FILE * FP)
+{
+	rnd_cardinal_t i, j;
+	pcb_font_t *font_ = pcb_font(PCB, 0, 1);
+	rnd_font_t *font = &font_->rnd_font;
+
+	for(i = 0; i <= RND_FONT_MAX_GLYPHS; i++) {
+		rnd_glyph_atom_t *a;
+
+		if (!font->glyph[i].valid)
+			continue;
+
+		if (isprint(i))
+			rnd_fprintf(FP, "Symbol['%c' %[0]]\n(\n", i, font->glyph[i].xdelta);
+		else
+			rnd_fprintf(FP, "Symbol[%i %[0]]\n(\n", i, font->glyph[i].xdelta);
+
+		for(a = font->glyph[i].atoms.array, j = font->glyph[i].atoms.used; j; j--, a++) {
+			switch(a->type) {
+				case RND_GLYPH_LINE:
+					rnd_fprintf(FP, "\tSymbolLine[%[0] %[0] %[0] %[0] %[0]]\n",
+						a->line.x1, a->line.y1, a->line.x2, a->line.y2, a->line.thickness);
+					break;
+				default:
+					TODO("warn");
+			}
+		}
+		fputs(")\n", FP);
+	}
+}
+
+#include "brave.h"
+
+static void WritePCBFontData(FILE *FP)
+{
+	if (pcb_brave & PCB_BRAVE_NEWFONT)
+		WritePCBFontData_rnd(FP);
+	else
+		WritePCBFontData_old(FP);
+}
+
 
 static void WriteViaData(FILE * FP, pcb_data_t *Data)
 {
