@@ -126,13 +126,28 @@ static void ttf_poly_emit(rnd_pline_t *pl, void *ctx)
 	long n;
 	rnd_vnode_t *v;
 	pcb_ttf_stroke_t *str = ctx;
-	pcb_poly_t *p = pcb_font_new_poly_in_sym(str->sym, pl->Count);
+	rnd_glyph_poly_t *p = rnd_font_new_poly_in_glyph(str->glyph, pl->Count);
+	rnd_coord_t *px = &p->pts.array[0], *py = &p->pts.array[pl->Count];
 
 rnd_trace(" emit: %d\n", pl->Count);
+
+	for(n = 0, v = pl->head; n < pl->Count; n++, v = v->next, px++, py++) {
+		*px = v->point[0];
+		*py = v->point[1];
+	}
+
+
+	{ /* font: remove (old) */
+	pcb_poly_t *p = pcb_font_new_poly_in_sym(str->sym, pl->Count);
+
+
 	for(n = 0, v = pl->head; n < pl->Count; n++, v = v->next) {
 		p->Points[n].X = v->point[0];
 		p->Points[n].Y = v->point[1];
 	}
+	}
+
+
 }
 
 static void poly_apply(pcb_ttf_stroke_t *str)
@@ -197,6 +212,11 @@ static int str_line_to(const FT_Vector *to, void *s_)
 		rnd_poly_vertex_include(str->contour->head->prev, rnd_poly_node_create(v));
 	}
 	else {
+		rnd_font_new_line_in_glyph(str->glyph,
+			TRX(str->x), TRY(str->y),
+			TRX(to->x),  TRY(to->y),
+			1);
+
 		pcb_font_new_line_in_sym(str->sym,
 			TRX(str->x), TRY(str->y),
 			TRX(to->x),  TRY(to->y),
@@ -272,8 +292,10 @@ static int ttf_import(pcb_board_t *pcb, pcb_ttf_t *ctx, pcb_ttf_stroke_t *stroke
 	for(src = src_from; (src <= src_to) && (dst < (PCB_MAX_FONTPOSITION+1)); src++,dst++) {
 		rnd_trace("face: %d -> %d\n", src, dst);
 		stroke->sym = &f->Symbol[dst];
+		stroke->glyph = &f->rnd_font.glyph[dst];
 
 		pcb_font_free_symbol(stroke->sym);
+		rnd_font_free_glyph(stroke->glyph);
 
 		r = pcb_ttf_trace(ctx, src, src, stroke, 1);
 		if (r != 0)
@@ -288,6 +310,11 @@ static int ttf_import(pcb_board_t *pcb, pcb_ttf_t *ctx, pcb_ttf_stroke_t *stroke
 		stroke->sym->Width  = TRX_(ctx->face->glyph->advance.x);
 		stroke->sym->Height = TRY_(ctx->face->ascender + ctx->face->descender);
 		stroke->sym->Delta = RND_MIL_TO_COORD(12);
+
+		stroke->glyph->valid = 1;
+		stroke->glyph->width  = TRX_(ctx->face->glyph->advance.x);
+		stroke->glyph->height = TRY_(ctx->face->ascender + ctx->face->descender);
+		stroke->glyph->xdelta = RND_MIL_TO_COORD(12);
 	}
 
 	return ret;

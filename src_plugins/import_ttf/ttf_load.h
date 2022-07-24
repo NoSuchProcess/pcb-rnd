@@ -59,6 +59,7 @@ struct pcb_ttf_stroke_s {
 	double x, y; /* in freeftype's coords */
 	double dx, dy, scale_x, scale_y;
 	pcb_symbol_t *sym;
+	rnd_glyph_t *glyph;
 	pcb_ttf_t *ttf;
 
 
