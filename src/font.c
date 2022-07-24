@@ -34,9 +34,8 @@
 #include <string.h>
 #include <genht/hash.h>
 
-#include <rnd_inclib/font/vtgla.c>
-#include <rnd_inclib/font/xform_mx.c>
-#include <rnd_inclib/font/font.c>
+#include <rnd_inclib/font/xform_mx.h>
+#include <rnd_inclib/font/font.h>
 
 #include "font.h"
 #include "board.h"

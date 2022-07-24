@@ -1,3 +1,4 @@
+36562	configure	font engine rewrite
 36322	configure	generalize export_lpr so it can be moved to librnd
 36311	configure	export dialog generalization so that the code can be moved for librnd
 36279	configure	export plugin generalization for librnd

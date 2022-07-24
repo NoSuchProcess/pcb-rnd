@@ -69,6 +69,7 @@ append /local/pcb/OBJS [@
 	extobj_act.o
 	font.o
 	font_act.o
+	font_rnd.o
 	file_act.o
 	find.o
 	flag.o
