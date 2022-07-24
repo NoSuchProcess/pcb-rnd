@@ -354,6 +354,7 @@ static void WritePCBFontData_rnd(FILE * FP)
 	rnd_cardinal_t i, j;
 	pcb_font_t *font_ = pcb_font(PCB, 0, 1);
 	rnd_font_t *font = &font_->rnd_font;
+	int warned = 0;
 
 	for(i = 0; i <= RND_FONT_MAX_GLYPHS; i++) {
 		rnd_glyph_atom_t *a;
@@ -373,7 +374,10 @@ static void WritePCBFontData_rnd(FILE * FP)
 						a->line.x1, a->line.y1, a->line.x2, a->line.y2, a->line.thickness);
 					break;
 				default:
-					TODO("warn");
+					if (!warned) {
+						pcb_io_incompat_save(PCB->Data, NULL, "font", "Font glyph contain non-line atoms in default font", "Use a line-only default font");
+						warned = 1;
+					}
 			}
 		}
 		fputs(")\n", FP);
