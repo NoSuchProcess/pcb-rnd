@@ -602,6 +602,11 @@ void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)
 		const rnd_glyph_atom_t *sa;
 		long size = sizeof(rnd_glyph_atom_t) * sg->atoms.used;
 
+		if (sg->atoms.used == 0) {
+			dg->atoms.used = 0;
+			continue;
+		}
+
 		dg->atoms.array = malloc(size);
 		memcpy(dg->atoms.array, sg->atoms.array, size);
 		dg->atoms.used = dg->atoms.alloced = sg->atoms.used;
@@ -613,10 +618,14 @@ void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)
 				case RND_GLYPH_ARC:
 					break; /* no allocated fields */
 				case RND_GLYPH_POLY:
-					size = sizeof(rnd_coord_t) * sa->poly.pts.used;
-					da->poly.pts.array = malloc(size);
-					memcpy(da->poly.pts.array, sa->poly.pts.array, size);
-					da->poly.pts.used = da->poly.pts.alloced = sa->poly.pts.used;
+					if (sa->poly.pts.used > 0) {
+						size = sizeof(rnd_coord_t) * sa->poly.pts.used;
+						da->poly.pts.array = malloc(size);
+						memcpy(da->poly.pts.array, sa->poly.pts.array, size);
+						da->poly.pts.used = da->poly.pts.alloced = sa->poly.pts.used;
+					}
+					else
+						da->poly.pts.used = 0;
 					break;
 			}
 		}
