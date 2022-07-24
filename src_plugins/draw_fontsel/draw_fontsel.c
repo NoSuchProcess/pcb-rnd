@@ -72,7 +72,7 @@ static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char 
 /* draw a line of a specific thickness */
 static void dline(int x1, int y1, int x2, int y2, float thick)
 {
-	pcb_line_t l;
+	pcb_line_t l = {0};
 
 	if (dinfo.xform == NULL) dinfo.xform = &dxform;
 
