@@ -3317,20 +3317,17 @@ flag.o: flag.c ../config.h flag.h globalconst.h operation.h \
  global_typedefs.h
 flag_str.o: flag_str.c ../config.h flag_str.h flag.h globalconst.h \
  obj_common.h attrib.h global_typedefs.h data_parent.h
-font.o: font.c ../config.h ../src_3rd/rnd_inclib/font/vtgla.c \
- ../src_3rd/rnd_inclib/font/glyph.h ../src_3rd/rnd_inclib/font/vtgla.h \
- ../src_3rd/rnd_inclib/font/xform_mx.c \
- ../src_3rd/rnd_inclib/font/xform_mx.h ../src_3rd/rnd_inclib/font/font.c \
- ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/xform_mx.h \
- font.h obj_poly.h obj_common.h flag.h globalconst.h attrib.h \
- global_typedefs.h data_parent.h obj_poly_list.h obj_arc.h obj_arc_list.h \
- board.h vtroutestyle.h layer.h obj_line_list.h obj_line.h \
- obj_text_list.h obj_text.h obj_gfx_list.h obj_gfx.h layer_grp.h \
- rats_patch.h conf_core.h plug_io.h plug_footprint.h data.h crosshair.h \
- route.h buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h \
- obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h \
- obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- event.h font_internal.c font_old.c
+font.o: font.c ../config.h ../src_3rd/rnd_inclib/font/xform_mx.h \
+ ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/glyph.h \
+ ../src_3rd/rnd_inclib/font/vtgla.h font.h obj_poly.h obj_common.h flag.h \
+ globalconst.h attrib.h global_typedefs.h data_parent.h obj_poly_list.h \
+ obj_arc.h obj_arc_list.h board.h vtroutestyle.h layer.h obj_line_list.h \
+ obj_line.h obj_text_list.h obj_text.h obj_gfx_list.h obj_gfx.h \
+ layer_grp.h rats_patch.h conf_core.h plug_io.h plug_footprint.h data.h \
+ crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
+ obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h event.h font_internal.c font_old.c
 font_act.o: font_act.c ../config.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
@@ -3342,6 +3339,11 @@ font_act.o: font_act.c ../config.h board.h vtroutestyle.h attrib.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  event.h
+font_rnd.o: font_rnd.c ../src_3rd/rnd_inclib/font/vtgla.c \
+ ../src_3rd/rnd_inclib/font/glyph.h ../src_3rd/rnd_inclib/font/vtgla.h \
+ ../src_3rd/rnd_inclib/font/xform_mx.c \
+ ../src_3rd/rnd_inclib/font/xform_mx.h ../src_3rd/rnd_inclib/font/font.c \
+ ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/xform_mx.h
 gui_act.o: gui_act.c ../config.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
