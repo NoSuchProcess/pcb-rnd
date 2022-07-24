@@ -243,11 +243,12 @@ int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 	src_font = e->value;
 	if (dst == 0) {
 		pcb_font_free(&fk->dflt);
-		copy_font(&fk->dflt, src_font);
-		pcb_font_free(src_font);
-
 		rnd_font_free(&fk->dflt.rnd_font);
+
+		copy_font(&fk->dflt, src_font);
 		rnd_font_copy(&fk->dflt.rnd_font, &src_font->rnd_font);
+
+		pcb_font_free(src_font);
 		rnd_font_free(&src_font->rnd_font);
 
 		fk->dflt.id = 0;
