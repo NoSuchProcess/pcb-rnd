@@ -5,12 +5,7 @@
 	- fontmode: undoable transformations on polygons
 	- document fontmode actions
 	- revise import_ttf for pcb_font
-	- revise pcb-rnd code, for pcb_font_new_*() calls for rnd_font_new_*()
-	- make sure font save works with new implementation:
-		- io_lihata
-		- io_pcb
-	- test:
-		- LoadFontFrom() into an existing slot (calls copy_font)
+	- revise fontmode for pcb_font
 
 
 2. For later releases ===============================================================================
