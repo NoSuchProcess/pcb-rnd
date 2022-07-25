@@ -1,9 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- font rewrite:
-	- fontmode: undoable transformations on polygons
-	- document fontmode actions
+- fontmode: undoable transformations on polygons
 
 
 2. For later releases ===============================================================================
