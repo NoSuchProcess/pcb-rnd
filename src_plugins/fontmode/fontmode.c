@@ -82,7 +82,7 @@ static pcb_layer_t *make_layer(rnd_layergrp_id_t grp, const char *lname)
 	return &PCB->Data->Layer[lid];
 }
 
-static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t ox, rnd_coord_t oy)
+static void add_poly_old(pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t ox, rnd_coord_t oy)
 {
 	pcb_poly_t *np;
 	
@@ -153,8 +153,8 @@ static void font2editor_old(pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 			int n;
 			rnd_point_t *pnt;
 
-			add_poly(lfont, poly, ox, oy);
-			add_poly(lorig, poly, ox, oy);
+			add_poly_old(lfont, poly, ox, oy);
+			add_poly_old(lorig, poly, ox, oy);
 
 			for(n = 0, pnt = poly->Points; n < poly->PointN; n++,pnt++) {
 				if (maxx < pnt->X)
@@ -165,6 +165,93 @@ static void font2editor_old(pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 		}
 
 		w = maxx + symbol->Delta + ox;
+		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
+	}
+}
+
+static void font2editor_new(rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
+{
+	int s;
+	long n;
+	rnd_glyph_t *g;
+
+	for(s = 0, g = font->glyph; s <= RND_FONT_MAX_GLYPHS; s++,g++) {
+		char txt[32];
+		rnd_glyph_atom_t *a;
+
+		rnd_coord_t ox = (s % 16 + 1) * CELL_SIZE;
+		rnd_coord_t oy = (s / 16 + 1) * CELL_SIZE;
+		rnd_coord_t w, miny, maxy, maxx = 0;
+
+		miny = RND_MIL_TO_COORD(5);
+		maxy = font->max_height;
+
+		if ((s > 32) && (s < 127)) {
+			sprintf(txt, "%c", s);
+			pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+		}
+		sprintf(txt, "%d", s);
+		pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+
+		for(n = 0, a = g->atoms.array; n < g->atoms.used; n++, a++) {
+			pcb_poly_t *poly, *newpoly;
+			pcb_arc_t *newarc;
+
+			switch(a->type) {
+				case RND_GLYPH_LINE:
+					pcb_line_new_merge(lfont,
+						a->line.x1 + ox, a->line.y1 + oy,
+						a->line.x2 + ox, a->line.y2 + oy,
+						a->line.thickness, 0, pcb_no_flags());
+					if (maxx < a->line.x1)
+						maxx = a->line.x1;
+					if (maxx < a->line.x2)
+						maxx = a->line.x2;
+					break;
+				case RND_GLYPH_ARC:
+					pcb_arc_new(lfont, a->arc.cx + ox, a->arc.cy + oy, a->arc.r, a->arc.r, a->arc.start, a->arc.delta, a->arc.thickness, 0, pcb_no_flags(), rnd_true);
+					newarc = pcb_arc_new(lorig, a->arc.cx + ox, a->arc.cy + oy, a->arc.r, a->arc.r, a->arc.start, a->arc.delta, a->arc.thickness, 0, pcb_no_flags(), rnd_true);
+					if (newarc != NULL) {
+						if (maxx < newarc->BoundingBox.X2 - ox)
+							maxx = newarc->BoundingBox.X2 - ox;
+						if (maxy < newarc->BoundingBox.Y2 - oy)
+							maxy = newarc->BoundingBox.Y2 - oy;
+					}
+					break;
+
+				case RND_GLYPH_POLY:
+				{
+					int i, h = a->poly.pts.used / 2;
+					rnd_coord_t *px = &a->poly.pts.array[0], *py = &a->poly.pts.array[h];
+
+					poly = pcb_poly_alloc(lorig);
+					newpoly = pcb_poly_alloc(lfont);
+					pcb_poly_point_prealloc(poly, h);
+					pcb_poly_point_prealloc(newpoly, h);
+
+					poly->Flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
+					newpoly->Flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
+
+					for(i = 0; i < h; i++, px++, py++) {
+						pcb_poly_point_new(poly, *px + ox, *py + oy);
+						pcb_poly_point_new(newpoly, *px + ox, *py + oy);
+
+						if (maxx < *px)
+							maxx = *px;
+						if (maxy < *py)
+							maxy = *py;
+					}
+
+					pcb_add_poly_on_layer(lorig, poly);
+					pcb_add_poly_on_layer(lfont, newpoly);
+					pcb_poly_init_clip(PCB->Data, lorig, poly);
+					pcb_poly_init_clip(PCB->Data, lfont, newpoly);
+				}
+				break;
+			}
+		}
+
+		w = maxx + g->xdelta + ox;
 		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 }
@@ -276,6 +363,7 @@ static void editor2font(pcb_font_t *font)
 
 }
 
+#include "brave.h"
 
 static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -326,7 +414,10 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
-	font2editor_old(font, lfont, lorig, lwidth, lsilk);
+	if (pcb_brave & PCB_BRAVE_NEWFONT)
+		font2editor_new(&font->rnd_font, lfont, lorig, lwidth, lsilk);
+	else
+		font2editor_old(font, lfont, lorig, lwidth, lsilk);
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;
