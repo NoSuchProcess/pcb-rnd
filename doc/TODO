@@ -1,32 +1,16 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-
-
-2. For later releases ===============================================================================
+- BUG: segf: in the library make a symlink cycle: mkdir foo; cd foo; ln -s ../foo foo; pcb-rnd -> stack overflow
+- BUG: font save bug: FontSave() doesn't handle space (ascii 32) properly [report: Erich]
 - FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
 - BUG: scconfig: replicate librnd r34332 (detect cc first) [report: Igor2]
 - BUG: doc: lihata format doc: menu, menu_patch got rnd- prefix
 - io_lihata: modify default board ext to .rp
-- import schematics:
-	- FEATURE: when import schematics GUI choose file names, use relative path if possible
-	- FEATURE: sch-rnd import path with top prio (maybe ringdove project too)
 - FEATURE: dip() should have a pitch parameter, defaulting to 100mil so non-100-mil can be done too [report: barjac]
-- BUG: font save bug: FontSave() doesn't handle space (ascii 32) properly [report: Erich]
-- BUG: segf: in the library make a symlink cycle: mkdir foo; cd foo; ln -s ../foo foo; pcb-rnd -> stack overflow
 - BUG: doc/developer:
 	- make install doesn't install everything
 	- use sccbox -d instead of / at the end
-- BUG: back annotation:
-	- footprint change saved as (null); import sch, select subc, back-annot-replace footprint to 0805, export back annot list; new value not saved in the board file either
-	- re-import with the old footprint doesn't realize there's an active back-annotation request on footprint change and replaces subcircuits
-- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
-- BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
-	- we should display layer IDs somewhere: useful for debugging and for the user for query()
-	- same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
-	- pcb_layer_move_delete_() doesn't do anything to update thermals
-	- see swap_one_thermal() on how to fix this
-	- probably won't break on new layers or layer moves as those won't change LIDs of existing layers
 - librnd API upgrade:
 	- merge sch-rnd r4212 [report: Alain]
 	- librnd 3.2.0+: build_run.c should print runtime librnd version the same way as sch-rnd does
@@ -40,6 +24,23 @@
 		- remove dialogs/dlg_export, make the old ExportGUI and PrintGUI call librnd's ExportDialog and PrintDialog
 	- librnd 3.2.0+: use centralized exec_prefix, see sch_rnd r3691
 	- librnd 3.2.0+: name every paned widget and test window geometry rememberence
+- FEATURE: menu to save 1st padstack proto from buffer to file - useful after constructing a padstack
+
+
+2. For later releases ===============================================================================
+- import schematics:
+	- FEATURE: when import schematics GUI choose file names, use relative path if possible
+	- FEATURE: sch-rnd import path with top prio (maybe ringdove project too)
+- BUG: back annotation:
+	- footprint change saved as (null); import sch, select subc, back-annot-replace footprint to 0805, export back annot list; new value not saved in the board file either
+	- re-import with the old footprint doesn't realize there's an active back-annotation request on footprint change and replaces subcircuits
+- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
+- BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
+	- we should display layer IDs somewhere: useful for debugging and for the user for query()
+	- same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
+	- pcb_layer_move_delete_() doesn't do anything to update thermals
+	- see swap_one_thermal() on how to fix this
+	- probably won't break on new layers or layer moves as those won't change LIDs of existing layers
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
 - CLEANUP/FEATURE: new breadboard
@@ -54,7 +55,6 @@
 	- build a list of layers rendered, in the order of rendering while drawing layer groups; maybe use gdl and move the group to the end and use a terminator item;  get pcb_search_obj_by_location_() to use this list for ordering
 	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
-- FEATURE: menu to save 1st padstack proto from buffer to file - useful after constructing a padstack
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
