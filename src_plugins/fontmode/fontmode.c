@@ -484,6 +484,7 @@ static void font_xform(pcb_xform_mx_t mx)
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
 	rnd_coord_t s, ox, oy;
+	vtp0_t todel = {0};
 
 	lfont = PCB->Data->Layer + 0;
 	lwidth = PCB->Data->Layer + 2;
@@ -534,14 +535,37 @@ static void font_xform(pcb_xform_mx_t mx)
 		rnd_coord_t x1 = p->Points[0].X;
 		rnd_coord_t y1 = p->Points[0].Y;
 		int n;
+		pcb_poly_t *np;
 
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
 
+		/* since there's no undoable mass-point-change API in core, it's cheaper
+		   to just create a new poly */
+		np = pcb_poly_alloc(lfont);
+		pcb_poly_point_prealloc(np, p->PointN);
+		np->Flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
+
 		for(n = 0; n < p->PointN; n++) {
-			/*np->Points[n].X*/
+			rnd_coord_t x = p->Points[n].X - ox, y = p->Points[n].Y - oy, nx, ny;
+			nx = rnd_round(pcb_xform_x(mx, x, y));
+			ny = rnd_round(pcb_xform_y(mx, x, y));
+			pcb_poly_point_new(np, nx+ox, ny+oy);
 		}
+		pcb_add_poly_on_layer(lfont, np);
+		pcb_poly_init_clip(PCB->Data, lfont, np);
+		pcb_undo_add_obj_to_create(PCB_OBJ_POLY, lfont, np, np);
+
+		vtp0_append(&todel, p);
+	}
+
+	/* remove original, pre-xform polys */
+	{
+		long n;
+		for(n = 0; n < todel.used; n++)
+			pcb_remove_object(PCB_OBJ_POLY, lfont, todel.array[n], todel.array[n]);
+		vtp0_uninit(&todel);
 	}
 
 	/* xform delta */
@@ -572,7 +596,7 @@ static void font_xform(pcb_xform_mx_t mx)
 	}
 }
 
-
+/* DOC: fontxform.html */
 static const char pcb_acts_FontXform[] = "FontXform(xform1, params..., [xform2, params...], ...)";
 static const char pcb_acth_FontXform[] = "Transform font graphics in fontmode (FontEdit)";
 static fgw_error_t pcb_act_FontXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
