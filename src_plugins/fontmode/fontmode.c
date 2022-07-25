@@ -259,18 +259,24 @@ static void font2editor_new(rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 static void editor2font(pcb_font_t *font)
 {
 	pcb_symbol_t *symbol;
+	rnd_glyph_t *g;
 	int i;
 	pcb_line_t *l;
 	pcb_arc_t *a;
 	pcb_poly_t *p, *np;
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
+	rnd_glyph_poly_t *gp;
+
 
 	lfont = PCB->Data->Layer + 0;
 	lwidth = PCB->Data->Layer + 2;
 
 	for(i = 0; i <= PCB_MAX_FONTPOSITION; i++)
 		pcb_font_clear_symbol(&font->Symbol[i]);
+
+	for(i = 0; i <= RND_FONT_MAX_GLYPHS; i++)
+		rnd_font_free_glyph(&font->rnd_font.glyph[i]);
 
 	/* pack lines */
 	linelist_foreach(&lfont->Line, &it, l) {
@@ -284,6 +290,7 @@ static void editor2font(pcb_font_t *font)
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
 		symbol = &font->Symbol[s];
+		g = &font->rnd_font.glyph[s];
 
 		x1 -= ox;
 		y1 -= oy;
@@ -296,7 +303,14 @@ static void editor2font(pcb_font_t *font)
 			symbol->Width = x2;
 		symbol->Valid = 1;
 
+		if (g->width < x1)
+			g->width = x1;
+		if (g->width < x2)
+			g->width = x2;
+		g->valid = 1;
+
 		pcb_font_new_line_in_sym(symbol, x1, y1, x2, y2, l->Thickness);
+		rnd_font_new_line_in_glyph(g, x1, y1, x2, y2, l->Thickness);
 	}
 
 	/* pack arcs */
@@ -309,6 +323,7 @@ static void editor2font(pcb_font_t *font)
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
 		symbol = &font->Symbol[s];
+		g = &font->rnd_font.glyph[s];
 
 		cx -= ox;
 		cy -= oy;
@@ -316,10 +331,14 @@ static void editor2font(pcb_font_t *font)
 		pcb_arc_bbox(a);
 		if (symbol->Width < a->bbox_naked.X2 - ox)
 			symbol->Width = a->bbox_naked.X2 - ox;
+		if (g->width < a->bbox_naked.X2 - ox)
+			g->width = a->bbox_naked.X2 - ox;
 
 		symbol->Valid = 1;
+		g->valid = 1;
 
 		pcb_font_new_arc_in_sym(symbol, a->X - ox, a->Y - oy, a->Width, a->StartAngle, a->Delta, a->Thickness);
+		rnd_font_new_arc_in_glyph(g, a->X - ox, a->Y - oy, a->Width, a->StartAngle, a->Delta, a->Thickness);
 	}
 
 	/* pack polygons */
@@ -333,14 +352,21 @@ static void editor2font(pcb_font_t *font)
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
 		symbol = &font->Symbol[s];
+		g = &font->rnd_font.glyph[s];
 
 		np = pcb_font_new_poly_in_sym(symbol, p->PointN);
+		gp = rnd_font_new_poly_in_glyph(g, p->PointN);
 
 		for(n = 0; n < p->PointN; n++) {
 			np->Points[n].X = p->Points[n].X - ox;
 			np->Points[n].Y = p->Points[n].Y - oy;
 			if (symbol->Width < np->Points[n].X)
 				symbol->Width = np->Points[n].X;
+
+			gp->pts.array[n] = p->Points[n].X - ox;
+			gp->pts.array[n+p->PointN] = p->Points[n].Y - oy;
+			if (g->width < np->Points[n].X)
+				g->width = np->Points[n].X;
 		}
 	}
 
@@ -353,14 +379,16 @@ static void editor2font(pcb_font_t *font)
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		symbol = &font->Symbol[s];
+		g = &font->rnd_font.glyph[s];
 
 		x1 -= ox;
 
 		symbol->Delta = x1 - symbol->Width;
+		g->xdelta = x1 - symbol->Width;
 	}
 
 	pcb_font_set_info(font);
-
+	rnd_font_normalize(&font->rnd_font);
 }
 
 #include "brave.h"
