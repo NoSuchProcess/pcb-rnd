@@ -626,11 +626,26 @@ static fgw_error_t pcb_act_FontXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_FontNormalize[] = "FontNormalize()";
+static const char pcb_acth_FontNormalize[] = "Normalie all glyphs (top-left justify)";
+static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_font_t *font = pcb_font(PCB, 0, 1);
+
+	editor2font(font);
+	if (pcb_brave & PCB_BRAVE_NEWFONT)
+		rnd_font_normalize(&font->rnd_font);
+	else
+		pcb_font_set_info(font);
+
+	return pcb_act_FontEdit(res, argc, argv);
+}
+
 rnd_action_t fontmode_action_list[] = {
 	{"FontEdit", pcb_act_FontEdit, pcb_acth_FontEdit, pcb_acts_FontEdit},
 	{"FontSave", pcb_act_FontSave, pcb_acth_FontSave, pcb_acts_FontSave},
 	{"FontXform", pcb_act_FontXform, pcb_acth_FontXform, pcb_acts_FontXform},
-
+	{"FontNormalize", pcb_act_FontNormalize, pcb_acth_FontNormalize, pcb_acts_FontNormalize}
 };
 
 static const char *fontmode_cookie = "fontmode plugin";
