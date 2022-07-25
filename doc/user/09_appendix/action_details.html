@@ -1286,6 +1286,67 @@ Flip a subcircuit to the opposite side of the board.
 Note that the location of the subcircuit will be symmetric about the cursor location; i.e. if the part you are pointing at will still be at the same spot once the subcircuit is on the other side.  When flipping multiple subcircuits, this retains their positions relative to each other, not their absolute positions on the board.  
 </dd></dl>
 
+<h2 id="fontxform">FontXform</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+FontXform(xform1, params..., [xform2, params...], ...)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Transform font graphics in fontmode (FontEdit)
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+fontmode plugin
+</table>
+<p>
+Transform all glyphs of the current font while in fontmode (FontEdit()). 
+<p>
+ The action sets up a 2d transformation matrix, initially an ident matrix, then applies each transformation from the arguments to this matrix. Finally it iterates through all glyphs and transforms drawing objects using this matrix. The origin of the transformation is the origin of the glyph cell, which is the top left corner (the top left grid crossing). 
+<p>
+ Transformation arguments: 
+<table border=1 cellspacing=0>
+  
+<tr>
+ 
+<th>
+ arg         
+<th>
+ description  
+<tr>
+ 
+<td>
+ move dx dy  
+<td>
+ translate coordinates by dx;dy coords  
+<tr>
+ 
+<td>
+ shear sx sy 
+<td>
+ shear coordinates by a factor of sx;sy (floating point numbers in decimal format); arc angles are not changed, only center point is moved  
+<tr>
+ 
+<td>
+ scale sx sy 
+<td>
+ scale coordinates by a factor of sx;sy (floating point numbers in decimal format); arc radius is not scaled, only centerpoint is moved 
+</table>
+ 
+<p>
+ Example: 
+<pre>
+ FontXform(move, 0, 54mil,   shear, -0.15, 0,   move, 0, -54mil) 
+</pre>
+ 
+<p>
+ This first moves each glyph 54 mil up, then shears them by 15% to the right then moves them back down 54 mil. The move is used to transform the base coordinate of the shear to the baseline of the font. But it really works the other way around: transformations always use the top left corner as as origin, but if glyph data is moved up, above cell top, it's the same as if we moved the transformation down by the same amount.  
+<p>
+ 
+<b>
+Note:
+</b>
+ because transfomrations are applied to a matrix first, they need to be specified in reverse order. In the above example the last move is the one that moves everything up (negative y). 
+</dd></dl>
+
 <h2 id="freerotatebuffer">FreeRotateBuffer</h2>
 <dl><dd>
 <p>

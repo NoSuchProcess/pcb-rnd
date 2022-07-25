@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.0.5-dev (svn r36326) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 3.2.0-dev ,  Revision: 36430
+This is pcb-rnd 3.0.6-dev (svn r36456) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 3.2.0 ,  Revision: 36586
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -27,6 +27,7 @@ This is pcb-rnd 3.0.5-dev (svn r36326) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#anyload">AnyLoad</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Load "anything" from path (or offer a file selectio dialog if no path specified)</td><td>AnyLoad([path])</td><td></td>
 <tr><td><a href="action_details.html#applypen">ApplyPen</a></td><td>Set properties of the selected object or object under the cursor to match current drawing style ("pen"), e.g. thickness, clearance.</td><td>ApplyPen([selected|object])</td><td></td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
+<tr><td>Arc2Lines</td><td>Convert arc(s) into lines using approximation. If linelen is specified, resulting line segment length will not exceed that value.</td><td>Arc2Lines(object|selected, [linelen])</td><td>act_draw</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
 <tr><td><a href="action_details.html#atomic">Atomic</a></td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
@@ -160,8 +161,10 @@ This is pcb-rnd 3.0.5-dev (svn r36326) an interactive printed circuit board edit
 <tr><td>FlagEdit</td><td>Change the layer binding.</td><td>FlagEdit(object)</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#flip">Flip</a></td><td>Flip a subcircuit to the opposite side of the board.</td><td>Flip(Object|Selected)</td><td></td>
 <tr><td>FontEdit</td><td>Convert the current font to a PCB for editing.</td><td>FontEdit()</td><td>fontmode plugin</td>
-<tr><td>FontSave</td><td>Convert the current PCB back to a font.</td><td>FontSave()</td><td>fontmode plugin</td>
+<tr><td>FontNormalize</td><td>Normalie all glyphs (top-left justify)</td><td>FontNormalize()</td><td>fontmode plugin</td>
+<tr><td>FontSave</td><td>Convert the current PCB back to a font.</td><td>FontSave([filename])</td><td>fontmode plugin</td>
 <tr><td>Fontsel</td><td>Open the font selection dialog</td><td>Fontsel()</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#fontxform">FontXform</a></td><td>Transform font graphics in fontmode (FontEdit)</td><td>FontXform(xform1, params..., [xform2, params...], ...)</td><td>fontmode plugin</td>
 <tr><td>forcecolor</td><td>change selected objects' color to #RRGGBB, reset if does not start with '#'</td><td>forcecolor(#RRGGBB)</td><td>diag plugin</td>
 <tr><td>formula_bisect</td><td>Find the value for exactly one of the arguments that produces the expected result. One argument must be a string with type:min:max:precision, the rest of the arguments and res must be numeric.</td><td>formula_bisect(action, res, args)</td><td>lib_formula plugin</td>
 <tr><td>fpas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
