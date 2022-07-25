@@ -96,60 +96,15 @@ static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t ox, rnd_c
 	pcb_poly_invalidate_draw(layer, np);
 }
 
-static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static void font2editor_old(pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
 {
-	pcb_font_t *font;
-	pcb_symbol_t *symbol;
-	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
-	rnd_layergrp_id_t grp[4];
+	int s, l;
 	pcb_poly_t *poly;
 	pcb_arc_t *arc, *newarc;
-	int s, l;
 
-	font = pcb_font_unlink(PCB, conf_core.design.text_font_id);
-	if (font == NULL) {
-		rnd_message(RND_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
-		return 1;
-	}
-
-	if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
-		return 1;
-
-	rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, "mil", RND_POL_OVERWRITE);
-	rnd_conf_set_design("design/min_wid", "%s", "1");
-	rnd_conf_set_design("design/min_slk", "%s", "1");
-	rnd_conf_set_design("design/text_font_id", "%s", "0");
-
-
-	PCB->hidlib.size_x = CELL_SIZE * 18;
-	PCB->hidlib.size_y = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
-	PCB->hidlib.grid = RND_MIL_TO_COORD(5);
-
-	/* create the layer stack and logical layers */
-	pcb_layergrp_inhibit_inc();
-	pcb_layers_reset(PCB);
-	pcb_layer_group_setup_default(PCB);
-	pcb_get_grp_new_intern(PCB, 1);
-	pcb_get_grp_new_intern(PCB, 2);
-
-	assert(pcb_layergrp_list(PCB, PCB_LYT_COPPER, grp, 4) == 4);
-	lfont  = make_layer(grp[0], "Font");
-	lorig  = make_layer(grp[1], "OrigFont");
-	lwidth = make_layer(grp[2], "Width");
-	lgrid  = make_layer(grp[3], "Grid");
-
-	assert(pcb_layergrp_list(PCB, PCB_LYT_SILK, grp, 2) == 2);
-	make_layer(grp[0], "Silk");
-	lsilk = make_layer(grp[1], "Silk");
-
-	pcb_layergrp_inhibit_dec();
-
-	/* Inform the rest about the board change (layer stack, size) */
-	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
-	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
-
-	for (s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
+	for(s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
 		char txt[32];
+		pcb_symbol_t *symbol;
 		rnd_coord_t ox = (s % 16 + 1) * CELL_SIZE;
 		rnd_coord_t oy = (s / 16 + 1) * CELL_SIZE;
 		rnd_coord_t w, miny, maxy, maxx = 0;
@@ -166,7 +121,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		sprintf(txt, "%d", s);
 		pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 
-		for (l = 0; l < symbol->LineN; l++) {
+		for(l = 0; l < symbol->LineN; l++) {
 			pcb_line_new_merge(lfont,
 														 symbol->Line[l].Point1.X + ox,
 														 symbol->Line[l].Point1.Y + oy,
@@ -212,24 +167,10 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		w = maxx + symbol->Delta + ox;
 		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
-
-	for (l = 0; l < 16; l++) {
-		int x = (l + 1) * CELL_SIZE;
-		pcb_line_new_merge(lgrid, x, 0, x, PCB->hidlib.size_y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
-	}
-	for (l = 0; l <= PCB_MAX_FONTPOSITION / 16 + 1; l++) {
-		int y = (l + 1) * CELL_SIZE;
-		pcb_line_new_merge(lgrid, 0, y, PCB->hidlib.size_x, y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
-	}
-	RND_ACT_IRES(0);
-	return 0;
 }
 
-static const char pcb_acts_fontsave[] = "FontSave()";
-static const char pcb_acth_fontsave[] = "Convert the current PCB back to a font.";
-static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static void editor2font(pcb_font_t *font)
 {
-	pcb_font_t *font;
 	pcb_symbol_t *symbol;
 	int i;
 	pcb_line_t *l;
@@ -238,11 +179,10 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
 
-	font = pcb_font(PCB, 0, 1);
 	lfont = PCB->Data->Layer + 0;
 	lwidth = PCB->Data->Layer + 2;
 
-	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
+	for(i = 0; i <= PCB_MAX_FONTPOSITION; i++)
 		pcb_font_clear_symbol(&font->Symbol[i]);
 
 	/* pack lines */
@@ -333,6 +273,80 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_font_set_info(font);
+
+}
+
+
+static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_font_t *font;
+	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
+	rnd_layergrp_id_t grp[4];
+	int l;
+
+	font = pcb_font_unlink(PCB, conf_core.design.text_font_id);
+	if (font == NULL) {
+		rnd_message(RND_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
+		return 1;
+	}
+
+	if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
+		return 1;
+
+	rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, "mil", RND_POL_OVERWRITE);
+	rnd_conf_set_design("design/min_wid", "%s", "1");
+	rnd_conf_set_design("design/min_slk", "%s", "1");
+	rnd_conf_set_design("design/text_font_id", "%s", "0");
+
+
+	PCB->hidlib.size_x = CELL_SIZE * 18;
+	PCB->hidlib.size_y = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
+	PCB->hidlib.grid = RND_MIL_TO_COORD(5);
+
+	/* create the layer stack and logical layers */
+	pcb_layergrp_inhibit_inc();
+	pcb_layers_reset(PCB);
+	pcb_layer_group_setup_default(PCB);
+	pcb_get_grp_new_intern(PCB, 1);
+	pcb_get_grp_new_intern(PCB, 2);
+
+	assert(pcb_layergrp_list(PCB, PCB_LYT_COPPER, grp, 4) == 4);
+	lfont  = make_layer(grp[0], "Font");
+	lorig  = make_layer(grp[1], "OrigFont");
+	lwidth = make_layer(grp[2], "Width");
+	lgrid  = make_layer(grp[3], "Grid");
+
+	assert(pcb_layergrp_list(PCB, PCB_LYT_SILK, grp, 2) == 2);
+	make_layer(grp[0], "Silk");
+	lsilk = make_layer(grp[1], "Silk");
+
+	pcb_layergrp_inhibit_dec();
+
+	/* Inform the rest about the board change (layer stack, size) */
+	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+
+	font2editor_old(font, lfont, lorig, lwidth, lsilk);
+
+	for (l = 0; l < 16; l++) {
+		int x = (l + 1) * CELL_SIZE;
+		pcb_line_new_merge(lgrid, x, 0, x, PCB->hidlib.size_y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
+	}
+	for (l = 0; l <= PCB_MAX_FONTPOSITION / 16 + 1; l++) {
+		int y = (l + 1) * CELL_SIZE;
+		pcb_line_new_merge(lgrid, 0, y, PCB->hidlib.size_x, y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
+	}
+	RND_ACT_IRES(0);
+	return 0;
+}
+
+static const char pcb_acts_fontsave[] = "FontSave()";
+static const char pcb_acth_fontsave[] = "Convert the current PCB back to a font.";
+static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_font_t *font = pcb_font(PCB, 0, 1);
+
+	editor2font(font);
 	rnd_actionva(RND_ACT_HIDLIB, "SaveFontTo", NULL);
 
 	RND_ACT_IRES(0);
