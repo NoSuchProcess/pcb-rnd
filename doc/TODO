@@ -4,7 +4,6 @@
 - font rewrite:
 	- fontmode: undoable transformations on polygons
 	- document fontmode actions
-	- revise fontmode for pcb_font
 
 
 2. For later releases ===============================================================================
