@@ -391,8 +391,8 @@ static void editor2font(pcb_font_t *font)
 
 #include "brave.h"
 
-static const char pcb_acts_fontedit[] = "FontEdit()";
-static const char pcb_acth_fontedit[] = "Convert the current font to a PCB for editing.";
+static const char pcb_acts_FontEdit[] = "FontEdit()";
+static const char pcb_acth_FontEdit[] = "Convert the current font to a PCB for editing.";
 static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_font_t *font;
@@ -459,14 +459,14 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_fontsave[] = "FontSave([filename])";
-static const char pcb_acth_fontsave[] = "Convert the current PCB back to a font.";
+static const char pcb_acts_FontSave[] = "FontSave([filename])";
+static const char pcb_acth_FontSave[] = "Convert the current PCB back to a font.";
 static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_font_t *font = pcb_font(PCB, 0, 1);
 	char *fn = NULL;
 
-	RND_ACT_MAY_CONVARG(1, FGW_STR, fontsave, fn = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, FontSave, fn = argv[1].val.str);
 
 	editor2font(font);
 	rnd_actionva(RND_ACT_HIDLIB, "SaveFontTo", fn, NULL);
@@ -626,8 +626,8 @@ static fgw_error_t pcb_act_FontXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 rnd_action_t fontmode_action_list[] = {
-	{"FontEdit", pcb_act_FontEdit, pcb_acth_fontedit, pcb_acts_fontedit},
-	{"FontSave", pcb_act_FontSave, pcb_acth_fontsave, pcb_acts_fontsave},
+	{"FontEdit", pcb_act_FontEdit, pcb_acth_FontEdit, pcb_acts_FontEdit},
+	{"FontSave", pcb_act_FontSave, pcb_acth_FontSave, pcb_acts_FontSave},
 	{"FontXform", pcb_act_FontXform, pcb_acth_FontXform, pcb_acts_FontXform},
 
 };
