@@ -68,8 +68,6 @@
 
 #define XYtoSym(x,y) (((x) / CELL_SIZE - 1)  +  (16 * ((y) / CELL_SIZE - 1)))
 
-static const char pcb_acts_fontedit[] = "FontEdit()";
-static const char pcb_acth_fontedit[] = "Convert the current font to a PCB for editing.";
 static pcb_layer_t *make_layer(rnd_layergrp_id_t grp, const char *lname)
 {
 	rnd_layer_id_t lid;
@@ -393,6 +391,8 @@ static void editor2font(pcb_font_t *font)
 
 #include "brave.h"
 
+static const char pcb_acts_fontedit[] = "FontEdit()";
+static const char pcb_acth_fontedit[] = "Convert the current font to a PCB for editing.";
 static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_font_t *font;
