@@ -459,14 +459,17 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_fontsave[] = "FontSave()";
+static const char pcb_acts_fontsave[] = "FontSave([filename])";
 static const char pcb_acth_fontsave[] = "Convert the current PCB back to a font.";
 static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_font_t *font = pcb_font(PCB, 0, 1);
+	char *fn = NULL;
+
+	RND_ACT_MAY_CONVARG(1, FGW_STR, fontsave, fn = argv[1].val.str);
 
 	editor2font(font);
-	rnd_actionva(RND_ACT_HIDLIB, "SaveFontTo", NULL);
+	rnd_actionva(RND_ACT_HIDLIB, "SaveFontTo", fn, NULL);
 
 	RND_ACT_IRES(0);
 	return 0;
