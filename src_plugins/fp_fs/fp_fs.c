@@ -57,6 +57,8 @@
 
 #include "fp_fs_conf.h"
 
+#define MAX_RECURSE_DEPTH 256
+
 static conf_fp_fs_t conf_fp_fs;
 static const char fp_fs_cookie[] = "fp_fs plugin";
 
@@ -208,7 +210,7 @@ static int fp_fs_ignore_fn(const char *fn, int len)
 
 static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	int (*cb)(void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children, const char *fmt),
-	void *cookie, int subdir_may_not_exist, int need_tags)
+	void *cookie, int subdir_may_not_exist, int need_tags, int recdepth)
 {
 	char olddir[RND_PATH_MAX + 1];     /* The directory we start out in (cwd) */
 	char new_subdir[RND_PATH_MAX + 1];
@@ -218,6 +220,11 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	struct stat buffer;                /* Buffer used in stat */
 	size_t l;
 	int n_footprints = 0;              /* Running count of footprints found in this subdir */
+
+	if (recdepth > MAX_RECURSE_DEPTH) {
+		rnd_message(RND_MSG_ERROR, "fp_fs: recursion too deep at %s\n", subdir);
+		return -1;
+	}
 
 	/* Cache old dir, then cd into subdir because stat is given relative file names. */
 	memset(olddir, 0, sizeof olddir);
@@ -292,7 +299,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 			if ((S_ISDIR(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
 				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR, NULL, NULL, NULL);
 				if (recurse) {
-					n_footprints += fp_fs_list(pl, fn, recurse, cb, cookie, 0, need_tags);
+					n_footprints += fp_fs_list(pl, fn, recurse, cb, cookie, 0, need_tags, recdepth+1);
 				}
 				continue;
 			}
@@ -306,7 +313,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	return n_footprints;
 }
 
-static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *toppath, int is_root, pcb_plug_fp_map_t *children, const char *parent_fmt)
+static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *toppath, int is_root, pcb_plug_fp_map_t *children, const char *parent_fmt, int recdepth)
 {
 	list_st_t l;
 	list_dir_t *d, *nextd;
@@ -346,12 +353,12 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 		return l.children;
 	}
 
-	fp_fs_list(l.menu, working, 0, list_cb, &l, is_root, 1);
+	fp_fs_list(l.menu, working, 0, list_cb, &l, is_root, 1, recdepth);
 
 	/* now recurse to each subdirectory mapped in the previous call;
 	   by now we don't care if menu is ruined by the realloc() in pcb_lib_menu_new() */
 	for (d = l.subdirs; d != NULL; d = nextd) {
-		l.children += fp_fs_load_dir_(l.menu, d->subdir, d->parent, 0, d->children, d->fmt);
+		l.children += fp_fs_load_dir_(l.menu, d->subdir, d->parent, 0, d->children, d->fmt, recdepth+1);
 		nextd = d->next;
 		free(d->subdir);
 		free(d->parent);
@@ -368,7 +375,7 @@ static int fp_fs_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 {
 	int res;
 
-	res = fp_fs_load_dir_(&pcb_library, ".", path, 1, NULL, NULL);
+	res = fp_fs_load_dir_(&pcb_library, ".", path, 1, NULL, NULL, 0);
 	if (res >= 0) {
 		pcb_fplibrary_t *l = pcb_fp_lib_search(&pcb_library, path);
 		if ((l != NULL) && (l->type == PCB_LIB_DIR))
@@ -445,7 +452,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 		rnd_path_resolve(&PCB->hidlib, path, &fpath, 0, rnd_false);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
 
-		fp_fs_list(&pcb_library, fpath, 1, fp_search_cb, &ctx, 1, 0);
+		fp_fs_list(&pcb_library, fpath, 1, fp_search_cb, &ctx, 1, 0, 0);
 		if (ctx.path != NULL) {
 			sprintf(path, "%s%c%s", ctx.path, RND_DIR_SEPARATOR_C, ctx.real_name);
 			free(ctx.path);
