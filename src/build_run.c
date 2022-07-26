@@ -67,7 +67,8 @@ char *pcb_get_info_program(void)
 		first_time = 0;
 		gds_init(&info);
 		gds_append_str(&info, "This is pcb-rnd " PCB_VERSION " (" PCB_REVISION ")" "\nan interactive ");
-		gds_append_str(&info, "printed circuit board editor\nfrom the Ringdove EDA suite\ncompiled using librnd version " RND_VER_STR "\n");
+		gds_append_str(&info, "printed circuit board editor\nfrom the Ringdove EDA suite\ncompiled using librnd version " RND_VER_STR "\nrunning with librnd version ");
+		gds_append_str(&info, rnd_ver_str);
 	}
 	return info.array;
 }
