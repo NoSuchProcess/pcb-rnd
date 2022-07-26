@@ -110,7 +110,7 @@ static int help_invoc(void)
 {
 	rnd_hid_t **hl = rnd_hid_enumerate();
 	int i;
-	int n_printer = 0, n_gui = 0, n_exporter = 0;
+	int n_printer = 0, n_exporter = 0;
 
 	u("pcb-rnd invocation:");
 	u("");
@@ -118,10 +118,8 @@ static int help_invoc(void)
 	u("");
 	u("%s [generics] [--gui GUI] [gui options] <pcb file>   interactive GUI", Progname);
 
-	u("Available GUI hid%s:", n_gui == 1 ? "" : "s");
-	for (i = 0; hl[i]; i++)
-		if (hl[i]->gui)
-			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
+	u("Available GUI hids:");
+	rnd_hid_print_all_gui_plugins();
 
 	u("\n%s [generics] -p [printing options] <pcb file>\tto print", Progname);
 	u("Available printing hid%s:", n_printer == 1 ? "" : "s");
