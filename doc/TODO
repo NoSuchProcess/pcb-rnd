@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: segf: in the library make a symlink cycle: mkdir foo; cd foo; ln -s ../foo foo; pcb-rnd -> stack overflow
 - BUG: font save bug: FontSave() doesn't handle space (ascii 32) properly [report: Erich]
 - FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
 - BUG: scconfig: replicate librnd r34332 (detect cc first) [report: Igor2]
