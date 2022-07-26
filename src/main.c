@@ -141,97 +141,12 @@ static char *conf_fn_compat(const char *dir, const char *old_name, const char *n
 	return new_path;
 }
 
-/* Figure out the canonical name of the executed program
-   and fix up the defaults for various paths; returns exec prefix that
-   should be saved in the config */
-static char *main_path_init(char *argv0)
+/* Use the canonical name of the executed program to fix up the defaults
+   for various paths */
+static void main_path_init(char *exec_prefix)
 {
-	size_t l;
-	int haspath;
-	char *t1, *t2;
-	int found_bindir = 0, se = 0;
-	char *exec_prefix = NULL;
-	char *bindir = NULL, *tmp;
-
-
-	/* see if argv0 has enough of a path to let lrealpath give the
-	   real path.  This should be the case if you invoke pcb with
-	   something like /usr/local/bin/pcb or ./pcb or ./foo/pcb
-	   but if you just use pcb and it exists in your path, you'll
-	   just get back pcb again. */
-	haspath = (strchr(argv0, RND_DIR_SEPARATOR_C) != NULL);
-
-#ifdef DEBUG
-	printf("main_path_init (%s): haspath = %d\n", argv0, haspath);
-#endif
-
-	if (haspath) {
-		bindir = rnd_lrealpath(argv0);
-		if (bindir == NULL)
-			bindir = rnd_strdup(argv0);
-		found_bindir = 1;
-	}
-	else {
-		char *path, *p, *tmps;
-		struct stat sb;
-		int r;
-
-		tmps = getenv("PATH");
-
-		if (tmps != NULL) {
-			path = rnd_strdup(tmps);
-
-			/* search through the font path for a font file */
-			for (p = strtok(path, RND_PATH_DELIMETER); p && *p; p = strtok(NULL, RND_PATH_DELIMETER)) {
-#ifdef DEBUG
-				printf("Looking for %s in %s\n", argv0, p);
-#endif
-				if ((tmps = (char *) malloc((strlen(argv0) + strlen(p) + 2) * sizeof(char))) == NULL) {
-					fprintf(stderr, "main_path_init():  malloc failed\n");
-					exit(1);
-				}
-				sprintf(tmps, "%s%s%s", p, RND_DIR_SEPARATOR_S, argv0);
-				r = stat(tmps, &sb);
-				if (r == 0) {
-#ifdef DEBUG
-					printf("Found it:  \"%s\"\n", tmps);
-#endif
-					bindir = rnd_lrealpath(tmps);
-					if (bindir == NULL)
-						bindir = rnd_strdup(tmps);
-					found_bindir = 1;
-					free(tmps);
-					break;
-				}
-				free(tmps);
-			}
-			free(path);
-		}
-	}
-
-	if (found_bindir) {
-		/* strip off the executable name leaving only the path */
-		t2 = NULL;
-		t1 = strchr(bindir, RND_DIR_SEPARATOR_C);
-		while (t1 != NULL && *t1 != '\0') {
-			t2 = t1;
-			t1 = strchr(t2 + 1, RND_DIR_SEPARATOR_C);
-		}
-		if (t2 != NULL)
-			*t2 = '\0';
-	}
-	else {
-		/* we have failed to find out anything from argv[0] so fall back to the original install prefix */
-		bindir = rnd_strdup(BINDIR);
-	}
-
-	/* now find the path to exec_prefix */
-	l = strlen(bindir) + 1 + strlen(BINDIR_TO_EXECPREFIX) + 1;
-	if ((exec_prefix = (char *) malloc(l * sizeof(char))) == NULL) {
-		fprintf(stderr, "main_path_init():  malloc failed\n");
-		exit(1);
-	}
-	sprintf(exec_prefix, "%s%s%s", bindir, RND_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
+	int se = 0;
+	char *tmp;
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
 	tmp = rnd_concat(PCBSHAREDIR, "/footprint", NULL);
@@ -258,9 +173,6 @@ static char *main_path_init(char *argv0)
 	rnd_app.conf_user_path = conf_fn_compat(CONF_USER_DIR, "/pcb-conf.lht", "/conf_core.lht");
 	rnd_app.conf_sysdir_path = PCBCONFDIR;
 	rnd_app.conf_sys_path = conf_fn_compat(PCBCONFDIR, "/pcb-conf.lht", "/conf_core.lht");
-
-	free(bindir);
-	return exec_prefix;
 }
 
 static void main_path_uninit(void)
@@ -507,7 +419,8 @@ int main(int argc, char *argv[])
 	rnd_app.lib_dir = PCBLIBDIR;
 
 	rnd_fix_locale_and_env();
-	exec_prefix = main_path_init(argv[0]);
+	exec_prefix = rnd_exec_prefix(argv[0], BINDIR, BINDIR_TO_EXECPREFIX);
+	main_path_init(exec_prefix);
 
 	pcb_crosshair_pre_init();
 
