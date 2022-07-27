@@ -2,7 +2,6 @@ put /local/pcb/mod {dialogs}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dialogs.o
  $(PLUGDIR)/dialogs/dlg_about.o
- $(PLUGDIR)/dialogs/dlg_export.o
  $(PLUGDIR)/dialogs/dlg_flag_edit.o
  $(PLUGDIR)/dialogs/dlg_fontsel.o
  $(PLUGDIR)/dialogs/dlg_layer_binding.o

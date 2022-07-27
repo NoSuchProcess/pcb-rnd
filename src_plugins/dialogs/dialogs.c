@@ -36,6 +36,7 @@
 #include "funchash_core.h"
 #include <librnd/plugins/lib_hid_common/dialogs_conf.h>
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
+#include <librnd/plugins/lib_hid_common/dlg_export.h>
 
 /* from lib_hid_common */
 extern conf_dialogs_t dialogs_conf;
@@ -43,7 +44,6 @@ extern conf_dialogs_t dialogs_conf;
 /* include them all for static inlines */
 #include "dlg_test.c"
 #include "dlg_about.h"
-#include "dlg_export.h"
 #include "dlg_flag_edit.h"
 #include "dlg_fontsel.h"
 #include "dlg_infobar.h"
@@ -75,8 +75,10 @@ rnd_action_t dialogs_action_list[] = {
 	{"PadstackEdit", pcb_act_PadstackEdit, pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},
 	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"Pinout", pcb_act_Pinout, pcb_acth_Pinout, pcb_acts_Pinout},
-	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
-	{"PrintGUI", pcb_act_PrintGUI, pcb_acth_PrintGUI, pcb_acts_PrintGUI},
+	{"ExportGUI", rnd_act_ExportDialog, rnd_acth_ExportDialog, rnd_acts_ExportDialog},
+	{"PrintGUI", rnd_act_PrintDialog, rnd_acth_PrintDialog, rnd_acts_PrintDialog},
+	{"ExportDialog", rnd_act_ExportDialog, rnd_acth_ExportDialog, rnd_acts_ExportDialog},
+	{"PrintDialog", rnd_act_PrintDialog, rnd_acth_PrintDialog, rnd_acts_PrintDialog},
 	{"GroupPropGui", pcb_act_GroupPropGui, pcb_acth_GroupPropGui, pcb_acts_GroupPropGui},
 	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui},
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},

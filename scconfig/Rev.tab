@@ -1,3 +1,4 @@
+36610	configure	remove local implementation of export and print dialogs in favor of librnd's
 36609	configure	remove low level export png, ps, eps, svg and lpr code in favor of librnd's
 36602	configure	remove local pixmap support in favor of librnd's
 36562	configure	font engine rewrite

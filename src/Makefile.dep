@@ -276,7 +276,6 @@
  ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/glyph.h \
  ../src_3rd/rnd_inclib/font/vtgla.h obj_gfx_list.h obj_gfx.h layer_grp.h \
  rats_patch.h board.h obj_text.h ../src_plugins/dialogs/dlg_about.h \
- ../src_plugins/dialogs/dlg_export.h \
  ../src_plugins/dialogs/dlg_flag_edit.h \
  ../src_plugins/dialogs/dlg_fontsel.h \
  ../src_plugins/dialogs/dlg_infobar.h \
@@ -302,8 +301,6 @@
  ../src_plugins/dialogs/adialogs_conf_fields.h
 ../src_plugins/dialogs/dlg_about.o: ../src_plugins/dialogs/dlg_about.c \
  ../config.h build_run.h ../src_plugins/dialogs/dlg_about.h
-../src_plugins/dialogs/dlg_export.o: ../src_plugins/dialogs/dlg_export.c \
- ../config.h ../src_plugins/dialogs/dlg_export.h
 ../src_plugins/dialogs/dlg_flag_edit.o: \
  ../src_plugins/dialogs/dlg_flag_edit.c ../config.h flag.h globalconst.h \
  flag_str.h flag.h change.h board.h vtroutestyle.h attrib.h \
