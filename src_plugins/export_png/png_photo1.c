@@ -52,7 +52,7 @@ static const char *mask_colour_names[] = {
     to use separate color_structs for the multiplication
     and addition parts of the mask math.
  */
-static const rnd_png_color_struct_t mask_colours[] = {
+static const rnd_drwpx_color_struct_t mask_colours[] = {
 #define MASK_COLOUR_GREEN 0
 	{0x3CA03CFF, 60, 160, 60, 255},
 #define MASK_COLOUR_RED 1
@@ -86,7 +86,7 @@ static const char *silk_colour_names[] = {
 	NULL
 };
 
-static const rnd_png_color_struct_t silk_colours[] = {
+static const rnd_drwpx_color_struct_t silk_colours[] = {
 #define SILK_COLOUR_WHITE 0
 	{0xE0E0E0FF, 224, 224, 224, 255},
 #define SILK_COLOUR_BLACK 1
@@ -95,8 +95,8 @@ static const rnd_png_color_struct_t silk_colours[] = {
 	{0xB9B90AFF, 185, 185, 10, 255}
 };
 
-static const rnd_png_color_struct_t silk_top_shadow = {0x151515FF, 21, 21, 21, 255};
-static const rnd_png_color_struct_t silk_bottom_shadow = {0x0E0E0EFF, 14, 14, 14, 255};
+static const rnd_drwpx_color_struct_t silk_top_shadow = {0x151515FF, 21, 21, 21, 255};
+static const rnd_drwpx_color_struct_t silk_bottom_shadow = {0x0E0E0EFF, 14, 14, 14, 255};
 
 static int smshadows[3][3] = {
 	{1, 0, -1},

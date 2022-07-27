@@ -1,7 +1,6 @@
 put /local/pcb/mod {export_png}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/export_png/png.o
-	$(PLUGDIR)/export_png/draw_png.o
 @]
 
 switch /local/pcb/export_png/controls

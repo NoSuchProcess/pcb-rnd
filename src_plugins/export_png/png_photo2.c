@@ -30,7 +30,7 @@
  *  Heavily based on the ps HID written by DJ Delorie
  */
 
-static void rgb(rnd_png_color_struct_t *dest, int r, int g, int b)
+static void rgb(rnd_drwpx_color_struct_t *dest, int r, int g, int b)
 {
 	dest->r = r;
 	dest->g = g;
@@ -84,7 +84,7 @@ static void ts_bs_sm(gdImagePtr im)
 		}
 }
 
-static void clip(rnd_png_color_struct_t * dest, rnd_png_color_struct_t * source)
+static void clip(rnd_drwpx_color_struct_t * dest, rnd_drwpx_color_struct_t * source)
 {
 #define CLIP(var) \
 	dest->var = source->var; \
@@ -97,21 +97,21 @@ static void clip(rnd_png_color_struct_t * dest, rnd_png_color_struct_t * source)
 #undef CLIP
 }
 
-static void blend(rnd_png_color_struct_t * dest, float a_amount, rnd_png_color_struct_t * a, rnd_png_color_struct_t * b)
+static void blend(rnd_drwpx_color_struct_t * dest, float a_amount, rnd_drwpx_color_struct_t * a, rnd_drwpx_color_struct_t * b)
 {
 	dest->r = a->r * a_amount + b->r * (1 - a_amount);
 	dest->g = a->g * a_amount + b->g * (1 - a_amount);
 	dest->b = a->b * a_amount + b->b * (1 - a_amount);
 }
 
-static void multiply(rnd_png_color_struct_t * dest, rnd_png_color_struct_t * a, rnd_png_color_struct_t * b)
+static void multiply(rnd_drwpx_color_struct_t * dest, rnd_drwpx_color_struct_t * a, rnd_drwpx_color_struct_t * b)
 {
 	dest->r = (a->r * b->r) / 255;
 	dest->g = (a->g * b->g) / 255;
 	dest->b = (a->b * b->b) / 255;
 }
 
-static void add(rnd_png_color_struct_t * dest, double a_amount, const rnd_png_color_struct_t * a, double b_amount, const rnd_png_color_struct_t * b)
+static void add(rnd_drwpx_color_struct_t * dest, double a_amount, const rnd_drwpx_color_struct_t * a, double b_amount, const rnd_drwpx_color_struct_t * b)
 {
 	dest->r = a->r * a_amount + b->r * b_amount;
 	dest->g = a->g * a_amount + b->g * b_amount;
@@ -120,7 +120,7 @@ static void add(rnd_png_color_struct_t * dest, double a_amount, const rnd_png_co
 	clip(dest, dest);
 }
 
-static void subtract(rnd_png_color_struct_t * dest, double a_amount, const rnd_png_color_struct_t * a, double b_amount, const rnd_png_color_struct_t * b)
+static void subtract(rnd_drwpx_color_struct_t * dest, double a_amount, const rnd_drwpx_color_struct_t * a, double b_amount, const rnd_drwpx_color_struct_t * b)
 {
 	dest->r = a->r * a_amount - b->r * b_amount;
 	dest->g = a->g * a_amount - b->g * b_amount;
@@ -183,7 +183,7 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 	}
 
 	if (!*photo_im) {
-		static rnd_png_color_struct_t *black = NULL, *white = NULL;
+		static rnd_drwpx_color_struct_t *black = NULL, *white = NULL;
 		*photo_im = gdImageCreate(gdImageSX(pctx->im), gdImageSY(pctx->im));
 		if (photo_im == NULL) {
 			rnd_message(RND_MSG_ERROR, "png_set_layer():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", gdImageSX(pctx->im), gdImageSY(pctx->im));
@@ -191,7 +191,7 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 		}
 
 
-		white = (rnd_png_color_struct_t *) malloc(sizeof(rnd_png_color_struct_t));
+		white = (rnd_drwpx_color_struct_t *) malloc(sizeof(rnd_drwpx_color_struct_t));
 		white->r = white->g = white->b = 255;
 		white->a = 0;
 		white->c = gdImageColorAllocate(*photo_im, white->r, white->g, white->b);
@@ -200,7 +200,7 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 			return 0;
 		}
 
-		black = (rnd_png_color_struct_t *) malloc(sizeof(rnd_png_color_struct_t));
+		black = (rnd_drwpx_color_struct_t *) malloc(sizeof(rnd_drwpx_color_struct_t));
 		black->r = black->g = black->b = black->a = 0;
 		black->c = gdImageColorAllocate(*photo_im, black->r, black->g, black->b);
 		if (black->c == RND_PNG_BADC) {
@@ -223,7 +223,7 @@ static void png_photo_head(void)
 static void png_photo_foot(void)
 {
 	int x, y, darken, lg;
-	rnd_png_color_struct_t white, black, fr4;
+	rnd_drwpx_color_struct_t white, black, fr4;
 
 	rgb(&white, 255, 255, 255);
 	rgb(&black, 0, 0, 0);
@@ -255,8 +255,8 @@ static void png_photo_foot(void)
 
 	for (x = 0; x < gdImageSX(pctx->im); x++) {
 		for (y = 0; y < gdImageSY(pctx->im); y++) {
-			rnd_png_color_struct_t p, cop;
-			rnd_png_color_struct_t mask_colour, silk_colour;
+			rnd_drwpx_color_struct_t p, cop;
+			rnd_drwpx_color_struct_t mask_colour, silk_colour;
 			int cc, mask, silk;
 			int transparent;
 

@@ -51,24 +51,25 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>
 #include "funchash_core.h"
+#include "hid_cam.h"
 
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_nogui.h>
-#include "png.h"
-
-/* the gd library which makes this all so easy */
-#include <gd.h>
-
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid_attrib.h>
-#include "hid_cam.h"
-
 #include <librnd/core/compat_misc.h>
+
+/* we depend on <gd.h> for photo mode */
+#define FROM_DRAW_PIXMAP_C
+#include <gd.h>
+#include <librnd/plugins/lib_exp_pixmap/draw_pixmap.h>
+
+#include "png.h"
+
 
 /* only because photo mode also uses direct gd calls so we included gd.h already */
 #define FROM_DRAW_PNG_C
 
-#include "draw_png.h"
 
 static rnd_hid_t png_hid;
 
@@ -76,7 +77,7 @@ const char *png_cookie = "png HID";
 
 static pcb_cam_t png_cam;
 
-static rnd_png_t pctx_, *pctx = &pctx_;
+static rnd_drwpx_t pctx_, *pctx = &pctx_;
 
 /* If this table has no elements in it, then we have no reason to
    register this HID and will refrain from doing so at the end of this
@@ -197,7 +198,7 @@ File format to be exported. Parameter @code{<string>} can be @samp{PNG},
 %end-doc
 */
 	{"format", "Export file format",
-	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, rnd_png_filetypes},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, rnd_drwpx_filetypes},
 #define HA_filetype 9
 
 /* %start-doc options "93 PNG Options"
@@ -299,7 +300,7 @@ static rnd_hid_attr_val_t png_values[NUM_OPTIONS];
 
 static const rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
 {
-	const char *suffix = rnd_png_get_file_suffix(png_values[HA_filetype].lng);
+	const char *suffix = rnd_drwpx_get_file_suffix(png_values[HA_filetype].lng);
 	const char *val = png_values[HA_pngfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
@@ -353,7 +354,7 @@ static rnd_hid_attr_val_t *png_options;
 static void png_head(void)
 {
 	pctx->ymirror = conf_core.editor.show_solder_side;
-	rnd_png_start(pctx);
+	rnd_drwpx_start(pctx);
 	png_photo_head();
 }
 
@@ -362,7 +363,7 @@ static void png_finish(FILE *f)
 	if (pctx->photo_mode)
 		png_photo_foot();
 
-	rnd_png_finish(pctx, f, png_options[HA_filetype].lng);
+	rnd_drwpx_finish(pctx, f, png_options[HA_filetype].lng);
 }
 
 
@@ -434,7 +435,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	rnd_xform_t xform;
 	FILE *f;
 
-	rnd_png_init(pctx, &PCB->hidlib);
+	rnd_drwpx_init(pctx, &PCB->hidlib);
 
 	if (!options) {
 		png_get_export_options(hid, 0);
@@ -460,16 +461,16 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	else
 		bbox = NULL;
 
-	if (rnd_png_set_size(pctx, bbox, options[HA_dpi].lng, options[HA_xmax].lng, options[HA_ymax].lng, options[HA_xymax].lng) != 0) {
-		rnd_png_uninit(pctx);
+	if (rnd_drwpx_set_size(pctx, bbox, options[HA_dpi].lng, options[HA_xmax].lng, options[HA_ymax].lng, options[HA_xymax].lng) != 0) {
+		rnd_drwpx_uninit(pctx);
 		return;
 	}
 
-	rnd_png_parse_bloat(pctx, options[HA_bloat].str);
+	rnd_drwpx_parse_bloat(pctx, options[HA_bloat].str);
 
-	if (rnd_png_create(pctx, options[HA_use_alpha].lng) != 0) {
+	if (rnd_drwpx_create(pctx, options[HA_use_alpha].lng) != 0) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  Failed to create bitmap of %d * %d returned NULL.  Aborting export.\n", pctx->w, pctx->h);
-		rnd_png_uninit(pctx);
+		rnd_drwpx_uninit(pctx);
 		return;
 	}
 
@@ -477,7 +478,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		f = rnd_fopen_askovr(&PCB->hidlib, png_cam.active ? png_cam.fn : filename, "wb", NULL);
 		if (!f) {
 			perror(filename);
-			rnd_png_uninit(pctx);
+			rnd_drwpx_uninit(pctx);
 			return;
 		}
 	}
@@ -500,7 +501,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 
 	png_photo_post_export();
-	rnd_png_uninit(pctx);
+	rnd_drwpx_uninit(pctx);
 
 	if (!png_cam.active) png_cam.okempty_content = 1; /* never warn in direct export */
 
@@ -583,22 +584,22 @@ static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 
 static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
-	rnd_png_set_drawing_mode(pctx, hid, op, direct, screen);
+	rnd_drwpx_set_drawing_mode(pctx, hid, op, direct, screen);
 }
 
 static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
-	rnd_png_set_color(pctx, gc, color);
+	rnd_drwpx_set_color(pctx, gc, color);
 }
 
 static void png_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	rnd_png_fill_rect(pctx, gc, x1, y1, x2, y2);
+	rnd_drwpx_fill_rect(pctx, gc, x1, y1, x2, y2);
 }
 
 static void png_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	rnd_png_draw_line(pctx, gc, x1, y1, x2, y2);
+	rnd_drwpx_draw_line(pctx, gc, x1, y1, x2, y2);
 }
 
 static void png_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
@@ -611,17 +612,17 @@ static void png_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 
 static void png_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	rnd_png_draw_arc(pctx, gc, cx, cy, width, height, start_angle, delta_angle);
+	rnd_drwpx_draw_arc(pctx, gc, cx, cy, width, height, start_angle, delta_angle);
 }
 
 static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
-	rnd_png_fill_circle(pctx, gc, cx, cy, radius);
+	rnd_drwpx_fill_circle(pctx, gc, cx, cy, radius);
 }
 
 static void png_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
-	rnd_png_fill_polygon_offs(pctx, gc, n_coords, x, y, dx, dy);
+	rnd_drwpx_fill_polygon_offs(pctx, gc, n_coords, x, y, dx, dy);
 }
 
 
@@ -648,7 +649,7 @@ void pplg_uninit_export_png(void)
 {
 	rnd_export_remove_opts_by_cookie(png_cookie);
 
-	if (rnd_png_has_any_format())
+	if (rnd_drwpx_has_any_format())
 		rnd_hid_remove_hid(&png_hid);
 }
 
@@ -669,13 +670,13 @@ int pplg_init_export_png(void)
 	png_hid.do_export = png_do_export;
 	png_hid.parse_arguments = png_parse_arguments;
 	png_hid.set_layer_group = png_set_layer_group;
-	png_hid.make_gc = rnd_png_make_gc;
-	png_hid.destroy_gc = rnd_png_destroy_gc;
+	png_hid.make_gc = rnd_drwpx_make_gc;
+	png_hid.destroy_gc = rnd_drwpx_destroy_gc;
 	png_hid.set_drawing_mode = png_set_drawing_mode;
 	png_hid.set_color = png_set_color;
-	png_hid.set_line_cap = rnd_png_set_line_cap;
-	png_hid.set_line_width = rnd_png_set_line_width;
-	png_hid.set_draw_xor = rnd_png_set_draw_xor;
+	png_hid.set_line_cap = rnd_drwpx_set_line_cap;
+	png_hid.set_line_width = rnd_drwpx_set_line_width;
+	png_hid.set_draw_xor = rnd_drwpx_set_draw_xor;
 	png_hid.draw_line = png_draw_line;
 	png_hid.draw_arc = png_draw_arc;
 	png_hid.draw_rect = png_draw_rect;
@@ -688,7 +689,7 @@ int pplg_init_export_png(void)
 
 	png_hid.usage = png_usage;
 
-	if (rnd_png_has_any_format()) {
+	if (rnd_drwpx_has_any_format()) {
 		rnd_hid_register_hid(&png_hid);
 		rnd_hid_load_defaults(&png_hid, png_attribute_list, NUM_OPTIONS);
 	}

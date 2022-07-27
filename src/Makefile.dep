@@ -748,9 +748,6 @@
  ../src_plugins/export_openscad/scad_draw.c \
  ../src_plugins/export_openscad/../lib_polyhelp/topoly.h obj_common.h \
  plug_io.h plug_footprint.h ../src_plugins/export_openscad/scad_models.c
-../src_plugins/export_png/draw_png.o: \
- ../src_plugins/export_png/draw_png.c ../config.h \
- ../src_plugins/export_png/draw_png.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
@@ -764,7 +761,6 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h layer.h \
  layer_vis.h funchash_core.h funchash_core_list.h \
  ../src_plugins/export_png/png.h hid_cam.h \
- ../src_plugins/export_png/draw_png.h \
  ../src_plugins/export_png/png_photo1.c \
  ../src_plugins/export_png/png_photo2.c
 ../src_plugins/export_ps/draw_eps.o: ../src_plugins/export_ps/draw_eps.c \
