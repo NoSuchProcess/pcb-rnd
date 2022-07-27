@@ -152,7 +152,7 @@ ha:pcb-rnd-log-v*              pcb-rnd message log dump
    seen            integer     1 if the message got displayed
    str             string      log message
 
-ha:menu
+ha:rnd-menu-v*
 
 type:name           value  ver description
 ha:rnd-menu-v1                 Menu file
@@ -203,7 +203,7 @@ ha:rnd-menu-v1                 Menu file
  ha:scripts                    a collection of named action scripts that can be symnlinked from elsewhere in the menu file
   li:SCRIPTNAME                action script
 
-ha:menu_patch
+ha:rnd-menu-patch-v*
 
 type:name                 value ver description
 ha:rnd-menu-patch-v1                Menu patch instructions

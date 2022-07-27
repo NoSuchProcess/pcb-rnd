@@ -1,7 +1,7 @@
 ha:lht_tree_doc {
 
 ha:roots {
-	ha:menu {
+	ha:rnd-menu-v* {
 		type=ha
 		name={rnd-menu-v1}
 		desc={Menu file}
@@ -104,7 +104,7 @@ ha:roots {
 		}
 	}
 
-	ha:menu_patch {
+	ha:rnd-menu-patch-v* {
 		type=ha
 		name={rnd-menu-patch-v1}
 		desc={Menu patch instructions}
