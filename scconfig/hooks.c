@@ -181,7 +181,7 @@ int hook_detect_target()
 {
 	int want_gd, want_xml2, want_freetype2, want_fuse;
 
-	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd");
+	want_gd     = plug_is_enabled("export_png");
 	want_xml2   = plug_is_enabled("io_eagle") || plug_is_enabled("order_pcbway") || plug_is_enabled("stl_export");
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
@@ -229,7 +229,6 @@ int hook_detect_target()
 			hook_custom_arg("disable-gd-png", NULL);
 			hook_custom_arg("disable-gd-jpg", NULL);
 			hook_custom_arg("disable-export_png", NULL);
-			hook_custom_arg("disable-import_pxm_gd", NULL);
 			want_gd = 0;
 			goto disable_gd_formats;
 		}
