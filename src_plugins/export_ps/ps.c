@@ -23,6 +23,8 @@
 
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_nogui.h>
+#include <librnd/plugins/lib_exp_text/draw_ps.h>
+
 #include "ps.h"
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid_attrib.h>
@@ -32,7 +34,6 @@
 #include "stub_draw.h"
 #include "../src_plugins/lib_compat_help/media.h"
 
-#include "draw_ps.h"
 
 const char *ps_cookie = "ps HID";
 

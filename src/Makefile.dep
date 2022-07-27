@@ -763,11 +763,6 @@
  ../src_plugins/export_png/png.h hid_cam.h \
  ../src_plugins/export_png/png_photo1.c \
  ../src_plugins/export_png/png_photo2.c
-../src_plugins/export_ps/draw_eps.o: ../src_plugins/export_ps/draw_eps.c \
- ../src_plugins/export_ps/draw_eps.h
-../src_plugins/export_ps/draw_ps.o: ../src_plugins/export_ps/draw_ps.c \
- ../src_plugins/export_ps/../lib_compat_help/media.h \
- ../src_plugins/export_ps/draw_ps.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
@@ -780,7 +775,7 @@
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h layer.h \
  layer_vis.h ../src_plugins/export_ps/ps.h hid_cam.h funchash_core.h \
- funchash_core_list.h ../src_plugins/export_ps/draw_eps.h
+ funchash_core_list.h
 ../src_plugins/export_ps/ps.o: ../src_plugins/export_ps/ps.c ../config.h \
  board.h vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -793,8 +788,7 @@
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h layer.h draw.h hid_cam.h funchash_core.h \
  funchash_core_list.h layer_vis.h ../src_plugins/export_ps/ps.h \
- conf_core.h stub_draw.h draw.h ../src_plugins/lib_compat_help/media.h \
- ../src_plugins/export_ps/draw_ps.h
+ conf_core.h stub_draw.h draw.h ../src_plugins/lib_compat_help/media.h
 ../src_plugins/export_stat/stat.o: ../src_plugins/export_stat/stat.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h obj_common.h flag.h data_parent.h \

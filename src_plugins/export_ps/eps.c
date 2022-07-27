@@ -21,6 +21,7 @@
 #include "layer_vis.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/plugins/lib_exp_text/draw_eps.h>
 
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_nogui.h>
@@ -30,7 +31,7 @@
 #include "hid_cam.h"
 #include "funchash_core.h"
 
-#include "draw_eps.h"
+
 
 static pcb_cam_t eps_cam;
 
