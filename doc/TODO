@@ -14,8 +14,6 @@
 	+ merge sch-rnd r4212 [report: Alain]
 	- librnd 3.2.0+: use lib_exp_* and lib_imp_*
 		- export_ps, export_svg
-		- (remove gd stuff from config.h.in)
-		- (remove gd detection from scconfig)
 		- remove export_lpr/lpr_hid.[ch] in favor of librnd's
 	- librnd 3.2.0+: export dialog
 		- remove dialogs/dlg_export, make the old ExportGUI and PrintGUI call librnd's ExportDialog and PrintDialog

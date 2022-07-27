@@ -31,9 +31,6 @@
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
-	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png rnd_exporter"},
-	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png rnd_exporter"},
-	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png rnd_exporter"},
 	{"enable-bison",      "/local/pcb/want_bison",        arg_true,      "$enable generating language files using bison/flex"},
 	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files using bison/flex"},
 	{"enable-byaccic",    "/local/pcb/want_byaccic",      arg_true,      "$enable generating language files using byaccic/ureglex"},
@@ -225,29 +222,12 @@ int hook_detect_target()
 		require("libs/gui/gd/presents", 0, 0);
 		if (!istrue(get("libs/gui/gd/presents"))) {
 			report_repeat("WARNING: Since there's no libgd, disabling gd based exports and pixmap imports (png, gif, jpeg)...\n");
-			hook_custom_arg("disable-gd-gif", NULL);
-			hook_custom_arg("disable-gd-png", NULL);
-			hook_custom_arg("disable-gd-jpg", NULL);
 			hook_custom_arg("disable-export_png", NULL);
 			want_gd = 0;
-			goto disable_gd_formats;
-		}
-		else {
-			require("libs/gui/gd/gdImagePng/presents", 0, 0);
-			require("libs/gui/gd/gdImageGif/presents", 0, 0);
-			require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
-			require("libs/gui/gd/gdImageSetResolution/presents", 0, 0);
-			if (!istrue(get("libs/gui/gd/gdImagePng/presents"))) {
-				report_repeat("WARNING: libgd is installed, but its png code fails, some exporters will be compiled with reduced functionality\n");
-			}
 		}
 	}
 	else {
 		put("libs/gui/gd/presents", sfalse);
-		disable_gd_formats:;
-		put("libs/gui/gd/gdImagePng/presents", sfalse);
-		put("libs/gui/gd/gdImageGif/presents", sfalse);
-		put("libs/gui/gd/gdImageJpeg/presents", sfalse);
 	}
 
 	/* yacc/lex - are we able to regenerate languages? */
