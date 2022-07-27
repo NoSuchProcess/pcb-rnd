@@ -6,7 +6,7 @@
 
 #@@desc Generate thru-hole DIP packages with variable number of pins and
 #@@desc row spacing
-#@@params n, spacing
+#@@params n, spacing, pitch
 
 #@@param:n number of pins
 
@@ -14,6 +14,11 @@
 #@@dim:spacing
 #@@optional:spacing
 #@@default:spacing 100 mil
+
+#@@param:pitch spacing between two pins in the same row
+#@@dim:pitch
+#@@optional:pitch
+#@@default:pitch 100 mil
 
 #@@include common_subc.awk
 
