@@ -1,7 +1,6 @@
 put /local/pcb/mod {export_svg}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/export_svg/svg.o
- $(PLUGDIR)/export_svg/draw_svg.o
 @]
 
 switch /local/pcb/export_svg/controls

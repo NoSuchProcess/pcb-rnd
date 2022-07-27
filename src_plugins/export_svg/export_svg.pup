@@ -5,5 +5,6 @@ $fmt-native no
 $fmt-feature-w svg (Scalable Vector Graphics)
 $state works
 $package export
+dep lib_exp_text
 default buildin
 autoload 1

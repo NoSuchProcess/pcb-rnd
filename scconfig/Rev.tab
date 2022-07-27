@@ -1,4 +1,4 @@
-36607	configure	remove export png, ps, eps code in favor of librnd's
+36608	configure	remove low level export png, ps, eps and svg code in favor of librnd's
 36602	configure	remove local pixmap support in favor of librnd's
 36562	configure	font engine rewrite
 36322	configure	generalize export_lpr so it can be moved to librnd

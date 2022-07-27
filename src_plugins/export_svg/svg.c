@@ -61,7 +61,7 @@
 #include <librnd/core/hid_attrib.h>
 #include "hid_cam.h"
 
-#include "draw_svg.h"
+#include <librnd/plugins/lib_exp_text/draw_svg.h>
 
 static rnd_hid_t svg_hid;
 
