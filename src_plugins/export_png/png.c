@@ -60,15 +60,13 @@
 #include <librnd/core/compat_misc.h>
 
 /* we depend on <gd.h> for photo mode */
-#define FROM_DRAW_PIXMAP_C
 #include <gd.h>
+
+/* only because photo mode also uses direct gd calls so we included gd.h already */
+#define FROM_DRAW_PIXMAP_C
 #include <librnd/plugins/lib_exp_pixmap/draw_pixmap.h>
 
 #include "png.h"
-
-
-/* only because photo mode also uses direct gd calls so we included gd.h already */
-#define FROM_DRAW_PNG_C
 
 
 static rnd_hid_t png_hid;
