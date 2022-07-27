@@ -1,9 +1,0 @@
-$class import
-$short import pixmaps from png/gif/jpg
-$long Import png, gif and jpeg using libgd
-$state works
-$fmt-native no
-$fmt-feature-r pixmap (e.g. png)
-$package import-geo
-default buildin
-autoload 1
