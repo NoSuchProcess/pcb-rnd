@@ -77,8 +77,6 @@ rnd_action_t dialogs_action_list[] = {
 	{"Pinout", pcb_act_Pinout, pcb_acth_Pinout, pcb_acts_Pinout},
 	{"ExportGUI", rnd_act_ExportDialog, rnd_acth_ExportDialog, rnd_acts_ExportDialog},
 	{"PrintGUI", rnd_act_PrintDialog, rnd_acth_PrintDialog, rnd_acts_PrintDialog},
-	{"ExportDialog", rnd_act_ExportDialog, rnd_acth_ExportDialog, rnd_acts_ExportDialog},
-	{"PrintDialog", rnd_act_PrintDialog, rnd_acth_PrintDialog, rnd_acts_PrintDialog},
 	{"GroupPropGui", pcb_act_GroupPropGui, pcb_acth_GroupPropGui, pcb_acts_GroupPropGui},
 	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui},
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
