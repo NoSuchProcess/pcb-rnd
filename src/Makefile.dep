@@ -684,10 +684,7 @@
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
  ../config.h ../src_plugins/export_lpr/../export_ps/ps.h \
  ../src_plugins/export_lpr/export_lpr_conf.h \
- ../src_plugins/export_lpr/lpr_hid.h \
  ../src_plugins/export_lpr/export_lpr_conf_fields.h
-../src_plugins/export_lpr/lpr_hid.o: ../src_plugins/export_lpr/lpr_hid.c \
- ../config.h ../src_plugins/export_lpr/lpr_hid.h
 ../src_plugins/export_oldconn/oldconn.o: \
  ../src_plugins/export_oldconn/oldconn.c ../config.h conf_core.h \
  globalconst.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \

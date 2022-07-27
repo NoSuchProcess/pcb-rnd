@@ -32,7 +32,7 @@
 
 #include "../export_ps/ps.h"
 #include "export_lpr_conf.h"
-#include "lpr_hid.h"
+#include <librnd/plugins/lib_exp_text/lpr_hid.h>
 
 conf_export_lpr_t conf_export_lpr;
 

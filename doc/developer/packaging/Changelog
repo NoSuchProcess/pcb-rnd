@@ -9,6 +9,7 @@ Packaging changes between 3.0.6 and 3.0.5
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 TODO: librnd dep >=3.2.0
+TODO: new librnd dependencies in export_svg, png, ps, eps, export_lpr
 
 Packaging changes between 3.0.5 and 3.0.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
