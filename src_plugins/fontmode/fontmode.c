@@ -388,6 +388,11 @@ static void editor2font(pcb_font_t *font)
 
 		symbol->Delta = x1 - symbol->Width;
 		g->xdelta = x1 - symbol->Width;
+
+		if (g->xdelta > 10) { /* not 0 for rounding errors, just in case */
+			symbol->Valid = 1;
+			g->valid = 1;
+		}
 	}
 
 	pcb_font_set_info(font);
