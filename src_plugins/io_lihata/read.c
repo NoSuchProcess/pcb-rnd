@@ -2883,6 +2883,7 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 		res = -1;
 	}
 	else {
+		TODO("font: remove this whole function and call rnd_font_load(Ptr, Filanem, pcb_io_err_inhibit) instead");
 		res = parse_font(Ptr, doc->root->data.list.first);
 		rnd_font_lht_parse_font(&Ptr->rnd_font, doc->root->data.list.first);
 	}
