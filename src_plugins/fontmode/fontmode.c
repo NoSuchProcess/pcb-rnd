@@ -202,6 +202,10 @@ static void font2editor_new(rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 						a->line.x1 + ox, a->line.y1 + oy,
 						a->line.x2 + ox, a->line.y2 + oy,
 						a->line.thickness, 0, pcb_no_flags());
+					pcb_line_new_merge(lorig,
+						a->line.x1 + ox, a->line.y1 + oy,
+						a->line.x2 + ox, a->line.y2 + oy,
+						a->line.thickness, 0, pcb_no_flags());
 					if (maxx < a->line.x1)
 						maxx = a->line.x1;
 					if (maxx < a->line.x2)
