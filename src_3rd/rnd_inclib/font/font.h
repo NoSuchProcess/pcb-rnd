@@ -43,7 +43,8 @@
 typedef long int rnd_font_id_t;      /* safe reference */
 
 typedef struct rnd_font_s {          /* complete set of symbols */
-	rnd_coord_t max_height, max_width; /* maximum glyph width and height */
+	rnd_coord_t max_height, max_width; /* maximum glyph width and height; calculated per glyph */
+	rnd_coord_t height;                /* total height, font-wise (distance between lowest point of the lowest glyph and highest point of the tallest glyph) */
 	rnd_box_t unknown_glyph;           /* drawn when a glyph is not found (filled box) */
 	rnd_glyph_t glyph[RND_FONT_MAX_GLYPHS+1];
 	char *name;                        /* not unique */

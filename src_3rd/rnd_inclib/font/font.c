@@ -438,7 +438,7 @@ void rnd_font_normalize(rnd_font_t *f)
 {
 	long i, n, m, h;
 	rnd_glyph_t *g;
-	rnd_coord_t *px, *py;
+	rnd_coord_t *px, *py, fminy, fmaxy;
 	rnd_coord_t totalminy = RND_MAX_COORD;
 	rnd_box_t b;
 
@@ -447,6 +447,8 @@ void rnd_font_normalize(rnd_font_t *f)
 	   minimum x and y position of all lines */
 	f->max_width = RND_FONT_DEFAULT_CELLSIZE;
 	f->max_height = RND_FONT_DEFAULT_CELLSIZE;
+	fminy = fmaxy = 0;
+
 	for(i = 0, g = f->glyph; i <= RND_FONT_MAX_GLYPHS; i++, g++) {
 		rnd_coord_t minx, miny, maxx, maxy;
 
@@ -516,11 +518,19 @@ void rnd_font_normalize(rnd_font_t *f)
 		g->width = maxx - minx + 1;
 		g->height = maxy + 1;
 
+
 		/* check total min/max  */
+		fminy = MIN(fminy, miny);
+		fmaxy = MAX(fmaxy, miny);
+
+		/* check per glyph min/max  */
 		f->max_width = MAX(f->max_width, g->width);
 		f->max_height = MAX(f->max_height, g->height);
+
 		totalminy = MIN(totalminy, miny);
 	}
+
+	f->height = fmaxy - fminy;
 
 	/* move coordinate system to the upper edge (lowest y on screen) */
 	if (totalminy != 0) {
