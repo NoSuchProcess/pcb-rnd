@@ -521,7 +521,7 @@ void rnd_font_normalize(rnd_font_t *f)
 
 		/* check total min/max  */
 		fminy = MIN(fminy, miny);
-		fmaxy = MAX(fmaxy, miny);
+		fmaxy = MAX(fmaxy, maxy);
 
 		/* check per glyph min/max  */
 		f->max_width = MAX(f->max_width, g->width);
