@@ -2195,7 +2195,7 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 			}
 			for(len = 0, n = obj->data.list.first; n != NULL; len++, n = n->next) ;
 			if ((len % 2 != 0) || (len < 6)) {
-				iolht_error(obj, "Symbol error: sumplepoly has wrong number of points (%d, expected an even integer >= 6)! (ignoring this poly)\n", len);
+				iolht_error(obj, "Symbol error: simplepoly has wrong number of points (%d, expected an even integer >= 6)! (ignoring this poly)\n", len);
 				continue;
 			}
 			sp = pcb_font_new_poly_in_sym(sym, len/2);
