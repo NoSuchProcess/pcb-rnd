@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: font save bug: FontSave() doesn't handle space (ascii 32) properly [report: Erich]
 - FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
 - io_lihata: modify default board ext to .rp
 + FEATURE: dip() should have a pitch parameter, defaulting to 100mil so non-100-mil can be done too [report: barjac]
