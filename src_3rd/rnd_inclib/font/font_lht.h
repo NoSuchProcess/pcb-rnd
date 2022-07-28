@@ -181,7 +181,7 @@ static int rnd_font_load(rnd_font_t *dst, const char *fn, int quiet)
 	free(realfn);
 
 	if (doc == NULL) {
-		if (!pcb_io_err_inhibit)
+		if (!quiet)
 			rnd_message(RND_MSG_ERROR, "Error loading '%s': %s\n", fn, errmsg);
 		free(errmsg);
 		return -1;
