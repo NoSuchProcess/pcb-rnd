@@ -169,13 +169,13 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	return err;
 }
 
-static int rnd_font_load(rnd_font_t *dst, const char *fn, int quiet)
+static int rnd_font_load(rnd_hidlib_t *hidlib, rnd_font_t *dst, const char *fn, int quiet)
 {
 	int res;
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
 
-	realfn = rnd_fopen_check(&PCB->hidlib, fn, "r");
+	realfn = rnd_fopen_check(hidlib, fn, "r");
 	if (realfn != NULL)
 		doc = lht_dom_load(realfn, &errmsg);
 	free(realfn);
