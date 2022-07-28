@@ -169,7 +169,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	return err;
 }
 
-static int rnd_font_load(pcb_font_t *dst, const char *fn, int quiet)
+static int rnd_font_load(rnd_font_t *dst, const char *fn, int quiet)
 {
 	int res;
 	char *errmsg = NULL, *realfn;
@@ -193,7 +193,7 @@ static int rnd_font_load(pcb_font_t *dst, const char *fn, int quiet)
 		res = -1;
 	}
 	else
-		rnd_font_lht_parse_font(&dst->rnd_font, doc->root->data.list.first);
+		rnd_font_lht_parse_font(dst, doc->root->data.list.first);
 
 	free(errmsg);
 	lht_dom_uninit(doc);
