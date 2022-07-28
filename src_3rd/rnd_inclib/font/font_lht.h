@@ -168,3 +168,34 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 
 	return err;
 }
+
+static int rnd_font_load(pcb_font_t *dst, const char *fn, int quiet)
+{
+	int res;
+	char *errmsg = NULL, *realfn;
+	lht_doc_t *doc = NULL;
+
+	realfn = rnd_fopen_check(&PCB->hidlib, fn, "r");
+	if (realfn != NULL)
+		doc = lht_dom_load(realfn, &errmsg);
+	free(realfn);
+
+	if (doc == NULL) {
+		if (!pcb_io_err_inhibit)
+			rnd_message(RND_MSG_ERROR, "Error loading '%s': %s\n", fn, errmsg);
+		free(errmsg);
+		return -1;
+	}
+
+	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-font-v1"))) {
+		if (!quiet)
+			rnd_message(RND_MSG_ERROR, "Error loading font: %s is not a font lihata.\n", fn);
+		res = -1;
+	}
+	else
+		rnd_font_lht_parse_font(&dst->rnd_font, doc->root->data.list.first);
+
+	free(errmsg);
+	lht_dom_uninit(doc);
+	return res;
+}
