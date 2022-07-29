@@ -411,11 +411,19 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_layergrp_id_t grp[4];
 	int l;
 
+	if (pcb->Changed && (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Switching to fontedit", "OK to lose unsaved edits on this board?", "cancel", 0, "yes", 1, NULL) != 1)) {
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
 	font = pcb_font_unlink(pcb, conf_core.design.text_font_id);
 	if (font == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
 		return 1;
 	}
+
+	/* don't ask for losing changes twice */
+	pcb->Changed = 0;
 
 	if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
 		return 1;
