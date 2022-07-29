@@ -171,7 +171,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 
 static int rnd_font_load(rnd_hidlib_t *hidlib, rnd_font_t *dst, const char *fn, int quiet)
 {
-	int res;
+	int res = 0;
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
 
