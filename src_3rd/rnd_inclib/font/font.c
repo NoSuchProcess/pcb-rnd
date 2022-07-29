@@ -434,7 +434,7 @@ void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font
 	rnd_font_string_bbox_(cx, cy, 1, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, scale);
 }
 
-void rnd_font_normalize(rnd_font_t *f)
+static void rnd_font_normalize_(rnd_font_t *f, int compat)
 {
 	long i, n, m, h;
 	rnd_glyph_t *g;
@@ -566,6 +566,15 @@ void rnd_font_normalize(rnd_font_t *f)
 	f->unknown_glyph.Y2 = f->unknown_glyph.Y1 + f->max_height;
 }
 
+void rnd_font_normalize(rnd_font_t *f)
+{
+	rnd_font_normalize_(f, 0);
+}
+
+void rnd_font_normalize_pcb_rnd(rnd_font_t *f)
+{
+	rnd_font_normalize_(f, 1);
+}
 
 void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, rnd_coord_t embf_minx, rnd_coord_t embf_miny, rnd_coord_t embf_maxx, rnd_coord_t embf_maxy)
 {
@@ -595,7 +604,7 @@ void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, r
 			g->xdelta = RND_MIL_TO_COORD(embf_font[n].delta);
 		}
 	}
-	rnd_font_normalize(font);
+	rnd_font_normalize_(font, 1); /* embedded font doesn't have arcs or polygons, loading in compatibility mode won't change anything */
 }
 
 void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)
