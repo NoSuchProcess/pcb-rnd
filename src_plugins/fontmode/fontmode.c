@@ -69,19 +69,19 @@
 
 #define XYtoSym(x,y) (((x) / CELL_SIZE - 1)  +  (16 * ((y) / CELL_SIZE - 1)))
 
-static pcb_layer_t *make_layer(rnd_layergrp_id_t grp, const char *lname)
+static pcb_layer_t *make_layer(pcb_board_t *pcb, rnd_layergrp_id_t grp, const char *lname)
 {
 	rnd_layer_id_t lid;
 
 	assert(grp >= 0);
-	lid = pcb_layer_create(PCB, grp, lname, 0);
+	lid = pcb_layer_create(pcb, grp, lname, 0);
 	assert(lid >= 0);
-	PCB->Data->Layer[lid].meta.real.vis = 1;
-	PCB->Data->Layer[lid].meta.real.color = *pcb_layer_default_color(lid, 0);
-	return &PCB->Data->Layer[lid];
+	pcb->Data->Layer[lid].meta.real.vis = 1;
+	pcb->Data->Layer[lid].meta.real.color = *pcb_layer_default_color(lid, 0);
+	return &pcb->Data->Layer[lid];
 }
 
-static void add_poly_old(pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t ox, rnd_coord_t oy)
+static void add_poly_old(pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t ox, rnd_coord_t oy)
 {
 	pcb_poly_t *np;
 	
@@ -91,11 +91,11 @@ static void add_poly_old(pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t ox, r
 
 	/* add */
 	pcb_add_poly_on_layer(layer, np);
-	pcb_poly_init_clip(PCB->Data, layer, np);
+	pcb_poly_init_clip(pcb->Data, layer, np);
 	pcb_poly_invalidate_draw(layer, np);
 }
 
-static void font2editor_old(pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
+static void font2editor_old(pcb_board_t *pcb, pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
 {
 	int s, l;
 	pcb_poly_t *poly;
@@ -115,10 +115,10 @@ static void font2editor_old(pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 
 		if ((s > 32) && (s < 127)) {
 			sprintf(txt, "%c", s);
-			pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+			pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 		}
 		sprintf(txt, "%d", s);
-		pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+		pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 
 		for(l = 0; l < symbol->LineN; l++) {
 			pcb_line_new_merge(lfont,
@@ -152,8 +152,8 @@ static void font2editor_old(pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 			int n;
 			rnd_point_t *pnt;
 
-			add_poly_old(lfont, poly, ox, oy);
-			add_poly_old(lorig, poly, ox, oy);
+			add_poly_old(pcb, lfont, poly, ox, oy);
+			add_poly_old(pcb, lorig, poly, ox, oy);
 
 			for(n = 0, pnt = poly->Points; n < poly->PointN; n++,pnt++) {
 				if (maxx < pnt->X)
@@ -168,7 +168,7 @@ static void font2editor_old(pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 	}
 }
 
-static void font2editor_new(rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
+static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
 {
 	int s;
 	long n;
@@ -187,10 +187,10 @@ static void font2editor_new(rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 
 		if ((s > 32) && (s < 127)) {
 			sprintf(txt, "%c", s);
-			pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+			pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 		}
 		sprintf(txt, "%d", s);
-		pcb_text_new(lsilk, pcb_font(PCB, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+		pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 
 		for(n = 0, a = g->atoms.array; n < g->atoms.used; n++, a++) {
 			pcb_poly_t *poly, *newpoly;
@@ -247,8 +247,8 @@ static void font2editor_new(rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 
 					pcb_add_poly_on_layer(lorig, poly);
 					pcb_add_poly_on_layer(lfont, newpoly);
-					pcb_poly_init_clip(PCB->Data, lorig, poly);
-					pcb_poly_init_clip(PCB->Data, lfont, newpoly);
+					pcb_poly_init_clip(pcb->Data, lorig, poly);
+					pcb_poly_init_clip(pcb->Data, lfont, newpoly);
 				}
 				break;
 			}
@@ -259,7 +259,7 @@ static void font2editor_new(rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *l
 	}
 }
 
-static void editor2font(pcb_font_t *font)
+static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 {
 	pcb_symbol_t *symbol;
 	rnd_glyph_t *g;
@@ -272,8 +272,8 @@ static void editor2font(pcb_font_t *font)
 	rnd_glyph_poly_t *gp;
 
 
-	lfont = PCB->Data->Layer + 0;
-	lwidth = PCB->Data->Layer + 2;
+	lfont = pcb->Data->Layer + 0;
+	lwidth = pcb->Data->Layer + 2;
 
 	for(i = 0; i <= PCB_MAX_FONTPOSITION; i++)
 		pcb_font_clear_symbol(&font->Symbol[i]);
@@ -405,12 +405,13 @@ static const char pcb_acts_FontEdit[] = "FontEdit()";
 static const char pcb_acth_FontEdit[] = "Convert the current font to a PCB for editing.";
 static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	pcb_font_t *font;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
 	rnd_layergrp_id_t grp[4];
 	int l;
 
-	font = pcb_font_unlink(PCB, conf_core.design.text_font_id);
+	font = pcb_font_unlink(pcb, conf_core.design.text_font_id);
 	if (font == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
 		return 1;
@@ -419,51 +420,53 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
 		return 1;
 
+	pcb = PCB; /* our new board created above */
+
 	rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, "mil", RND_POL_OVERWRITE);
 	rnd_conf_set_design("design/min_wid", "%s", "1");
 	rnd_conf_set_design("design/min_slk", "%s", "1");
 	rnd_conf_set_design("design/text_font_id", "%s", "0");
 
 
-	PCB->hidlib.size_x = CELL_SIZE * 18;
-	PCB->hidlib.size_y = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
-	PCB->hidlib.grid = RND_MIL_TO_COORD(5);
+	pcb->hidlib.size_x = CELL_SIZE * 18;
+	pcb->hidlib.size_y = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
+	pcb->hidlib.grid = RND_MIL_TO_COORD(5);
 
 	/* create the layer stack and logical layers */
 	pcb_layergrp_inhibit_inc();
-	pcb_layers_reset(PCB);
-	pcb_layer_group_setup_default(PCB);
-	pcb_get_grp_new_intern(PCB, 1);
-	pcb_get_grp_new_intern(PCB, 2);
+	pcb_layers_reset(pcb);
+	pcb_layer_group_setup_default(pcb);
+	pcb_get_grp_new_intern(pcb, 1);
+	pcb_get_grp_new_intern(pcb, 2);
 
-	assert(pcb_layergrp_list(PCB, PCB_LYT_COPPER, grp, 4) == 4);
-	lfont  = make_layer(grp[0], "Font");
-	lorig  = make_layer(grp[1], "OrigFont");
-	lwidth = make_layer(grp[2], "Width");
-	lgrid  = make_layer(grp[3], "Grid");
+	assert(pcb_layergrp_list(pcb, PCB_LYT_COPPER, grp, 4) == 4);
+	lfont  = make_layer(pcb, grp[0], "Font");
+	lorig  = make_layer(pcb, grp[1], "OrigFont");
+	lwidth = make_layer(pcb, grp[2], "Width");
+	lgrid  = make_layer(pcb, grp[3], "Grid");
 
-	assert(pcb_layergrp_list(PCB, PCB_LYT_SILK, grp, 2) == 2);
-	make_layer(grp[0], "Silk");
-	lsilk = make_layer(grp[1], "Silk");
+	assert(pcb_layergrp_list(pcb, PCB_LYT_SILK, grp, 2) == 2);
+	make_layer(pcb, grp[0], "Silk");
+	lsilk = make_layer(pcb, grp[1], "Silk");
 
 	pcb_layergrp_inhibit_dec();
 
 	/* Inform the rest about the board change (layer stack, size) */
-	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
-	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	rnd_event(&pcb->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
+	rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	if (pcb_brave & PCB_BRAVE_NEWFONT)
-		font2editor_new(&font->rnd_font, lfont, lorig, lwidth, lsilk);
+		font2editor_new(pcb, &font->rnd_font, lfont, lorig, lwidth, lsilk);
 	else
-		font2editor_old(font, lfont, lorig, lwidth, lsilk);
+		font2editor_old(pcb, font, lfont, lorig, lwidth, lsilk);
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;
-		pcb_line_new_merge(lgrid, x, 0, x, PCB->hidlib.size_y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lgrid, x, 0, x, pcb->hidlib.size_y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	for (l = 0; l <= PCB_MAX_FONTPOSITION / 16 + 1; l++) {
 		int y = (l + 1) * CELL_SIZE;
-		pcb_line_new_merge(lgrid, 0, y, PCB->hidlib.size_x, y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lgrid, 0, y, pcb->hidlib.size_x, y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	RND_ACT_IRES(0);
 	return 0;
@@ -473,19 +476,20 @@ static const char pcb_acts_FontSave[] = "FontSave([filename])";
 static const char pcb_acth_FontSave[] = "Convert the current PCB back to a font.";
 static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_font_t *font = pcb_font(PCB, 0, 1);
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	pcb_font_t *font = pcb_font(pcb, 0, 1);
 	char *fn = NULL;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, FontSave, fn = argv[1].val.str);
 
-	editor2font(font);
+	editor2font(pcb, font);
 	rnd_actionva(RND_ACT_HIDLIB, "SaveFontTo", fn, NULL);
 
 	RND_ACT_IRES(0);
 	return 0;
 }
 
-static void font_xform(pcb_xform_mx_t mx)
+static void font_xform(pcb_board_t *pcb, pcb_xform_mx_t mx)
 {
 	pcb_line_t *l;
 	pcb_arc_t *a;
@@ -495,8 +499,8 @@ static void font_xform(pcb_xform_mx_t mx)
 	rnd_coord_t s, ox, oy;
 	vtp0_t todel = {0};
 
-	lfont = PCB->Data->Layer + 0;
-	lwidth = PCB->Data->Layer + 2;
+	lfont = pcb->Data->Layer + 0;
+	lwidth = pcb->Data->Layer + 2;
 
 	/* xform lines */
 	linelist_foreach(&lfont->Line, &it, l) {
@@ -563,7 +567,7 @@ static void font_xform(pcb_xform_mx_t mx)
 			pcb_poly_point_new(np, nx+ox, ny+oy);
 		}
 		pcb_add_poly_on_layer(lfont, np);
-		pcb_poly_init_clip(PCB->Data, lfont, np);
+		pcb_poly_init_clip(pcb->Data, lfont, np);
 		pcb_undo_add_obj_to_create(PCB_OBJ_POLY, lfont, np, np);
 
 		vtp0_append(&todel, p);
@@ -610,6 +614,7 @@ static const char pcb_acts_FontXform[] = "FontXform(xform1, params..., [xform2, 
 static const char pcb_acth_FontXform[] = "Transform font graphics in fontmode (FontEdit)";
 static fgw_error_t pcb_act_FontXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int n;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
 
@@ -651,7 +656,7 @@ static fgw_error_t pcb_act_FontXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_undo_freeze_serial();
-	font_xform(mx);
+	font_xform(pcb, mx);
 	pcb_undo_unfreeze_serial();
 	pcb_undo_inc_serial();
 
@@ -663,9 +668,10 @@ static const char pcb_acts_FontNormalize[] = "FontNormalize()";
 static const char pcb_acth_FontNormalize[] = "Normalie all glyphs (top-left justify)";
 static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_font_t *font = pcb_font(PCB, 0, 1);
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	pcb_font_t *font = pcb_font(pcb, 0, 1);
 
-	editor2font(font);
+	editor2font(pcb, font);
 	if (pcb_brave & PCB_BRAVE_NEWFONT)
 		rnd_font_normalize(&font->rnd_font);
 	else
