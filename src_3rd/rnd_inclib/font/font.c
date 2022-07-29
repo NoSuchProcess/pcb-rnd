@@ -433,7 +433,7 @@ void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font
 	rnd_font_string_bbox_(cx, cy, 1, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, scale);
 }
 
-static void rnd_font_normalize_(rnd_font_t *f, int compat)
+static void rnd_font_normalize_(rnd_font_t *f, int fix_only, int compat)
 {
 	long i, n, m, h;
 	rnd_glyph_t *g;
@@ -444,8 +444,10 @@ static void rnd_font_normalize_(rnd_font_t *f, int compat)
 	/* calculate cell width and height (is at least RND_FONT_DEFAULT_CELLSIZE)
 	   maximum cell width and height
 	   minimum x and y position of all lines */
-	f->max_width = RND_FONT_DEFAULT_CELLSIZE;
-	f->max_height = RND_FONT_DEFAULT_CELLSIZE;
+	if (!fix_only) {
+		f->max_width = RND_FONT_DEFAULT_CELLSIZE;
+		f->max_height = RND_FONT_DEFAULT_CELLSIZE;
+	}
 	fminy = fmaxy = 0;
 
 	for(i = 0, g = f->glyph; i <= RND_FONT_MAX_GLYPHS; i++, g++) {
@@ -513,18 +515,19 @@ static void rnd_font_normalize_(rnd_font_t *f, int compat)
 			}
 		}
 
-		/* set symbol bounding box with a minimum cell size of (1,1) */
-		g->width = maxx - minx + 1;
-		g->height = maxy + 1;
+		if (!fix_only) {
+			/* set symbol bounding box with a minimum cell size of (1,1) */
+			g->width = maxx - minx + 1;
+			g->height = maxy + 1;
 
+			/* check per glyph min/max  */
+			f->max_width = MAX(f->max_width, g->width);
+			f->max_height = MAX(f->max_height, g->height);
+		}
 
 		/* check total min/max  */
 		fminy = MIN(fminy, miny);
 		fmaxy = MAX(fmaxy, maxy);
-
-		/* check per glyph min/max  */
-		f->max_width = MAX(f->max_width, g->width);
-		f->max_height = MAX(f->max_height, g->height);
 
 		totalminy = MIN(totalminy, miny);
 	}
@@ -532,7 +535,7 @@ static void rnd_font_normalize_(rnd_font_t *f, int compat)
 	f->height = fmaxy - fminy;
 
 	/* move coordinate system to the upper edge (lowest y on screen) */
-	if (totalminy != 0) {
+	if (!fix_only && (totalminy != 0)) {
 		for(i = 0, g = f->glyph; i <= RND_FONT_MAX_GLYPHS; i++, g++) {
 
 			if (!g->valid) continue;
@@ -565,14 +568,20 @@ static void rnd_font_normalize_(rnd_font_t *f, int compat)
 	f->unknown_glyph.Y2 = f->unknown_glyph.Y1 + f->max_height;
 }
 
+void rnd_font_fix_v1(rnd_font_t *f)
+{
+	rnd_font_normalize_(f, 1, 0);
+}
+
+
 void rnd_font_normalize(rnd_font_t *f)
 {
-	rnd_font_normalize_(f, 0);
+	rnd_font_normalize_(f, 0, 0);
 }
 
 void rnd_font_normalize_pcb_rnd(rnd_font_t *f)
 {
-	rnd_font_normalize_(f, 1);
+	rnd_font_normalize_(f, 0, 1);
 }
 
 void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, rnd_coord_t embf_minx, rnd_coord_t embf_miny, rnd_coord_t embf_maxx, rnd_coord_t embf_maxy)
@@ -603,7 +612,7 @@ void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, r
 			g->xdelta = RND_MIL_TO_COORD(embf_font[n].delta);
 		}
 	}
-	rnd_font_normalize_(font, 1); /* embedded font doesn't have arcs or polygons, loading in compatibility mode won't change anything */
+	rnd_font_normalize_(font, 0, 1); /* embedded font doesn't have arcs or polygons, loading in compatibility mode won't change anything */
 }
 
 void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)

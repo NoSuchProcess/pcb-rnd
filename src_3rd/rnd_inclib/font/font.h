@@ -94,6 +94,10 @@ void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font
 void rnd_font_normalize(rnd_font_t *f);
 void rnd_font_normalize_pcb_rnd(rnd_font_t *f);
 
+/* v1 font is missing height and unknown glyph, this fixes that up */
+void rnd_font_fix_v1(rnd_font_t *f);
+
+
 /* Count the number of characters in s that wouldn't render with the given font */
 int rnd_font_invalid_chars(rnd_font_t *font, const unsigned char *s);
 
