@@ -250,7 +250,6 @@ RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
 {
 	double ca1, ca2, sa1, sa2, minx, maxx, miny, maxy, delta;
 	rnd_angle_t ang1, ang2;
-	rnd_coord_t width;
 
 	/* first put angles into standard form: ang1 < ang2, both angles between 0 and 720 */
 	delta = RND_CLAMP(a->delta, -360, 360);
