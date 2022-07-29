@@ -303,7 +303,7 @@ parsefont
 			{
 				*yyFontkitValid = rnd_true;
 				pcb_font_set_info(yyFont);
-				rnd_font_normalize(yyRndFont);
+				rnd_font_normalize_pcb_rnd(yyRndFont);
 			}
 		;
 
