@@ -672,6 +672,82 @@ static fgw_error_t pcb_act_FontXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static void font_set_xdelta(pcb_board_t *pcb, rnd_coord_t xd)
+{
+	pcb_line_t *l;
+	pcb_arc_t *a;
+	pcb_poly_t *p;
+	gdl_iterator_t it;
+	pcb_layer_t *lfont, *lwidth;
+	int s;
+	rnd_coord_t ox;
+	rnd_coord_t gw[RND_FONT_MAX_GLYPHS] = {0};
+
+	lfont = pcb->Data->Layer + 0;
+	lwidth = pcb->Data->Layer + 2;
+
+	/* pick up lines */
+	linelist_foreach(&lfont->Line, &it, l) {
+		s = XYtoSym(l->Point1.X, l->Point1.Y);
+		ox = (s % 16 + 1) * CELL_SIZE;
+
+		gw[s] = RND_MAX(gw[s], (l->Point1.X - ox));
+		gw[s] = RND_MAX(gw[s], (l->Point2.X - ox));
+	}
+
+	/* pick up arcs */
+	arclist_foreach(&lfont->Arc, &it, a) {
+		int cx = (a->BoundingBox.X1 + a->BoundingBox.X2)/2;
+		int cy = (a->BoundingBox.Y1 + a->BoundingBox.Y2)/2;
+
+		s = XYtoSym(cx, cy);
+		ox = (s % 16 + 1) * CELL_SIZE;
+
+		gw[s] = RND_MAX(gw[s], rnd_round(a->bbox_naked.X2 - ox - a->Thickness/2));
+	}
+
+	/* pick up polygons */
+	polylist_foreach(&lfont->Polygon, &it, p) {
+		rnd_coord_t x1 = p->Points[0].X;
+		rnd_coord_t y1 = p->Points[0].Y;
+		long n;
+
+		s = XYtoSym(x1, y1);
+		ox = (s % 16 + 1) * CELL_SIZE;
+
+		for(n = 0; n < p->PointN; n++)
+			gw[s] = RND_MAX(gw[s], (p->Points[n].X - ox));
+	}
+
+	/* xform delta */
+	linelist_foreach(&lwidth->Line, &it, l) {
+		rnd_coord_t newx;
+		s = XYtoSym(l->Point1.X, l->Point1.Y);
+		ox = (s % 16 + 1) * CELL_SIZE;
+
+		if (l->Point1.X-ox == 0) continue;
+
+		newx = gw[s] + xd + ox;
+
+		pcb_line_modify(l, &newx, NULL, &newx, NULL, NULL, NULL, 1);
+	}
+}
+
+static const char pcb_acts_FontSetXdelta[] = "FontSetXdelta(xd)";
+static const char pcb_acth_FontSetXdelta[] = "Calculate the right side of each glyph and place xdelta xd to the right (xd should be a distance: number and unit)";
+static fgw_error_t pcb_act_FontSetXdelta(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	rnd_coord_t xd;
+
+	RND_ACT_CONVARG(1, FGW_COORD, FontSetXdelta, xd = fgw_coord(&argv[1]));
+
+	font_set_xdelta(pcb, xd);
+
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 static const char pcb_acts_FontNormalize[] = "FontNormalize()";
 static const char pcb_acth_FontNormalize[] = "Normalie all glyphs (top-left justify)";
 static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -692,6 +768,7 @@ rnd_action_t fontmode_action_list[] = {
 	{"FontEdit", pcb_act_FontEdit, pcb_acth_FontEdit, pcb_acts_FontEdit},
 	{"FontSave", pcb_act_FontSave, pcb_acth_FontSave, pcb_acts_FontSave},
 	{"FontXform", pcb_act_FontXform, pcb_acth_FontXform, pcb_acts_FontXform},
+	{"FontSetXdelta", pcb_act_FontSetXdelta, pcb_acth_FontSetXdelta, pcb_acts_FontSetXdelta},
 	{"FontNormalize", pcb_act_FontNormalize, pcb_acth_FontNormalize, pcb_acts_FontNormalize}
 };
 
