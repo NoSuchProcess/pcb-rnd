@@ -1586,7 +1586,7 @@ static lht_node_t *build_font_rnd(rnd_font_t *font)
 
 static lht_node_t *build_font(pcb_font_t *font)
 {
-	if (pcb_brave & PCB_BRAVE_NEWFONT)
+	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
 		return build_font_rnd(&font->rnd_font);
 	else
 		return build_font_old(font);

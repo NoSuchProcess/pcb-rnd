@@ -391,7 +391,7 @@ static void WritePCBFontData_rnd(FILE * FP)
 
 static void WritePCBFontData(FILE *FP)
 {
-	if (pcb_brave & PCB_BRAVE_NEWFONT)
+	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
 		WritePCBFontData_rnd(FP);
 	else
 		WritePCBFontData_old(FP);

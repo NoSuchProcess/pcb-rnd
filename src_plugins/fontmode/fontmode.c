@@ -463,7 +463,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_event(&pcb->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
 	rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
-	if (pcb_brave & PCB_BRAVE_NEWFONT)
+	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
 		font2editor_new(pcb, &font->rnd_font, lfont, lorig, lwidth, lsilk);
 	else
 		font2editor_old(pcb, font, lfont, lorig, lwidth, lsilk);
@@ -756,7 +756,7 @@ static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_font_t *font = pcb_font(pcb, 0, 1);
 
 	editor2font(pcb, font);
-	if (pcb_brave & PCB_BRAVE_NEWFONT)
+	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
 		rnd_font_normalize(&font->rnd_font);
 	else
 		pcb_font_set_info(font);

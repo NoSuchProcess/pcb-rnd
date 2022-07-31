@@ -53,7 +53,7 @@ typedef struct {
 static desc_t desc[] = {
 	{PCB_BRAVE_NOXOR, "noxor", "avoid xor drawing", "use alternative rendering instead of xor draw", 0},
 	{PCB_BRAVE_NO_ENFORCE_CLR_MOVE, "enforceclrmove", "do not enforce object clearance on line point or line move", 0},
-	{PCB_BRAVE_NEWFONT, "newfont", "new font renderer", "use the new, librnd-generalized font rendering engine", 0},
+	{PCB_BRAVE_OLDFONT, "oldfont", "old font renderer", "use the old font rendering engine", 0},
 	{0, NULL, NULL, NULL}
 };
 
