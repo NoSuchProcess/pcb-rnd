@@ -405,6 +405,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 			maxx = MAX(maxx, ds->X2 + tx);
 			maxy = MAX(maxy, ds->Y2);
 
+			width = 0;
 			space = w / 5;
 		}
 		tx += width + space;
