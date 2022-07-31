@@ -333,9 +333,9 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 
 		pcb_arc_bbox(a);
 		if (symbol->Width < a->bbox_naked.X2 - ox)
-			symbol->Width = a->bbox_naked.X2 - ox;
+			symbol->Width = rnd_round(a->bbox_naked.X2 - ox - a->Thickness/2.0);
 		if (g->width < a->bbox_naked.X2 - ox)
-			g->width = a->bbox_naked.X2 - ox;
+			g->width = rnd_round(a->bbox_naked.X2 - ox - a->Thickness/2.0);
 
 		symbol->Valid = 1;
 		g->valid = 1;
