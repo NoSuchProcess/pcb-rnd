@@ -172,7 +172,7 @@ do { \
 	rnd_xform_mx_scale(mx, scx, scy); \
 } while(0)
 
-RND_FONT_DRAW_API void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
+void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 	const unsigned char *s;
