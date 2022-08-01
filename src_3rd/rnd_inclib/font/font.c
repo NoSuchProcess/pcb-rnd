@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <librnd/core/config.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hid.h>
@@ -172,7 +173,7 @@ do { \
 	rnd_xform_mx_scale(mx, scx, scy); \
 } while(0)
 
-void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
+RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 	const unsigned char *s;
@@ -242,7 +243,18 @@ void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coo
 			}
 			x += size;
 		}
+		x += (isspace(*s)) ? extra_spc :  extra_glyph; /* for justify */
 	}
+}
+
+void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
+{
+	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, 0, 0, cb, cb_ctx);
+}
+
+void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
+{
+	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, extra_glyph, extra_spc, cb, cb_ctx);
 }
 
 /* Calculates accurate centerline bbox */
