@@ -37,6 +37,7 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
+#include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include "plug_io.h"
 #include "flag_str.h"
