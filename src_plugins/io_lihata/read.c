@@ -2716,7 +2716,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 		}
 		else {
 			rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "1", RND_POL_OVERWRITE);
-			if (rnd_actionva(&Ptr->hidlib, "fontedit", NULL) != 0) {
+			if (rnd_actionva(&Ptr->hidlib, "fontedit", "inplace", NULL) != 0) {
 				rnd_message(RND_MSG_ERROR, "io_lihata: failed to start the font editor\n");
 				res = -1;
 			}

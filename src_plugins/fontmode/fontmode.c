@@ -409,7 +409,15 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_font_t *font;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
 	rnd_layergrp_id_t grp[4];
-	int l;
+	int l, inplace = 0;
+	const char *opt = "";
+
+	RND_ACT_MAY_CONVARG(1, FGW_STR, FontEdit, opt = argv[1].val.str);
+
+	/* this undocumented feature is used by io_lihata to avoid creating a new
+	   board from within loading a new board */
+	if (strcmp(opt, "inplace") == 0)
+		inplace = 1;
 
 	if (pcb->Changed && (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Switching to fontedit", "OK to lose unsaved edits on this board?", "cancel", 0, "yes", 1, NULL) != 1)) {
 		RND_ACT_IRES(-1);
@@ -422,13 +430,15 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 	}
 
-	/* don't ask for losing changes twice */
-	pcb->Changed = 0;
+	if (!inplace) {
+		/* don't ask for losing changes twice */
+		pcb->Changed = 0;
 
-	if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
-		return 1;
+		if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
+			return 1;
 
-	pcb = PCB; /* our new board created above */
+		pcb = PCB; /* our new board created above */
+	}
 
 	rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, "mil", RND_POL_OVERWRITE);
 	rnd_conf_set_design("design/min_wid", "%s", "1");
