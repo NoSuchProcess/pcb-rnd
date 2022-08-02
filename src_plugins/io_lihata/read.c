@@ -2707,6 +2707,21 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 			pcb_data_clip_polys(sc->data);
 		}
 	}
+	else if ((doc->root->type == LHT_LIST) && (strncmp(doc->root->name, "pcb-rnd-font-v", 14) == 0)) {
+		res = 0;
+		if (rnd_actionva(&Ptr->hidlib, "loadfontfrom", Filename, "1", NULL) != 0) {
+			rnd_message(RND_MSG_ERROR, "io_lihata: failed to load font file '%s' for editing\n", Filename);
+			res = -1;
+		}
+		else {
+			rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "1", RND_POL_OVERWRITE);
+			if (rnd_actionva(&Ptr->hidlib, "fontedit", NULL) != 0) {
+				rnd_message(RND_MSG_ERROR, "io_lihata: failed to start the font editor\n");
+				res = -1;
+			}
+		}
+
+	}
 	else {
 		iolht_error(doc->root, "Error loading '%s': neither a board nor a subcircuit\n", Filename);
 		res = -1;
@@ -2820,6 +2835,8 @@ void test_parse_ev(lht_parse_t *ctx, lht_event_t ev, lht_node_type_t nt, const c
 		else if ((nt == LHT_HASH) && (strncmp(name, "pcb-rnd-buffer-v", 16) == 0))
 			*state = TPS_GOOD;
 		else if ((nt == LHT_LIST) && (strncmp(name, "pcb-rnd-subcircuit-v", 20) == 0))
+			*state = TPS_GOOD;
+		else if ((nt == LHT_LIST) && (strncmp(name, "pcb-rnd-font-v", 14) == 0))
 			*state = TPS_GOOD;
 		else if ((nt == LHT_HASH) && (strncmp(name, "pcb-rnd-padstack-v", 18) == 0))
 			*state = TPS_GOOD;
