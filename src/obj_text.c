@@ -471,7 +471,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 		rnd_font_string_bbox_pcb_rnd(cx, cy, &font->rnd_font, rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, Text->Scale);
 		pcb_text_free_str(Text, rendered);
 
-		rnd_trace("orig   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);
+/*		rnd_trace("orig   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);*/
 
 		/* calculate the axis-aligned version */
 		Text->bbox_naked.X1 = Text->bbox_naked.X2 = cx[0];
@@ -490,7 +490,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 		Text->BoundingBox.Y2 = Text->bbox_naked.Y2 + conf_core.design.bloat;
 		rnd_close_box(&Text->BoundingBox);
 
-		rnd_trace(" new   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);
+/*		rnd_trace(" new   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);*/
 
 	}
 }
