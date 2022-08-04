@@ -4,7 +4,6 @@
 - BUG: cross section editor: new empty board, drag&drop new group into substrate below top copper -> segf [report: Igor2]
 - FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
 - io_lihata: modify default board ext to .rp
-+ FEATURE: dip() should have a pitch parameter, defaulting to 100mil so non-100-mil can be done too [report: barjac]
 - BUG: doc/developer:
 	- make install doesn't install everything
 	- use sccbox -d instead of / at the end
