@@ -450,7 +450,7 @@ static void rnd_font_normalize_(rnd_font_t *f, int fix_only, int compat)
 {
 	long i, n, m, h;
 	rnd_glyph_t *g;
-	rnd_coord_t *px, *py, fminy, fmaxy;
+	rnd_coord_t *px, *py, fminy, fmaxy, fminyw, fmaxyw;
 	rnd_coord_t totalminy = RND_MAX_COORD;
 	rnd_box_t b;
 
@@ -462,45 +462,46 @@ static void rnd_font_normalize_(rnd_font_t *f, int fix_only, int compat)
 		f->max_height = RND_FONT_DEFAULT_CELLSIZE;
 	}
 	fminy = fmaxy = 0;
+	fminyw = fmaxyw = 0;
 
 	for(i = 0, g = f->glyph; i <= RND_FONT_MAX_GLYPHS; i++, g++) {
-		rnd_coord_t minx, miny, maxx, maxy;
+		rnd_coord_t minx, miny, maxx, maxy, minxw, minyw, maxxw, maxyw;
 
 		/* skip if index isn't used or symbol is empty (e.g. space) */
 		if (!g->valid || (g->atoms.used == 0))
 			continue;
 
-		minx = miny = RND_MAX_COORD;
-		maxx = maxy = 0;
+		minx = miny = minxw = minyw = RND_MAX_COORD;
+		maxx = maxy = maxxw = maxyw = 0;
 		for(n = 0; n < g->atoms.used; n++) {
 			rnd_glyph_atom_t *a = &g->atoms.array[n];
 			switch(a->type) {
 				case RND_GLYPH_LINE:
-					minx = MIN(minx, a->line.x1);
-					miny = MIN(miny, a->line.y1);
-					minx = MIN(minx, a->line.x2);
-					miny = MIN(miny, a->line.y2);
-					maxx = MAX(maxx, a->line.x1);
-					maxy = MAX(maxy, a->line.y1);
-					maxx = MAX(maxx, a->line.x2);
-					maxy = MAX(maxy, a->line.y2);
+					minx = MIN(minx, a->line.x1); minxw = MIN(minxw, a->line.x1 - a->line.thickness/2);
+					miny = MIN(miny, a->line.y1); minyw = MIN(minyw, a->line.y1 - a->line.thickness/2);
+					minx = MIN(minx, a->line.x2); minxw = MIN(minxw, a->line.x2 + a->line.thickness/2);
+					miny = MIN(miny, a->line.y2); minyw = MIN(minyw, a->line.y2 + a->line.thickness/2);
+					maxx = MAX(maxx, a->line.x1); maxxw = MAX(maxxw, a->line.x1 - a->line.thickness/2);
+					maxy = MAX(maxy, a->line.y1); maxyw = MAX(maxyw, a->line.y1 - a->line.thickness/2);
+					maxx = MAX(maxx, a->line.x2); maxxw = MAX(maxxw, a->line.x2 + a->line.thickness/2);
+					maxy = MAX(maxy, a->line.y2); maxyw = MAX(maxyw, a->line.y2 + a->line.thickness/2);
 					break;
 				case RND_GLYPH_ARC:
 					font_arc_bbox(&b, &a->arc);
-					minx = MIN(minx, b.X1);
-					miny = MIN(miny, b.Y1);
-					maxx = MAX(maxx, b.X2);
-					maxy = MAX(maxy, b.Y2);
+					minx = MIN(minx, b.X1); minxw = MIN(minxw, b.X1 - a->arc.thickness/2);
+					miny = MIN(miny, b.Y1); minyw = MIN(minyw, b.Y1 - a->arc.thickness/2);
+					maxx = MAX(maxx, b.X2); maxxw = MAX(maxxw, b.X2 + a->arc.thickness/2);
+					maxy = MAX(maxy, b.Y2); maxyw = MAX(maxyw, b.Y2 + a->arc.thickness/2);
 					break;
 				case RND_GLYPH_POLY:
 					h = a->poly.pts.used/2;
 					px = &a->poly.pts.array[0];
 					py = &a->poly.pts.array[h];
 					for(m = 0; m < h; m++,px++,py++) {
-						minx = MIN(minx, *px);
-						miny = MIN(miny, *py);
-						maxx = MAX(maxx, *px);
-						maxy = MAX(maxy, *py);
+						minx = MIN(minx, *px); minxw = MIN(minxw, *px);
+						miny = MIN(miny, *py); minyw = MIN(minyw, *py);
+						maxx = MAX(maxx, *px); maxxw = MAX(maxxw, *px);
+						maxy = MAX(maxy, *py); maxyw = MAX(maxyw, *py);
 					}
 					break;
 		}
@@ -541,11 +542,14 @@ static void rnd_font_normalize_(rnd_font_t *f, int fix_only, int compat)
 		/* check total min/max  */
 		fminy = MIN(fminy, miny);
 		fmaxy = MAX(fmaxy, maxy);
+		fminyw = MIN(fminyw, minyw);
+		fmaxyw = MAX(fmaxyw, maxyw);
 
 		totalminy = MIN(totalminy, miny);
 	}
 
-	f->height = fmaxy - fminy;
+	f->cent_height = fmaxy - fminy;
+	f->height = fmaxyw - fminyw;
 
 	/* move coordinate system to the upper edge (lowest y on screen) */
 	if (!fix_only && (totalminy != 0)) {
