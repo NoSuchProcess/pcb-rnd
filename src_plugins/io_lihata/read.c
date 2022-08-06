@@ -2507,7 +2507,7 @@ static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
 		else if (strcmp(np->name, "change_attrib") == 0) {
 			nkey = lht_dom_hash_get(np, "key");
 			if ((nkey == NULL) || (nkey->type != LHT_TEXT) || (*nkey->data.text.value == '\0'))
-				return iolht_error(nval, "netlist patch attrib key must be a non-empty string (change_attrib)\n");
+				return iolht_error(nkey, "netlist patch attrib key must be a non-empty string (change_attrib)\n");
 			nval = lht_dom_hash_get(np, "val");
 			if ((nval == NULL) || (nval->type != LHT_TEXT))
 				return iolht_error(nval, "netlist patch attrib value must be a non-empty string (change_attrib)\n");
