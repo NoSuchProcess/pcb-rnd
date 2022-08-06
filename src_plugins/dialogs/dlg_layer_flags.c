@@ -45,6 +45,10 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_CONVARG(1, FGW_LONG, LayerPropGui, lid = argv[1].val.nat_long);
 	ly = pcb_get_layer(PCB->Data, lid);
+	if (ly == NULL) {
+		rnd_message(RND_MSG_ERROR, "LayerPropGui(): invalid layer id %ld\n", lid);
+		return FGW_ERR_ARG_CONV;
+	}
 
 	RND_DAD_BEGIN_VBOX(dlg);
 		RND_DAD_BEGIN_TABLE(dlg, 2);
