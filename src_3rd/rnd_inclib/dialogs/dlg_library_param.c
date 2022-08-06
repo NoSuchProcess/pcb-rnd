@@ -338,6 +338,7 @@ static char *gen_cmd(library_param_ctx_t *ctx)
 				rnd_snprintf(buff, sizeof(buff), "%.09$$mH", a->val.crd);
 				break;
 			default:;
+				val = NULL;
 		}
 
 		if (val == NULL)
