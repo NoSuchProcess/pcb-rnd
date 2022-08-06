@@ -247,7 +247,7 @@ int tedax_drc_query_rule_fsave(pcb_board_t *pcb, const char *ruleid, FILE *f, rn
 		if (ferr == 0) {
 			if ((res.type & FGW_STR) && (res.val.str != NULL) && (*res.val.str != '\0')) {
 				char *lst, *curr, *next;
-				for(curr = lst = rnd_strdup(res.val.str); next != NULL; curr = next) {
+				for(curr = lst = rnd_strdup(res.val.str); curr != NULL; curr = next) {
 					next = strchr(curr, '\n');
 					if (next != NULL) *next = '\0';
 					if (tedax_drc_query_def_fsave(pcb, curr, f) != 0) {
