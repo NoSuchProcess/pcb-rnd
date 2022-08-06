@@ -179,7 +179,7 @@ static void hyp_pstk_uninit(hyp_wr_t *wr)
 
 void hyp_pstk_shape(hyp_wr_t *wr, const char *lynam, const pcb_pstk_shape_t *shp)
 {
-	rnd_coord_t sx, sy, minx, miny, maxx, maxy;
+	rnd_coord_t sx = 0, sy = 0, minx, miny, maxx, maxy;
 	int shnum = 0, n;
 TODO(": this ignores rotation")
 	switch(shp->shape) {
