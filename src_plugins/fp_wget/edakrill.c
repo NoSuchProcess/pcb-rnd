@@ -288,7 +288,7 @@ FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, 
 {
 	gds_t s;
 	char tmp[1024];
-	FILE *f;
+	FILE *f = NULL;
 	int from_path = (path != NULL) && (strcmp(path, REQUIRE_PATH_PREFIX) == 0);
 
 	if (!from_path) {
