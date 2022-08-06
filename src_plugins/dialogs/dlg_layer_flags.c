@@ -43,7 +43,7 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_layer_id_t lid;
 
 
-	RND_ACT_MAY_CONVARG(1, FGW_LONG, LayerPropGui, lid = argv[1].val.nat_long);
+	RND_ACT_CONVARG(1, FGW_LONG, LayerPropGui, lid = argv[1].val.nat_long);
 	ly = pcb_get_layer(PCB->Data, lid);
 
 	RND_DAD_BEGIN_VBOX(dlg);
