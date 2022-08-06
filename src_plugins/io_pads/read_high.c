@@ -1025,7 +1025,7 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 {
 	pads_read_part_t *part;
 	char refdes[64], partname[64], glue[4], mirr[4], *decalname;
-	long n, altdeclnum, clustid = -1, clsattr = 0, brotherid = -1, num_labels;
+	long n, altdeclnum, clustid = -1, clsattr = 0, brotherid = -1, num_labels = 0;
 	rnd_coord_t xo, yo;
 	double rot;
 	int res, dln;
