@@ -673,7 +673,7 @@ do { \
 /* same as PARSE_DOUBLE() but res is a rnd_coord_t, input string is in mm */
 #define PARSE_COORD(res, missnode, node, errmsg) \
 do { \
-	double __dtmp__; \
+	double __dtmp__ = 0; \
 	PARSE_DOUBLE(__dtmp__, missnode, node, errmsg); \
 	(res) = rnd_round(RND_MM_TO_COORD(__dtmp__)); \
 } while(0) \
