@@ -47,7 +47,7 @@ static fgw_error_t pcb_act_gui_fpmap_choose(fgw_arg_t *res, int argc, fgw_arg_t 
 	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", 0}, {NULL, 0}};
 	RND_DAD_DECL(dlg);
 
-	RND_ACT_MAY_CONVARG(1, FGW_PTR, gui_fpmap_choose, map = argv[1].val.ptr_void);
+	RND_ACT_CONVARG(1, FGW_PTR, gui_fpmap_choose, map = argv[1].val.ptr_void);
 
 	if ((map == NULL) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PCB_PTR_DOMAIN_FPMAP)))
 		return -1;
