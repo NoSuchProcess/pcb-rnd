@@ -338,7 +338,8 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 			if (nat == NULL) {
 				free(b);
 				rnd_message(RND_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
-				goto fail;
+				free(path);
+				return;
 			}
 
 			nat->random_flags.dyn_hash_path = 1;
