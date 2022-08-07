@@ -422,8 +422,8 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 3)
 		RND_ACT_FAIL(StatusSetText);
 
-	RND_ACT_MAY_CONVARG(1, FGW_COORD, StatusSetText, x = fgw_coord(&argv[1]));
-	RND_ACT_MAY_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
+	RND_ACT_CONVARG(1, FGW_COORD, StatusSetText, x = fgw_coord(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
 
 	desc.used = 0;
 	if (desc.array != NULL)
