@@ -90,7 +90,7 @@ static void text_at(pcb_draw_info_t *info, rnd_hid_gc_t gc, int x, int y, int al
 	t.X = x;
 	t.Y = y;
 	for (i = 0; tmp[i]; i++)
-		w += (font->Symbol[(int) tmp[i]].Width + font->Symbol[(int) tmp[i]].Delta);
+		w += (font->rnd_font.glyph[(int)tmp[i]].width + font->rnd_font.glyph[(int)tmp[i]].xdelta);
 	w = PCB_SCALE_TEXT(w, t.Scale);
 	t.X -= w * (align & 3) / 2;
 	if (t.X < 0)
@@ -98,8 +98,8 @@ static void text_at(pcb_draw_info_t *info, rnd_hid_gc_t gc, int x, int y, int al
 	pcb_text_draw_(info, &t, 0,0, PCB_TXT_TINY_ACCURATE);
 	if (align & 8)
 		fab_line(gc, t.X,
-						 t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + RND_MIL_TO_COORD(10),
-						 t.X + w, t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + RND_MIL_TO_COORD(10));
+						 t.Y + PCB_SCALE_TEXT(font->rnd_font.max_height, t.Scale) + RND_MIL_TO_COORD(10),
+						 t.X + w, t.Y + PCB_SCALE_TEXT(font->rnd_font.max_height, t.Scale) + RND_MIL_TO_COORD(10));
 }
 
 /* Y, +, X, circle, square */
