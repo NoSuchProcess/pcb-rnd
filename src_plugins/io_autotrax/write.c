@@ -423,8 +423,8 @@ static int wrax_arcs(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rnd
 /* writes generic autotrax text descriptor line layouts onl, since no text in .fp */
 static int wrax_text(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
 {
-	pcb_font_t *myfont = pcb_font_old(PCB, 0, 1);
-	rnd_coord_t mHeight = myfont->rnd_font.max_height; /* autotrax needs the width of the widest letter */
+	rnd_font_t *myfont = pcb_font(PCB, 0, 1);
+	rnd_coord_t mHeight = myfont->max_height; /* autotrax needs the width of the widest letter */
 	int autotrax_mirrored = 0; /* 0 is not mirrored, +16  is mirrored */
 
 	rnd_coord_t default_stroke_thickness, strokeThickness, textHeight;
