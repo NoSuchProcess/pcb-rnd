@@ -67,7 +67,6 @@
 
 static	pcb_layer_t *Layer;
 static	pcb_poly_t *Polygon;
-static	pcb_symbol_t *Symbol;
 static	rnd_glyph_t *Glyph;
 static	int		pin_num;
 static pcb_net_t *currnet;
@@ -1212,15 +1211,12 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 					yyerror("fontposition out of range");
 					YYABORT;
 				}
-				Symbol = &yyFont->Symbol[$3];
 				Glyph = &yyRndFont->glyph[$3];
-				if (Symbol->Valid)
+				if (Glyph->valid)
 				{
 					yyerror("symbol ID used twice");
 					YYABORT;
 				}
-				Symbol->Valid = rnd_true;
-				Symbol->Delta = NU ($4);
 				Glyph->valid = rnd_true;
 				Glyph->xdelta = NU ($4);
 			}
@@ -1231,15 +1227,12 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 					yyerror("fontposition out of range");
 					YYABORT;
 				}
-				Symbol = &yyFont->Symbol[$3];
 				Glyph = &yyRndFont->glyph[$3];
-				if (Symbol->Valid)
+				if (Glyph->valid)
 				{
 					yyerror("symbol ID used twice");
 					YYABORT;
 				}
-				Symbol->Valid = rnd_true;
-				Symbol->Delta = OU ($4);
 				Glyph->valid = rnd_true;
 				Glyph->xdelta = OU ($4);
 			}
