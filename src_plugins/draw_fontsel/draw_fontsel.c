@@ -53,7 +53,7 @@ static rnd_xform_t dxform;
 #define BLACK  (&conf_core.appearance.color.element)
 #define RED    (&conf_core.appearance.color.mark)
 
-static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char *txt)
+static pcb_text_t *dtext(int x, int y, int scale, rnd_font_id_t fid, const char *txt)
 {
 	static pcb_text_t t = {0};
 
@@ -104,19 +104,19 @@ static void dchkbox(rnd_hid_gc_t gc, int x0, int y0, int checked)
 #define MAX_FONT 128
 typedef struct {
 	int y1, y2;
-	pcb_font_id_t fid;
+	rnd_font_id_t fid;
 } font_coord_t;
 
 font_coord_t font_coord[MAX_FONT];
 int font_coords;
 
-static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_text_t *txt, pcb_font_id_t *dst_fid)
+static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_text_t *txt, rnd_font_id_t *dst_fid)
 {
 	char buf[256];
 	pcb_text_t *t;
 	const char *nm;
 	int y_old = *y;
-	pcb_font_id_t target_fid;
+	rnd_font_id_t target_fid;
 
 	if (dst_fid != NULL)
 		target_fid = *dst_fid;
@@ -145,7 +145,7 @@ static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 }
 
 
-static void pcb_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt, pcb_font_id_t *dst_fid)
+static void pcb_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt, rnd_font_id_t *dst_fid)
 {
 	int y = 0;
 
@@ -159,7 +159,7 @@ static void pcb_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb
 	}
 }
 
-static pcb_font_id_t lookup_fid_for_coord(int ymm)
+static rnd_font_id_t lookup_fid_for_coord(int ymm)
 {
 	int n;
 
@@ -169,9 +169,9 @@ static pcb_font_id_t lookup_fid_for_coord(int ymm)
 	return -1;
 }
 
-static rnd_bool pcb_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt, pcb_font_id_t *dst_fid)
+static rnd_bool pcb_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt, rnd_font_id_t *dst_fid)
 {
-	pcb_font_id_t fid;
+	rnd_font_id_t fid;
 	int ymm;
 
 	switch(kind) {

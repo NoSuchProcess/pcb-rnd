@@ -48,26 +48,26 @@ struct pcb_fontkit_s {          /* a set of unrelated fonts */
 	pcb_font_t dflt;              /* default, fallback font, also the sysfont */
 	htip_t fonts;                 /* key: ->id; val: (pcb_font_t *) */
 	rnd_bool valid, hash_inited;
-	pcb_font_id_t last_id;        /* highest font id ever seen in this kit */
+	rnd_font_id_t last_id;        /* highest font id ever seen in this kit */
 };
 
 /* Look up font. If not found: return NULL (fallback=0), or return the
    default font (fallback=1) */
-pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback);
+pcb_font_t *pcb_font(pcb_board_t *pcb, rnd_font_id_t id, int fallback);
 
 void pcb_font_create_default(pcb_board_t *pcb);
 
 /*** font kit handling ***/
 void pcb_fontkit_free(pcb_fontkit_t *fk);
-pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name);
-int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id);
-int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst);
+pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, rnd_font_id_t id, const char *name);
+int pcb_del_font(pcb_fontkit_t *fk, rnd_font_id_t id);
+int pcb_move_font(pcb_fontkit_t *fk, rnd_font_id_t src, rnd_font_id_t dst);
 
 /* Reset the fontkit so that only the default font is kept and all extra fonts are purged */
 void pcb_fontkit_reset(pcb_fontkit_t *fk);
 
 /* Unlink the font from pcb, but do not free anything but return the font */
-pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, pcb_font_id_t id);
+pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, rnd_font_id_t id);
 
 
 #endif

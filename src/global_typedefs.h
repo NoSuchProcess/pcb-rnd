@@ -65,6 +65,4 @@ typedef struct pcb_plug_fp_map_s pcb_plug_fp_map_t;
 
 typedef struct pcb_view_s pcb_view_t;
 
-typedef long int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
-
 #endif

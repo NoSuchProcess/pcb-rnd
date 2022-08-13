@@ -78,7 +78,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 	}
 }
 
-static pcb_font_t *pcb_font_(pcb_board_t *pcb, pcb_font_id_t id, int fallback, int unlink)
+static pcb_font_t *pcb_font_(pcb_board_t *pcb, rnd_font_id_t id, int fallback, int unlink)
 {
 	if (id <= 0) {
 		do_default:;
@@ -100,12 +100,12 @@ static pcb_font_t *pcb_font_(pcb_board_t *pcb, pcb_font_id_t id, int fallback, i
 	return NULL;
 }
 
-pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
+pcb_font_t *pcb_font(pcb_board_t *pcb, rnd_font_id_t id, int fallback)
 {
 	return pcb_font_(pcb, id, fallback, 0);
 }
 
-pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, pcb_font_id_t id)
+pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, rnd_font_id_t id)
 {
 	return pcb_font_(pcb, id, 0, 1);
 }
@@ -120,7 +120,7 @@ static void hash_setup(pcb_fontkit_t *fk)
 	fk->hash_inited = 1;
 }
 
-pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
+pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, rnd_font_id_t id, const char *name)
 {
 	pcb_font_t *f;
 
@@ -179,7 +179,7 @@ void pcb_fontkit_reset(pcb_fontkit_t *fk)
 
 static void update_last_id(pcb_fontkit_t *fk)
 {
-	pcb_font_id_t id;
+	rnd_font_id_t id;
 	for (id = fk->last_id; id > 0; id--) {
 		if (htip_has(&fk->fonts, id))
 			break;
@@ -187,7 +187,7 @@ static void update_last_id(pcb_fontkit_t *fk)
 	fk->last_id = id;
 }
 
-int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
+int pcb_del_font(pcb_fontkit_t *fk, rnd_font_id_t id)
 {
 	htip_entry_t *e;
 	pcb_font_t *f;
@@ -204,7 +204,7 @@ int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
 	return 0;
 }
 
-int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
+int pcb_move_font(pcb_fontkit_t *fk, rnd_font_id_t src, rnd_font_id_t dst)
 {
 	htip_entry_t *e;
 	pcb_font_t *src_font;

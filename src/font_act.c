@@ -42,7 +42,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL, *sid = NULL;
 	static char *default_file = NULL;
-	pcb_font_id_t fid, dst_fid = -1;
+	rnd_font_id_t fid, dst_fid = -1;
 	pcb_font_t *fnt;
 	int r;
 
@@ -119,7 +119,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL, *sid = NULL;
 	static char *default_file = NULL;
-	pcb_font_id_t fid;
+	rnd_font_id_t fid;
 	pcb_font_t *fnt;
 	int r;
 

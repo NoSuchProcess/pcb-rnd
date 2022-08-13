@@ -67,7 +67,7 @@ int pcb_use_route_style_idx_(vtroutestyle_t *styles, int idx)
 #define cmpi0(a,b) (((a) > 0) && (strict || ((b) > 0)) && ((a) != (b)))
 #define cmpi(a,b) (((a) != -1) && (strict || ((b) != -1)) && ((a) != (b)))
 #define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) != 0))
-RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_coord_t Thick, rnd_coord_t textt, int texts, rnd_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	if (cmp(Thick, rst->Thick)) return 0;
 	if (cmp(textt, rst->textt)) return 0;
@@ -80,7 +80,7 @@ RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_co
 	return 1;
 }
 
-int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, rnd_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	return pcb_route_style_match_(rst, 0, Thick, textt, texts, fid, Clearance, via_proto, Name);
 }
@@ -90,7 +90,7 @@ int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t
 #undef cmpi0
 #undef cmps
 
-int pcb_route_style_lookup(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+int pcb_route_style_lookup(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, rnd_coord_t textt, int texts, rnd_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int n, len = vtroutestyle_len(styles);
 
@@ -106,7 +106,7 @@ int pcb_route_style_lookup(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, 
 }
 
 
-int pcb_route_style_lookup_strict(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+int pcb_route_style_lookup_strict(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, rnd_coord_t textt, int texts, rnd_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int n, len = vtroutestyle_len(styles);
 
@@ -227,7 +227,7 @@ static const uundo_oper_t undo_rst = {
 };
 
 
-int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd_coord_t *textt, int *texts, pcb_font_id_t *fid, rnd_coord_t *clearance, rnd_cardinal_t *via_proto, rnd_bool undoable)
+int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd_coord_t *textt, int *texts, rnd_font_id_t *fid, rnd_coord_t *clearance, rnd_cardinal_t *via_proto, rnd_bool undoable)
 {
 	undo_rst_t gtmp, *g = &gtmp;
 	pcb_route_style_t *rst = vtroutestyle_get(&pcb->RouteStyle, rstidx, 0);

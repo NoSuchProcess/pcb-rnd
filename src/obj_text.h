@@ -40,7 +40,7 @@ struct pcb_text_s {
 	int Scale;                    /* text scaling in percent */
 	double scale_x, scale_y;      /* optional; x and y direction scale (1 means original size); if 0, use Scale/100 */
 	rnd_coord_t X, Y;             /* origin */
-	pcb_font_id_t fid;
+	rnd_font_id_t fid;
 	char *TextString;             /* string */
 	rnd_coord_t thickness;        /* if non-zero, thickness of line/arc within the font */
 	rnd_coord_t clearance;        /* clearance around the object in polygon if flags have PCB_FLAG_CLEARLINE */
@@ -95,7 +95,7 @@ void pcb_text_rotate(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, double cosa
 void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth);
 void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, rnd_coord_t y_offs, rnd_bool undoable);
 void pcb_text_mirror_coords(pcb_text_t *text, rnd_coord_t y_offs, rnd_bool undoable); /* mirror the coords but do not mirror the text itself (no on-solder) */
-void pcb_text_set_font(pcb_text_t *text, pcb_font_id_t fid);
+void pcb_text_set_font(pcb_text_t *text, rnd_font_id_t fid);
 void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text);
 
 void pcb_text_reg(pcb_layer_t *layer, pcb_text_t *text);

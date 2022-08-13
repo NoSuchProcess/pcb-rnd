@@ -45,9 +45,9 @@ typedef struct{
 	unsigned alloced:1;
 
 	pcb_idpath_t *txt_id;
-	pcb_font_id_t *dst_fid;
+	rnd_font_id_t *dst_fid;
 	void *last_fobj;
-	pcb_font_id_t last_fid;
+	rnd_font_id_t last_fid;
 	gdl_elem_t link;
 } fontsel_ctx_t;
 
@@ -153,7 +153,7 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 }
 
 
-static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t *txt_obj, pcb_font_id_t *dst_fid)
+static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t *txt_obj, rnd_font_id_t *dst_fid)
 {
 	rnd_box_t vbox = {0, 0, RND_MM_TO_COORD(55), RND_MM_TO_COORD(55)};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -224,7 +224,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *op = NULL;
 	int modal = 0, global = 1;
 	pcb_text_t *txt_obj = NULL;
-	pcb_font_id_t fid, *dst_fid = NULL;
+	rnd_font_id_t fid, *dst_fid = NULL;
 
 	if (argc > 2)
 		RND_ACT_FAIL(Fontsel);

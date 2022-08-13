@@ -222,7 +222,7 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		args[1].val.cstr = "fontid";
 		err = rnd_actionv_bin(&PCB->hidlib, "fontsel", &res, 2, args);
 		if ((err == 0) && (res.type == FGW_LONG)) {
-			pcb_font_id_t tmp = res.val.nat_long;
+			rnd_font_id_t tmp = res.val.nat_long;
 			pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, &tmp, NULL, NULL, 1);
 		}
 	}

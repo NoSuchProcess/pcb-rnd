@@ -85,7 +85,7 @@ rnd_bool (*pcb_stub_draw_csect_mouse_ev)(rnd_hid_mouse_ev_t kind, rnd_coord_t x,
 
 
 /****** font selector GUI ******/
-static void dummy_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt, pcb_font_id_t *dst_fid)
+static void dummy_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt, rnd_font_id_t *dst_fid)
 {
 	static rnd_xform_t xform = {0};
 	static pcb_draw_info_t info = {0};
@@ -95,11 +95,11 @@ static void dummy_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, p
 	dummy_draw_text(&info, gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
 }
 
-static rnd_bool dummy_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt, pcb_font_id_t *dst_fid)
+static rnd_bool dummy_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt, rnd_font_id_t *dst_fid)
 {
 	return 0;
 }
 
-void (*pcb_stub_draw_fontsel)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt, pcb_font_id_t *dst_fid) = dummy_draw_fontsel;
-rnd_bool (*pcb_stub_draw_fontsel_mouse_ev)(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt, pcb_font_id_t *dst_fid) = dummy_mouse_fontsel;
+void (*pcb_stub_draw_fontsel)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt, rnd_font_id_t *dst_fid) = dummy_draw_fontsel;
+rnd_bool (*pcb_stub_draw_fontsel_mouse_ev)(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt, rnd_font_id_t *dst_fid) = dummy_mouse_fontsel;
 

@@ -131,7 +131,7 @@ typedef struct {
 	rnd_coord_t thickness;
 	rnd_coord_t clearance;
 	double rot;
-	pcb_font_id_t fid;
+	rnd_font_id_t fid;
 } undo_text_geo_t;
 
 static int undo_text_geo_swap(void *udata)
@@ -152,7 +152,7 @@ static int undo_text_geo_swap(void *udata)
 	rnd_swap(rnd_coord_t, g->thickness, g->text->thickness);
 	rnd_swap(rnd_coord_t, g->clearance, g->text->clearance);
 	rnd_swap(double, g->rot, g->text->rot);
-	rnd_swap(pcb_font_id_t, g->fid, g->text->fid);
+	rnd_swap(rnd_font_id_t, g->fid, g->text->fid);
 
 	if (pcb != NULL)
 		pcb_text_bbox(pcb_font(pcb, g->text->fid, 1), g->text);
@@ -988,7 +988,7 @@ void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
 }
 
 
-void pcb_text_set_font(pcb_text_t *text, pcb_font_id_t fid)
+void pcb_text_set_font(pcb_text_t *text, rnd_font_id_t fid)
 {
 	pcb_layer_t *layer = text->parent.layer;
 
@@ -1564,7 +1564,7 @@ static const char *text_cookie = "obj_text";
 
 /* Recursively update the text objects of data and subcircuits; returns non-zero
    if a redraw is needed */
-static int pcb_text_font_chg_data(pcb_data_t *data, pcb_font_id_t fid)
+static int pcb_text_font_chg_data(pcb_data_t *data, rnd_font_id_t fid)
 {
 	int need_redraw = 0;
 

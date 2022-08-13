@@ -663,7 +663,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_SetSame[] = "SetSame()";
 static const char pcb_acth_SetSame[] = "Sets current layer and sizes to match indicated item.";
 /* DOC: setsame.html */
-static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, rnd_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int known;
 	known = pcb_route_style_lookup_strict(&PCB->RouteStyle, PCB->route_style_last, Thick, textt, texts, fid, Clearance, via_proto, Name);
