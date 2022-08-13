@@ -364,43 +364,6 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, rnd_coord_t dx, rn
 	return obj;
 }
 
-/* font: remove */
-static lht_node_t *build_simplearc(pcb_arc_t *arc, int local_id)
-{
-	char buff[128];
-	lht_node_t *obj;
-
-	sprintf(buff, "simplearc.%ld", (local_id >= 0 ? local_id : arc->ID));
-	obj = lht_dom_node_alloc(LHT_HASH, buff);
-	lht_dom_hash_put(obj, build_textf("x", CFMT, arc->X));
-	lht_dom_hash_put(obj, build_textf("y", CFMT, arc->Y));
-	lht_dom_hash_put(obj, build_textf("r", CFMT, arc->Height));
-	lht_dom_hash_put(obj, build_textf("astart", "%f", arc->StartAngle));
-	lht_dom_hash_put(obj, build_textf("adelta", "%f", arc->Delta));
-	lht_dom_hash_put(obj, build_textf("thickness", CFMT, arc->Thickness));
-
-	return obj;
-}
-
-/* font: remove */
-static lht_node_t *build_simplepoly(pcb_poly_t *poly, int local_id)
-{
-	char buff[128];
-	lht_node_t *obj;
-	rnd_point_t *pnt;
-	int n;
-
-	sprintf(buff, "simplepoly.%ld", (local_id >= 0 ? local_id : poly->ID));
-	obj = lht_dom_node_alloc(LHT_LIST, buff);
-
-	for(n = 0, pnt = poly->Points; n < poly->PointN; n++,pnt++) {
-		lht_dom_list_append(obj, build_textf(NULL, CFMT, pnt->X));
-		lht_dom_list_append(obj, build_textf(NULL, CFMT, pnt->Y));
-	}
-	return obj;
-}
-
-
 static lht_node_t *build_rat(pcb_rat_t *rat)
 {
 	char buff[128];
