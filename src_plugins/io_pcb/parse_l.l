@@ -73,7 +73,6 @@ pcb_board_t *	yyPCB;			/* used by parser */
 pcb_data_t *	yyData;
 pcb_subc_t *yysubc;
 rnd_coord_t yysubc_ox, yysubc_oy;
-pcb_font_t *	yyFont;
 rnd_font_t *	yyRndFont;
 rnd_conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
@@ -325,8 +324,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, c
 	yyPCB = NULL;
 	yyData = Ptr;
 	pcb_data_set_layer_parents(Ptr);
-	yyFont = pcb_font_old(PCB, 0, 1);
-	yyRndFont = &yyFont->rnd_font;
+	yyRndFont = pcb_font(PCB, 0, 1);
 	yyFontReset = rnd_false;
 	yyFontkitValid = NULL;
 	yysubc = NULL;
@@ -376,7 +374,6 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yy_parse_tags = 0;
 	yyPCB = Ptr;
 	yyData = NULL;
-	yyFont = NULL;
 	yyRndFont = NULL;
 	yyFontReset = rnd_true;
 	yyFontkitValid = NULL;
@@ -517,11 +514,11 @@ static void add_tag(char *line)
 		*val = '\0';
 		val++;
 	}
-	if (yyFont != NULL) {
+	if (yyRndFont != NULL) {
 /*		printf("tag:%s=%s:\n", key,val); */
 		if (strcmp(key, "name") == 0) {
-			free(yyFont->rnd_font.name);
-			yyFont->rnd_font.name = rnd_strdup(val);
+			free(yyRndFont->name);
+			yyRndFont->name = rnd_strdup(val);
 		}
 	}
 }

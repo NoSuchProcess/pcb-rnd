@@ -327,8 +327,7 @@ static void WritePCBDataHeader(FILE * FP)
 static void WritePCBFontData_rnd(FILE * FP)
 {
 	rnd_cardinal_t i, j;
-	pcb_font_t *font_ = pcb_font_old(PCB, 0, 1);
-	rnd_font_t *font = &font_->rnd_font;
+	rnd_font_t *font = pcb_font(PCB, 0, 1);
 	int warned = 0;
 
 	if (PCB->fontkit.fonts.used > 0)
@@ -805,7 +804,6 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 /*** functions for loading elements-as-pcb ***/
 extern pcb_board_t *yyPCB;
 extern pcb_data_t *yyData;
-extern pcb_font_t *yyFont;
 extern	rnd_font_t *yyRndFont;
 extern int yyElemFixLayers;
 
