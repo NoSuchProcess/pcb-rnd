@@ -81,93 +81,6 @@ static pcb_layer_t *make_layer(pcb_board_t *pcb, rnd_layergrp_id_t grp, const ch
 	return &pcb->Data->Layer[lid];
 }
 
-static void add_poly_old(pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t ox, rnd_coord_t oy)
-{
-	pcb_poly_t *np;
-	
-	/* alloc */
-	np = pcb_poly_new(layer, 0, pcb_no_flags());
-	pcb_poly_copy(np, poly, ox, oy);
-
-	/* add */
-	pcb_add_poly_on_layer(layer, np);
-	pcb_poly_init_clip(pcb->Data, layer, np);
-	pcb_poly_invalidate_draw(layer, np);
-}
-
-static void font2editor_old(pcb_board_t *pcb, pcb_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
-{
-	int s, l;
-	pcb_poly_t *poly;
-	pcb_arc_t *arc, *newarc;
-
-	for(s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
-		char txt[32];
-		pcb_symbol_t *symbol;
-		rnd_coord_t ox = (s % 16 + 1) * CELL_SIZE;
-		rnd_coord_t oy = (s / 16 + 1) * CELL_SIZE;
-		rnd_coord_t w, miny, maxy, maxx = 0;
-
-		symbol = &font->Symbol[s];
-
-		miny = RND_MIL_TO_COORD(5);
-		maxy = font->MaxHeight;
-
-		if ((s > 32) && (s < 127)) {
-			sprintf(txt, "%c", s);
-			pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
-		}
-		sprintf(txt, "%d", s);
-		pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
-
-		for(l = 0; l < symbol->LineN; l++) {
-			pcb_line_new_merge(lfont,
-														 symbol->Line[l].Point1.X + ox,
-														 symbol->Line[l].Point1.Y + oy,
-														 symbol->Line[l].Point2.X + ox,
-														 symbol->Line[l].Point2.Y + oy, symbol->Line[l].Thickness, symbol->Line[l].Thickness, pcb_no_flags());
-			pcb_line_new_merge(lorig, symbol->Line[l].Point1.X + ox,
-														 symbol->Line[l].Point1.Y + oy,
-														 symbol->Line[l].Point2.X + ox,
-														 symbol->Line[l].Point2.Y + oy, symbol->Line[l].Thickness, symbol->Line[l].Thickness, pcb_no_flags());
-			if (maxx < symbol->Line[l].Point1.X)
-				maxx = symbol->Line[l].Point1.X;
-			if (maxx < symbol->Line[l].Point2.X)
-				maxx = symbol->Line[l].Point2.X;
-		}
-
-
-		for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc)) {
-			pcb_arc_new(lfont, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags(), rnd_true);
-			newarc = pcb_arc_new(lorig, arc->X + ox, arc->Y + oy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags(), rnd_true);
-			if (newarc != NULL) {
-				if (maxx < newarc->BoundingBox.X2 - ox)
-					maxx = newarc->BoundingBox.X2 - ox;
-				if (maxy < newarc->BoundingBox.Y2 - oy)
-					maxy = newarc->BoundingBox.Y2 - oy;
-			}
-		}
-
-		for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly)) {
-			int n;
-			rnd_point_t *pnt;
-
-			add_poly_old(pcb, lfont, poly, ox, oy);
-			add_poly_old(pcb, lorig, poly, ox, oy);
-
-			for(n = 0, pnt = poly->Points; n < poly->PointN; n++,pnt++) {
-				if (maxx < pnt->X)
-					maxx = pnt->X;
-				if (maxy < pnt->Y)
-					maxy = pnt->Y;
-			}
-		}
-
-		w = maxx + symbol->Delta + ox;
-		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
-	}
-}
-
 static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
 {
 	int s;
@@ -261,12 +174,11 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 
 static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 {
-	pcb_symbol_t *symbol;
 	rnd_glyph_t *g;
 	int i;
 	pcb_line_t *l;
 	pcb_arc_t *a;
-	pcb_poly_t *p, *np;
+	pcb_poly_t *p;
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
 	rnd_glyph_poly_t *gp;
@@ -274,9 +186,6 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 
 	lfont = pcb->Data->Layer + 0;
 	lwidth = pcb->Data->Layer + 2;
-
-	for(i = 0; i <= PCB_MAX_FONTPOSITION; i++)
-		pcb_font_clear_symbol(&font->Symbol[i]);
 
 	for(i = 0; i <= RND_FONT_MAX_GLYPHS; i++)
 		rnd_font_free_glyph(&font->rnd_font.glyph[i]);
@@ -292,7 +201,6 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
-		symbol = &font->Symbol[s];
 		g = &font->rnd_font.glyph[s];
 
 		x1 -= ox;
@@ -300,19 +208,12 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 		x2 -= ox;
 		y2 -= oy;
 
-		if (symbol->Width < x1)
-			symbol->Width = x1;
-		if (symbol->Width < x2)
-			symbol->Width = x2;
-		symbol->Valid = 1;
-
 		if (g->width < x1)
 			g->width = x1;
 		if (g->width < x2)
 			g->width = x2;
 		g->valid = 1;
 
-		pcb_font_new_line_in_sym(symbol, x1, y1, x2, y2, l->Thickness);
 		rnd_font_new_line_in_glyph(g, x1, y1, x2, y2, l->Thickness);
 	}
 
@@ -325,22 +226,17 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 		s = XYtoSym(cx, cy);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
-		symbol = &font->Symbol[s];
 		g = &font->rnd_font.glyph[s];
 
 		cx -= ox;
 		cy -= oy;
 
 		pcb_arc_bbox(a);
-		if (symbol->Width < a->bbox_naked.X2 - ox - a->Thickness/2.0)
-			symbol->Width = rnd_round(a->bbox_naked.X2 - ox - a->Thickness/2.0);
 		if (g->width < a->bbox_naked.X2 - ox - a->Thickness/2.0)
 			g->width = rnd_round(a->bbox_naked.X2 - ox - a->Thickness/2.0);
 
-		symbol->Valid = 1;
 		g->valid = 1;
 
-		pcb_font_new_arc_in_sym(symbol, a->X - ox, a->Y - oy, a->Width, a->StartAngle, a->Delta, a->Thickness);
 		rnd_font_new_arc_in_glyph(g, a->X - ox, a->Y - oy, a->Width, a->StartAngle, a->Delta, a->Thickness);
 	}
 
@@ -354,22 +250,14 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
-		symbol = &font->Symbol[s];
 		g = &font->rnd_font.glyph[s];
-
-		np = pcb_font_new_poly_in_sym(symbol, p->PointN);
 		gp = rnd_font_new_poly_in_glyph(g, p->PointN);
 
 		for(n = 0; n < p->PointN; n++) {
-			np->Points[n].X = p->Points[n].X - ox;
-			np->Points[n].Y = p->Points[n].Y - oy;
-			if (symbol->Width < np->Points[n].X)
-				symbol->Width = np->Points[n].X;
-
 			gp->pts.array[n] = p->Points[n].X - ox;
 			gp->pts.array[n+p->PointN] = p->Points[n].Y - oy;
-			if (g->width < np->Points[n].X)
-				g->width = np->Points[n].X;
+			if (g->width < gp->pts.array[n])
+				g->width = gp->pts.array[n];
 		}
 	}
 
@@ -381,21 +269,16 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
-		symbol = &font->Symbol[s];
 		g = &font->rnd_font.glyph[s];
 
 		x1 -= ox;
 
-		symbol->Delta = x1 - symbol->Width;
-		g->xdelta = x1 - symbol->Width;
+		g->xdelta = x1 - g->width;
 
-		if (g->xdelta > 10) { /* not 0 for rounding errors, just in case */
-			symbol->Valid = 1;
+		if (g->xdelta > 10) /* not 0 for rounding errors, just in case */
 			g->valid = 1;
-		}
 	}
 
-	pcb_font_set_info(font);
 	rnd_font_normalize(&font->rnd_font);
 }
 
@@ -473,10 +356,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_event(&pcb->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
 	rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
-	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
-		font2editor_new(pcb, &font->rnd_font, lfont, lorig, lwidth, lsilk);
-	else
-		font2editor_old(pcb, font, lfont, lorig, lwidth, lsilk);
+	font2editor_new(pcb, &font->rnd_font, lfont, lorig, lwidth, lsilk);
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;
@@ -766,10 +646,7 @@ static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_font_t *font = pcb_font(pcb, 0, 1);
 
 	editor2font(pcb, font);
-	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
-		rnd_font_normalize(&font->rnd_font);
-	else
-		pcb_font_set_info(font);
+	rnd_font_normalize(&font->rnd_font);
 
 	return pcb_act_FontEdit(res, argc, argv);
 }
