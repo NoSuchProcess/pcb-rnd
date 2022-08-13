@@ -298,7 +298,7 @@ TODO(": this should be a proper line approximation using a helper (to be written
 static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t *text, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
-	rnd_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
+	rnd_coord_t mWidth = myfont->rnd_font.max_width; /* kicad needs the width of the widest letter */
 	rnd_coord_t defaultStrokeThickness = 100 * 2540; /* use 100 mil as default 100% stroked font line thickness */
 	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */
 	rnd_coord_t defaultXSize;
