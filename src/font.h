@@ -46,7 +46,7 @@ struct pcb_font_s {          /* complete set of symbols */
 
 struct pcb_fontkit_s {          /* a set of unrelated fonts */
 	rnd_font_t dflt;              /* default, fallback font, also the sysfont */
-	htip_t fonts;                 /* key: ->id; val: (pcb_font_t *) */
+	htip_t fonts;                 /* key: ->id; val: (rnd_font_t *) */
 	rnd_bool valid, hash_inited;
 	rnd_font_id_t last_id;        /* highest font id ever seen in this kit */
 };
