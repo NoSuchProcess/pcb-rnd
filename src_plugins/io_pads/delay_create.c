@@ -232,7 +232,7 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	return obj;
 }
 
-pcb_dlcr_draw_t *pcb_dlcr_text_by_bbox_new(pcb_dlcr_t *dlcr, pcb_font_t *font, rnd_coord_t x, rnd_coord_t y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *str, long flags)
+pcb_dlcr_draw_t *pcb_dlcr_text_by_bbox_new(pcb_dlcr_t *dlcr, rnd_font_t *font, rnd_coord_t x, rnd_coord_t y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *str, long flags)
 {
 	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_OBJ);
 	pcb_dlcr_text_by_bbox_t *t = &obj->val.obj.obj.text_by_bbox;
@@ -613,7 +613,7 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 			free(t->TextString);
 			break;
 		case PCB_OBJ_DLCR_TEXT_BY_BBOX:
-			r = (pcb_any_obj_t *)pcb_text_new_by_bbox(ly, tb->font, ox+CRDX(tb->x), oy+CRDY(tb->y),
+			r = (pcb_any_obj_t *)pcb_text_new_by_bbox(ly, (pcb_font_t *)tb->font, ox+CRDX(tb->x), oy+CRDY(tb->y),
 				tb->bbw, tb->bbh, tb->anchx, tb->anchy, tb->scxy, tb->mirror, tb->rot,
 				tb->thickness, tb->str, pcb_flag_make(PCB_FLAG_CLEARLINE | tb->flags));
 			free(tb->str);
