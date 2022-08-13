@@ -930,7 +930,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 
 	X += st->primitive_dx; Y += st->primitive_dy;
 
-	pcb_text_new_by_bbox(ly, pcb_font_old(PCB_FOR_FP, 0, 1), X, Y, bbw, bbh,
+	pcb_text_new_by_bbox(ly, pcb_font(PCB_FOR_FP, 0, 1), X, Y, bbw, bbh,
 		xanch, yanch, sx/sy, mirrored ? PCB_TXT_MIRROR_X : 0, rotdeg, thickness,
 		text, flg);
 

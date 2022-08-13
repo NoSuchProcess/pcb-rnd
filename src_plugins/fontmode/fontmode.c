@@ -100,10 +100,10 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 
 		if ((s > 32) && (s < 127)) {
 			sprintf(txt, "%c", s);
-			pcb_text_new(lsilk, pcb_font_old(pcb, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+			pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 		}
 		sprintf(txt, "%d", s);
-		pcb_text_new(lsilk, pcb_font_old(pcb, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+		pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 
 		for(n = 0, a = g->atoms.array; n < g->atoms.used; n++, a++) {
 			pcb_poly_t *poly, *newpoly;

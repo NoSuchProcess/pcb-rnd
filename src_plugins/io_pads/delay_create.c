@@ -609,11 +609,11 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 			}
 			break;
 		case PCB_OBJ_TEXT:
-			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font_old(pcb, 0, 1), ox+CRDX(t->X), oy+CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE | t->Flags.f));
+			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font(pcb, 0, 1), ox+CRDX(t->X), oy+CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE | t->Flags.f));
 			free(t->TextString);
 			break;
 		case PCB_OBJ_DLCR_TEXT_BY_BBOX:
-			r = (pcb_any_obj_t *)pcb_text_new_by_bbox(ly, (pcb_font_t *)tb->font, ox+CRDX(tb->x), oy+CRDY(tb->y),
+			r = (pcb_any_obj_t *)pcb_text_new_by_bbox(ly, tb->font, ox+CRDX(tb->x), oy+CRDY(tb->y),
 				tb->bbw, tb->bbh, tb->anchx, tb->anchy, tb->scxy, tb->mirror, tb->rot,
 				tb->thickness, tb->str, pcb_flag_make(PCB_FLAG_CLEARLINE | tb->flags));
 			free(tb->str);

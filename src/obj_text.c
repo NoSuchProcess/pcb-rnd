@@ -177,7 +177,7 @@ static const uundo_oper_t undo_text_geo = {
 };
 
 
-pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, pcb_text_mirror_t mirror, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, rnd_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, pcb_text_mirror_t mirror, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text;
 
@@ -206,13 +206,13 @@ pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X
 	text->scale_y = scy;
 	text->thickness = thickness;
 	text->TextString = rnd_strdup(TextString);
-	text->fid = PCBFont->rnd_font.id;
+	text->fid = PCBFont->id;
 
 	return text;
 }
 
 /* creates a new text on a layer */
-pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new(pcb_layer_t *Layer, rnd_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text = pcb_text_new_(Layer, PCBFont, X, Y, rot, 0, Scale, 0, 0, thickness, TextString, Flags);
 
@@ -221,7 +221,7 @@ pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X,
 	return text;
 }
 
-pcb_text_t *pcb_text_new_scaled(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, pcb_text_mirror_t mirror, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new_scaled(pcb_layer_t *Layer, rnd_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, pcb_text_mirror_t mirror, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text = pcb_text_new_(Layer, PCBFont, X, Y, rot, mirror, Scale, scx, scy, thickness, TextString, Flags);
 
@@ -230,7 +230,7 @@ pcb_text_t *pcb_text_new_scaled(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coo
 	return text;
 }
 
-pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, rnd_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
 	rnd_coord_t obw, obh, nbw, nbh;
 	double gsc, gscx, gscy, cs, sn, mx = 1, my = 1, nanchx, nanchy;
@@ -303,7 +303,7 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 {
-	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font_old(PCB, src->fid, 1), src->X, src->Y, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
+	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X, src->Y, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
 	t->clearance = src->clearance;
 	pcb_text_copy_meta(t, src);
 	return t;
@@ -311,7 +311,7 @@ pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 
 pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font_old(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
+	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
 	t->clearance = src->clearance;
 	pcb_text_copy_meta(t, src);
 	return t;
@@ -528,7 +528,7 @@ unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t)
 void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
-	pcb_text_t *t = pcb_text_new_scaled(layer, pcb_font_old(PCB, Text->fid, 1), Text->X, Text->Y, Text->rot, text_mirror_bits(Text), Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
+	pcb_text_t *t = pcb_text_new_scaled(layer, pcb_font(PCB, Text->fid, 1), Text->X, Text->Y, Text->rot, text_mirror_bits(Text), Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
 
 	t->clearance = Text->clearance;
 	pcb_text_copy_meta(t, Text);
@@ -729,7 +729,7 @@ void *pcb_textop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_text_t *text;
 
-	text = pcb_text_new_scaled(Layer, pcb_font_old(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
+	text = pcb_text_new_scaled(Layer, pcb_font(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
 											 Text->Y + ctx->copy.DeltaY, Text->rot, text_mirror_bits(Text), Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	if (ctx->copy.keep_id)
 		text->ID = Text->ID;

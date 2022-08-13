@@ -69,13 +69,13 @@ int pcb_text_old_scale(pcb_text_t *text, int *scale_out);
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
 pcb_text_t *pcb_text_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_text_free(pcb_text_t * data);
-pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
+pcb_text_t *pcb_text_new(pcb_layer_t *Layer, rnd_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src);
 pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, rnd_coord_t dx, rnd_coord_t dy);
 void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text);
 
 /* creates the text object on the layer without rtree or poly clipping administration */
-pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, pcb_text_mirror_t mirror, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
+pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, rnd_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, pcb_text_mirror_t mirror, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
 
 /* Create new text by bounding box: bbw and bbw are the expected bounding box
    width and height, scxy is the expected text width/height ratio; place the
@@ -83,7 +83,7 @@ pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X
    text will typically be smaller than the input bounding box, with wither
    bbox width or bbox height matching the original, but text aspect ratio kept
    and anchor point placed at X;Y. */
-pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
+pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, rnd_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
 
 
 /* Add objects without creating them or making any "sanity modifications" to them */

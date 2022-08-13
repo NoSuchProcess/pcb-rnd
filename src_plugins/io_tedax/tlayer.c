@@ -402,7 +402,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				}
 				if (rot < 0)
 					rot += 360;
-				text = pcb_text_new(ly, pcb_font_old(PCB, 0, 1), bx1, by1, rot, 100, 0, argv[8], pcb_flag_make(PCB_FLAG_CLEARLINE));
+				text = pcb_text_new(ly, pcb_font(PCB, 0, 1), bx1, by1, rot, 100, 0, argv[8], pcb_flag_make(PCB_FLAG_CLEARLINE));
 				rw = bx2-bx1; rh = by2-by1;
 				pcb_text_pre(text);
 				for(n = 0; n < 8; n++) {

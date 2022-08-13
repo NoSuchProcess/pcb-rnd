@@ -832,7 +832,7 @@ static void print_net_length_label(pcb_board_t *pcb, pcb_layer_t *ly, pcb_qry_ne
 	rnd_snprintf(tmp, sizeof(tmp), "%m+len=%.02$$mS via=%d%s", rnd_conf.editor.grid_unit->allow, nl->len, nl->num_vias, nl->has_junction ? " BAD" : "");
 
 	tx = atx+dx*th*50; ty = aty+dy*th*50;
-	t = pcb_text_new(ly, pcb_font_old(pcb, 0, 1), tx, ty, 0, 25, th, tmp, pcb_no_flags());
+	t = pcb_text_new(ly, pcb_font(pcb, 0, 1), tx, ty, 0, 25, th, tmp, pcb_no_flags());
 	if (nl->has_junction)
 		t->override_color = rnd_clrdup(rnd_color_red);
 

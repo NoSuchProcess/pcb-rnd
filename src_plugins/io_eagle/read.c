@@ -718,7 +718,7 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 		default: anchy = rnd_round((double)-basel/2.0);
 	}
 
-	pcb_text_new_by_bbox(ly, pcb_font_old(st->pcb, 0, 1), X, Y, bbw, bbh, anchx, anchy, 1, mirror, rotdeg, 0, text_val, text_flags);
+	pcb_text_new_by_bbox(ly, pcb_font(st->pcb, 0, 1), X, Y, bbw, bbh, anchx, anchy, 1, mirror, rotdeg, 0, text_val, text_flags);
 
 	return 0;
 }

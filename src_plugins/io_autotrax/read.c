@@ -218,7 +218,7 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	else Flags = pcb_flag_make(0);
 
 	/* Text rotation is limited to 90*direction by the file format */
-	if (pcb_text_new(ly, pcb_font_old(st->pcb, 0, 1), X, Y, 90.0*direction, scaling, 0, t, Flags) != 0)
+	if (pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, 90.0*direction, scaling, 0, t, Flags) != 0)
 		return 1;
 	return -1;
 }

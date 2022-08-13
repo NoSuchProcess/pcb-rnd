@@ -1425,7 +1425,7 @@ static int altium_parse_text(rctx_t *rctx)
 
 		if (text != NULL) {
 			assert(text->val_type == ALTIUM_FT_STR);
-			t = pcb_text_new_by_bbox(ly, pcb_font_old(rctx->pcb, 1, 1),
+			t = pcb_text_new_by_bbox(ly, pcb_font(rctx->pcb, 1, 1),
 				x1, y1, x2-x1, y2-y1, 
 				mir ? x2-x1 : 0, 0, 
 				1.0, (mir ? PCB_TXT_MIRROR_X : 0), rot, w,

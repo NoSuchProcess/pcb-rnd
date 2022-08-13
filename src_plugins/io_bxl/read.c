@@ -483,7 +483,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 		}
 
 		mirror = ctx->state.flipped ? PCB_TXT_MIRROR_X : 0;
-		pcb_text_new_by_bbox(ctx->state.layer, pcb_font_old(ctx->pcb, 0, 1),
+		pcb_text_new_by_bbox(ctx->state.layer, pcb_font(ctx->pcb, 0, 1),
 			ctx->state.origin_x, ctx->state.origin_y,
 			bbw, bbh, anchx, anchy, scxy, mirror,
 			ctx->state.rot, thickness, ctx->state.text_str,
