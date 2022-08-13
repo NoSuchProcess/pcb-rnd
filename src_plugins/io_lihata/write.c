@@ -1396,76 +1396,6 @@ static lht_node_t *build_data(pcb_data_t *data)
 	return ndt;
 }
 
-/* font: remove */
-static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
-{
-	lht_node_t *lst, *ndt;
-	pcb_line_t *li;
-	pcb_poly_t *poly;
-	pcb_arc_t *arc;
-	int n;
-
-	ndt = lht_dom_node_alloc(LHT_HASH, name);
-	lht_dom_hash_put(ndt, build_textf("width", CFMT, sym->Width));
-	lht_dom_hash_put(ndt, build_textf("height", CFMT, sym->Height));
-	lht_dom_hash_put(ndt, build_textf("delta", CFMT, sym->Delta));
-
-	lst = lht_dom_node_alloc(LHT_LIST, "objects");
-	lht_dom_hash_put(ndt, lst);
-	for(n = 0, li = sym->Line; n < sym->LineN; n++, li++)
-		lht_dom_list_append(lst, build_line(li, n, 0, 0, 1));
-
-	for(arc = arclist_first(&sym->arcs); arc != NULL; arc = arclist_next(arc), n++)
-		lht_dom_list_append(lst, build_simplearc(arc, n));
-
-	for(poly = polylist_first(&sym->polys); poly != NULL; poly = polylist_next(poly), n++)
-		lht_dom_list_append(lst, build_simplepoly(poly, n));
-
-	return ndt;
-}
-
-/* font: remove */
-static lht_node_t *build_font_old(pcb_font_t *font)
-{
-	lht_node_t *syms, *ndt;
-	char *sid, sidbuff[64];
-	int n;
-
-	if (font->id > 0) {
-		sprintf(sidbuff, "%ld", font->id);
-		sid = sidbuff;
-	}
-	else
-		sid = "geda_pcb"; /* special case for comaptibility: font 0 is the geda_pcb font */
-
-	ndt = lht_dom_node_alloc(LHT_HASH, sid);
-
-	lht_dom_hash_put(ndt, build_textf("cell_height", CFMT, font->MaxHeight));
-	lht_dom_hash_put(ndt, build_textf("cell_width", CFMT, font->MaxWidth));
-	lht_dom_hash_put(ndt, build_textf("id", "%ld", font->id));
-	if (font->name != NULL)
-		lht_dom_hash_put(ndt, build_text("name", font->name));
-/*	lht_dom_hash_put(ndt, build_symbol(&font->DefaultSymbol)); */
-
-
-	syms = lht_dom_node_alloc(LHT_HASH, "symbols");
-	lht_dom_hash_put(ndt, syms);
-	for(n = 0; n < PCB_MAX_FONTPOSITION + 1; n++) {
-		char sname[32];
-		if (!font->Symbol[n].Valid)
-			continue;
-		if ((n <= 32) || (n > 126) || (n == '&') || (n == '#') || (n == '{') || (n == '}') || (n == '/') || (n == ':') || (n == ';') || (n == '=') || (n == '\\') || (n == ':')) {
-			sprintf(sname, "&%02x", n);
-		}
-		else {
-			sname[0] = n;
-			sname[1] = '\0';
-		}
-		lht_dom_hash_put(syms, build_symbol(&font->Symbol[n], sname));
-	}
-	return ndt;
-}
-
 static lht_node_t *build_glyph_line(rnd_glyph_line_t *line, long local_id)
 {
 	char buff[128];
@@ -1586,10 +1516,7 @@ static lht_node_t *build_font_rnd(rnd_font_t *font)
 
 static lht_node_t *build_font(pcb_font_t *font)
 {
-	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
-		return build_font_rnd(&font->rnd_font);
-	else
-		return build_font_old(font);
+	return build_font_rnd(&font->rnd_font);
 }
 
 

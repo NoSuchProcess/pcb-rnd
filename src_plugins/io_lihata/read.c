@@ -2151,104 +2151,6 @@ static pcb_data_t *parse_data(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *ds
 	return dt;
 }
 
-static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
-{
-	lht_node_t *grp, *obj, *n;
-	lht_dom_iterator_t it;
-	int err = 0;
-
-	err |= parse_coord(&sym->Width,  hash_get(nd, "width", 0));
-	err |= parse_coord(&sym->Height, hash_get(nd, "height", 0));
-	err |= parse_coord(&sym->Delta,  hash_get(nd, "delta", 0));
-
-	grp = lht_dom_hash_get(nd, "objects");
-	for(obj = lht_dom_first(&it, grp); obj != NULL; obj = lht_dom_next(&it)) {
-		rnd_coord_t x1, y1, x2, y2, th, r;
-		double sa, da;
-
-		if (strncmp(obj->name, "line.", 5) == 0) {
-			err |= parse_coord(&x1, hash_get(obj, "x1", 0));
-			err |= parse_coord(&y1, hash_get(obj, "y1", 0));
-			err |= parse_coord(&x2, hash_get(obj, "x2", 0));
-			err |= parse_coord(&y2, hash_get(obj, "y2", 0));
-			err |= parse_coord(&th, hash_get(obj, "thickness", 0));
-			if (err != 0)
-				return -1;
-			pcb_font_new_line_in_sym(sym, x1, y1, x2, y2, th);
-		}
-		else if (strncmp(obj->name, "simplearc.", 10) == 0) {
-			err |= parse_coord(&x1,  hash_get(obj, "x", 0));
-			err |= parse_coord(&y1,  hash_get(obj, "y", 0));
-			err |= parse_coord(&r,   hash_get(obj, "r", 0));
-			err |= parse_coord(&th,  hash_get(obj, "thickness", 0));
-			err |= parse_double(&sa, hash_get(obj, "astart", 0));
-			err |= parse_double(&da, hash_get(obj, "adelta", 0));
-			if (err != 0)
-				return -1;
-			pcb_font_new_arc_in_sym(sym, x1, y1, r, sa, da, th);
-		}
-		else if (strncmp(obj->name, "simplepoly.", 11) == 0) {
-			int len;
-			pcb_poly_t *sp;
-			if (obj->type != LHT_LIST) {
-				iolht_error(obj, "Symbol error: simplepoly is not a list! (ignoring this poly)\n");
-				continue;
-			}
-			for(len = 0, n = obj->data.list.first; n != NULL; len++, n = n->next) ;
-			if ((len % 2 != 0) || (len < 6)) {
-				iolht_error(obj, "Symbol error: simplepoly has wrong number of points (%d, expected an even integer >= 6)! (ignoring this poly)\n", len);
-				continue;
-			}
-			sp = pcb_font_new_poly_in_sym(sym, len/2);
-			for(len = 0, n = obj->data.list.first; n != NULL; len++, n = n->next) {
-				parse_coord(&x1, n);
-				n = n->next;
-				parse_coord(&y1, n);
-				sp->Points[len].X = x1;
-				sp->Points[len].Y = y1;
-			}
-		}
-	}
-
-	sym->Valid = 1;
-	return 0;
-}
-
-static int parse_font(pcb_font_t *font, lht_node_t *nd)
-{
-	lht_node_t *grp, *sym;
-	lht_dom_iterator_t it;
-	int err = 0;
-
-	if (nd->type != LHT_HASH)
-		return iolht_error(nd, "font must be a hash\n");
-
-	err |= parse_coord(&font->MaxHeight, hash_get(nd, "cell_height", 0));
-	err |= parse_coord(&font->MaxWidth,  hash_get(nd, "cell_width", 0));
-
-	grp = lht_dom_hash_get(nd, "symbols");
-
-	for(sym = lht_dom_first(&it, grp); sym != NULL; sym = lht_dom_next(&it)) {
-		int chr;
-		if (sym->type != LHT_HASH)
-			continue;
-		if (*sym->name == '&') {
-			char *end;
-			chr = strtol(sym->name+1, &end, 16);
-			if (*end != '\0') {
-				iolht_error(sym, "Ignoring symbol with invalid symbol name '%s'.\n", sym->name);
-				continue;
-			}
-		}
-		else
-			chr = *sym->name;
-		if ((chr >= 0) && (chr < sizeof(font->Symbol) / sizeof(font->Symbol[0]))) {
-			parse_symbol(font->Symbol+chr, sym);
-		}
-	}
-
-	return err;
-}
 
 #define PARSE_COORD(dst, src)       parse_coord(dst, src)
 #define PARSE_DOUBLE(dst, src)      parse_double(dst, src)
@@ -2285,14 +2187,11 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 				return iolht_error(nd, "Failed to allocate font id %d (name '%s').\n", id, n->name);
 		}
 		else {
-			pcb_font_free(&fk->dflt);
 			rnd_font_free(&fk->dflt.rnd_font);
 			fk->dflt.id = 0; /* restore default font's ID */
 			f = &fk->dflt;
 		}
 
-		if (parse_font(f, n) != 0)
-			return -1;
 		if (rnd_font_lht_parse_font(&f->rnd_font, n) != 0)
 			return -1;
 	}
@@ -2902,8 +2801,7 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 	}
 	else {
 		TODO("font: remove this whole function and call rnd_font_load(Ptr, Filanem, pcb_io_err_inhibit) instead");
-		res = parse_font(Ptr, doc->root->data.list.first);
-		rnd_font_lht_parse_font(&Ptr->rnd_font, doc->root->data.list.first);
+		res = rnd_font_lht_parse_font(&Ptr->rnd_font, doc->root->data.list.first);
 	}
 
 	free(errmsg);
