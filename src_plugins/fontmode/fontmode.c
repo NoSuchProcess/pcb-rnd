@@ -289,7 +289,7 @@ static const char pcb_acth_FontEdit[] = "Convert the current font to a PCB for e
 static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	pcb_font_t *font;
+	rnd_font_t *font;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
 	rnd_layergrp_id_t grp[4];
 	int l, inplace = 0;
@@ -356,7 +356,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_event(&pcb->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
 	rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
-	font2editor_new(pcb, &font->rnd_font, lfont, lorig, lwidth, lsilk);
+	font2editor_new(pcb, font, lfont, lorig, lwidth, lsilk);
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;

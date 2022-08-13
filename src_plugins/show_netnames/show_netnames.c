@@ -97,7 +97,7 @@ static void shn_cache_update(pcb_board_t *pcb)
 		char *atv;
 
 		t.TextString = net->name;
-		pcb_text_bbox(pcb_font_old(pcb, 0, 1), &t);
+		pcb_text_bbox(pcb_font(pcb, 0, 1), &t);
 
 		shn.w = t.BoundingBox.X2 - t.BoundingBox.X1;
 		shn.h = t.BoundingBox.Y2 - t.BoundingBox.Y1;
@@ -122,7 +122,7 @@ static void shn_cache_update(pcb_board_t *pcb)
 	}
 
 	t.TextString = "<nonet #00000000>";
-	pcb_text_bbox(pcb_font_old(pcb, 0, 1), &t);
+	pcb_text_bbox(pcb_font(pcb, 0, 1), &t);
 	shn_nonet.w = t.BoundingBox.X2 - t.BoundingBox.X1;
 	shn_nonet.h = t.BoundingBox.Y2 - t.BoundingBox.Y1;
 	shn_nonet.show = 1;
@@ -159,7 +159,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	const char *netname;
 	pcb_draw_info_t *info = ctx;
 	rnd_coord_t x, y, dx, dy;
-	pcb_font_t *font;
+	rnd_font_t *font;
 	double rot, vx, vy, nx, ny, len, lscale;
 	shn_net_t *shn = NULL;
 	htshn_entry_t *e;
@@ -197,7 +197,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 		return NULL;
 
 	pcb_obj_center(obj, &x, &y);
-	font = pcb_font_old(PCB, 0, 0);
+	font = pcb_font(PCB, 0, 0);
 
 	switch(obj->type) {
 		case PCB_OBJ_LINE:

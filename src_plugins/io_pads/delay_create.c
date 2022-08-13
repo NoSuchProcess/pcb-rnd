@@ -222,7 +222,7 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	t->TextString = rnd_strdup(str);
 	if (flags != 0)
 		PCB_FLAG_SET(flags, t);
-	pcb_text_bbox(pcb_font_old(PCB, 0, 1), t);
+	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 	if (dlcr->subc_begin != NULL) {
 		if (!(flags & PCB_FLAG_FLOATER))
 			rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, &t->bbox_naked);

@@ -141,13 +141,13 @@ RND_INLINE void lsm_place(rnd_rtree_t *rt, pcb_smart_label_t *l)
 RND_INLINE void pcb_label_smart_flush(pcb_draw_info_t *info)
 {
 	pcb_smart_label_t *l, *next;
-	pcb_font_t *font;
+	rnd_font_t *font;
 	rnd_rtree_t rt;
 
 	if (smart_labels == NULL) return;
 
 	rnd_rtree_init(&rt);
-	font = pcb_font_old(PCB, 0, 0);
+	font = pcb_font(PCB, 0, 0);
 	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
 	if (rnd_render->gui)
 		pcb_draw_force_termlab++;

@@ -266,7 +266,7 @@ rnd_box_t *pcb_data_bbox(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_float
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Data);
 	{
-		pcb_text_bbox(pcb_font_old(PCB, text->fid, 1), text);
+		pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
 			rnd_box_bump_box(out, &text->BoundingBox);
 	}
@@ -318,7 +318,7 @@ rnd_box_t *pcb_data_bbox_naked(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Data);
 	{
-		pcb_text_bbox(pcb_font_old(PCB, text->fid, 1), text);
+		pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
 			rnd_box_bump_box(out, &text->bbox_naked);
 	}

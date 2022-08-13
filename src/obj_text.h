@@ -87,9 +87,9 @@ pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, rnd_font_t *PCBFont, rnd_co
 
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont);
+void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, rnd_font_t *PCBFont);
 
-void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text);
+void pcb_text_bbox(rnd_font_t *FontPtr, pcb_text_t *Text);
 void pcb_text_rotate90(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, unsigned Number);
 void pcb_text_rotate(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina, double rotdeg);
 void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth);
@@ -112,7 +112,7 @@ void pcb_text_flagchg_pre(pcb_text_t *Text, unsigned long flagbits, void **save)
 void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **save);
 
 /* Low level draw call for direct rendering on preview */
-void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy);
+void pcb_text_draw_string_simple(rnd_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy);
 
 /* Recalculate the bounding box of all dynamic text objects that are
    directly under data - useful e.g. on parent attr change */

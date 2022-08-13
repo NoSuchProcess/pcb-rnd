@@ -78,15 +78,15 @@ void pcb_font_create_default(pcb_board_t *pcb)
 	}
 }
 
-static pcb_font_t *pcb_font_(pcb_board_t *pcb, rnd_font_id_t id, int fallback, int unlink)
+static rnd_font_t *pcb_font_(pcb_board_t *pcb, rnd_font_id_t id, int fallback, int unlink)
 {
 	if (id <= 0) {
 		do_default:;
-		return &pcb->fontkit.dflt;
+		return &pcb->fontkit.dflt.rnd_font;
 	}
 
 	if (pcb->fontkit.hash_inited) {
-		pcb_font_t *f = htip_get(&pcb->fontkit.fonts, id);
+		rnd_font_t *f = htip_get(&pcb->fontkit.fonts, id);
 		if (f != NULL) {
 			if (unlink)
 				htip_popentry(&pcb->fontkit.fonts, id);
@@ -102,16 +102,15 @@ static pcb_font_t *pcb_font_(pcb_board_t *pcb, rnd_font_id_t id, int fallback, i
 
 pcb_font_t *pcb_font_old(pcb_board_t *pcb, rnd_font_id_t id, int fallback)
 {
-	return pcb_font_(pcb, id, fallback, 0);
+	return (pcb_font_t *)pcb_font_(pcb, id, fallback, 0);
 }
 
 rnd_font_t *pcb_font(pcb_board_t *pcb, rnd_font_id_t id, int fallback)
 {
-	pcb_font_t *res = pcb_font_(pcb, id, fallback, 0);
-	return res == NULL ? NULL : &res->rnd_font;
+	return pcb_font_(pcb, id, fallback, 0);
 }
 
-pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, rnd_font_id_t id)
+rnd_font_t *pcb_font_unlink(pcb_board_t *pcb, rnd_font_id_t id)
 {
 	return pcb_font_(pcb, id, 0, 1);
 }

@@ -1044,16 +1044,16 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 #define PCB_TERM_LABEL_SETUP(label) \
 	rnd_bool flip_x = rnd_conf.editor.view.flip_x; \
 	rnd_bool flip_y = rnd_conf.editor.view.flip_y; \
-	pcb_font_t *font = pcb_font_old(PCB, 0, 0); \
+	rnd_font_t *font = pcb_font(PCB, 0, 0); \
 	rnd_coord_t w, h, dx, dy; \
 	double scl = scale/100.0; \
 	if (vert) { \
-		h = rnd_font_string_width(&font->rnd_font, scl, label); \
-		w = rnd_font_string_height(&font->rnd_font, scl, label); \
+		h = rnd_font_string_width(font, scl, label); \
+		w = rnd_font_string_height(font, scl, label); \
 	} \
 	else { \
-		w = rnd_font_string_width(&font->rnd_font, scl, label); \
-		h = rnd_font_string_height(&font->rnd_font, scl, label); \
+		w = rnd_font_string_width(font, scl, label); \
+		h = rnd_font_string_height(font, scl, label); \
 	} \
 	dx = w / 2; \
 	dy = h / 2; \

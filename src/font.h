@@ -68,7 +68,7 @@ int pcb_move_font(pcb_fontkit_t *fk, rnd_font_id_t src, rnd_font_id_t dst);
 void pcb_fontkit_reset(pcb_fontkit_t *fk);
 
 /* Unlink the font from pcb, but do not free anything but return the font */
-pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, rnd_font_id_t id);
+rnd_font_t *pcb_font_unlink(pcb_board_t *pcb, rnd_font_id_t id);
 
 
 #endif
