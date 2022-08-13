@@ -100,11 +100,6 @@ static rnd_font_t *pcb_font_(pcb_board_t *pcb, rnd_font_id_t id, int fallback, i
 	return NULL;
 }
 
-pcb_font_t *pcb_font_old(pcb_board_t *pcb, rnd_font_id_t id, int fallback)
-{
-	return (pcb_font_t *)pcb_font_(pcb, id, fallback, 0);
-}
-
 rnd_font_t *pcb_font(pcb_board_t *pcb, rnd_font_id_t id, int fallback)
 {
 	return pcb_font_(pcb, id, fallback, 0);
@@ -160,8 +155,8 @@ void pcb_fontkit_free(pcb_fontkit_t *fk)
 	if (fk->hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&fk->fonts); e; e = htip_next(&fk->fonts, e)) {
-			pcb_font_t *f = e->value;
-			rnd_font_free(&f->rnd_font);
+			rnd_font_t *f = e->value;
+			rnd_font_free(f);
 		}
 		htip_uninit(&fk->fonts);
 		fk->hash_inited = 0;
@@ -174,8 +169,8 @@ void pcb_fontkit_reset(pcb_fontkit_t *fk)
 	if (fk->hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&fk->fonts); e; e = htip_first(&fk->fonts)) {
-			pcb_font_t *f = e->value;
-			rnd_font_free(&f->rnd_font);
+			rnd_font_t *f = e->value;
+			rnd_font_free(f);
 			htip_delentry(&fk->fonts, e);
 		}
 	}
@@ -195,14 +190,14 @@ static void update_last_id(pcb_fontkit_t *fk)
 int pcb_del_font(pcb_fontkit_t *fk, rnd_font_id_t id)
 {
 	htip_entry_t *e;
-	pcb_font_t *f;
+	rnd_font_t *f;
 
 	if ((id == 0) || (!fk->hash_inited) || (htip_get(&fk->fonts, id) == NULL))
 		return -1;
 
 	e = htip_popentry(&fk->fonts, id);
 	f = e->value;
-	rnd_font_free(&f->rnd_font);
+	rnd_font_free(f);
 	rnd_event(&PCB->hidlib, PCB_EVENT_FONT_CHANGED, "i", id);
 	if (id == fk->last_id)
 		update_last_id(fk);
@@ -212,7 +207,7 @@ int pcb_del_font(pcb_fontkit_t *fk, rnd_font_id_t id)
 int pcb_move_font(pcb_fontkit_t *fk, rnd_font_id_t src, rnd_font_id_t dst)
 {
 	htip_entry_t *e;
-	pcb_font_t *src_font;
+	rnd_font_t *src_font;
 	
 	if ((!fk->hash_inited) || (htip_get(&fk->fonts, src) == NULL))
 		return -1;
@@ -223,13 +218,13 @@ int pcb_move_font(pcb_fontkit_t *fk, rnd_font_id_t src, rnd_font_id_t dst)
 	src_font = e->value;
 	if (dst == 0) {
 		rnd_font_free(&fk->dflt);
-		rnd_font_copy(&fk->dflt, &src_font->rnd_font);
-		rnd_font_free(&src_font->rnd_font);
+		rnd_font_copy(&fk->dflt, src_font);
+		rnd_font_free(src_font);
 		fk->dflt.id = 0;
 	}
 	else {
 		htip_set(&fk->fonts, dst, src_font);
-		src_font->rnd_font.id = dst;
+		src_font->id = dst;
 	}
 	if (src == fk->last_id)
 		update_last_id (fk);

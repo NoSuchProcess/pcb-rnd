@@ -40,7 +40,6 @@ typedef struct pcb_net_s pcb_net_t;
 typedef struct pcb_net_term_s pcb_net_term_t;
 typedef struct pcb_oldnet_s pcb_oldnet_t;
 typedef struct pcb_connection_s pcb_connection_t;
-typedef struct pcb_font_s pcb_font_t;
 typedef struct pcb_fontkit_s pcb_fontkit_t;
 typedef struct pcb_line_s pcb_line_t;
 typedef struct pcb_arc_s pcb_arc_t;

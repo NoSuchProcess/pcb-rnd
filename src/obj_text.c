@@ -453,14 +453,14 @@ void pcb_text_bbox(rnd_font_t *FontPtr, pcb_text_t *Text)
 		unsigned char *rendered = pcb_text_render_str(Text);
 		double scx, scy;
 		rnd_coord_t min_line_width;
-		pcb_font_t *font = pcb_font_old(PCB, Text->fid, 1);
+		rnd_font_t *font = pcb_font(PCB, Text->fid, 1);
 
 	/* Calculate the bounding box based on the larger of the thicknesses
 	 * the text might clamped at on silk or copper layers. */
 		min_line_width = MAX(conf_core.design.min_wid, conf_core.design.min_slk);
 
 		pcb_text_get_scale_xy(Text, &scx, &scy);
-		rnd_font_string_bbox_pcb_rnd(cx, cy, &font->rnd_font, rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, Text->Scale);
+		rnd_font_string_bbox_pcb_rnd(cx, cy, font, rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, Text->Scale);
 		pcb_text_free_str(Text, rendered);
 
 /*		rnd_trace("orig   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);*/

@@ -53,7 +53,6 @@ struct pcb_fontkit_s {          /* a set of unrelated fonts */
 
 /* Look up font. If not found: return NULL (fallback=0), or return the
    default font (fallback=1) */
-pcb_font_t *pcb_font_old(pcb_board_t *pcb, rnd_font_id_t id, int fallback);
 rnd_font_t *pcb_font(pcb_board_t *pcb, rnd_font_id_t id, int fallback);
 
 void pcb_font_create_default(pcb_board_t *pcb);
