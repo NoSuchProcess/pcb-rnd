@@ -125,21 +125,21 @@ static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 	else
 	target_fid = conf_core.design.text_font_id;
 
-	nm = (f->name == NULL) ? "<anonymous>" : f->name;
-	rnd_snprintf(buf, sizeof(buf), "#%d [abc ABC 123] %s", f->id, nm);
+	nm = (f->rnd_font.name == NULL) ? "<anonymous>" : f->rnd_font.name;
+	rnd_snprintf(buf, sizeof(buf), "#%d [abc ABC 123] %s", f->rnd_font.id, nm);
 
-	dchkbox(gc, x-4, *y, (f->id == target_fid));
+	dchkbox(gc, x-4, *y, (f->rnd_font.id == target_fid));
 
 	rnd_render->set_color(gc, BLACK);
-	t = dtext(x, *y, 200, f->id, buf);
-	pcb_text_bbox(pcb_font(PCB, f->id, 1), t);
+	t = dtext(x, *y, 200, f->rnd_font.id, buf);
+	pcb_text_bbox(pcb_font(PCB, f->rnd_font.id, 1), t);
 
 	*y += rnd_round(RND_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
 
 	if (font_coords < MAX_FONT) {
 		font_coord[font_coords].y1 = y_old;
 		font_coord[font_coords].y2 = *y;
-		font_coord[font_coords].fid = f->id;
+		font_coord[font_coords].fid = f->rnd_font.id;
 		font_coords++;
 	}
 }

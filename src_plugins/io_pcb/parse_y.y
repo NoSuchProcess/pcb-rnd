@@ -293,7 +293,7 @@ parsefont
 				}
 				if (yyFontReset) {
 					rnd_font_free(yyRndFont);
-					yyFont->id = 0;
+					yyFont->rnd_font.id = 0;
 				}
 				*yyFontkitValid = rnd_false;
 			}

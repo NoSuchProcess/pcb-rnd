@@ -2904,8 +2904,8 @@ static void add_tag(char *line)
 	if (yyFont != NULL) {
 /*		printf("tag:%s=%s:\n", key,val); */
 		if (strcmp(key, "name") == 0) {
-			free(yyFont->name);
-			yyFont->name = rnd_strdup(val);
+			free(yyFont->rnd_font.name);
+			yyFont->rnd_font.name = rnd_strdup(val);
 		}
 	}
 }

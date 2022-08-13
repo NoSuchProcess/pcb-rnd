@@ -41,9 +41,6 @@
 #include <rnd_inclib/font/font.h>
 
 struct pcb_font_s {          /* complete set of symbols */
-	char *name;
-	pcb_font_id_t id;
-
 	rnd_font_t rnd_font; /* temporary */
 };
 

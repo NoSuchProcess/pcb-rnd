@@ -94,18 +94,18 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	
 	r = pcb_parse_font(fnt, fname);
-	rnd_event(RND_ACT_HIDLIB, PCB_EVENT_FONT_CHANGED, "i", fnt->id);
+	rnd_event(RND_ACT_HIDLIB, PCB_EVENT_FONT_CHANGED, "i", fnt->rnd_font.id);
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
-		pcb_del_font(&PCB_ACT_BOARD->fontkit, fnt->id);
+		pcb_del_font(&PCB_ACT_BOARD->fontkit, fnt->rnd_font.id);
 		return 1;
 	}
 	
 	if (dst_fid != -1) {
-		pcb_move_font(&PCB_ACT_BOARD->fontkit, fnt->id, dst_fid);
+		pcb_move_font(&PCB_ACT_BOARD->fontkit, fnt->rnd_font.id, dst_fid);
 	}
 	
-	fid = dst_fid == 0 ? 0 : fnt->id;
+	fid = dst_fid == 0 ? 0 : fnt->rnd_font.id;
 	rnd_message(RND_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fid, fname);
 	RND_ACT_IRES(0);
 	return 0;

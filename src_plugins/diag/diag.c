@@ -149,8 +149,8 @@ static void print_font(pcb_font_t *f, const char *prefix)
 		}
 	}
 
-	name = f->name == NULL ? "<anon>" : f->name;
-	rnd_printf("%s: %d %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, f->id, name, f->rnd_font.max_width, f->rnd_font.max_height, g, gletter, gdigit);
+	name = f->rnd_font.name == NULL ? "<anon>" : f->rnd_font.name;
+	rnd_printf("%s: %d %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, f->rnd_font.id, name, f->rnd_font.max_width, f->rnd_font.max_height, g, gletter, gdigit);
 }
 
 static const char dump_fonts_syntax[] = "dumpfonts()\n";

@@ -206,7 +206,7 @@ pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X
 	text->scale_y = scy;
 	text->thickness = thickness;
 	text->TextString = rnd_strdup(TextString);
-	text->fid = PCBFont->id;
+	text->fid = PCBFont->rnd_font.id;
 
 	return text;
 }
