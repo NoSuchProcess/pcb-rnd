@@ -125,7 +125,7 @@ struct pcb_plug_io_s {
 	int (*write_pcb)(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency);
 
 	/* Attempt to write the font to file. Return 0 on success. */
-	int (*write_font)(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename);
+	int (*write_font)(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filename);
 
 	/* OPTIONAL: save-as subdialog; sub is the parent's, already initialized
 	   subdialog; init() returns an plugin-allocated context that is then
@@ -155,7 +155,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 int pcb_parse_footprint(pcb_data_t *Ptr, const char *name, const char *fmt);
 int pcb_parse_font(rnd_font_t *Ptr, const char *Filename);
 int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_idx);
-int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
+int pcb_write_font(rnd_font_t *Ptr, const char *Filename, const char *fmt);
 
 /* map a footprint file: always returns head with 0 or 1 or more mapping results */
 pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags, const char **fmt);

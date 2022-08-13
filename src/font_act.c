@@ -120,7 +120,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *fname = NULL, *sid = NULL;
 	static char *default_file = NULL;
 	rnd_font_id_t fid;
-	pcb_font_t *fnt;
+	rnd_font_t *fnt;
 	int r;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, load_font_from, fname = argv[1].val.str);
@@ -133,7 +133,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_message(RND_MSG_ERROR, "SaveFontTo(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
-		if (pcb_font_old(PCB_ACT_BOARD, fid, 0) == NULL) {
+		if (pcb_font(PCB_ACT_BOARD, fid, 0) == NULL) {
 			rnd_message(RND_MSG_ERROR, "SaveFontTo(): can not fetch font ID %d\n", fid);
 			return 1;
 		}
@@ -141,7 +141,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		fid = conf_core.design.text_font_id;
 
-	fnt = pcb_font_old(PCB_ACT_BOARD, fid, 0);
+	fnt = pcb_font(PCB_ACT_BOARD, fid, 0);
 	if (fnt == NULL) {
 		rnd_message(RND_MSG_ERROR, "SaveFontTo(): failed to fetch font %d\n", fid);
 		return 1;

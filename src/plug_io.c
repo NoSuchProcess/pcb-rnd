@@ -535,7 +535,7 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_
 	return res;
 }
 
-int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt)
+int pcb_write_font(rnd_font_t *Ptr, const char *Filename, const char *fmt)
 {
 	int res/*, newfmt = 0*/;
 	pcb_plug_io_t *p = pcb_io_find_writer(PCB_IOT_FONT, fmt);
