@@ -172,7 +172,7 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 	}
 }
 
-static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
+static void editor2font(pcb_board_t *pcb, rnd_font_t *font)
 {
 	rnd_glyph_t *g;
 	int i;
@@ -188,7 +188,7 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 	lwidth = pcb->Data->Layer + 2;
 
 	for(i = 0; i <= RND_FONT_MAX_GLYPHS; i++)
-		rnd_font_free_glyph(&font->rnd_font.glyph[i]);
+		rnd_font_free_glyph(&font->glyph[i]);
 
 	/* pack lines */
 	linelist_foreach(&lfont->Line, &it, l) {
@@ -201,7 +201,7 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
-		g = &font->rnd_font.glyph[s];
+		g = &font->glyph[s];
 
 		x1 -= ox;
 		y1 -= oy;
@@ -226,7 +226,7 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 		s = XYtoSym(cx, cy);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
-		g = &font->rnd_font.glyph[s];
+		g = &font->glyph[s];
 
 		cx -= ox;
 		cy -= oy;
@@ -250,7 +250,7 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
-		g = &font->rnd_font.glyph[s];
+		g = &font->glyph[s];
 		gp = rnd_font_new_poly_in_glyph(g, p->PointN);
 
 		for(n = 0; n < p->PointN; n++) {
@@ -269,7 +269,7 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
-		g = &font->rnd_font.glyph[s];
+		g = &font->glyph[s];
 
 		x1 -= ox;
 
@@ -279,7 +279,7 @@ static void editor2font(pcb_board_t *pcb, pcb_font_t *font)
 			g->valid = 1;
 	}
 
-	rnd_font_normalize(&font->rnd_font);
+	rnd_font_normalize(font);
 }
 
 #include "brave.h"
@@ -380,7 +380,7 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, FontSave, fn = argv[1].val.str);
 
-	editor2font(pcb, font);
+	editor2font(pcb, &font->rnd_font);
 	rnd_actionva(RND_ACT_HIDLIB, "SaveFontTo", fn, NULL);
 
 	RND_ACT_IRES(0);
@@ -645,7 +645,7 @@ static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	pcb_font_t *font = pcb_font(pcb, 0, 1);
 
-	editor2font(pcb, font);
+	editor2font(pcb, &font->rnd_font);
 	rnd_font_normalize(&font->rnd_font);
 
 	return pcb_act_FontEdit(res, argc, argv);
