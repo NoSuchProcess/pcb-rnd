@@ -427,19 +427,19 @@ int pcb_text_old_scale(pcb_text_t *text, int *scale_out)
 	return -1;
 }
 
-int pcb_text_invalid_chars(pcb_board_t *pcb, pcb_font_t *FontPtr, pcb_text_t *Text)
+int pcb_text_invalid_chars(pcb_board_t *pcb, rnd_font_t *FontPtr, pcb_text_t *Text)
 {
 	unsigned char *rendered;
 	int ctr;
 
 	if (FontPtr == NULL)
-		FontPtr = pcb_font_old(pcb, Text->fid, 1);
+		FontPtr = pcb_font(pcb, Text->fid, 1);
 
 	rendered = pcb_text_render_str(Text);
 	if (rendered == NULL)
 		return 0;
 
-	ctr = rnd_font_invalid_chars(&FontPtr->rnd_font, rendered);
+	ctr = rnd_font_invalid_chars(FontPtr, rendered);
 
 	pcb_text_free_str(Text, rendered);
 
