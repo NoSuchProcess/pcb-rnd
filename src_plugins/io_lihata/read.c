@@ -2175,7 +2175,7 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 	pcb_fontkit_reset (fk);
 
 	for(n = lht_dom_first(&it, nd); n != NULL; n = lht_dom_next(&it)) {
-		pcb_font_t *f;
+		rnd_font_t *f;
 
 		if (strcmp(n->name, "geda_pcb") != 0) {
 			char *end;
@@ -2187,12 +2187,12 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 				return iolht_error(nd, "Failed to allocate font id %d (name '%s').\n", id, n->name);
 		}
 		else {
-			rnd_font_free(&fk->dflt.rnd_font);
-			fk->dflt.rnd_font.id = 0; /* restore default font's ID */
+			rnd_font_free(&fk->dflt);
+			fk->dflt.id = 0; /* restore default font's ID */
 			f = &fk->dflt;
 		}
 
-		if (rnd_font_lht_parse_font(&f->rnd_font, n) != 0)
+		if (rnd_font_lht_parse_font(f, n) != 0)
 			return -1;
 	}
 
@@ -2776,7 +2776,7 @@ int io_lihata_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char
 	return (state == TPS_GOOD);
 }
 
-int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
+int io_lihata_parse_font(pcb_plug_io_t *ctx, rnd_font_t *Ptr, const char *Filename)
 {
 	int res;
 	char *errmsg = NULL, *realfn;
@@ -2801,7 +2801,7 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 	}
 	else {
 		TODO("font: remove this whole function and call rnd_font_load(Ptr, Filanem, pcb_io_err_inhibit) instead");
-		res = rnd_font_lht_parse_font(&Ptr->rnd_font, doc->root->data.list.first);
+		res = rnd_font_lht_parse_font(Ptr, doc->root->data.list.first);
 	}
 
 	free(errmsg);

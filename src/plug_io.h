@@ -93,7 +93,7 @@ struct pcb_plug_io_s {
 
 
 	/* Attempt to load fonts from a file. Return 0 on success. */
-	int (*parse_font)(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename);
+	int (*parse_font)(pcb_plug_io_t *ctx, rnd_font_t *Ptr, const char *Filename);
 
 	/* Attempt to load a complete buffer from a file. Return 0 on success. */
 	int (*parse_buffer)(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *filename);
@@ -153,7 +153,7 @@ extern pcb_plug_io_t *pcb_plug_io_chain;
 /********** hook wrappers **********/
 int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings, int ignore_missing);
 int pcb_parse_footprint(pcb_data_t *Ptr, const char *name, const char *fmt);
-int pcb_parse_font(pcb_font_t *Ptr, const char *Filename);
+int pcb_parse_font(rnd_font_t *Ptr, const char *Filename);
 int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_idx);
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 

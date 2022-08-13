@@ -45,7 +45,7 @@ struct pcb_font_s {          /* complete set of symbols */
 };
 
 struct pcb_fontkit_s {          /* a set of unrelated fonts */
-	pcb_font_t dflt;              /* default, fallback font, also the sysfont */
+	rnd_font_t dflt;              /* default, fallback font, also the sysfont */
 	htip_t fonts;                 /* key: ->id; val: (pcb_font_t *) */
 	rnd_bool valid, hash_inited;
 	rnd_font_id_t last_id;        /* highest font id ever seen in this kit */
@@ -60,7 +60,7 @@ void pcb_font_create_default(pcb_board_t *pcb);
 
 /*** font kit handling ***/
 void pcb_fontkit_free(pcb_fontkit_t *fk);
-pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, rnd_font_id_t id, const char *name);
+rnd_font_t *pcb_new_font(pcb_fontkit_t *fk, rnd_font_id_t id, const char *name);
 int pcb_del_font(pcb_fontkit_t *fk, rnd_font_id_t id);
 int pcb_move_font(pcb_fontkit_t *fk, rnd_font_id_t src, rnd_font_id_t dst);
 

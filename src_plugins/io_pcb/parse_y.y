@@ -79,7 +79,6 @@ extern	pcb_board_t *	yyPCB;
 extern	pcb_data_t *	yyData;
 extern	pcb_subc_t *yysubc;
 extern	rnd_coord_t yysubc_ox, yysubc_oy;
-extern	pcb_font_t *	yyFont;
 extern	rnd_font_t *	yyRndFont;
 extern	rnd_bool	yyFontReset;
 extern	int				pcb_lineno;		/* linenumber */
@@ -172,8 +171,7 @@ parsepcb
 				}
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
 					LayerFlag[i] = rnd_false;
-				yyFont = &yyPCB->fontkit.dflt;
-				yyRndFont = &yyPCB->fontkit.dflt.rnd_font;
+				yyRndFont = &yyPCB->fontkit.dflt;
 				yyFontkitValid = &yyPCB->fontkit.valid;
 				yyData = yyPCB->Data;
 				PCB_SET_PARENT(yyData, board, yyPCB);
@@ -265,7 +263,7 @@ parsedata
 					 */
 				int	i;
 
-				if (!yyData || !yyFont)
+				if (!yyData || !yyRndFont)
 				{
 					rnd_message(RND_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
@@ -286,14 +284,14 @@ parsefont
 		:
 			{
 					/* mark all symbols invalid */
-				if (!yyFont)
+				if (!yyRndFont)
 				{
 					rnd_message(RND_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				if (yyFontReset) {
 					rnd_font_free(yyRndFont);
-					yyFont->rnd_font.id = 0;
+					yyRndFont->id = 0;
 				}
 				*yyFontkitValid = rnd_false;
 			}
@@ -726,7 +724,7 @@ text_oldformat
 		: T_TEXT '(' measure measure number STRING INTEGER ')'
 			{
 					/* use a default scale of 100% */
-				pcb_text_new(Layer,&yyFont->rnd_font,OU ($3), OU ($4), $5 * 90.0, 100, 0, $6, pcb_flag_old($7));
+				pcb_text_new(Layer,yyRndFont,OU ($3), OU ($4), $5 * 90.0, 100, 0, $6, pcb_flag_old($7));
 				free ($6);
 			}
 		;
@@ -740,11 +738,11 @@ text_newformat
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(($8 & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) - 2];
 
-					pcb_text_new(lay ,&yyFont->rnd_font, OU ($3), OU ($4), $5 * 90.0, $6, 0, $7,
+					pcb_text_new(lay ,yyRndFont, OU ($3), OU ($4), $5 * 90.0, $6, 0, $7,
 						      pcb_flag_old($8));
 				}
 				else
-					pcb_text_new(Layer, &yyFont->rnd_font, OU ($3), OU ($4), $5 * 90.0, $6, 0, $7,
+					pcb_text_new(Layer, yyRndFont, OU ($3), OU ($4), $5 * 90.0, $6, 0, $7,
 						      pcb_flag_old($8));
 				free ($7);
 			}
@@ -769,10 +767,10 @@ text_hi_format
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(($8.f & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) - 2];
 
-					pcb_text_new(lay, &yyFont->rnd_font, NU ($3), NU ($4), $5 * 90.0, $6, 0, $7, $8);
+					pcb_text_new(lay, yyRndFont, NU ($3), NU ($4), $5 * 90.0, $6, 0, $7, $8);
 				}
 				else
-					pcb_text_new(Layer, &yyFont->rnd_font, NU ($3), NU ($4), $5 * 90.0, $6, 0, $7, $8);
+					pcb_text_new(Layer, yyRndFont, NU ($3), NU ($4), $5 * 90.0, $6, 0, $7, $8);
 				free ($7);
 			}
 			}
@@ -863,7 +861,7 @@ element_oldformat
 			 */
 		: T_ELEMENT '(' STRING STRING measure measure INTEGER ')' '('
 			{
-				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_no_flags(),
+				yysubc = io_pcb_element_new(yyData, yysubc, yyRndFont, pcb_no_flags(),
 					$3, $4, NULL, OU ($5), OU ($6), $7, 100, pcb_no_flags(), rnd_false);
 				free ($3);
 				free ($4);
@@ -881,7 +879,7 @@ element_1.3.4_format
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING measure measure measure measure INTEGER ')' '('
 			{
-				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
+				yysubc = io_pcb_element_new(yyData, yysubc, yyRndFont, pcb_flag_old($3),
 					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), pcb_flag_old($10), rnd_false);
 				free ($4);
 				free ($5);
@@ -899,7 +897,7 @@ element_newformat
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure measure measure INTEGER ')' '('
 			{
-				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
+				yysubc = io_pcb_element_new(yyData, yysubc, yyRndFont, pcb_flag_old($3),
 					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), pcb_flag_old($11), rnd_false);
 				free ($4);
 				free ($5);
@@ -919,7 +917,7 @@ element_1.7_format
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure
 			measure measure number number INTEGER ')' '('
 			{
-				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
+				yysubc = io_pcb_element_new(yyData, yysubc, yyRndFont, pcb_flag_old($3),
 					$4, $5, $6, OU ($7) + OU ($9), OU ($8) + OU ($10),
 					$11, $12, pcb_flag_old($13), rnd_false);
 				yysubc_ox = OU ($7);
@@ -941,7 +939,7 @@ element_hi_format
 		: T_ELEMENT '[' flags STRING STRING STRING measure measure
 			measure measure number number flags ']' '('
 			{
-				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, $3,
+				yysubc = io_pcb_element_new(yyData, yysubc, yyRndFont, $3,
 					$4, $5, $6, NU ($7) + NU ($9), NU ($8) + NU ($10),
 					$11, $12, $13, rnd_false);
 				yysubc_ox = NU ($7);

@@ -2166,14 +2166,14 @@ rnd_r_dir_t draw_subc_label_callback(const rnd_box_t *b, void *cl)
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	rnd_box_t *bb = &subc->BoundingBox;
 	rnd_coord_t x0, y0, dx, dy;
-	pcb_font_t *font = &PCB->fontkit.dflt;
+	rnd_font_t *font = &PCB->fontkit.dflt;
 
 	/* do not display anyting from the other-side subcs */
 	draw_subc_per_layer();
 
 	/* calculate where the label ends up - always top-right, even if board is flipped */
-	dx = font->rnd_font.max_width/2;
-	dy = font->rnd_font.max_height/2;
+	dx = font->max_width/2;
+	dy = font->max_height/2;
 
 	if (rnd_conf.editor.view.flip_x) {
 		x0 = bb->X2;

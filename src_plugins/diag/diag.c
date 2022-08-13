@@ -158,7 +158,7 @@ static const char dump_fonts_help[] = "Print info about fonts";
 static fgw_error_t pcb_act_DumpFonts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	printf("Font summary:\n");
-	print_font(&PCB->fontkit.dflt.rnd_font, " Default");
+	print_font(&PCB->fontkit.dflt, " Default");
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))

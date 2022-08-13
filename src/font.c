@@ -49,7 +49,7 @@
 
 #include "font_internal.c"
 
-static int pcb_parse_font_default(pcb_font_t *ptr, const char *filename)
+static int pcb_parse_font_default(rnd_font_t *ptr, const char *filename)
 {
 	int res = pcb_parse_font(ptr, filename);
 	if (res == 0)
@@ -72,7 +72,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		gds_t buff;
 		s = rnd_conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
 		rnd_message(RND_MSG_WARNING, "Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n", s);
-		rnd_font_load_internal(&pcb->fontkit.dflt.rnd_font, embf_font, sizeof(embf_font) / sizeof(embf_font[0]), embf_minx, embf_miny, embf_maxx, embf_maxy);
+		rnd_font_load_internal(&pcb->fontkit.dflt, embf_font, sizeof(embf_font) / sizeof(embf_font[0]), embf_minx, embf_miny, embf_maxx, embf_maxy);
 		rnd_file_loaded_set_at("font", "default", "<internal>", "original default font");
 		gds_uninit(&buff);
 	}
@@ -82,7 +82,7 @@ static rnd_font_t *pcb_font_(pcb_board_t *pcb, rnd_font_id_t id, int fallback, i
 {
 	if (id <= 0) {
 		do_default:;
-		return &pcb->fontkit.dflt.rnd_font;
+		return &pcb->fontkit.dflt;
 	}
 
 	if (pcb->fontkit.hash_inited) {
@@ -125,9 +125,9 @@ static void hash_setup(pcb_fontkit_t *fk)
 	fk->hash_inited = 1;
 }
 
-pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, rnd_font_id_t id, const char *name)
+rnd_font_t *pcb_new_font(pcb_fontkit_t *fk, rnd_font_id_t id, const char *name)
 {
-	pcb_font_t *f;
+	rnd_font_t *f;
 
 	if (id == 0)
 		return NULL;
@@ -142,21 +142,21 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, rnd_font_id_t id, const char *name)
 	if (f != NULL)
 		return NULL;
 
-	f = calloc(sizeof(pcb_font_t), 1);
+	f = calloc(sizeof(rnd_font_t), 1);
 	htip_set(&fk->fonts, id, f);
 	if (name != NULL)
-		f->rnd_font.name = rnd_strdup(name);
-	f->rnd_font.id = id;
+		f->name = rnd_strdup(name);
+	f->id = id;
 
-	if (f->rnd_font.id > fk->last_id)
-		fk->last_id = f->rnd_font.id;
+	if (f->id > fk->last_id)
+		fk->last_id = f->id;
 
 	return f;
 }
 
 void pcb_fontkit_free(pcb_fontkit_t *fk)
 {
-	rnd_font_free(&fk->dflt.rnd_font);
+	rnd_font_free(&fk->dflt);
 	if (fk->hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&fk->fonts); e; e = htip_next(&fk->fonts, e)) {
@@ -222,10 +222,10 @@ int pcb_move_font(pcb_fontkit_t *fk, rnd_font_id_t src, rnd_font_id_t dst)
 	e = htip_popentry(&fk->fonts, src);
 	src_font = e->value;
 	if (dst == 0) {
-		rnd_font_free(&fk->dflt.rnd_font);
-		rnd_font_copy(&fk->dflt.rnd_font, &src_font->rnd_font);
+		rnd_font_free(&fk->dflt);
+		rnd_font_copy(&fk->dflt, &src_font->rnd_font);
 		rnd_font_free(&src_font->rnd_font);
-		fk->dflt.rnd_font.id = 0;
+		fk->dflt.id = 0;
 	}
 	else {
 		htip_set(&fk->fonts, dst, src_font);

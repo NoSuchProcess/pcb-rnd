@@ -1514,9 +1514,9 @@ static lht_node_t *build_font_rnd(rnd_font_t *font)
 
 #include "brave.h"
 
-static lht_node_t *build_font(pcb_font_t *font)
+static lht_node_t *build_font(rnd_font_t *font)
 {
-	return build_font_rnd(&font->rnd_font);
+	return build_font_rnd(font);
 }
 
 
@@ -1989,7 +1989,7 @@ int io_lihata_write_pcb_v8(pcb_plug_io_t *ctx, FILE * FP, const char *old_filena
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 8);
 }
 
-int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename)
+int io_lihata_write_font(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filename)
 {
 	FILE *f;
 	int res;

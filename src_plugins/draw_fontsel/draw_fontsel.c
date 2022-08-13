@@ -150,7 +150,7 @@ static void pcb_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb
 	int y = 0;
 
 	font_coords = 0;
-	pcb_draw_font(gc, &PCB->fontkit.dflt.rnd_font, 0, &y, txt, dst_fid);
+	pcb_draw_font(gc, &PCB->fontkit.dflt, 0, &y, txt, dst_fid);
 
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;

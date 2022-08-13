@@ -2861,14 +2861,13 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a font
  */
-int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
+int io_pcb_ParseFont(pcb_plug_io_t *ctx, rnd_font_t *Ptr, const char *Filename)
 {
 	int r = 0, valid;
 	const char *fcmd;
 	yy_parse_tags = 1;
 	yyPCB = NULL;
-	yyFont = Ptr;
-	yyRndFont = &yyFont->rnd_font;
+	yyRndFont = Ptr;
 	yyFontkitValid = &valid;
 	yysubc = NULL;
 	yyFontReset = rnd_false;

@@ -815,8 +815,7 @@ void PreLoadElementPCB()
 	if (!yyPCB)
 		return;
 
-	yyFont = &yyPCB->fontkit.dflt;
-	yyRndFont = &yyPCB->fontkit.dflt.rnd_font;
+	yyRndFont = &yyPCB->fontkit.dflt;
 	yyData = yyPCB->Data;
 	PCB_SET_PARENT(yyData, board, yyPCB);
 	yyData->LayerN = 0;
@@ -1073,7 +1072,7 @@ extern	pcb_subc_t *yysubc;
 extern	rnd_coord_t yysubc_ox, yysubc_oy;
 
 pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
-	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
+	rnd_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
 	char *Value, rnd_coord_t TextX, rnd_coord_t TextY, unsigned int Direction,
 	int TextScale, pcb_flag_t TextFlags, rnd_bool uniqueName)
 {
