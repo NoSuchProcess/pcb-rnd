@@ -759,7 +759,7 @@ static fgw_error_t pcb_act_FontSetXdelta(fgw_arg_t *res, int argc, fgw_arg_t *ar
 }
 
 static const char pcb_acts_FontNormalize[] = "FontNormalize()";
-static const char pcb_acth_FontNormalize[] = "Normalie all glyphs (top-left justify)";
+static const char pcb_acth_FontNormalize[] = "Normalize all glyphs (top-left justify)";
 static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
