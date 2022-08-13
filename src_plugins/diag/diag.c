@@ -135,22 +135,22 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static void print_font(pcb_font_t *f, const char *prefix)
+static void print_font(rnd_font_t *f, const char *prefix)
 {
 	int n, g = 0, gletter = 0, gdigit = 0;
 	const char *name;
 
 	/* count valid glyphs and classes */
 	for(n = 0; n < PCB_MAX_FONTPOSITION + 1; n++) {
-		if (f->rnd_font.glyph[n].valid) {
+		if (f->glyph[n].valid) {
 			g++;
 			if (isalpha(n)) gletter++;
 			if (isdigit(n)) gdigit++;
 		}
 	}
 
-	name = f->rnd_font.name == NULL ? "<anon>" : f->rnd_font.name;
-	rnd_printf("%s: %d %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, f->rnd_font.id, name, f->rnd_font.max_width, f->rnd_font.max_height, g, gletter, gdigit);
+	name = f->name == NULL ? "<anon>" : f->name;
+	rnd_printf("%s: %d %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, f->id, name, f->max_width, f->max_height, g, gletter, gdigit);
 }
 
 static const char dump_fonts_syntax[] = "dumpfonts()\n";
@@ -158,7 +158,7 @@ static const char dump_fonts_help[] = "Print info about fonts";
 static fgw_error_t pcb_act_DumpFonts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	printf("Font summary:\n");
-	print_font(&PCB->fontkit.dflt, " Default");
+	print_font(&PCB->fontkit.dflt.rnd_font, " Default");
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
