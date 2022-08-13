@@ -53,10 +53,6 @@ void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text, rnd_bool vis_s
 /* lowlevel drawing routine for text strings */
 void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny);
 
-/* lowlevel text bounding box calculation */
-rnd_coord_t pcb_text_width(pcb_font_t *font, double scx, const unsigned char *string);
-rnd_coord_t pcb_text_height(pcb_font_t *font, double scy, const unsigned char *string);
-
 /* Call cb(ctx, ...) for every object in a rendered string or text; obj will
    be disacrded after the call, can be modified by the callback */
 typedef void (*pcb_draw_text_cb)(void *ctx, pcb_any_obj_t *obj);

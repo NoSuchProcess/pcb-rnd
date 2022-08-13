@@ -1048,12 +1048,12 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	rnd_coord_t w, h, dx, dy; \
 	double scl = scale/100.0; \
 	if (vert) { \
-		h = pcb_text_width(font, scl, label); \
-		w = pcb_text_height(font, scl, label); \
+		h = rnd_font_string_width(&font->rnd_font, scl, label); \
+		w = rnd_font_string_height(&font->rnd_font, scl, label); \
 	} \
 	else { \
-		w = pcb_text_width(font, scl, label); \
-		h = pcb_text_height(font, scl, label); \
+		w = rnd_font_string_width(&font->rnd_font, scl, label); \
+		h = rnd_font_string_height(&font->rnd_font, scl, label); \
 	} \
 	dx = w / 2; \
 	dy = h / 2; \

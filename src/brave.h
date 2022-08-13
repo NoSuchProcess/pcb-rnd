@@ -4,7 +4,6 @@ typedef enum { /* bitfield */
 	PCB_BRAVE_OFF = 0,
 	PCB_BRAVE_NOXOR = 1,
 	PCB_BRAVE_NO_ENFORCE_CLR_MOVE = 4,
-	PCB_BRAVE_OLDFONT = 16,
 	PCB_BRAVE_max
 } pcb_brave_t;
 

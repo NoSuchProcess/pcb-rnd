@@ -427,15 +427,10 @@ int pcb_text_old_scale(pcb_text_t *text, int *scale_out)
 	return -1;
 }
 
-#include "obj_text_old.c"
-
 int pcb_text_invalid_chars(pcb_board_t *pcb, pcb_font_t *FontPtr, pcb_text_t *Text)
 {
 	unsigned char *rendered;
 	int ctr;
-
-	if (pcb_brave & PCB_BRAVE_OLDFONT)
-		return pcb_text_invalid_chars_orig(pcb, FontPtr, Text);
 
 	if (FontPtr == NULL)
 		FontPtr = pcb_font(pcb, Text->fid, 1);
@@ -454,9 +449,6 @@ int pcb_text_invalid_chars(pcb_board_t *pcb, pcb_font_t *FontPtr, pcb_text_t *Te
 
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
-	pcb_text_bbox_orig(FontPtr, Text);
-
-	if (!(pcb_brave & PCB_BRAVE_OLDFONT)) {
 		rnd_coord_t cx[4], cy[4];
 		unsigned char *rendered = pcb_text_render_str(Text);
 		double scx, scy;
@@ -491,8 +483,6 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 		rnd_close_box(&Text->BoundingBox);
 
 /*		rnd_trace(" new   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);*/
-
-	}
 }
 
 
@@ -1367,10 +1357,7 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font
 
 RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
 {
-	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
-		pcb_text_draw_string_rnd(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, cb, cb_ctx);
-	else
-		pcb_text_draw_string_orig(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, cb, cb_ctx);
+	pcb_text_draw_string_rnd(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, cb, cb_ctx);
 }
 
 

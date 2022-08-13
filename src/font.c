@@ -49,8 +49,6 @@
 
 #include "font_internal.c"
 
-#include "font_old.c"
-
 static int pcb_parse_font_default(pcb_font_t *ptr, const char *filename)
 {
 	int res = pcb_parse_font(ptr, filename);
@@ -74,7 +72,6 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		gds_t buff;
 		s = rnd_conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
 		rnd_message(RND_MSG_WARNING, "Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n", s);
-		pcb_font_load_internal(&pcb->fontkit.dflt);
 		rnd_font_load_internal(&pcb->fontkit.dflt.rnd_font, embf_font, sizeof(embf_font) / sizeof(embf_font[0]), embf_minx, embf_miny, embf_maxx, embf_maxy);
 		rnd_file_loaded_set_at("font", "default", "<internal>", "original default font");
 		gds_uninit(&buff);
@@ -173,13 +170,11 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 
 void pcb_fontkit_free(pcb_fontkit_t *fk)
 {
-	pcb_font_free(&fk->dflt);
 	rnd_font_free(&fk->dflt.rnd_font);
 	if (fk->hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&fk->fonts); e; e = htip_next(&fk->fonts, e)) {
 			pcb_font_t *f = e->value;
-			pcb_font_free(f);
 			rnd_font_free(&f->rnd_font);
 		}
 		htip_uninit(&fk->fonts);
@@ -194,7 +189,6 @@ void pcb_fontkit_reset(pcb_fontkit_t *fk)
 		htip_entry_t *e;
 		for (e = htip_first(&fk->fonts); e; e = htip_first(&fk->fonts)) {
 			pcb_font_t *f = e->value;
-			pcb_font_free(f);
 			rnd_font_free(&f->rnd_font);
 			htip_delentry(&fk->fonts, e);
 		}
@@ -222,7 +216,6 @@ int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
 
 	e = htip_popentry(&fk->fonts, id);
 	f = e->value;
-	pcb_font_free(f);
 	rnd_font_free(&f->rnd_font);
 	rnd_event(&PCB->hidlib, PCB_EVENT_FONT_CHANGED, "i", id);
 	if (id == fk->last_id)
@@ -243,17 +236,12 @@ int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)
 	e = htip_popentry(&fk->fonts, src);
 	src_font = e->value;
 	if (dst == 0) {
-		pcb_font_free(&fk->dflt);
 		rnd_font_free(&fk->dflt.rnd_font);
-
-		copy_font(&fk->dflt, src_font);
 		rnd_font_copy(&fk->dflt.rnd_font, &src_font->rnd_font);
-
-		pcb_font_free(src_font);
 		rnd_font_free(&src_font->rnd_font);
-
 		fk->dflt.id = 0;
-	} else {
+	}
+	else {
 		htip_set(&fk->fonts, dst, src_font);
 		src_font->id = dst;
 		src_font->rnd_font.id = dst;
