@@ -1044,7 +1044,7 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 #define PCB_TERM_LABEL_SETUP(label) \
 	rnd_bool flip_x = rnd_conf.editor.view.flip_x; \
 	rnd_bool flip_y = rnd_conf.editor.view.flip_y; \
-	pcb_font_t *font = pcb_font(PCB, 0, 0); \
+	pcb_font_t *font = pcb_font_old(PCB, 0, 0); \
 	rnd_coord_t w, h, dx, dy; \
 	double scl = scale/100.0; \
 	if (vert) { \

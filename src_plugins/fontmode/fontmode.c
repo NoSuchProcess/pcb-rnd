@@ -100,10 +100,10 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 
 		if ((s > 32) && (s < 127)) {
 			sprintf(txt, "%c", s);
-			pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+			pcb_text_new(lsilk, pcb_font_old(pcb, 0, 0), ox+CELL_SIZE-CELL_SIZE/3, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 		}
 		sprintf(txt, "%d", s);
-		pcb_text_new(lsilk, pcb_font(pcb, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
+		pcb_text_new(lsilk, pcb_font_old(pcb, 0, 0), ox+CELL_SIZE/20, oy+CELL_SIZE-CELL_SIZE/3, 0, 50, 0, txt, pcb_no_flags());
 
 		for(n = 0, a = g->atoms.array; n < g->atoms.used; n++, a++) {
 			pcb_poly_t *poly, *newpoly;
@@ -375,7 +375,7 @@ static const char pcb_acth_FontSave[] = "Convert the current PCB back to a font.
 static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	pcb_font_t *font = pcb_font(pcb, 0, 1);
+	pcb_font_t *font = pcb_font_old(pcb, 0, 1);
 	char *fn = NULL;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, FontSave, fn = argv[1].val.str);
@@ -643,7 +643,7 @@ static const char pcb_acth_FontNormalize[] = "Normalize all glyphs (left justify
 static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	pcb_font_t *font = pcb_font(pcb, 0, 1);
+	pcb_font_t *font = pcb_font_old(pcb, 0, 1);
 
 	editor2font(pcb, &font->rnd_font);
 	rnd_font_normalize(&font->rnd_font);

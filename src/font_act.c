@@ -56,7 +56,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_message(RND_MSG_ERROR, "LoadFontFrom(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
-		if (pcb_font(PCB_ACT_BOARD, fid, 0) != NULL) { /* font already exists */
+		if (pcb_font_old(PCB_ACT_BOARD, fid, 0) != NULL) { /* font already exists */
 			dst_fid = fid;
 			fid = -1; /* allocate a new id, which will be later moved to dst_fid */
 		}
@@ -133,7 +133,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_message(RND_MSG_ERROR, "SaveFontTo(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
-		if (pcb_font(PCB_ACT_BOARD, fid, 0) == NULL) {
+		if (pcb_font_old(PCB_ACT_BOARD, fid, 0) == NULL) {
 			rnd_message(RND_MSG_ERROR, "SaveFontTo(): can not fetch font ID %d\n", fid);
 			return 1;
 		}
@@ -141,7 +141,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		fid = conf_core.design.text_font_id;
 
-	fnt = pcb_font(PCB_ACT_BOARD, fid, 0);
+	fnt = pcb_font_old(PCB_ACT_BOARD, fid, 0);
 	if (fnt == NULL) {
 		rnd_message(RND_MSG_ERROR, "SaveFontTo(): failed to fetch font %d\n", fid);
 		return 1;

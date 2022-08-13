@@ -1119,7 +1119,7 @@ static int parse_pcb_text(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj)
 	}
 
 	if (ly != NULL)
-		pcb_add_text_on_layer(ly, text, pcb_font(PCB, text->fid, 1));
+		pcb_add_text_on_layer(ly, text, pcb_font_old(PCB, text->fid, 1));
 
 	return err;
 }

@@ -694,7 +694,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			}
 
 			if (dstly != NULL)
-				pcb_text_new(dstly, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER | botflg));
+				pcb_text_new(dstly, pcb_font_old(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER | botflg));
 			else
 				rnd_message(RND_MSG_ERROR, "Error: can't create primary silk layer in subc for placing the refdes\n");
 		}

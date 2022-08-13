@@ -185,7 +185,7 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((data != pcb->Data) || (layer == NULL))
 		return 0;
 
-	font = pcb_font(pcb, fontid, 0);
+	font = pcb_font_old(pcb, fontid, 0);
 	if (font != NULL) {
 		flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
 		text = pcb_text_new(layer, font, x, y, rot, scale, th, str, flags);

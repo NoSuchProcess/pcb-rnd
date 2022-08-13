@@ -325,7 +325,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, c
 	yyPCB = NULL;
 	yyData = Ptr;
 	pcb_data_set_layer_parents(Ptr);
-	yyFont = pcb_font(PCB, 0, 1);
+	yyFont = pcb_font_old(PCB, 0, 1);
 	yyRndFont = &yyFont->rnd_font;
 	yyFontReset = rnd_false;
 	yyFontkitValid = NULL;

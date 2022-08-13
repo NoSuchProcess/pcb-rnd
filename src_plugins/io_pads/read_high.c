@@ -413,7 +413,7 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 	anchx = rnd_round(str_width * anx);
 	anchy = rnd_round(h * any);
 
-	text = pcb_dlcr_text_by_bbox_new(&rctx->dlcr, pcb_font(rctx->pcb, 0, 1),
+	text = pcb_dlcr_text_by_bbox_new(&rctx->dlcr, pcb_font_old(rctx->pcb, 0, 1),
 		x+xo, y+yo+h, str_width, h, anchx, anchy, 1, tmir, rot, thick, str,
 		(is_label ? PCB_FLAG_FLOATER : 0) | flg);
 

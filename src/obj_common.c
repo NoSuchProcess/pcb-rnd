@@ -468,7 +468,7 @@ void pcb_obj_update_bbox(pcb_board_t *pcb, pcb_any_obj_t *obj)
 		case PCB_OBJ_ARC:  pcb_arc_bbox((pcb_arc_t *)obj); break;
 		case PCB_OBJ_LINE: pcb_line_bbox((pcb_line_t *)obj); break;
 		case PCB_OBJ_POLY: pcb_poly_bbox((pcb_poly_t *)obj); break;
-		case PCB_OBJ_TEXT: pcb_text_bbox(pcb_font(pcb, ((pcb_text_t *)obj)->fid, 1), (pcb_text_t *)obj); break;
+		case PCB_OBJ_TEXT: pcb_text_bbox(pcb_font_old(pcb, ((pcb_text_t *)obj)->fid, 1), (pcb_text_t *)obj); break;
 		case PCB_OBJ_SUBC: pcb_subc_bbox((pcb_subc_t *)obj); break;
 		case PCB_OBJ_PSTK: pcb_pstk_bbox((pcb_pstk_t *)obj); break;
 		case PCB_OBJ_GFX:  pcb_gfx_bbox((pcb_gfx_t *)obj); break;

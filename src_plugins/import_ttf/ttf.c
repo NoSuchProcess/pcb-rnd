@@ -256,7 +256,7 @@ static int conv_coord_pair(const char *s, double *x, double *y)
 static int ttf_import(pcb_board_t *pcb, pcb_ttf_t *ctx, pcb_ttf_stroke_t *stroke, int src_from, int src_to, int dst)
 {
 	int r, src, ret = 0;
-	pcb_font_t *f = pcb_font(pcb, conf_core.design.text_font_id, 1);
+	pcb_font_t *f = pcb_font_old(pcb, conf_core.design.text_font_id, 1);
 
 
 	stroke->funcs.move_to = str_move_to;

@@ -321,7 +321,7 @@ static rnd_coord_t create_button(rnd_hid_gc_t gc, int x, int y, const char *labe
 {
 	pcb_text_t *t;
 	t = dtext_bg(gc, x, y, 200, 0, label, &COLOR_BG, &COLOR_ANNOT);
-	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+	pcb_text_bbox(pcb_font_old(PCB, 0, 1), t);
 	dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 	box->X1 = t->BoundingBox.X1;
 	box->Y1 = RND_MM_TO_COORD(y);
@@ -521,7 +521,7 @@ TODO("layer: handle multiple outline layers")
 				if (lid == drag_lid)
 					continue;
 				t = dtext_bg(gc, x, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
-				pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+				pcb_text_bbox(pcb_font_old(PCB, 0, 1), t);
 				if (l->comb & PCB_LYC_SUB) {
 					dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1.2, 0, 0, 0, OMIT_NONE);
 					redraw_text = 1;
@@ -529,7 +529,7 @@ TODO("layer: handle multiple outline layers")
 
 				if (redraw_text) {
 					t = dtext_bg(gc, x, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
-					pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+					pcb_text_bbox(pcb_font_old(PCB, 0, 1), t);
 				}
 				else
 					dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
@@ -555,7 +555,7 @@ TODO("layer: handle multiple outline layers")
 			pcb_layer_t *l = &PCB->Data->Layer[g->lid[0]];
 			rnd_render->set_color(gc, &l->meta.real.color);
 			t = dtext_bg(gc, 1, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
-			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+			pcb_text_bbox(pcb_font_old(PCB, 0, 1), t);
 			dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
 			dtext_bg(gc, 1, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
 			reg_layer_coords(g->lid[0], t->BoundingBox.X1, RND_MM_TO_COORD(y), t->BoundingBox.X2+RND_MM_TO_COORD(1), RND_MM_TO_COORD(y+4));
@@ -563,7 +563,7 @@ TODO("layer: handle multiple outline layers")
 		else {
 			rnd_render->set_color(gc, &COLOR_OUTLINE);
 			t = dtext_bg(gc, 1, y, 200, 0, "<outline>", &COLOR_BG, &COLOR_OUTLINE);
-			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+			pcb_text_bbox(pcb_font_old(PCB, 0, 1), t);
 			dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
 			dtext_bg(gc, 1, y, 200, 0, "<outline>", &COLOR_BG, &COLOR_OUTLINE);
 		}

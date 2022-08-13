@@ -930,7 +930,7 @@ static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 	}
 
-	t = pcb_text_new(ly, pcb_font(pcb, fid, 1), x, y, dir*90, scale, 0, txt, pcb_no_flags());
+	t = pcb_text_new(ly, pcb_font_old(pcb, fid, 1), x, y, dir*90, scale, 0, txt, pcb_no_flags());
 	res->type = FGW_LONG;
 	res->val.nat_long = (t == NULL ? -1 : t->ID);
 	return 0;

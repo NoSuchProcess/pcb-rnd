@@ -327,7 +327,7 @@ static void WritePCBDataHeader(FILE * FP)
 static void WritePCBFontData_rnd(FILE * FP)
 {
 	rnd_cardinal_t i, j;
-	pcb_font_t *font_ = pcb_font(PCB, 0, 1);
+	pcb_font_t *font_ = pcb_font_old(PCB, 0, 1);
 	rnd_font_t *font = &font_->rnd_font;
 	int warned = 0;
 

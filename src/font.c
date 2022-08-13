@@ -100,9 +100,15 @@ static pcb_font_t *pcb_font_(pcb_board_t *pcb, rnd_font_id_t id, int fallback, i
 	return NULL;
 }
 
-pcb_font_t *pcb_font(pcb_board_t *pcb, rnd_font_id_t id, int fallback)
+pcb_font_t *pcb_font_old(pcb_board_t *pcb, rnd_font_id_t id, int fallback)
 {
 	return pcb_font_(pcb, id, fallback, 0);
+}
+
+rnd_font_t *pcb_font(pcb_board_t *pcb, rnd_font_id_t id, int fallback)
+{
+	pcb_font_t *res = pcb_font_(pcb, id, fallback, 0);
+	return res == NULL ? NULL : &res->rnd_font;
 }
 
 pcb_font_t *pcb_font_unlink(pcb_board_t *pcb, rnd_font_id_t id)

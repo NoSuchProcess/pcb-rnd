@@ -155,7 +155,7 @@ static int undo_text_geo_swap(void *udata)
 	rnd_swap(rnd_font_id_t, g->fid, g->text->fid);
 
 	if (pcb != NULL)
-		pcb_text_bbox(pcb_font(pcb, g->text->fid, 1), g->text);
+		pcb_text_bbox(pcb_font_old(pcb, g->text->fid, 1), g->text);
 	if (layer->text_tree != NULL)
 		rnd_r_insert_entry(layer->text_tree, (rnd_box_t *)g->text);
 	pcb_poly_clear_from_poly(layer->parent.data, PCB_OBJ_TEXT, layer, g->text);
@@ -303,7 +303,7 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 {
-	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X, src->Y, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
+	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font_old(PCB, src->fid, 1), src->X, src->Y, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
 	t->clearance = src->clearance;
 	pcb_text_copy_meta(t, src);
 	return t;
@@ -311,7 +311,7 @@ pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 
 pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
+	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font_old(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
 	t->clearance = src->clearance;
 	pcb_text_copy_meta(t, src);
 	return t;
@@ -433,7 +433,7 @@ int pcb_text_invalid_chars(pcb_board_t *pcb, pcb_font_t *FontPtr, pcb_text_t *Te
 	int ctr;
 
 	if (FontPtr == NULL)
-		FontPtr = pcb_font(pcb, Text->fid, 1);
+		FontPtr = pcb_font_old(pcb, Text->fid, 1);
 
 	rendered = pcb_text_render_str(Text);
 	if (rendered == NULL)
@@ -453,7 +453,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 		unsigned char *rendered = pcb_text_render_str(Text);
 		double scx, scy;
 		rnd_coord_t min_line_width;
-		pcb_font_t *font = pcb_font(PCB, Text->fid, 1);
+		pcb_font_t *font = pcb_font_old(PCB, Text->fid, 1);
 
 	/* Calculate the bounding box based on the larger of the thicknesses
 	 * the text might clamped at on silk or copper layers. */
@@ -528,7 +528,7 @@ unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t)
 void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
-	pcb_text_t *t = pcb_text_new_scaled(layer, pcb_font(PCB, Text->fid, 1), Text->X, Text->Y, Text->rot, text_mirror_bits(Text), Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
+	pcb_text_t *t = pcb_text_new_scaled(layer, pcb_font_old(PCB, Text->fid, 1), Text->X, Text->Y, Text->rot, text_mirror_bits(Text), Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
 
 	t->clearance = Text->clearance;
 	pcb_text_copy_meta(t, Text);
@@ -583,7 +583,7 @@ void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 			Text->scale_x = (double)value / 100.0;
 		if (Text->scale_y > 0)
 			Text->scale_y = (double)value / 100.0;
-		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+		pcb_text_bbox(pcb_font_old(PCB, Text->fid, 1), Text);
 		rnd_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		pcb_text_invalidate_draw(Layer, Text);
@@ -613,7 +613,7 @@ void *pcb_textop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_tex
 		rnd_r_delete_entry(Layer->text_tree, (rnd_box_t *)text);
 		text->clearance = value;
 		if (pcb != NULL)
-			pcb_text_bbox(pcb_font(pcb, text->fid, 1), text);
+			pcb_text_bbox(pcb_font_old(pcb, text->fid, 1), text);
 		rnd_r_insert_entry(Layer->text_tree, (rnd_box_t *)text);
 		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_OBJ_TEXT, Layer, text);
 		pcb_text_invalidate_draw(Layer, text);
@@ -636,7 +636,7 @@ void *pcb_textop_change_2nd_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_
 		rnd_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		Text->thickness = value;
-		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+		pcb_text_bbox(pcb_font_old(PCB, Text->fid, 1), Text);
 		rnd_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		pcb_text_invalidate_draw(Layer, Text);
@@ -658,7 +658,7 @@ void *pcb_textop_change_rot(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Te
 		rnd_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		Text->rot = value;
-		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+		pcb_text_bbox(pcb_font_old(PCB, Text->fid, 1), Text);
 		rnd_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		pcb_text_invalidate_draw(Layer, Text);
@@ -681,7 +681,7 @@ void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	Text->TextString = ctx->chgname.new_name;
 
 	/* calculate size of the bounding box */
-	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+	pcb_text_bbox(pcb_font_old(PCB, Text->fid, 1), Text);
 	rnd_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
@@ -729,7 +729,7 @@ void *pcb_textop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_text_t *text;
 
-	text = pcb_text_new_scaled(Layer, pcb_font(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
+	text = pcb_text_new_scaled(Layer, pcb_font_old(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
 											 Text->Y + ctx->copy.DeltaY, Text->rot, text_mirror_bits(Text), Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	if (ctx->copy.keep_id)
 		text->ID = Text->ID;
@@ -792,7 +792,7 @@ void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_t
 		PCB_FLAG_CLEAR(PCB_FLAG_ONSOLDER, text);
 
 	/* re-calculate the bounding box (it could be mirrored now) */
-	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
+	pcb_text_bbox(pcb_font_old(PCB, text->fid, 1), text);
 	if (!Destination->text_tree)
 		Destination->text_tree = rnd_r_create_tree();
 	rnd_r_insert_entry(Destination->text_tree, (rnd_box_t *) text);
@@ -865,7 +865,7 @@ void pcb_text_rotate90(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, unsigned 
 		Text->rot += 360.0;
 
 	/* can't optimize with box rotation because of closed boxes */
-	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+	pcb_text_bbox(pcb_font_old(PCB, Text->fid, 1), Text);
 }
 
 /* rotates a text; only the bounding box is rotated,
@@ -880,7 +880,7 @@ void pcb_text_rotate(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, double cosa
 		Text->rot += 360.0;
 
 	/* can't optimize with box rotation because of closed boxes */
-	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+	pcb_text_bbox(pcb_font_old(PCB, Text->fid, 1), Text);
 }
 
 /* rotates a text object and redraws it */
@@ -934,7 +934,7 @@ void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, rnd_coord_t y_offs
 	text->X = PCB_SWAP_X(text->X);
 	text->Y = PCB_SWAP_Y(text->Y) + y_offs;
 	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
-	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
+	pcb_text_bbox(pcb_font_old(PCB, text->fid, 1), text);
 	if (layer->text_tree != NULL)
 		rnd_r_insert_entry(layer->text_tree, (rnd_box_t *) text);
 }
@@ -982,7 +982,7 @@ void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
 	if ((sth != 1.0) && (text->thickness > 0.0))
 		text->thickness = rnd_round((double)text->thickness * sth);
 
-	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
+	pcb_text_bbox(pcb_font_old(PCB, text->fid, 1), text);
 	if (onbrd)
 		pcb_text_post(text);
 }
@@ -997,7 +997,7 @@ void pcb_text_set_font(pcb_text_t *text, rnd_font_id_t fid)
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, layer, text);
 	rnd_r_delete_entry(layer->text_tree, (rnd_box_t *) text);
 	text->fid = fid;
-	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
+	pcb_text_bbox(pcb_font_old(PCB, text->fid, 1), text);
 	rnd_r_insert_entry(layer->text_tree, (rnd_box_t *) text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, layer, text);
 }
@@ -1033,7 +1033,7 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 
 	pcb_poly_restore_to_poly(data, PCB_OBJ_TEXT, layer, text);
 	rnd_r_delete_entry(layer->text_tree, (rnd_box_t *) text);
-	pcb_text_bbox(pcb_font(pcb, text->fid, 1), text);
+	pcb_text_bbox(pcb_font_old(pcb, text->fid, 1), text);
 	rnd_r_insert_entry(layer->text_tree, (rnd_box_t *) text);
 	pcb_poly_clear_from_poly(data, PCB_OBJ_TEXT, layer, text);
 }
@@ -1058,7 +1058,7 @@ void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **s
 	unsigned long newflagbits = Text->Flags.f;
 
 	if ((oldflagbits & PCB_FLAG_DYNTEXT) || (newflagbits & PCB_FLAG_DYNTEXT) || (orig_layer != NULL))
-		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+		pcb_text_bbox(pcb_font_old(PCB, Text->fid, 1), Text);
 
 	if (orig_layer != NULL)
 		rnd_r_insert_entry(orig_layer->text_tree, (rnd_box_t *)Text);
@@ -1375,7 +1375,7 @@ void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, rnd_coord
 
 	info.xform = &xform;
 	if (font == NULL)
-		font = pcb_font(PCB, 0, 0);
+		font = pcb_font_old(PCB, 0, 0);
 
 	pcb_text_draw_string_(&info, font, (const unsigned char *)string, x0, y0, scx, scy, rotdeg, mirror, thickness, 0, xordraw, xordx, xordy, PCB_TXT_TINY_CHEAP, NULL, NULL);
 }
@@ -1391,7 +1391,7 @@ void pcb_text_decompose_text(pcb_draw_info_t *info, pcb_text_t *text, pcb_draw_t
 	unsigned char *rendered = pcb_text_render_str(text);
 	double scx, scy;
 	pcb_text_get_scale_xy(text, &scx, &scy);
-	pcb_text_decompose_string(info, pcb_font(PCB, text->fid, 1), rendered, text->X, text->Y, scx, scy, text->rot, text_mirror_bits(text), text->thickness, cb, cb_ctx);
+	pcb_text_decompose_string(info, pcb_font_old(PCB, text->fid, 1), rendered, text->X, text->Y, scx, scy, text->rot, text_mirror_bits(text), text->thickness, cb, cb_ctx);
 	pcb_text_free_str(text, rendered);
 }
 
@@ -1402,7 +1402,7 @@ static void DrawTextLowLevel_(pcb_draw_info_t *info, pcb_text_t *Text, rnd_coord
 	unsigned char *rendered = pcb_text_render_str(Text);
 	double scx, scy;
 	pcb_text_get_scale_xy(Text, &scx, &scy);
-	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny, NULL, NULL);
+	pcb_text_draw_string_(info, pcb_font_old(PCB, Text->fid, 1), rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny, NULL, NULL);
 	pcb_text_free_str(Text, rendered);
 }
 

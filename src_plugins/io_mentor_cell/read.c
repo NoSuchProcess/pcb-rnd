@@ -635,7 +635,7 @@ TODO("figure what TEXT_OPTIONS we have. One of them is MIRRORED (brd2 example)")
 
 	if (mirrored != 0)
 		rot = -rot;
-	pcb_text_new_by_bbox(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, width, height, anchx, anchy, 1, mirrored, rot, thickness, nt->argv[1], pcb_flag_make(flg));
+	pcb_text_new_by_bbox(ly, pcb_font_old(ctx->pcb, 0, 0), tx, ty, width, height, anchx, anchy, 1, mirrored, rot, thickness, nt->argv[1], pcb_flag_make(flg));
 }
 
 static void parse_dgw_via(hkp_ctx_t *ctx, const hkp_netclass_t *nc, node_t *nv)
