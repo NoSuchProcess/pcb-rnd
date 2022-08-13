@@ -1327,31 +1327,33 @@ static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 	}
 }
 
+typedef void (*rnd_draw_text_cb)(void *ctx, const rnd_glyph_atom_t *atom);
 
 RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
 {
 	font_draw_atom_user_cb_t ucb;
 	int poly_thin = info->xform->thin_draw || info->xform->wireframe;
+	rnd_draw_text_cb rcb;
 
 	if (cb == NULL) {
 		if (xordraw) {
-			cb = font_draw_atom_xor;
+			rcb = font_draw_atom_xor;
 			x0 += xordx;
 			y0 += xordy;
 			poly_thin = 1;
 		}
 		else
-			cb = font_draw_atom;
+			rcb = font_draw_atom;
 		cb_ctx = info;
 	}
 	else {
 		ucb.cb = cb;
 		ucb.cb_ctx = cb_ctx;
-		cb = font_draw_atom_user_cb;
+		rcb = font_draw_atom_user_cb;
 		cb_ctx = &ucb;
 	}
 
-	rnd_font_draw_string(&font->rnd_font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, cb, cb_ctx);
+	rnd_font_draw_string(&font->rnd_font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, rcb, cb_ctx);
 }
 
 
