@@ -293,7 +293,6 @@ parsefont
 					YYABORT;
 				}
 				if (yyFontReset) {
-					pcb_font_free(yyFont);
 					rnd_font_free(yyRndFont);
 					yyFont->id = 0;
 				}
@@ -302,7 +301,6 @@ parsefont
 			symbols
 			{
 				*yyFontkitValid = rnd_true;
-				pcb_font_set_info(yyFont);
 				rnd_font_normalize_pcb_rnd(yyRndFont);
 			}
 		;
@@ -1262,7 +1260,6 @@ symboldefinition
 			/* x1, y1, x2, y2, thickness */
 		: T_SYMBOLLINE '(' measure measure measure measure measure ')'
 			{
-				pcb_font_new_line_in_sym(Symbol, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
 				rnd_font_new_line_in_glyph(Glyph, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
 			}
 		;
@@ -1270,7 +1267,6 @@ hiressymbol
 			/* x1, y1, x2, y2, thickness */
 		: T_SYMBOLLINE '[' measure measure measure measure measure ']'
 			{
-				pcb_font_new_line_in_sym(Symbol, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
 				rnd_font_new_line_in_glyph(Glyph, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
 			}
 		;

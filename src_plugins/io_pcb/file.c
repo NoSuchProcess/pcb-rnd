@@ -324,31 +324,6 @@ static void WritePCBDataHeader(FILE * FP)
 	}
 }
 
-/* font: remove */
-/* writes font data of non empty symbols */
-static void WritePCBFontData_old(FILE * FP)
-{
-	rnd_cardinal_t i, j;
-	pcb_line_t *line;
-	pcb_font_t *font;
-
-	for (font = pcb_font(PCB, 0, 1), i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
-		if (!font->Symbol[i].Valid)
-			continue;
-
-		if (isprint(i))
-			rnd_fprintf(FP, "Symbol['%c' %[0]]\n(\n", i, font->Symbol[i].Delta);
-		else
-			rnd_fprintf(FP, "Symbol[%i %[0]]\n(\n", i, font->Symbol[i].Delta);
-
-		line = font->Symbol[i].Line;
-		for (j = font->Symbol[i].LineN; j; j--, line++)
-			rnd_fprintf(FP, "\tSymbolLine[%[0] %[0] %[0] %[0] %[0]]\n",
-									line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
-		fputs(")\n", FP);
-	}
-}
-
 static void WritePCBFontData_rnd(FILE * FP)
 {
 	rnd_cardinal_t i, j;
@@ -391,10 +366,7 @@ static void WritePCBFontData_rnd(FILE * FP)
 
 static void WritePCBFontData(FILE *FP)
 {
-	if (!(pcb_brave & PCB_BRAVE_OLDFONT))
-		WritePCBFontData_rnd(FP);
-	else
-		WritePCBFontData_old(FP);
+	WritePCBFontData_rnd(FP);
 }
 
 
