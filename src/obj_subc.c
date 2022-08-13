@@ -2172,8 +2172,8 @@ rnd_r_dir_t draw_subc_label_callback(const rnd_box_t *b, void *cl)
 	draw_subc_per_layer();
 
 	/* calculate where the label ends up - always top-right, even if board is flipped */
-	dx = font->MaxWidth/2;
-	dy = font->MaxHeight/2;
+	dx = font->rnd_font.max_width/2;
+	dy = font->rnd_font.max_height/2;
 
 	if (rnd_conf.editor.view.flip_x) {
 		x0 = bb->X2;

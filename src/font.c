@@ -82,25 +82,7 @@ static pcb_font_t *pcb_font_(pcb_board_t *pcb, pcb_font_id_t id, int fallback, i
 {
 	if (id <= 0) {
 		do_default:;
-		if (unlink) {
-			int s;
-			pcb_font_t *f = malloc(sizeof(pcb_font_t));
-			memcpy(f, &pcb->fontkit.dflt, sizeof(pcb_font_t));
-			/* change the parent of linked lists to f */
-			for(s = 0; s < PCB_MAX_FONTPOSITION; s++) {
-				pcb_symbol_t *symbol = &f->Symbol[s];
-				pcb_poly_t *poly;
-				pcb_arc_t *arc;
-				for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly))
-					poly->link.parent = (gdl_list_t *)&symbol->polys;
-				for(arc = arclist_first(&symbol->arcs); arc != NULL; arc = arclist_next(arc))
-					arc->link.parent = (gdl_list_t *)&symbol->arcs;
-			}
-			memset(&pcb->fontkit.dflt, 0, sizeof(pcb_font_t));
-			return f;
-		}
-		else
-			return &pcb->fontkit.dflt;
+		return &pcb->fontkit.dflt;
 	}
 
 	if (pcb->fontkit.hash_inited) {

@@ -40,23 +40,7 @@
 
 #include <rnd_inclib/font/font.h>
 
-/* ---------------------------------------------------------------------------
- * symbol and font related stuff
- */
-typedef struct symbol_s {     /* a single symbol */
-	pcb_line_t *Line;
-	rnd_bool Valid;
-	rnd_cardinal_t LineN;       /* number of lines */
-	rnd_cardinal_t LineMax;     /* lines allocated */
-	rnd_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
-	polylist_t polys;           /* simple (non-clipped) polygons */
-	arclist_t arcs;
-} pcb_symbol_t;
-
 struct pcb_font_s {          /* complete set of symbols */
-	rnd_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
-	rnd_box_t DefaultSymbol;     /* the default symbol is a filled box */
-	pcb_symbol_t Symbol[PCB_MAX_FONTPOSITION + 1];
 	char *name;
 	pcb_font_id_t id;
 
