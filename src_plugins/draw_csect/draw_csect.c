@@ -769,6 +769,7 @@ static rnd_bool mouse_csect(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 			else if (drag_addgrp) {
 				if (gactive >= 0) {
 					pcb_layergrp_t *g;
+					pcb_layergrp_inhibit_inc();
 					pcb_undo_freeze_serial();
 					g = pcb_layergrp_insert_after(PCB, gactive);
 					g->name = NULL;
@@ -782,6 +783,8 @@ static rnd_bool mouse_csect(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 					pcb_layergrp_undoable_created(g);
 					pcb_undo_unfreeze_serial();
 					pcb_undo_inc_serial();
+					pcb_layergrp_inhibit_dec();
+					pcb_layergrp_notify(PCB);
 				}
 				drag_addgrp = 0;
 				gactive = -1;
