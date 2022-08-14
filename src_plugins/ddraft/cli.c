@@ -101,7 +101,7 @@ struct cli_node_s {
 	rnd_cardinal_t id;
 };
 
-static const cli_ntype_t find_type(const char *type, int typelen)
+static cli_ntype_t find_type(const char *type, int typelen)
 {
 	const cli_ntname_t *p, *found = NULL;
 
