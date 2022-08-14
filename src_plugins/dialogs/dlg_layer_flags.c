@@ -147,7 +147,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_DAD_END(dlg);
 
 
-	dlg[wname].val.str = rnd_strdup(g->name);
+	dlg[wname].val.str = g->name == NULL ? NULL : rnd_strdup(g->name);
 	dlg[wtype].val.lng = orig_type = pcb_ly_type2enum(g->ltype);
 	dlg[wpurp].val.str = rnd_strdup(g->purpose == NULL ? "" : g->purpose);
 	if (!omit_loc)
@@ -169,7 +169,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_DAD_AUTORUN("layer_grp_prop", dlg, "Edit the properties of a layer group (physical layer)", NULL, failed);
 	if (failed == 0) {
-		if (strcmp(g->name, dlg[wname].val.str) != 0) {
+		if ((g->name == NULL) || (strcmp(g->name, dlg[wname].val.str) != 0)) {
 			ar |= pcb_layergrp_rename_(g, (char *)dlg[wname].val.str, 1);
 			dlg[wname].val.str = NULL;
 			pcb_board_set_changed_flag(PCB, rnd_true);
