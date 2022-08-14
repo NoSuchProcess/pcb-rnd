@@ -471,6 +471,7 @@ ha:rnd-menu-v1 {
 						ha:in multiple footprint files   = { a={<key>b;<key>s;<key>l;<key>d}; action=SaveLib(dir, buffer); tip={save all subcircuits from the buffer in individual, numbered files} }
 					}
 				}
+				ha:Save buffer padstack to file      = { a={<key>b;<key>s;Shift<key>p}; action=PadstackSave(Buffer); tip={save one padstack from the buffer as a padstack file} }
 				-
 				ha:Layer bindings...               = { a={<key>b;<key>b;}; action=LayerBinding(buffer) }
 				ha:Buffer selection {

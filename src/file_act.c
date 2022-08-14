@@ -55,6 +55,7 @@
 #include <librnd/core/tool.h>
 #include "netlist.h"
 #include "plug_io.h"
+#include "obj_pstk_inlines.h"
 
 #define PCB (do_not_use_PCB)
 
@@ -471,6 +472,69 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_PadstackSave[] = "PadstackSave(buffer, [filename], [fmt])\n";
+static const char pcb_acth_PadstackSave[] = "Save padstack to file.";
+fgw_error_t pcb_act_PadstackSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *source, *fn = NULL, *fmt = "lihata";
+	char *name;
+	FILE *f;
+	static char *default_file;
+	pcb_pstk_t *src;
+	pcb_pstk_proto_t *proto;
+
+	RND_ACT_CONVARG(1, FGW_STR, PadstackSave, source = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, PadstackSave, fn = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, PadstackSave, fmt = argv[3].val.str);
+
+	if (rnd_strcasecmp(source, "buffer") == 0) {
+		src = padstacklist_first(&PCB_PASTEBUFFER->Data->padstack);
+		if (src == NULL) {
+			rnd_message(RND_MSG_ERROR, "PadstackSave: no padstack found in the current buffer\n");
+			RND_ACT_IRES(1);
+			return 0;
+		}
+	}
+	else {
+			rnd_message(RND_MSG_ERROR, "PadstackSave: invalid first argument\n");
+			RND_ACT_IRES(1);
+			return 0;
+	}
+
+	proto = pcb_pstk_get_proto(src);
+	if (proto == NULL) {
+		rnd_message(RND_MSG_ERROR, "PadstackSave: padstack prototype not found\n");
+		RND_ACT_IRES(1);
+		return 0;
+	}
+
+	if (fn == NULL) {
+		int sr = save_fmt_dialog("Save padstack to file ...", "Choose a file to save padstack to.\n",
+			&default_file, "save_pstk_file", RND_HID_FSD_MAY_NOT_EXIST, &name, &fmt);
+		if (sr != 0) {
+			RND_ACT_IRES(-1);
+			return 0;
+		}
+	}
+	else
+		name = rnd_strdup(fn);
+
+	f = rnd_fopen(RND_ACT_HIDLIB, name, "w");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to open %s for write\n", name);
+		free(name);
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+	free(name);
+
+	RND_ACT_IRES(pcb_write_padstack(f, proto, fmt));
+	fclose(f);
+
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 static const char pcb_acts_Quit[] = "Quit()";
 static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 /* DOC: quit.html */
@@ -550,6 +614,7 @@ static rnd_action_t file_action_list[] = {
 	{"Normalize", pcb_act_normalize, pcb_acth_normalize, pcb_acts_normalize},
 	{"SaveTo", pcb_act_SaveTo, pcb_acth_SaveTo, pcb_acts_SaveTo},
 	{"SaveLib", pcb_act_SaveLib, pcb_acth_SaveLib, pcb_acts_SaveLib},
+	{"PadstackSave", pcb_act_PadstackSave, pcb_acth_PadstackSave, pcb_acts_PadstackSave},
 	{"Quit", pcb_act_Quit, pcb_acth_Quit, pcb_acts_Quit}
 };
 
