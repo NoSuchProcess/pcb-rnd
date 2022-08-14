@@ -33,11 +33,13 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_lrealpath.h>
 #include "globalconst.h"
 
 #include "board.h"
 #include "undo.h"
 #include "plug_import.h"
+#include "conf_core.h"
 #include "import_sch_conf.h"
 
 #define MAX_ARGS 16

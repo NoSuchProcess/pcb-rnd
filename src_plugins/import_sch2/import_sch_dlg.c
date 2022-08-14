@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2020,2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -190,6 +190,55 @@ static void isch_arg_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	}
 }
 
+/* Convert path to be relative to the current rc.path.design; free's path,
+   returns a newly allocated path instead */
+static char *path_to_design_relative(char *path)
+{
+	gds_t tmp = {0};
+	char *s, *d, *sch = rnd_lrealpath(path), *des = rnd_lrealpath(conf_core.rc.path.design);
+
+	if ((*sch != '/') || (*des != '/')) {
+		rnd_message(RND_MSG_ERROR, "path_to_design_relative: failed to resolve to absolue\n");
+		free(sch);
+		free(des);
+		return path;
+	}
+
+	s = sch;
+	d = des;
+
+/* sch: /a/b/ c/d/1/2/foo.rs
+   des: /a/b/ R/8                 */
+
+	/* ignore common prefix */
+	for(; *s == *d; s++,d++) ;
+
+	/* ... only up to the last / of it */
+	for(; *s != '/'; s--,d--) ;
+
+	gds_append_str(&tmp, "$(rc.path.design)/");
+
+	/* add all the ..'s: anything left on the design path */
+	for(; *d != '\0'; d++)
+		if (*d == '/')
+			gds_append_str(&tmp, "../");
+
+	/* avoid //, tmp ends with / for sure */
+	if (*s == '/')
+		s++;
+
+	/* we are at the common ancestor path, append remaining sch */
+	gds_append_str(&tmp, s);
+
+	rnd_trace("design relative:\n sch '%s'\n des '%s'\n RES '%s'\n", path, conf_core.rc.path.design, tmp.array);
+
+	free(sch);
+	free(des);
+	free(path);
+
+	return tmp.array; /* owner: caller */
+}
+
 static void isch_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int n, idx = -1, wid = attr - isch_ctx.dlg;
@@ -211,6 +260,9 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	name = rnd_hid_fileselect(rnd_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (name == NULL)
 		return;
+
+	if (conf_import_sch.plugins.import_sch.design_relative)
+		name = path_to_design_relative(name);
 
 	isch_conf_lock++;
 	rnd_conf_set(RND_CFR_DESIGN, "plugins/import_sch/args", idx, name, RND_POL_OVERWRITE);
