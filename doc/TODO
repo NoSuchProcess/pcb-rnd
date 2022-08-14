@@ -1,9 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- import schematics:
-	- FEATURE: when import schematics GUI choose file names, use relative path if possible
-	+ FEATURE: sch-rnd import path with top prio (maybe ringdove project too)
 - BUG: back annotation:
 	- footprint change saved as (null); import sch, select subc, back-annot-replace footprint to 0805, export back annot list; new value not saved in the board file either
 	- re-import with the old footprint doesn't realize there's an active back-annotation request on footprint change and replaces subcircuits
