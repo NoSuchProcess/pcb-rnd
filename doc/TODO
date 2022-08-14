@@ -4,7 +4,6 @@
 - FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
 - io_lihata: modify default board ext to .rp
 - FEATURE: librnd 3.2.0+: name every paned widget and test window geometry rememberence
-- FEATURE: menu to save 1st padstack proto from buffer to file - useful after constructing a padstack
 + TEST: use centralized exec_prefix, see sch_rnd r3691 -> test with win binary [report: Igor2]
 / BUG: fontnormalize(Xmil) now launches a new fontedit mode, but does not do the requested normalisation when tested on German Gothic [report: Erich]
 
