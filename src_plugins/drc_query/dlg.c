@@ -899,6 +899,7 @@ static void pcb_dlg_drc_rlist_rules(int *wpane)
 	static const char *lst_hdr[] = {"rule name", "role", "disabled", "cost", NULL};
 
 	RND_DAD_BEGIN_HPANE(drc_rlist_ctx.dlg);
+		RND_DAD_SET_PANE_NAME(drc_rlist_ctx.dlg, "rule-left-right");
 		*wpane = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
 
 		RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
@@ -961,6 +962,7 @@ static void pcb_dlg_drc_rlist_defs(int *wpane)
 	static const char *lst_hdr[] = {"rule name", "role", NULL};
 
 	RND_DAD_BEGIN_HPANE(drc_rlist_ctx.dlg);
+		RND_DAD_SET_PANE_NAME(drc_rlist_ctx.dlg, "def-left-right");
 		*wpane = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
 
 		RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
