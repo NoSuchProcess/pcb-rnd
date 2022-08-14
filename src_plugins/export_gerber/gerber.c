@@ -578,9 +578,9 @@ static int gerber_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const
 			/* We need to put *something* in the file to make it be parsed
 			   as RS-274X instead of RS-274D. Need to register an aperture
 			   so aperture number is unique */
-			aperture_t *aptr = find_aperture(curr_aptr_list, 0.0100, ROUND);
+			aperture_t *aptr = find_aperture(curr_aptr_list, RND_MM_TO_COORD(0.0100), ROUND);
 			if (aptr == NULL)
-				aptr = add_aperture(curr_aptr_list, 0.0100, ROUND);
+				aptr = add_aperture(curr_aptr_list, RND_MM_TO_COORD(0.0100), ROUND);
 			rnd_fprintf(f, "%%ADD%dC,%[5]*%%\r\n", aptr->dCode, aptr->width);
 		}
 	}
