@@ -292,6 +292,7 @@ li:pcb-rnd-conf-v1 {
 				gnetlist_program = gnetlist
 				make_program = make
 				verbose = false
+				design_relative = true
 			}
 			ha:import_mentor_sch {
 				li:map_search_paths = {
