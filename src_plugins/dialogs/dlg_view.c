@@ -593,6 +593,7 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 		RND_DAD_BEGIN_HPANE(ctx->dlg);
+			RND_DAD_SET_PANE_NAME(ctx->dlg, "left-right");
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 			/* left */

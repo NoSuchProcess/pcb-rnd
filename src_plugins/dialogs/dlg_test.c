@@ -216,12 +216,14 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* tab 3: pane */
 			RND_DAD_BEGIN_HPANE(ctx.dlg);
+				RND_DAD_SET_PANE_NAME(ctx.dlg, "left-right");
 				ctx.whpane = RND_DAD_CURRENT(ctx.dlg);
 				RND_DAD_BEGIN_VBOX(ctx.dlg);
 					RND_DAD_LABEL(ctx.dlg, "left1");
 					RND_DAD_LABEL(ctx.dlg, "left2");
 				RND_DAD_END(ctx.dlg);
 				RND_DAD_BEGIN_VPANE(ctx.dlg);
+					RND_DAD_SET_PANE_NAME(ctx.dlg, "top-bottom");
 					ctx.wvpane = RND_DAD_CURRENT(ctx.dlg);
 					RND_DAD_BEGIN_VBOX(ctx.dlg);
 						RND_DAD_LABEL(ctx.dlg, "right top1");

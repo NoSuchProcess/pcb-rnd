@@ -755,6 +755,8 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, r
 
 		/* create the dialog box */
 		RND_DAD_BEGIN_HPANE(ctx->dlg);
+			RND_DAD_SET_PANE_NAME(ctx->dlg, "left-right");
+
 			/* left */
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
