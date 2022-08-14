@@ -468,27 +468,27 @@ static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
 	return 0;
 }
 
-static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
+static int act_replace_footprint_src(char **fpname, pcb_subc_t **news)
 {
 	int len, bidx;
 	const char *what, *what2;
 
-	if (fpname == NULL) {
-		fpname = rnd_hid_prompt_for(&PCB->hidlib, "Footprint name to use for replacement:", "", "Footprint");
-		if (fpname == NULL) {
+	if (*fpname == NULL) {
+		*fpname = rnd_hid_prompt_for(&PCB->hidlib, "Footprint name to use for replacement:", "", "Footprint");
+		if (*fpname == NULL) {
 			rnd_message(RND_MSG_ERROR, "No footprint name supplied\n");
 			return 1;
 		}
 	}
 	else
-		fpname = rnd_strdup(fpname);
+		*fpname = rnd_strdup(*fpname);
 
-	if (strcmp(fpname, "@buffer") != 0) {
+	if (strcmp(*fpname, "@buffer") != 0) {
 		/* check if the footprint is available */
 		bidx = PCB_MAX_BUFFER-1;
-		pcb_buffer_load_footprint(&pcb_buffers[bidx], fpname, NULL);
+		pcb_buffer_load_footprint(&pcb_buffers[bidx], *fpname, NULL);
 		what = "Footprint file ";
-		what2 = fpname;
+		what2 = *fpname;
 	}
 	else {
 		what = "Buffer";
@@ -569,7 +569,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 
 	/* fetch the name of the new footprint */
 	RND_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = rnd_strdup(argv[2].val.str));
-	if (act_replace_footprint_src(fpname, &news) != 0) {
+	if (act_replace_footprint_src(&fpname, &news) != 0) {
 		RND_ACT_IRES(1);
 		return 0;
 	}
