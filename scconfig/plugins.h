@@ -83,6 +83,7 @@ plugin_def("import_orcad_net", "import Orcad netlist",            sbuildin, 1)
 plugin_def("import_pads_net",  "import PADS ascii netlist .asc",  sbuildin, 1)
 plugin_def("import_protel_net","import Protel netlist 2.0",       sbuildin, 1)
 plugin_def("import_sch2",      "import sch v2",                   sbuildin, 1)
+plugin_def("import_sch_rnd",   "sch import: run sch-rnd",         sbuildin, 1)
 plugin_def("import_tinycad",   "import tinycad .net",             sbuildin, 1)
 plugin_def("import_ttf",       "import ttf glyphs",               sbuildin, 1)
 
