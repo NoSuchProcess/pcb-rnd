@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: cross section editor: new empty board, drag&drop new group into substrate below top copper -> segf [report: Igor2]
 - FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
 - io_lihata: modify default board ext to .rp
 - BUG: doc/developer:
