@@ -401,6 +401,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		free(name);
 		RND_ACT_IRES(pcb_write_footprint_data(f, src, fmt, -1));
+		fclose(f);
 	}
 	else if (rnd_strcasecmp(method, "dir") == 0) {
 		unsigned int ares = 0;
@@ -459,6 +460,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				else ares |= 1;
 			}
 			else ares |= 1;
+			fclose(f);
 		}
 
 		if (ares != 0)
