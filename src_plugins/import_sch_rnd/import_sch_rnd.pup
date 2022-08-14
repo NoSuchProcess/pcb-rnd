@@ -1,0 +1,11 @@
+$class import
+$short sch import: run sch-rnd
+$long Import sch-rnd schematics or sch-rnd/Ringdove project, running sch-rnd
+$state works
+$fmt-native no
+$fmt-feature-r sch-rnd sheet (netlist + footprint info, running sch-rnd)
+$fmt-feature-r sch-rnd project (netlist + footprint info, running sch-rnd)
+$fmt-feature-r Ringdove project (netlist + footprint info, running sch-rnd)
+$package import-net
+default buildin
+autoload 1

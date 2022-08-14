@@ -1,0 +1,12 @@
+put /local/pcb/mod {import_sch_rnd}
+append /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_sch_rnd/import_sch_rnd.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/import_sch_rnd/import_sch_rnd_conf.h}
+put /local/pcb/mod/CONFFILE {import_sch_rnd.conf}
+put /local/pcb/mod/CONFVAR {import_sch_rnd_conf_internal}
+
+
+switch /local/pcb/import_sch_rnd/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
