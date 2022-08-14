@@ -160,7 +160,7 @@ static int part_map_parse(nethlp_ctx_t *nhctx, int argc, char *argv[], const cha
 int nethlp_load_part_map(nethlp_ctx_t *nhctx, const char *fn)
 {
 	FILE *f;
-	int cnt, argc, lineno;
+	int cnt = 0, argc, lineno;
 	char line[1024], *argv[8];
 
 	f = rnd_fopen(NULL, fn, "r");
