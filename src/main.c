@@ -264,6 +264,7 @@ extern void pcb_draw_init(void);
 extern void pcb_draw_uninit(void);
 extern void pcb_board_init(void);
 extern void pcb_board_uninit(void);
+extern void pcb_rats_patch_uninit(void);
 
 void pcb_main_init_actions(void)
 {
@@ -302,6 +303,7 @@ void pcb_main_uninit(void)
 	pcb_draw_uninit();
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
+	pcb_rats_patch_uninit();
 
 	pcb_text_uninit();
 	pcb_layer_vis_uninit();

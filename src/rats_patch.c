@@ -654,4 +654,7 @@ void pcb_rats_patch_init2(void)
 	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, rats_patch_netlist_chg, NULL, core_ratspatch_cookie);
 }
 
-
+void pcb_rats_patch_uninit(void)
+{
+	rnd_event_unbind_allcookie(core_ratspatch_cookie);
+}
