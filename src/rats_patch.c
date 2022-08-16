@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2015..2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2015..2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@
 #include "undo.h"
 #include "conf_core.h"
 #include "netlist.h"
+#include "event.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
@@ -325,6 +326,12 @@ void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 
 	for (n = pcb->NetlistPatches; n != NULL; n = n->next)
 		pcb_ratspatch_apply(pcb, n);
+}
+
+int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb)
+{
+	rnd_trace("RP clean\n");
+	return 0;
 }
 
 int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
@@ -635,9 +642,16 @@ static rnd_action_t rats_patch_action_list[] = {
 	{"SavePatch", pcb_act_SavePatch, pcb_acth_SavePatch, pcb_acts_SavePatch}
 };
 
+static void rats_patch_netlist_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	pcb_rats_patch_cleanup_patches((pcb_board_t *)hidlib);
+}
+
+
 void pcb_rats_patch_init2(void)
 {
 	RND_REGISTER_ACTIONS(rats_patch_action_list, NULL);
+	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, rats_patch_netlist_chg, NULL, core_ratspatch_cookie);
 }
 
 

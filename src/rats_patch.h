@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2013..2015 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2013..2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -70,6 +70,11 @@ void pcb_ratspatch_make_edited(pcb_board_t *pcb);
 
 /* apply a single patch record on [PCB_NETLIST_EDITED]; returns non-zero on failure */
 int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch);
+
+/* Clean up rats patch list: remove entries that are already solved on the
+   input netlist. Returns number of entries removed or -1 on error. */
+int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb);
+
 
 /**** exporter ****/
 
