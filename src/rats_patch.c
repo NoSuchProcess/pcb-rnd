@@ -208,17 +208,17 @@ void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, con
 	for (n = pcb->NetlistPatchLast; n != NULL; n = n->prev) {
 		if ((n->op == seek_op) && (strcmp(n->id, id) == 0)) {
 			switch (op) {
-			case RATP_CHANGE_ATTRIB:
-				if (strcmp(n->arg1.attrib_name, a1) != 0)
-					break;
-				rats_patch_remove(pcb, n, 1);
-				goto quit;
-			case RATP_ADD_CONN:
-			case RATP_DEL_CONN:
-				if (strcmp(n->arg1.net_name, a1) != 0)
-					break;
-				rats_patch_remove(pcb, n, 1);
-				goto quit;
+				case RATP_CHANGE_ATTRIB:
+					if (strcmp(n->arg1.attrib_name, a1) != 0)
+						break;
+					rats_patch_remove(pcb, n, 1);
+					goto quit;
+				case RATP_ADD_CONN:
+				case RATP_DEL_CONN:
+					if (strcmp(n->arg1.net_name, a1) != 0)
+						break;
+					rats_patch_remove(pcb, n, 1);
+					goto quit;
 			}
 		}
 	}
