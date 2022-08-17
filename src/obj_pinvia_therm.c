@@ -132,13 +132,21 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 		}
 
 	default:
+	{
+		double therm_scale = pcb->ThermScale;
+
+		if (therm_scale < 0.01) {
+			therm_scale = 0.01;
+			rnd_message(RND_MSG_ERROR, "Thermal finger too thin around %$mm;%$mm; expect BROKEN THERMAL! Check your \"thermal scale\" setting (should be around 0.5)\n", cx, cy);
+		}
+
 		a.X = cx;
 		a.Y = cy;
 		a.Height = a.Width = thickness / 2 + clearance / 4;
 		a.Thickness = 1;
 		a.Clearance = clearance / 2;
 		a.Flags = pcb_no_flags();
-		a.Delta = 90 - (a.Clearance * (1. + 2. * pcb->ThermScale) * 180) / (M_PI * a.Width);
+		a.Delta = 90 - (a.Clearance * (1. + 2. * therm_scale) * 180) / (M_PI * a.Width);
 		a.StartAngle = 90 - a.Delta / 2 + (style == 4 ? 0 : 45);
 		pa = pcb_poly_from_pcb_arc(&a, a.Clearance);
 		if (!pa)
@@ -165,5 +173,6 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 		arc->f = pa;
 		pa->b = arc;
 		return pa;
+	}
 	}
 }
