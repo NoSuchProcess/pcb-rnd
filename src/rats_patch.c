@@ -229,7 +229,7 @@ quit:;
 }
 
 /* Unlink n from the list; if do_free is non-zero, also free fields and n */
-static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free)
+static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t *n, int do_free)
 {
 	/* if we are the first or last... */
 	if (n == pcb->NetlistPatches)
@@ -324,7 +324,7 @@ void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 	pcb_netlist_init(&(pcb->netlist[PCB_NETLIST_EDITED]));
 	pcb_netlist_copy(pcb, &(pcb->netlist[PCB_NETLIST_EDITED]), &(pcb->netlist[PCB_NETLIST_INPUT]));
 
-	for (n = pcb->NetlistPatches; n != NULL; n = n->next)
+	for(n = pcb->NetlistPatches; n != NULL; n = n->next)
 		pcb_ratspatch_apply(pcb, n);
 }
 
