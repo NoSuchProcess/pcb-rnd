@@ -333,7 +333,6 @@ int pcb_rats_patch_already_done(pcb_board_t *pcb, pcb_ratspatch_line_t *n)
 {
 	switch(n->op) {
 		case RATP_ADD_CONN:
-rnd_trace("add conn: id='%s' 1='%s'\n", n->id, n->arg1.net_name);
 			if (pcb_net_is_term_on_net_by_name(pcb, &pcb->netlist[PCB_NETLIST_INPUT], n->arg1.net_name, n->id) == 1) {
 				rnd_message(RND_MSG_INFO, "rats patch: 'add connection' %s to %s is done on forward annotation, removing.\n", n->id, n->arg1.net_name);
 				return 1;
@@ -346,6 +345,21 @@ rnd_trace("add conn: id='%s' 1='%s'\n", n->id, n->arg1.net_name);
 			}
 			break;
 		case RATP_CHANGE_ATTRIB:
+			{
+				pcb_subc_t *subc = pcb_subc_by_refdes(pcb->Data, n->id);
+				if (subc != NULL) {
+					char *want = n->arg2.attrib_val;
+					char *av = pcb_attribute_get(&subc->Attributes, n->arg1.attrib_name);
+					if (((av == NULL) || (*av == '\0')) && ((want == NULL) || (*want == '\0'))) {
+						rnd_message(RND_MSG_INFO, "rats patch: attrib %s del from %s is done on forward annotation, removing.\n", n->arg1.attrib_name, n->id);
+						return 1;
+					}
+					if ((av != NULL) && (want != NULL) && (strcmp(av, want) == 0)) {
+						rnd_message(RND_MSG_INFO, "rats patch: attrib %s change for %s is done on forward annotation, removing.\n", n->arg1.attrib_name, n->id);
+						return 1;
+					}
+				}
+			}
 			break;
 	}
 	return 0;
