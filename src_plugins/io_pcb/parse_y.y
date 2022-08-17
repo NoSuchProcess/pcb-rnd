@@ -406,6 +406,8 @@ pcbthermal
 		| T_THERMAL '[' number ']'
 			{
 				yyPCB->ThermScale = $3;
+				if (yyPCB->ThermScale < 0.01)
+					rnd_message(RND_MSG_ERROR, "Your ThermalScale is too small. This will probably cause problems in calculating thermals.\n");
 			}
 		;
 
