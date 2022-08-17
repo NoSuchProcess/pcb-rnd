@@ -458,6 +458,11 @@ static int parse_meta(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 		err |= parse_coord(&pcb->hidlib.size_y, hash_get(grp, "y", 0));
 		err |= parse_coord_conf(rctx, "design/poly_isle_area", hash_get(grp, "isle_area_nm2", 1));
 		err |= parse_double(&pcb->ThermScale, hash_get(grp, "thermal_scale", 1));
+		if (pcb->ThermScale < 0.01) {
+			lht_node_t *ts = hash_get(grp, "thermal_scale", 1);
+			if (ts != NULL)
+				iolht_error(ts, "Your thermal_scale is too small. This will probably cause problems in calculating thermals.\n");
+		}
 		if (err != 0)
 			return -1;
 	}
