@@ -8,6 +8,10 @@
  *  this file, thermal.c was written by and is
  *  (C) Copyright 2006, harry eaton
  *
+ *  Adaptations for pcb-rnd:
+ *  Copyright (C) 2022 Tibor 'Igor2' Palinkas
+ *
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -39,6 +43,7 @@
 #include "board.h"
 #include "polygon.h"
 #include <librnd/poly/polygon1_gen.h>
+#include <librnd/core/error.h>
 #include "obj_pinvia_therm.h"
 
 static rnd_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t l, rnd_coord_t w, rnd_bool rt)
@@ -96,6 +101,13 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 			rnd_coord_t w = 0.5 * pcb->ThermScale * clearance;
 			pa = rnd_poly_from_circle(cx, cy, t);
 			arc = rnd_poly_from_circle(cx, cy, thickness / 2);
+
+
+			if (w < 1000) {
+				w = 1000;
+				rnd_message(RND_MSG_ERROR, "Thermal finger too thin around %$mm;%$mm; expect BROKEN THERMAL! Check your \"thermal scale\" setting (should be around 0.5)\n", cx, cy);
+			}
+
 			/* create a thin ring */
 			rnd_polyarea_boolean_free(pa, arc, &m, RND_PBO_SUB);
 			/* fix me needs error checking */
