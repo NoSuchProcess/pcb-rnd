@@ -97,6 +97,11 @@ pcb_net_t *pcb_net_get_regex(pcb_board_t *pcb, pcb_netlist_t *nl, const char *re
 pcb_net_t *pcb_net_get_user(pcb_board_t *pcb, pcb_netlist_t *nl, const char *name_or_rx); /* run all three above in order, until one succeeds */
 
 
+/* Check if terminal is on a specific net; returns bool 0 or 1 normally, or
+   -1 on error */
+int pcb_net_is_term_on_net(pcb_net_t *net, pcb_net_term_t *term);
+int pcb_net_is_term_on_net_by_name(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, const char *termname);
+
 /* Remove a net from a netlist by namel returns 0 on removal, -1 on error */
 int pcb_net_del(pcb_netlist_t *nl, const char *netname);
 

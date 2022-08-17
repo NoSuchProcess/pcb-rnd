@@ -233,9 +233,24 @@ pcb_net_term_t *pcb_net_term_get_by_pinname(pcb_net_t *net, const char *pinname,
 	if (pn != tmp)
 		free(pn);
 	return t;
-
 }
 
+int pcb_net_is_term_on_net(pcb_net_t *net, pcb_net_term_t *term)
+{
+	return term->parent.net == net;
+}
+
+int pcb_net_is_term_on_net_by_name(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, const char *termname)
+{
+	pcb_net_t *net = pcb_net_get(pcb, nl, netname, 0);
+	pcb_net_term_t *term;
+
+	if (net == NULL)
+		return -1;
+
+	term = pcb_net_term_get_by_pinname(net, termname, 0);
+	return (term != NULL);
+}
 
 int pcb_net_term_del(pcb_net_t *net, pcb_net_term_t *term)
 {
