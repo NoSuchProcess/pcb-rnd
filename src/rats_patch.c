@@ -328,10 +328,34 @@ void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 		pcb_ratspatch_apply(pcb, n);
 }
 
+/* Returns non-zero if n is already done on pcb; useful after a forward annotation */
+int pcb_rats_patch_already_done(pcb_board_t *pcb, pcb_ratspatch_line_t *n)
+{
+	switch(n->op) {
+		case RATP_ADD_CONN:
+			break;
+		case RATP_DEL_CONN:
+			break;
+		case RATP_CHANGE_ATTRIB:
+			break;
+	}
+	return 0;
+}
+
 int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb)
 {
-	rnd_trace("RP clean\n");
-	return 0;
+	pcb_ratspatch_line_t *n, *next;
+	int cnt = 0;
+
+	for(n = pcb->NetlistPatches; n != NULL; n = next) {
+		next = n->next;
+		if (pcb_rats_patch_already_done(pcb, n)) {
+			rats_patch_remove(pcb, n, 1);
+			cnt++;
+		}
+	}
+
+	return cnt;
 }
 
 int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
