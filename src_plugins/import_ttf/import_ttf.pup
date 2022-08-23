@@ -5,5 +5,6 @@ $state works
 $fmt-native no
 $fmt-feature-r ttf font
 $package import-geo
+$extdeps libfreetype2
 default buildin
 autoload 1

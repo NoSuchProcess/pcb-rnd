@@ -7,5 +7,6 @@ $fmt-feature-w stl (3d triangulated surface model)
 $fmt-feature-w amf (Additive Manufacturing File, surface model)
 $fmt-feature-w pro (projector: 3d rendering)
 $package export-extra
+$extdeps libxml2
 default buildin
 autoload 1

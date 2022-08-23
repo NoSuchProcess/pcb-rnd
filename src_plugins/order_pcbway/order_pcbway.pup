@@ -3,6 +3,7 @@ $short board ordering from PCBWay
 $long order from PCBWay through the Internet
 $state WIP
 #$package cloud
+#$extdeps libxml2
 dep order
 dep lib_wget
 default disable
