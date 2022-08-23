@@ -183,6 +183,13 @@ cat extra.digest
 		IFILES[pkg] = IFILES[pkg] " " files
 	}
 
+	($1 ~ "@appendextdeps") {
+		pkg=$2
+		files=$0
+		sub("@appendextdeps[ \t]*[^ \t]*[ \t]", "", files)
+		EXTDEPS[pkg] = EXTDEPS[pkg] " " files
+	}
+
 	($1 ~ "@appenddeps") {
 		pkg=$2
 		deps=$0
@@ -232,6 +239,12 @@ print in_librnd, $1 > "L1"
 	}
 
 	($1 ~ "[.]pup$") && ($2 == "dep") { PLUGIN_DEP[pkg] = PLUGIN_DEP[pkg] " " val }
+
+	($1 ~ "[.]pup$") && ($2 == "$extdeps") {
+		tmp=$0
+		sub("^[^ \t]*[ \t]*[$]extdeps[ \t]*", "", tmp)
+		PUPEXTDEPS[pkg] = PUPEXTDEPS[pkg] " " tmp
+	}
 
 	($1 ~ "[.]tmpasm$") && ($3 == "/local/pcb/mod/CONFFILE") {
 		fn=$4
@@ -326,11 +339,26 @@ print in_librnd, $1 > "L1"
 			print strip(LONG[pkg]) > "auto/" pkg ".long"
 		}
 		print "</table>"
+
+		print "<h3> External dependencies of Ppackages </h3>"
+		print "<p>Note: package names differ from distro to distro, this table only approximates the packahge names external dependencies have on your target."
+		print "<p>Note: every package that has .so files in it depends on librnd."
+		print "<p>"
+		print "<table border=1>"
+		print "<tr><th> package <th> extneral dependencies"
+		for(plg in PLUGIN)
+			EXTDEPS[PLUGIN[plg]] = EXTDEPS[PLUGIN[plg]] " " PUPEXTDEPS[plg]
+		for(pkg in PKG)
+			print "<tr><th>" pkg "<td>" EXTDEPS[pkg]
+		print "</table>"
+
+
 		print "<p>File prefixes:<ul>"
 		print "	<li> $P: plugin install dir (e.g. /usr/lib/pcb-rnd/)"
 		print "	<li> $C: conf dir (e.g. /etc/pcb-rnd/)"
 		print "	<li> $PREFIX: installation prefix (e.g. /usr)"
 		print "</ul>"
+
 
 		print "<h3> ./configure arguments </h3>"
 		print "--all=disable"

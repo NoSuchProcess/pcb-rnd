@@ -72,14 +72,14 @@ File formats and compatibility:
     * Orcad PCB II (netlist + footprint info)
     * PADS ascii (.asc, netlists + footprint info)
     * Protel netlists 2.0 + footprint info
+    * sch-rnd sheet (netlist + footprint info, running sch-rnd)
+    * sch-rnd project (netlist + footprint info, running sch-rnd)
+    * Ringdove project (netlist + footprint info, running sch-rnd)
     * tinycad .net (netlists + footprint info)
     * eeschema netlist and footprint info
     * tEDAx netlist (any version)
   - export netlist:
     * tEDAx netlist (any version)
-  - import image:
-    * pixmap (e.g. png)
-    * pnm (pixmap)
   - export image:
     * render in .png
     * render in .gif
