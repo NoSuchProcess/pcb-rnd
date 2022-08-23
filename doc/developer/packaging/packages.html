@@ -2,17 +2,17 @@
 <html>
 <body>
 
-<h3> Librnd minimum version: 3.1.0</h3>
+<h3> Librnd minimum version: 3.2.0</h3>
 <h3> Package summary and dependencies </h3>
 <p>
 <table border=1>
 <tr><th> package <th> depends on (packages) <th> consists of (plugins)
 <tr><th>pcb-rnd-debug<td> pcb-rnd-core<td> diag
-<tr><th>pcb-rnd-export<td> pcb-rnd-core<td> cam export_bom export_dxf export_excellon export_gcode export_gerber export_openscad export_png export_ps export_stat export_svg export_xy millpath
+<tr><th>pcb-rnd-export<td> pcb-rnd-core librnd3 librnd3-pixmap<td> cam export_bom export_dxf export_excellon export_gcode export_gerber export_openscad export_png export_ps export_stat export_svg export_xy millpath
 <tr><th>pcb-rnd-doc<td><td>&nbsp;
 <tr><th>pcb-rnd-export-sim<td> pcb-rnd-core<td> export_openems
-<tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_pxm_gd import_pxm_pnm import_ttf
-<tr><th>pcb-rnd-import-net<td> pcb-rnd-core librnd3<td> import_accel_net import_calay import_edif import_fpcb_nl import_gnetlist import_ipcd356 import_ltspice import_mentor_sch import_net_action import_net_cmd import_netlist import_orcad_net import_pads_net import_protel_net import_sch2 import_tinycad
+<tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_ttf
+<tr><th>pcb-rnd-import-net<td> pcb-rnd-core librnd3<td> import_accel_net import_calay import_edif import_fpcb_nl import_gnetlist import_ipcd356 import_ltspice import_mentor_sch import_net_action import_net_cmd import_netlist import_orcad_net import_pads_net import_protel_net import_sch2 import_sch_rnd import_tinycad
 <tr><th>pcb-rnd<td>pcb-rnd-core pcb-rnd-io-standard pcb-rnd-io-alien pcb-rnd-lib-gui librnd3-hid-gtk2-gl librnd3-hid-gtk2-gdk pcb-rnd-export pcb-rnd-export-sim pcb-rnd-export-extra pcb-rnd-auto pcb-rnd-extra pcb-rnd-cloud pcb-rnd-doc pcb-rnd-import-net<td>&lt;metapackage&gt;
 <tr><th>pcb-rnd-auto<td> pcb-rnd-core librnd3 pcb-rnd-lib-io pcb-rnd-io-standard<td> ar_cpcb ar_extern asm autoplace autoroute import_mucs smartdisperse
 <tr><th>pcb-rnd-lib-io<td> pcb-rnd-core<td> lib_netmap
@@ -31,8 +31,8 @@
 <tr><th>pcb-rnd-export<td> $P/cam.pup $P/cam.so $P/export_bom.pup $P/export_bom.so $P/export_dxf.pup $P/export_dxf.so $P/export_excellon.pup $P/export_excellon.so $P/export_gcode.pup $P/export_gcode.so $P/export_gerber.pup $P/export_gerber.so $P/export_openscad.pup $P/export_openscad.so $P/export_png.pup $P/export_png.so $P/export_ps.pup $P/export_ps.so $P/export_stat.pup $P/export_stat.so $P/export_svg.pup $P/export_svg.so $P/export_xy.pup $P/export_xy.so $P/millpath.pup $P/millpath.so $PREFIX/bin/pcb-rnd-svg $PREFIX/share/man/man1/pcb-rnd-svg.1 <i>$C/cam.conf $C/export_xy.conf</i><td>	Common export plugins.<td> 	Export the board in vector graphics (svg, ps, eps), raster graphics 	(png, jpeg, etc.), gerber, 3d model in openscad, xy for pick and place, 	BoM, etc.  
 <tr><th>pcb-rnd-doc<td>/usr/share/doc/* <i></i><td>	Documentation for pcb-rnd<td>	 	User manual (html) and manual pages.  
 <tr><th>pcb-rnd-export-sim<td> $P/export_openems.pup $P/export_openems.so <i></i><td>	Export plugins to simulators<td> 	Export the board in formats that can be used for simulation: openems.  
-<tr><th>pcb-rnd-import-geo<td> $P/import_hpgl.pup $P/import_hpgl.so $P/import_pxm_gd.pup $P/import_pxm_gd.so $P/import_pxm_pnm.pup $P/import_pxm_pnm.so $P/import_ttf.pup $P/import_ttf.so <i></i><td>	Geometry import.<td> 	Plugins for importing pixmaps, fonts and vector graphics.  
-<tr><th>pcb-rnd-import-net<td> $P/import_accel_net.pup $P/import_accel_net.so $P/import_calay.pup $P/import_calay.so $P/import_edif.pup $P/import_edif.so $P/import_fpcb_nl.pup $P/import_fpcb_nl.so $P/import_gnetlist.pup $P/import_gnetlist.so $P/import_ipcd356.pup $P/import_ipcd356.so $P/import_ltspice.pup $P/import_ltspice.so $P/import_mentor_sch.pup $P/import_mentor_sch.so $P/import_net_action.pup $P/import_net_action.so $P/import_net_cmd.pup $P/import_net_cmd.so $P/import_netlist.pup $P/import_netlist.so $P/import_orcad_net.pup $P/import_orcad_net.so $P/import_pads_net.pup $P/import_pads_net.so $P/import_protel_net.pup $P/import_protel_net.so $P/import_sch2.pup $P/import_sch2.so $P/import_tinycad.pup $P/import_tinycad.so $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1 <i>$C/import_gnetlist.conf</i><td>	Netlist/schematics import plugins.<td> 	Import netlist and footprint information from edif, ltspice, mentor graphics, 	gschem and tinycad.  
+<tr><th>pcb-rnd-import-geo<td> $P/import_hpgl.pup $P/import_hpgl.so $P/import_ttf.pup $P/import_ttf.so <i></i><td>	Geometry import.<td> 	Plugins for importing pixmaps, fonts and vector graphics.  
+<tr><th>pcb-rnd-import-net<td> $P/import_accel_net.pup $P/import_accel_net.so $P/import_calay.pup $P/import_calay.so $P/import_edif.pup $P/import_edif.so $P/import_fpcb_nl.pup $P/import_fpcb_nl.so $P/import_gnetlist.pup $P/import_gnetlist.so $P/import_ipcd356.pup $P/import_ipcd356.so $P/import_ltspice.pup $P/import_ltspice.so $P/import_mentor_sch.pup $P/import_mentor_sch.so $P/import_net_action.pup $P/import_net_action.so $P/import_net_cmd.pup $P/import_net_cmd.so $P/import_netlist.pup $P/import_netlist.so $P/import_orcad_net.pup $P/import_orcad_net.so $P/import_pads_net.pup $P/import_pads_net.so $P/import_protel_net.pup $P/import_protel_net.so $P/import_sch2.pup $P/import_sch2.so $P/import_sch_rnd.pup $P/import_sch_rnd.so $P/import_tinycad.pup $P/import_tinycad.so $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1 <i>$C/import_gnetlist.conf $C/import_sch_rnd.conf</i><td>	Netlist/schematics import plugins.<td> 	Import netlist and footprint information from edif, ltspice, mentor graphics, 	gschem and tinycad.  
 <tr><th>pcb-rnd<td> <i></i><td>	Standard installation of pcb-rnd<td> 	Install pcb-rnd core and the most commonly used plugins.  
 <tr><th>pcb-rnd-auto<td> $P/ar_cpcb.pup $P/ar_cpcb.so $P/ar_extern.pup $P/ar_extern.so $P/asm.pup $P/asm.so $P/autoplace.pup $P/autoplace.so $P/autoroute.pup $P/autoroute.so $P/import_mucs.pup $P/import_mucs.so $P/smartdisperse.pup $P/smartdisperse.so <i>$C/ar_extern.conf $C/asm.conf</i><td>	Autoroute and autoplace.<td> 	Feature plugins for automated component placing and track routing.  
 <tr><th>pcb-rnd-lib-io<td> $P/lib_netmap.pup $P/lib_netmap.so <i></i><td>	Support library for alien file formats.<td> 	Provides generic, low level parsers (such as s-expression 	parser) for I/O plugins that need to deal with alien file formats.  
@@ -43,6 +43,29 @@
 <tr><th>pcb-rnd-cloud<td> $P/fp_wget.pup $P/fp_wget.so <i>$C/fp_wget.conf</i><td>	Networking plugins.<td> 	'Cloud' footprint access plugin that integrates edakrill and gedasymbols.org.  
 <tr><th>pcb-rnd-export-extra<td> $P/export_fidocadj.pup $P/export_fidocadj.so $P/export_ipcd356.pup $P/export_ipcd356.so $P/export_lpr.pup $P/export_lpr.so $P/export_oldconn.pup $P/export_oldconn.so $P/export_stl.pup $P/export_stl.so <i></i><td>	Export formats: special/extra<td> 	Less commonly used export formats: fidocadj, ipc-356-d, stl, 	old geda connection list format, direct printing with lpr.  
 <tr><th>pcb-rnd-extra<td> $P/distalign.pup $P/distalign.so $P/djopt.pup $P/djopt.so $P/fontmode.pup $P/fontmode.so $P/jostle.pup $P/jostle.so $P/polycombine.pup $P/polycombine.so $P/polystitch.pup $P/polystitch.so $P/puller.pup $P/puller.so $P/renumber.pup $P/renumber.so $P/shand_cmd.pup $P/shand_cmd.so $P/teardrops.pup $P/teardrops.so $P/vendordrill.pup $P/vendordrill.so <i></i><td>	Extra action commands and optional functionality.<td> 	Align objects in grid, optimize tracks, font editor, combine polygons, 	renumber subcircuits, apply vendor drill mapping.  
+</table>
+<h3> External dependencies of Ppackages </h3>
+<p>Note: package names differ from distro to distro, this table only approximates the packahge names external dependencies have on your target.
+<p>Note: fungw+genht is an optional dependency for full user scripting. If partial user scripting is enough, you can skip both.
+<p>
+<table border=1>
+<tr><th> package <th> extneral dependencies
+<tr><th>pcb-rnd-debug<td> 
+<tr><th>pcb-rnd-export<td>             
+<tr><th>pcb-rnd-doc<td>
+<tr><th>pcb-rnd-export-sim<td> 
+<tr><th>pcb-rnd-import-geo<td>  
+<tr><th>pcb-rnd-import-net<td>                 
+<tr><th>pcb-rnd<td>
+<tr><th>pcb-rnd-auto<td>       
+<tr><th>pcb-rnd-lib-io<td> 
+<tr><th>pcb-rnd-io-standard<td>  
+<tr><th>pcb-rnd-lib-gui<td>   
+<tr><th>pcb-rnd-core<td>                         
+<tr><th>pcb-rnd-io-alien<td>        
+<tr><th>pcb-rnd-cloud<td> 
+<tr><th>pcb-rnd-export-extra<td>     
+<tr><th>pcb-rnd-extra<td>           
 </table>
 <p>File prefixes:<ul>
 	<li> $P: plugin install dir (e.g. /usr/lib/pcb-rnd/)
@@ -80,13 +103,11 @@
 --plugin-export_fidocadj
 --plugin-export_lpr
 --plugin-export_oldconn
---plugin-import_pxm_gd
 --plugin-export_stat
 --plugin-io_kicad_legacy
 --plugin-io_eagle
 --plugin-io_tedax
 --plugin-import_gnetlist
---plugin-import_pxm_pnm
 --plugin-io_kicad
 --plugin-import_mucs
 --plugin-renumber
@@ -127,6 +148,7 @@
 --plugin-polystitch
 --plugin-import_pads_net
 --plugin-dialogs
+--plugin-import_sch_rnd
 --plugin-io_dsn
 --plugin-export_xy
 --plugin-export_png
