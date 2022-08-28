@@ -17,7 +17,7 @@ case "$LIBRND_PREFIX" in
 	"") 
 		echo "
 
-ERROR: Can not find librnd.
+ERROR: Can not find librnd (required for pcb-rnd).
 
 If librnd is not installed, please read INSTALL for details.
 
