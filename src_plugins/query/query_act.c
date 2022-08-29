@@ -637,8 +637,6 @@ static fgw_error_t pcb_act_QueryCompileField(fgw_arg_t *res, int argc, fgw_arg_t
 		default:
 			return FGW_ERR_ARG_CONV;
 	}
-	res->type = FGW_PTR;
-	res->val.ptr_void = fld;
 	return 0;
 }
 
