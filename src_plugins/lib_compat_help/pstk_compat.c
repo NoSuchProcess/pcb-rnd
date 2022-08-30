@@ -367,7 +367,7 @@ static pcb_pstk_compshape_t get_old_shape(rnd_coord_t *dia, const pcb_pstk_shape
 		case PCB_PSSH_LINE:
 			return PCB_PSTK_COMPAT_INVALID;
 		case PCB_PSSH_CIRC:
-			if ((shp->data.circ.x != 0) || (shp->data.circ.x != 0))
+			if ((shp->data.circ.x != 0) || (shp->data.circ.y != 0))
 				return PCB_PSTK_COMPAT_INVALID;
 			*dia = shp->data.circ.dia;
 			return PCB_PSTK_COMPAT_ROUND;
