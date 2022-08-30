@@ -1803,7 +1803,7 @@ static int eagle_read_design_rules(read_state_t *st)
 			else if (strcmp(name, "rvPadInner") == 0) st->rv_pad_inner = eagle_get_attrd(st, n, "value", 0);
 			else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrd(st, n, "value", 0);
 		}
-		if ((st->rv_pad_top != st->rv_pad_inner) || (st->rv_pad_top != st->rv_pad_inner))
+		if ((st->rv_pad_top != st->rv_pad_inner) || (st->rv_pad_bottom != st->rv_pad_inner))
 			rnd_message(RND_MSG_WARNING, "top/inner/bottom default pad sizes differ - using top size only\n");
 	}
 	return 0;
