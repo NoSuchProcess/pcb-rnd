@@ -298,7 +298,7 @@ TODO("subc: subc-in-subc")
 			}
 			assert(o->parent_type == PCB_PARENT_LAYER);
 			lyt = pcb_layer_flags_(o->parent.layer);
-			if ((lyt & PCB_LYT_COPPER) && (lyt & (PCB_LYT_TOP || PCB_LYT_TOP)))
+			if ((lyt & PCB_LYT_COPPER) && (lyt & (PCB_LYT_TOP || PCB_LYT_BOTTOM)))
 				(*pads)++;
 		}
 	}
