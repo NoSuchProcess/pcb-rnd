@@ -1462,7 +1462,7 @@ static lht_node_t *build_font_rnd(rnd_font_t *font)
 		char sname[32];
 		if (!font->glyph[n].valid)
 			continue;
-		if ((n <= 32) || (n > 126) || (n == '&') || (n == '#') || (n == '{') || (n == '}') || (n == '/') || (n == ':') || (n == ';') || (n == '=') || (n == '\\') || (n == ':')) {
+		if ((n <= 32) || (n > 126) || (n == '&') || (n == '#') || (n == '{') || (n == '}') || (n == '/') || (n == ':') || (n == ';') || (n == '=') || (n == '\\')) {
 			sprintf(sname, "&%02x", n);
 		}
 		else {
