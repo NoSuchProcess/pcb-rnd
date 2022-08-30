@@ -149,7 +149,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 	fprintf(f, "color black\n");
 	VTTRIANGLE_FOREACH(triangle, &cdt->triangles)
 		pos_t c = triangle_center_pos(triangle);
-		fprintf(f, "text %f %f \"%ld\"\n", c.x, c.y, triangle_id(cdt, triangle));
+		fprintf(f, "text %f %f \"%ld\"\n", (double)c.x, (double)c.y, triangle_id(cdt, triangle));
 		triangle_num++;
 	VTTRIANGLE_FOREACH_END();
 
@@ -218,7 +218,7 @@ static void fdump_triangle_anim(FILE *f, cdt_t *cdt, triangle_t *t, int first)
 	pos_t c;
 
 	c = triangle_center_pos(t);
-	fprintf(f, "text %f %f \"%ld\"\n", c.x, c.y, triangle_id(cdt, t));
+	fprintf(f, "text %f %f \"%ld\"\n", (double)c.x, (double)c.y, triangle_id(cdt, t));
 	for (i = 0; i < 3; i++) {
 		edge_t *edge = t->e[i];
 		if(last_c != edge->is_constrained) {
