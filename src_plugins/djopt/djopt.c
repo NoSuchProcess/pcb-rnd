@@ -1890,7 +1890,7 @@ static int miter()
 		if (DELETED(c))
 			continue;
 		c->miter = 0;
-		if (c->n_lines == 2 && !c->via && !c->pin && !c->via) {
+		if (c->n_lines == 2 && !c->via && !c->pin) {
 			int o1 = line_orient(c->lines[0], c);
 			int o2 = line_orient(c->lines[1], c);
 			if (ORIENT(o1) != ORIENT(o2)
