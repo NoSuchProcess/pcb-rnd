@@ -360,7 +360,7 @@ static void mark_grp(rnd_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 
 	g = get_group_coords(y, &y1, &y2);
 
-	if ((g >= 0) && ((pcb_layergrp_flags(PCB, g) & accept_mask) & accept_mask)) {
+	if ((g >= 0) && (pcb_layergrp_flags(PCB, g) & accept_mask)) {
 		gactive = g;
 		switch(loc) {
 			case MARK_GRP_FRAME:
