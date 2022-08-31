@@ -178,6 +178,15 @@ char *pcb_derive_default_filename_(const char *pcbfile, const char *suffix)
 				}
 			}
 		}
+		for(i = pcb_plug_io_chain; i != NULL; i = i->next) {
+			if (i->alternate_extension != NULL) {
+				int slen = strlen(i->alternate_extension);
+				if (bl > slen && strcmp(buf + bl - slen, i->alternate_extension) == 0) {
+					buf[bl - slen] = 0;
+					break;
+				}
+			}
+		}
 		strcat(buf, suffix);
 	}
 

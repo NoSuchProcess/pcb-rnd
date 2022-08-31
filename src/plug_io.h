@@ -140,6 +140,7 @@ struct pcb_plug_io_s {
 	const char *default_fmt;
 	const char *description;
 	const char *default_extension; /* used to generate save-as filename */
+	const char *alternate_extension; /* old/alternative extension, used to generate save-as filename */
 	const char *fp_extension;      /* used to generate save-as filename for footprints */
 	const char *mime_type;
 

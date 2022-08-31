@@ -389,6 +389,15 @@ pcb_plug_io_t *pcb_io_find_writer(pcb_plug_iot_t typ, const char *fmt)
 						}
 					}
 				}
+				if (n->alternate_extension != NULL) {
+					int elen = strlen(n->alternate_extension);
+					if ((elen < fn_len) && (strcmp(end-elen, n->alternate_extension) == 0)) {
+						if (n->save_preference_prio > best_score) {
+							best_score = n->save_preference_prio;
+							best = n;
+						}
+					}
+				}
 			}
 			if (best != NULL)
 				return best;
