@@ -108,6 +108,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v7.description = "lihata board v7";
 	plug_io_lihata_v7.save_preference_prio = 198;
 	plug_io_lihata_v7.default_extension = ".rp";
+	plug_io_lihata_v7.alternate_extension = ".lht";
 	plug_io_lihata_v7.fp_extension = ".rf";
 	plug_io_lihata_v7.mime_type = "application/x-pcbrnd-board";
 	plug_io_lihata_v7.save_as_subd_init = io_lihata_save_as_subd_init;
