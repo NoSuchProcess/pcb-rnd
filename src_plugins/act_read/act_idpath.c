@@ -149,7 +149,7 @@ static fgw_error_t pcb_act_IDP(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_any_obj_t *obj;
 
 	RND_ACT_CONVARG(1, FGW_STR, IDP, cmd = argv[1].val.str);
-	RND_ACT_CONVARG(2, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[2]));
+	RND_ACT_CONVARG(2, FGW_IDPATH, IDP, idp = fgw_idpath(&argv[2]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 
