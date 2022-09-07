@@ -88,7 +88,7 @@ static fgw_error_t pcb_act_GetMark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_ReadBoard[] ="ReadBoard(width|size_x|height|size_y)\n";
-static const char pcb_acth_ReadBoard[] = "Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.";
+static const char pcb_acth_ReadBoard[] = "Return board dimensions";
 static fgw_error_t pcb_act_ReadBoard(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
