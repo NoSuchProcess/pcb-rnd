@@ -12,6 +12,7 @@ TODO: librnd dep >=3.2.0
 TODO: new librnd dependencies in export_svg, png, ps, eps, export_lpr
 TODO: more developer docs are installed
 TODO: import_geo doesn't directly depend on libgd anymore
+TODO: pcb-rnd-core description clarification
 
 Packaging changes between 3.0.5 and 3.0.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

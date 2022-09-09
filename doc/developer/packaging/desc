@@ -12,8 +12,8 @@
 	pcb-rnd executable with the core functionality
 
 	Includes the data model, the most common action commands, the native file
-	format and the CLI (batch HID). Does not contain GUI. Can be used in
-	headless mode or batch/scripted mode for automated processing.
+	format. Can be used in headless mode or batch/scripted mode for automated
+	processing or with GUI (if pcb-rnd-lib-gui and librnd GUI HIDs are installed).
 
 @pcb-rnd-auto
 	Autoroute and autoplace.
