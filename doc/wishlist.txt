@@ -3,9 +3,9 @@ Active user wishes:
 	W9: push & shove [Erich, Evan]
 
 Being done:
-	W1: cschem [Chris]
 
 User wishes fulfilled:
+	W1: cschem [Chris] -> sch-rnd
 	W2: proper primitives - data model rewrite [Chris]
 	W3: more generic footprints [Chris, Evan] -> subcircuits
 	W5: 3d modeller export [Miloh, Evan] (bdale's sponsoration)
