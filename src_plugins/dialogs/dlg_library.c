@@ -237,7 +237,7 @@ static void update_edit_button(library_ctx_t *ctx)
 
 	param_entered = !ctx->param.pactive && (otext != NULL) && (strchr(otext, '(') != NULL);
 
-	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, param_selected || param_entered);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, param_selected || ((row == NULL) && param_entered));
 }
 
 static void library_set_filter(library_ctx_t *ctx, const char *text)
