@@ -413,6 +413,15 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_
 		else
 			found = 1;
 
+		/* refuse entry if it is a directory */
+		if (found) {
+			rnd_hidlib_t *hidlib = NULL;
+			char *fullpath = rnd_concat(subdir, RND_DIR_SEPARATOR_S, name, NULL);
+			if (rnd_is_dir(hidlib, fullpath))
+				found = 0;
+			free(fullpath);
+		}
+
 		if (found) {
 			ctx->path = rnd_strdup(subdir);
 			ctx->real_name = rnd_strdup(name);
@@ -437,7 +446,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 	ctx.parametric = parametric;
 	ctx.path = NULL;
 
-/*	fprintf("Looking for %s\n", ctx.target);*/
+/*	rnd_trace("Looking for %s\n", ctx.target);*/
 
 	for (p = search_path; *p != '\0'; p = end + 1) {
 		char *fpath;
@@ -450,14 +459,14 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 			strcpy(path, p);
 
 		rnd_path_resolve(&PCB->hidlib, path, &fpath, 0, rnd_false);
-/*		fprintf(stderr, " in '%s'\n", fpath);*/
+/*		rnd_trace(" in '%s'\n", fpath);*/
 
 		fp_fs_list(&pcb_library, fpath, 1, fp_search_cb, &ctx, 1, 0, 0);
 		if (ctx.path != NULL) {
 			sprintf(path, "%s%c%s", ctx.path, RND_DIR_SEPARATOR_C, ctx.real_name);
 			free(ctx.path);
 			free(ctx.real_name);
-/*			fprintf("  found '%s'\n", path);*/
+/*			rnd_trace("  found '%s'\n", path);*/
 			free(fpath);
 			return rnd_strdup(path);
 		}
