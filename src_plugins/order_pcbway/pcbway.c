@@ -171,6 +171,7 @@ static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
 	}
 
 	xmlFreeDoc(doc);
+	return 0;
 }
 
 
