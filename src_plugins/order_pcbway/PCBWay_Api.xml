@@ -100,21 +100,5 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>Vias not covered</Value>
         </ViaProcess>
         <Width group="pcb" type="mm" note="Board width"></Width>
-        <City group="shipping" type="string"></City>
-        <Country group="shipping" type="enum:country:name"></Country>
-        <CountryCode group="shipping" type="enum:country:code"></CountryCode>
-        <Postalcode group="shipping" type="string"></Postalcode>
-        <ShipType group="shipping" type="enum">
-            <Value>DHL</Value>
-            <Value>HK_post</Value>
-            <Value>SF_Express</Value>
-            <Value>Freight_Collect_Account</Value>
-            <Value>EMS</Value>
-            <Value>E_packet</Value>
-            <Value>HK_DHL</Value>
-            <Value>China_Post</Value>
-            <Value>FedEx_IP</Value>
-            <Value>FedEx_IE</Value>
-        </ShipType>
     </PcbQuotationRequest>
 </PCBWayAPI>
