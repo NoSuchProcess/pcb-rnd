@@ -60,6 +60,10 @@ Command line was: sch-rnd -x tedax --outfile /tmp/pcb.XXqDg5FK/sch_rnd_output /h
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: openems mesher: do not ignore padstack copper [report: Evan]
+- FEATURE: netlist import's ElementList(): [report: aron]
+	- postpone actions, present a list of changes only to the user (GUI)
+	- each item of the list should contain the corresponding actions to make the change
+	- the user can execute these items one by one
 - CLEANUP: move pcb_pixmaps into the board struct, board free should free it, and it should call rnd_render->pixmap_free()
 - CLEANUP: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
