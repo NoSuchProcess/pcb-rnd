@@ -167,7 +167,7 @@ static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
 			continue;
 		for(c = n->children; c != NULL; c = c->next)
 			if ((c->children != NULL) && (c->children->type == XML_TEXT_NODE) && (xmlStrcmp(c->name, (xmlChar *)"CountryCode") == 0))
-				vts0_append(&form->country_codes, rnd_strdup(c->children->content));
+				vts0_append(&form->country_codes, rnd_strdup((char *)c->children->content));
 	}
 
 	xmlFreeDoc(doc);
