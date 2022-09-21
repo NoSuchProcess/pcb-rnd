@@ -324,7 +324,7 @@ static int save_fmt_dialog(const char *title, const char *descr, char **default_
 
 		argv[1].type = FGW_STR; argv[1].val.str = "DialogByPattern";
 		argv[2].type = FGW_STR; argv[2].val.str = "footprint";
-		argv[3].type = FGW_STR; argv[3].val.str = "fp";
+		argv[3].type = FGW_STR; argv[3].val.str = "rf";
 		argv[4].type = FGW_STR; argv[4].val.cstr = descr;
 		argv[5].type = FGW_STR; argv[5].val.cstr = conf_core.rc.save_fp_fmt;
 		err = rnd_actionv_(f, &res, 5, argv);
