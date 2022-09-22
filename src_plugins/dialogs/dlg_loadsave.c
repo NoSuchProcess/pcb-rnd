@@ -543,7 +543,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		save.pick = fmt;
 		fmtsub->on_close = save_on_close;
 		fmtsub->sub_ctx = &save;
-		setup_fmt_sub(&save, PCB_IOT_PCB);
+		setup_fmt_sub(&save, list_iot);
 	}
 
 	/* construct the input file name and run a file selection dialog to get the final file name */

@@ -2124,7 +2124,7 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, rnd_hid_dad_subdialo
 {
 	io_lihata_save_t *save = calloc(sizeof(io_lihata_save_t), 1);
 
-	if (type == PCB_IOT_PCB) {
+	if (type & PCB_IOT_PCB) {
 		RND_DAD_BEGIN_HBOX(sub->dlg);
 			RND_DAD_BEGIN_VBOX(sub->dlg); /* left column */
 				RND_DAD_BEGIN_HBOX(sub->dlg);
