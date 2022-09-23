@@ -939,9 +939,9 @@ RND_INLINE rnd_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, rnd_pline_t *
 		rnd_vector_t q[4];
 
 		q[0][0] = x1 + ox; q[0][1] = y1 + oy;
-		q[1][0] = x2 + ox; q[1][1] = y2 + oy;
-		q[2][0] = x1 - ox; q[2][1] = y1 - oy;
-		q[3][0] = x2 - ox; q[3][1] = y2 - oy;
+		q[1][0] = x1 - ox; q[1][1] = y1 - oy;
+		q[2][0] = x2 - ox; q[2][1] = y2 - oy;
+		q[3][0] = x2 + ox; q[3][1] = y2 + oy;
 
 		return rnd_is_point_in_convex_quad(pl->head->point, q);
 	}
