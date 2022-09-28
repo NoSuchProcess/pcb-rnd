@@ -20,12 +20,23 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>TG130</Value>
             <Value>TG150</Value>
             <Value>TG170</Value>
+            <Value>S1000H TG150</Value>
         </FR4Tg>
         <FinishedCopper group="pcb" type="enum" note="Finished copper thickness">
+            <Value>0 oz Cu</Value>
             <Value>1 oz Cu</Value>
             <Value>2 oz Cu</Value>
             <Value>3 oz Cu</Value>
             <Value>4 oz Cu</Value>
+            <Value>5 oz Cu</Value>
+            <Value>6 oz Cu</Value>
+            <Value>7 oz Cu</Value>
+            <Value>8 oz Cu</Value>
+            <Value>9 oz Cu</Value>
+            <Value>10 oz Cu</Value>
+            <Value>11 oz Cu</Value>
+            <Value>12 oz Cu</Value>
+            <Value>13 oz Cu</Value>
         </FinishedCopper>
         <Goldfingers group="pcb" type="enum" default="No" note="Whether to apply gold finish on fingers">
             <Value>Yes</Value>
@@ -45,18 +56,25 @@ loaded from the list acquired using the api/Address/GetCountry API.
         <Material group="pcb" type="enum" default="FR-4" note="Substrate material">
             <Value>FR-4</Value>
             <Value>Aluminum board</Value>
-            <Value>Rigid-Flex</Value>
+            <Value>Rogers</Value>
+            <Value>HDI</Value>
+            <Value>Copper</Value>
         </Material>
         <MinHoleSize group="pcb" type="enum" default="0.3" note="Diameter of the smallest hole, mm">
+            <Value>0.15</Value>
             <Value>0.2</Value>
             <Value>0.25</Value>
             <Value>0.3</Value>
+            <Value>0.8</Value>
+            <Value>1.0</Value>
             <Value>-1</Value>
         </MinHoleSize>
         <MinTrackSpacing group="pcb" type="enum" default="6/6mil" note="Track width/clearance">
+            <Value>3/3mil</Value>
             <Value>4/4mil</Value>
             <Value>5/5mil</Value>
             <Value>6/6mil</Value>
+            <Value>8/8mil</Value>
         </MinTrackSpacing>
         <Qty group="pcb" type="integer" default="5" note="Number of copies to be fabricated"></Qty>
         <Silkscreen group="pcb" type="enum" note="Color of the silkscreen graphics">
@@ -82,9 +100,13 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>Immersion gold</Value>
             <Value>Hard Gold</Value>
             <Value>OSP</Value>
+            <Value>Immersion Silver</Value>
+            <Value>ENEPIG</Value>
             <Value>None</Value>
         </SurfaceFinish>
         <Thickness group="pcb" type="enum" default="1.6" note="Final board thickness in mm">
+            <Value>0.2</Value>
+            <Value>0.3</Value>
             <Value>0.4</Value>
             <Value>0.6</Value>
             <Value>0.8</Value>
@@ -93,6 +115,10 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>1.6</Value>
             <Value>2.0</Value>
             <Value>2.4</Value>
+            <Value>2.6</Value>
+            <Value>2.8</Value>
+            <Value>3.0</Value>
+            <Value>3.2</Value>
         </Thickness>
         <ViaProcess group="pcb" type="enum" note="Ignored when uploading gerbers: vias are made as specified in the gerbers.">
             <Value>Tenting vias</Value>
@@ -102,3 +128,8 @@ loaded from the list acquired using the api/Address/GetCountry API.
         <Width group="pcb" type="mm" note="Board width"></Width>
     </PcbQuotationRequest>
 </PCBWayAPI>
+
+
+
+
+
