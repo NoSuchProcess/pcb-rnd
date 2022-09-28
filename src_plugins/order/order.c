@@ -161,7 +161,7 @@ void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 			break;
 		case PCB_OAL_HEIGHT:
 			pcb_data_bbox(&bb, PCB->Data, 0);
-			autoload_field_crd(octx, f, bb.X2 - bb.X1);
+			autoload_field_crd(octx, f, bb.Y2 - bb.Y1);
 			break;
 		case PCB_OAL_LAYERS:
 			for(gid = 0, l = 0; gid < PCB->LayerGroups.len; gid++)
