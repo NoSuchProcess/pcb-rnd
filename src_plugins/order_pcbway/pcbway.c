@@ -352,7 +352,81 @@ static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 
 static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	TODO("implement new order API");
+	rnd_hidlib_t *hidlib = &PCB->hidlib;
+	order_ctx_t *octx = caller_data;
+	pcbway_form_t *form = octx->odata;
+	FILE *f, *ft;
+	char sep[32], *s, *sephdr;
+	static const char rch[] = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ";
+	char *postfile = "POST.txt", *tarname = "gerb.tar";
+	char *hdr[5];
+	rnd_wget_opts_t wopts = {0};
+	int n;
+
+	/* generate unique content separator */
+	strcpy(sep, "----pcb-rnd-");
+	for(s = sep+12; s < sep+sizeof(sep)-1; s++)
+		*s = rch[rand() % sizeof(rch)];
+	*s = '\0';
+
+	f = rnd_fopen(hidlib, postfile, "w");
+
+	/* header */
+	sephdr = rnd_concat("Content-Type: multipart/form-data; boundary=", sep, NULL);
+	hdr[0] = sephdr;
+	hdr[1] = NULL;
+
+	wopts.header = (const char **)hdr;
+	wopts.post_file = postfile;
+
+	/* data fields */
+	for(n = 0; n < form->fields.used; n++) {
+		pcb_order_field_t *fld = form->fields.array[n];
+		fprintf(f, "--%s\r\n", sep);
+		fprintf(f, "Content-Disposition: form-data; name=\"%s\"\r\n", fld->name);
+		fprintf(f, "\r\n");
+		switch(fld->type) {
+			case RND_HATT_INTEGER: fprintf(f, "%ld\r\n", fld->val.lng); break;
+			case RND_HATT_COORD: rnd_fprintf(f, "%mm\r\n", fld->val.crd); break;
+			case RND_HATT_STRING: fprintf(f, "%s\r\n", fld->val.str); break;
+			case RND_HATT_ENUM: fprintf(f, "%s\r\n", fld->enum_vals[fld->val.lng]); break;
+			default:
+				rnd_message(RND_MSG_ERROR, "internal error: pcbway_order_cb: field type %d not handled\nPlease report this bug!\n", fld->type);
+			break;
+		}
+	}
+
+	/* tarball with the gerbers */
+	ft = rnd_fopen(hidlib, tarname, "r");
+	if (ft != NULL) {
+/*		long l = rnd_file_size(hidlib, tarname);*/
+		fprintf(f, "--%s\r\n", sep);
+		fprintf(f, "Content-Disposition: form-data; name=\"gerberfile\"; filename=\"gerber.tar\"\r\n");
+		fprintf(f, "Content-Type: application/tar\r\n");
+		fprintf(f, "\r\n");
+		for(;;) {
+			char buff[8192];
+			long len;
+			len = fread(buff, 1, sizeof(buff), ft);
+			if (len <= 0)
+				break;
+			fwrite(buff, 1, len, f);
+		}
+		fprintf(f, "\r\n");
+		fclose(ft);
+	}
+	else
+		rnd_message(RND_MSG_ERROR, "internal error: pcbway_order_cb: can not open gerber tarball '%s'\nPlease report this bug!\n", tarname);
+
+	/* closing sep */
+	fprintf(f, "--%s--\r\n", sep);
+	fclose(f);
+
+
+TODO("Rather use rnd_wget_popen");
+	rnd_wget_disk("https://www.pcbway.com/common/PCB-rndUpFile", "RES.json", 0, &wopts);
+
+	free(sephdr);
 }
 
 
