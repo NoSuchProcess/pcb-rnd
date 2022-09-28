@@ -53,7 +53,7 @@ typedef struct pcbway_form_s {
 	vts0_t country_codes;
 } pcbway_form_t;
 
-static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, rnd_wget_opts_t *wopts)
+static int pcbway_cache_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, rnd_wget_opts_t *wopts)
 {
 	double mt, now = rnd_dtime();
 
@@ -95,7 +95,7 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 	wopts.post_file = "/dev/null";
 #if 0
 	path = rnd_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
-	if (pcbway_cahce_update_(hidlib, SERVER "/api/Address/GetCountry", path, 0, &wopts) != 0) {
+	if (pcbway_cache_update_(hidlib, SERVER "/api/Address/GetCountry", path, 0, &wopts) != 0) {
 		res = -1;
 		goto quit;
 	}
@@ -103,7 +103,7 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 #endif
 
 	path = rnd_strdup_printf("%s%cPCBWay_Api2.xml", cachedir, RND_DIR_SEPARATOR_C);
-	if (pcbway_cahce_update_(hidlib, SERVER "/xml/PCBWay_Api2.xml", path, 1, NULL) != 0) {
+	if (pcbway_cache_update_(hidlib, SERVER "/xml/PCBWay_Api2.xml", path, 1, NULL) != 0) {
 		res = -1;
 		goto quit;
 	}
