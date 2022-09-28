@@ -55,10 +55,15 @@ typedef struct pcbway_form_s {
 
 static int pcbway_cache_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, rnd_wget_opts_t *wopts)
 {
-	double mt, now = rnd_dtime();
+	double mt, now = rnd_dtime(), timeout;
 
 	mt = rnd_file_mtime(hidlib, path);
-	if (update || (mt < 0) || ((now - mt) > CFG.cache_update_sec)) {
+	if (update)
+		timeout = 3600; /* harder update still checks only once an hour */
+	else
+		timeout = CFG.cache_update_sec;
+
+	if ((mt < 0) || ((now - mt) > timeout)) {
 		if (CFG.verbose) {
 			if (update)
 				rnd_message(RND_MSG_INFO, "pcbway: static '%s', updating it in the cache\n", path);
@@ -69,7 +74,15 @@ static int pcbway_cache_update_(rnd_hidlib_t *hidlib, const char *url, const cha
 			rnd_message(RND_MSG_ERROR, "pcbway: failed to download %s\n", url);
 			return -1;
 		}
-		
+
+		{
+			/* append a newline at the end to update last mod date on the file system:
+			   wget tends to set the date to match last modified date on the server */
+			char spc = '\n';
+			FILE *f = rnd_fopen(&PCB->hidlib, path, "a");
+			fwrite(&spc, 1, 1, f);
+			fclose(f);
+		}
 	}
 	else if (CFG.verbose)
 		rnd_message(RND_MSG_INFO, "pcbway: '%s' from cache\n", path);
