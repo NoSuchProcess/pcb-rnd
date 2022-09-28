@@ -84,10 +84,10 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 	int res = 0;
 
 	wopts.header = (const char **)hdr;
-	hdr[0] = rnd_concat("api-key: ", CFG.api_key, NULL);
-	hdr[1] = "Content-Type: application/xml";
-	hdr[2] = "Accept: application/xml";
-	hdr[3] = NULL;
+/*	hdr[0] = rnd_concat("api-key: ", CFG.api_key, NULL);*/
+	hdr[0] = "Content-Type: application/xml";
+	hdr[1] = "Accept: application/xml";
+	hdr[2] = NULL;
 
 	cachedir = rnd_build_fn(hidlib, conf_order.plugins.order.cache);
 
@@ -109,7 +109,7 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 
 	quit:;
 	free(path);
-	free(hdr[0]);
+/*	free(hdr[0]);*/
 	free(cachedir);
 	return res;
 }
@@ -272,10 +272,12 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 
 	octx->odata = NULL;
 
+#if 0
 	if ((CFG.api_key == NULL) || (*CFG.api_key == '\0')) {
 		rnd_message(RND_MSG_ERROR, "order_pcbway: no api_key available.");
 		return -1;
 	}
+#endif
 	if (pcbway_cache_update(&PCB->hidlib) != 0) {
 		rnd_message(RND_MSG_ERROR, "order_pcbway: failed to update the cache.");
 		return -1;
@@ -328,7 +330,7 @@ static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 
 
 
-static void pcbway_quote_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	TODO("implement new order API");
 }
@@ -359,7 +361,7 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 			RND_DAD_END(octx->dlg);
 			RND_DAD_BUTTON(octx->dlg, "Order (web)");
 				RND_DAD_HELP(octx->dlg, "Upload gerbers and fab parameters and\ngenerate an URL for the ordering form");
-				RND_DAD_CHANGE_CB(octx->dlg, pcbway_quote_cb);
+				RND_DAD_CHANGE_CB(octx->dlg, pcbway_order_cb);
 		RND_DAD_END(octx->dlg);
 
 	RND_DAD_END(octx->dlg);
