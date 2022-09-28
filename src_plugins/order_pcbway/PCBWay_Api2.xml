@@ -15,34 +15,9 @@ loaded from the list acquired using the api/Address/GetCountry API.
 -->
 <PCBWayAPI>
     <PcbQuotationRequest note="PCB quote interface" path="api/Pcb/PcbQuotation">
-        <DesignInPanel group="pcb" type="integer" default="1" note="Number of different designs in the panel)"></DesignInPanel>
-        <FR4Tg type="enum" note="Laminate glass transition temperature">
-            <Value>TG130</Value>
-            <Value>TG150</Value>
-            <Value>TG170</Value>
-            <Value>S1000H TG150</Value>
-        </FR4Tg>
-        <FinishedCopper group="pcb" type="enum" note="Finished copper thickness">
-            <Value>0 oz Cu</Value>
-            <Value>1 oz Cu</Value>
-            <Value>2 oz Cu</Value>
-            <Value>3 oz Cu</Value>
-            <Value>4 oz Cu</Value>
-            <Value>5 oz Cu</Value>
-            <Value>6 oz Cu</Value>
-            <Value>7 oz Cu</Value>
-            <Value>8 oz Cu</Value>
-            <Value>9 oz Cu</Value>
-            <Value>10 oz Cu</Value>
-            <Value>11 oz Cu</Value>
-            <Value>12 oz Cu</Value>
-            <Value>13 oz Cu</Value>
-        </FinishedCopper>
-        <Goldfingers group="pcb" type="enum" default="No" note="Whether to apply gold finish on fingers">
-            <Value>Yes</Value>
-            <Value>No</Value>
-        </Goldfingers>
-        <Layers group="pcb" type="enum" default="2" note="Number of copper layers">
+        <boardWidth group="pcb" type="mm" default="100" note="Board width"></boardWidth>
+        <boardHeight group="pcb" type="mm" default="100" note="board height"></boardHeight>
+        <boardLayer group="pcb" type="enum" default="2" note="Number of copper layers">
             <Value>1</Value>
             <Value>2</Value>
             <Value>4</Value>
@@ -51,8 +26,46 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>10</Value>
             <Value>12</Value>
             <Value>14</Value>
-        </Layers>
-        <Length group="pcb" type="mm" note="board length"></Length>
+        </boardLayer>
+        <DesignInPanel group="pcb" type="integer" default="1" note="Number of different designs in the panel"></DesignInPanel>
+        <FR4Tg type="enum" default="TG150" note="Laminate glass transition temperature">
+            <Value>TG130</Value>
+            <Value>TG150</Value>
+            <Value>TG170</Value>
+            <Value>S1000H TG150</Value>
+        </FR4Tg>
+        <Thickness group="pcb" type="enum" default="1.6" note="Final board thickness in mm">
+            <Value>0.2</Value>
+            <Value>0.3</Value>
+            <Value>0.4</Value>
+            <Value>0.6</Value>
+            <Value>0.8</Value>
+            <Value>1.0</Value>
+            <Value>1.2</Value>
+            <Value>1.6</Value>
+            <Value>2.0</Value>
+            <Value>2.4</Value>
+            <Value>2.6</Value>
+            <Value>2.8</Value>
+            <Value>3.0</Value>
+            <Value>3.2</Value>
+        </Thickness>
+        <FinishedCopper group="pcb" type="enum" default="1" note="Finished copper thickness in oz Cu">
+            <Value>0</Value>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+            <Value>6</Value>
+            <Value>7</Value>
+            <Value>8</Value>
+            <Value>9</Value>
+            <Value>10</Value>
+            <Value>11</Value>
+            <Value>12</Value>
+            <Value>13</Value>
+        </FinishedCopper>
         <Material group="pcb" type="enum" default="FR-4" note="Substrate material">
             <Value>FR-4</Value>
             <Value>Aluminum board</Value>
@@ -77,12 +90,7 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>8/8mil</Value>
         </MinTrackSpacing>
         <Qty group="pcb" type="integer" default="5" note="Number of copies to be fabricated"></Qty>
-        <Silkscreen group="pcb" type="enum" note="Color of the silkscreen graphics">
-            <Value>White</Value>
-            <Value>Black</Value>
-            <Value>None</Value>
-        </Silkscreen>
-        <SolderMask group="pcb" type="enum" note="Color of the solder mask">
+        <SolderMask group="pcb" type="enum" default="Green" note="Color of the solder mask">
             <Value>Green</Value>
             <Value>Red</Value>
             <Value>Yellow</Value>
@@ -94,7 +102,12 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>Matt green</Value>
             <Value>None</Value>
         </SolderMask>
-        <SurfaceFinish group="pcb" type="enum">
+        <Silkscreen group="pcb" type="enum" default="White" note="Color of the silkscreen graphics">
+            <Value>White</Value>
+            <Value>Black</Value>
+            <Value>None</Value>
+        </Silkscreen>
+        <SurfaceFinish group="pcb" default="HASL with lead" type="enum">
             <Value>HASL with lead</Value>
             <Value>HASL lead free</Value>
             <Value>Immersion gold</Value>
@@ -104,28 +117,15 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>ENEPIG</Value>
             <Value>None</Value>
         </SurfaceFinish>
-        <Thickness group="pcb" type="enum" default="1.6" note="Final board thickness in mm">
-            <Value>0.2</Value>
-            <Value>0.3</Value>
-            <Value>0.4</Value>
-            <Value>0.6</Value>
-            <Value>0.8</Value>
-            <Value>1.0</Value>
-            <Value>1.2</Value>
-            <Value>1.6</Value>
-            <Value>2.0</Value>
-            <Value>2.4</Value>
-            <Value>2.6</Value>
-            <Value>2.8</Value>
-            <Value>3.0</Value>
-            <Value>3.2</Value>
-        </Thickness>
-        <ViaProcess group="pcb" type="enum" note="Ignored when uploading gerbers: vias are made as specified in the gerbers.">
+        <ViaProcess group="pcb" type="enum" default="Tenting vias" note="Ignored when uploading gerbers: vias are made as specified in the gerbers.">
             <Value>Tenting vias</Value>
             <Value>Plugged vias</Value>
             <Value>Vias not covered</Value>
         </ViaProcess>
-        <Width group="pcb" type="mm" note="Board width"></Width>
+        <Goldfingers group="pcb" type="enum" default="No" note="Whether to apply gold finish on edge connector fingers">
+            <Value>Yes</Value>
+            <Value>No</Value>
+        </Goldfingers>
     </PcbQuotationRequest>
 </PCBWayAPI>
 
