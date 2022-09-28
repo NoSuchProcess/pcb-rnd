@@ -93,12 +93,14 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 
 	rnd_mkdir(hidlib, cachedir, 0755);
 	wopts.post_file = "/dev/null";
+#if 0
 	path = rnd_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
 	if (pcbway_cahce_update_(hidlib, SERVER "/api/Address/GetCountry", path, 0, &wopts) != 0) {
 		res = -1;
 		goto quit;
 	}
 	free(path);
+#endif
 
 	path = rnd_strdup_printf("%s%cPCBWay_Api2.xml", cachedir, RND_DIR_SEPARATOR_C);
 	if (pcbway_cahce_update_(hidlib, SERVER "/xml/PCBWay_Api2.xml", path, 1, NULL) != 0) {
@@ -141,6 +143,7 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 	return doc;
 }
 
+#if 0
 static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
 {
 	xmlDoc *doc = pcbway_xml_load(fn);
@@ -173,6 +176,7 @@ static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
 	xmlFreeDoc(doc);
 	return 0;
 }
+#endif
 
 
 static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
@@ -291,9 +295,12 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 		if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0)) {
 			octx->odata = calloc(sizeof(pcbway_form_t), 1);
 			country_fn = rnd_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
+#if 0
 			if (pcbway_load_countries(octx->odata, country_fn) != 0)
 				res = -1;
-			else if (pcbway_load_fields_(&PCB->hidlib, imp, octx, root) != 0) {
+			else 
+#endif
+			if (pcbway_load_fields_(&PCB->hidlib, imp, octx, root) != 0) {
 				rnd_message(RND_MSG_ERROR, "order_pcbway: xml error: invalid API xml\n");
 				res = -1;
 			}
