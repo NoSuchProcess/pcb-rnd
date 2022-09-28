@@ -100,8 +100,8 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 	}
 	free(path);
 
-	path = rnd_strdup_printf("%s%cPCBWay_Api.xml", cachedir, RND_DIR_SEPARATOR_C);
-	if (pcbway_cahce_update_(hidlib, SERVER "/xml/PCBWay_Api.xml", path, 1, NULL) != 0) {
+	path = rnd_strdup_printf("%s%cPCBWay_Api2.xml", cachedir, RND_DIR_SEPARATOR_C);
+	if (pcbway_cahce_update_(hidlib, SERVER "/xml/PCBWay_Api2.xml", path, 1, NULL) != 0) {
 		res = -1;
 		goto quit;
 	}
@@ -282,7 +282,7 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 	}
 
 	cachedir = rnd_build_fn(&PCB->hidlib, conf_order.plugins.order.cache);
-	path = rnd_strdup_printf("%s%cPCBWay_Api.xml", cachedir, RND_DIR_SEPARATOR_C);
+	path = rnd_strdup_printf("%s%cPCBWay_Api2.xml", cachedir, RND_DIR_SEPARATOR_C);
 	doc = pcbway_xml_load(path);
 	if (doc != NULL) {
 		root = xmlDocGetRootElement(doc);
