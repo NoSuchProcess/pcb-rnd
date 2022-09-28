@@ -439,7 +439,27 @@ TODO("Use CAM export to generate the tarball");
 					url = re;
 					*end = '\0';
 					found = 1;
-					rnd_trace("*** PCBWAY url: '%s'\n", url);
+					rnd_message(RND_MSG_INFO, "\nYour PCBWay order is ready to check out.\nPlease copy the following URL to a web browser:\n%s\n\n", url);
+					if (rnd_hid_message_box(hidlib, "warning", "Order PCB from PCBWay", "Your order is ready to check out.\nPlease copy the URL from the message log to a web browser!", "close", 0, "run browser", 1, NULL) == 1) {
+						char *cmd, *s;
+						int ok = 1;
+						
+						/* allow only a few type of characters to keep the command line safe for execution */
+						for(s = url; *s != '\0'; s++) {
+							if (!isalnum(*s) && (*s != ':') && (*s != '/') && (*s != '=') && (*s != '-') && (*s != '.') && (*s != '_') && (*s != '?')) {
+								rnd_message(RND_MSG_ERROR, "pcbway_order: can not run browser, unsafe url (contains %c): %s\n", *s, url);
+								ok = 0;
+								break;
+							}
+						}
+						if (ok) {
+							const char *browser = "www-browser";
+							cmd = rnd_strdup_printf("%s '%s' &", browser, url);
+							rnd_message(RND_MSG_INFO, "Running command: %s\n", cmd);
+							rnd_system(hidlib, cmd);
+							free(cmd);
+						}
+					}
 				}
 				break;
 			}
