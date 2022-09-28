@@ -363,6 +363,9 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_wget_opts_t wopts = {0};
 	int n;
 
+TODO("Do not hardwire postile and tarname");
+TODO("Use CAM export to generate the tarball");
+
 	/* generate unique content separator */
 	strcpy(sep, "----pcb-rnd-");
 	for(s = sep+12; s < sep+sizeof(sep)-1; s++)
