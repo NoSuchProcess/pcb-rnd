@@ -265,9 +265,9 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		else {
 			f->type = RND_HATT_LABEL;
 		}
-		if (strcmp(f->name, "Layers") == 0)         f->autoload = PCB_OAL_LAYERS;
-		else if (strcmp(f->name, "Width") == 0)     f->autoload = PCB_OAL_WIDTH;
-		else if (strcmp(f->name, "Length") == 0)    f->autoload = PCB_OAL_HEIGHT;
+		if (strcmp(f->name, "boardLayer") == 0)          f->autoload = PCB_OAL_LAYERS;
+		else if (strcmp(f->name, "boardWidth") == 0)     f->autoload = PCB_OAL_WIDTH;
+		else if (strcmp(f->name, "boardHeight") == 0)    f->autoload = PCB_OAL_HEIGHT;
 
 		pcb_order_autoload_field(octx, f);
 
@@ -355,13 +355,13 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_hidlib_t *hidlib = &PCB->hidlib;
 	order_ctx_t *octx = caller_data;
 	pcbway_form_t *form = octx->odata;
-	FILE *f, *ft;
+	FILE *f, *ft, *fr;
 	char sep[32], *s, *sephdr;
 	static const char rch[] = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ";
 	char *postfile = "POST.txt", *tarname = "gerb.tar";
 	char *hdr[5];
 	rnd_wget_opts_t wopts = {0};
-	int n;
+	int n, found;
 
 TODO("Do not hardwire postile and tarname");
 TODO("Use CAM export to generate the tarball");
@@ -426,8 +426,31 @@ TODO("Use CAM export to generate the tarball");
 	fclose(f);
 
 
-TODO("Rather use rnd_wget_popen");
-	rnd_wget_disk("https://www.pcbway.com/common/PCB-rndUpFile", "RES.json", 0, &wopts);
+	fr = rnd_wget_popen("https://www.pcbway.com/common/PCB-rndUpFile", 0, &wopts);
+	found = 0;
+	if (fr != NULL) {
+		char *line, tmp[1024], *re, *end, *url;
+		while((line = fgets(tmp, sizeof(tmp), fr)) != NULL) {
+			re = strstr(line, "\"redirect\":");
+			if (re != NULL) {
+				re += 12;
+				end = strchr(re, '\"');
+				if (end != NULL) {
+					url = re;
+					*end = '\0';
+					found = 1;
+					rnd_trace("*** PCBWAY url: '%s'\n", url);
+				}
+				break;
+			}
+		}
+		fclose(fr);
+
+		if (!found)
+			rnd_message(RND_MSG_ERROR, "pcbway_order: server failed to process the order and return a redirect URL\n");
+	}
+	else
+		rnd_message(RND_MSG_ERROR, "pcbway_order: failed upload the order\n(may be temporary network error)\n");
 
 	free(sephdr);
 }
