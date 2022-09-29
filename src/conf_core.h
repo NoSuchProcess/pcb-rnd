@@ -135,6 +135,7 @@ typedef struct {
 
 		RND_CFT_STRING save_final_fallback_fmt;/* when a new file is created (by running pcb-rnd with the file name) there won't be a known format; pcb-rnd will guess from the file name (extension) but eventhat may fail. This format is the final fallback that'll be used if no other guessing mechanism worked. The user can override this by save as. */
 		RND_CFT_STRING save_fp_fmt;            /* when saving a buffer element/subcircuit, prefer this format by default */
+		RND_CFT_STRING web_browser;            /* command line to a web browser (useful for accessing external resources, e.g. order pcb web services) */
 
 		/***** automatically set (in postproc) *****/
 		RND_CFT_BOOLEAN have_regex;            /* whether we have regex compiled in */
