@@ -267,6 +267,8 @@ fgw_error_t pcb_act_PadstackReplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				vtp0_init(&objs);
 
+				pcb_undo_freeze_serial();
+
 				/* list all selected padstacks within subcircuits */
 				PCB_SUBC_LOOP(pcb->Data); {
 					pcb_data_list_by_flag(subc->data, &objs, PCB_OBJ_PSTK, PCB_FLAG_SELECTED);
@@ -278,6 +280,8 @@ fgw_error_t pcb_act_PadstackReplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					ret |= pcb_pstk_replace_proto((pcb_pstk_t *)*o, src_proto);
 				RND_ACT_IRES(ret);
 				vtp0_uninit(&objs);
+				pcb_undo_unfreeze_serial();
+				pcb_undo_inc_serial();
 			}
 			break;
 		case F_Object:
@@ -291,8 +295,12 @@ fgw_error_t pcb_act_PadstackReplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					rnd_message(RND_MSG_ERROR, "Need a padstack under the cursor\n");
 					break;
 				}
+				pcb_undo_freeze_serial();
 				ps = (pcb_pstk_t *)ptr2;
 				ret = pcb_pstk_replace_proto(ps, src_proto);
+				pcb_undo_unfreeze_serial();
+				pcb_undo_inc_serial();
+
 			}
 			break;
 		default:
