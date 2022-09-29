@@ -243,6 +243,14 @@ fgw_error_t pcb_act_PadstackReplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(src_op) {
 		case F_Buffer:
+			{
+				pcb_pstk_t *ps = padstacklist_first(&PCB_PASTEBUFFER->Data->padstack);
+				if (ps == NULL) {
+					rnd_message(RND_MSG_ERROR, "PadstackReplace: Invalid source padstack (second argument): no padstack in buffer\n");
+					return FGW_ERR_ARG_CONV;
+				}
+				src_proto = pcb_pstk_get_proto(ps);
+			}
 			break;
 		case F_Style:
 			src_proto = pcb_pstk_get_proto_(pcb->Data, conf_core.design.via_proto);
