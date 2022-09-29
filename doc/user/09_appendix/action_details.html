@@ -2168,6 +2168,40 @@ When invoked without argument or with
  Note: the code remembers all settings for all excitements, not only the  excitement that is currently selected. The selection and all parameters are saved as board attributes.
 </dd></dl>
 
+<h2 id="padstackreplace">PadstackReplace</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+PadstackReplace(object|selected, buffer|tool)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Replace padstack prototypes from buffer's first padstack or from the via tool
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Replacing padstacks, especially within multiple subcircuits, is a tedious task because the prototype of the new padstack needs to be added in each local padstack prototype library (e.g. one per subcircuit). The PadstackReplace() action can automate this. 
+<p>
+ First argument is destination padstack, the object that is going to be changed. It is either 
+<i>
+object
+</i>
+ for a single padstack under the cursor, or 
+<i>
+selected
+</i>
+ for all selected padstacks. Both work on padstacks within subcircuits. 
+<p>
+ The second argument is source padstack, from which the prototype (geometry) is copied. It can be 
+<i>
+tool
+</i>
+ for using the via tool's padstac prototype (which is usually from the current style) or 
+<i>
+buffer
+</i>
+ which uses the first padstack found in the current buffer. 
+</dd></dl>
+
 <h2 id="pastebuffer">PasteBuffer</h2>
 <dl><dd>
 <p>

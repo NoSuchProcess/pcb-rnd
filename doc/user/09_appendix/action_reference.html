@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.0.6-dev (svn r36456) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 3.2.0 running with librnd version 3.2.0 ,  Revision: 36669
+This is pcb-rnd 3.0.6-dev (svn r36663) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 3.2.0 running with librnd version 3.2.0 ,  Revision: 36844
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -290,6 +290,8 @@ This is pcb-rnd 3.0.6-dev (svn r36456) an interactive printed circuit board edit
 <tr><td>PadstackConvert</td><td>Convert selection or current buffer to padstack</td><td>PadstackConvert(buffer|selected, [originx, originy])</td><td></td>
 <tr><td>PadstackEdit</td><td>interactive pad stack editor</td><td>PadstackEdit(object, [tab])</td><td>dialogs plugin</td>
 <tr><td>PadstackPlace</td><td>Place a pad stack (either proto_id, or if not specified, the default for style)</td><td>PadstackPlace([proto_id|default], [x, y])</td><td></td>
+<tr><td><a href="action_details.html#padstackreplace">PadstackReplace</a></td><td>Replace padstack prototypes from buffer's first padstack or from the via tool</td><td>PadstackReplace(object|selected, buffer|tool)</td><td></td>
+<tr><td>PadstackSave</td><td>Save padstack to file.</td><td>PadstackSave(buffer, [filename], [fmt])</td><td></td>
 <tr><td><a href="action_details.html#pan">Pan</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Start or stop panning (Mode = 1 to start, 0 to stop)</td><td>Pan(Mode)</td><td>lib_hid_common plugin</td>
 <tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>pas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
@@ -353,7 +355,7 @@ This is pcb-rnd 3.0.6-dev (svn r36456) an interactive printed circuit board edit
 <tr><td>QueryCompileField</td><td>With "compile": precompiles textual field name to field ID; with "free": frees the memory allocated for a previously precompiled fieldID.</td><td>QueryCompileField(compile, fieldname)<br>QueryCompileField(free, fieldID)</td><td>query plugin</td>
 <tr><td>QueryObj</td><td>Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.</td><td>QueryObj(idpath, [.fieldname|fieldID])</td><td>query plugin</td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
-<tr><td>ReadBoard</td><td>Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.</td><td>ReadBoard(width|size_x|height|size_y)</td><td>act_read</td>
+<tr><td>ReadBoard</td><td>Return board dimensions</td><td>ReadBoard(width|size_x|height|size_y)</td><td>act_read</td>
 <tr><td>ReadGroup</td><td>Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.</td><td>ReadGroup(length)<br>ReadGroup(field, group, [init_invis|ltype|ltypestr|ltypehas|name|open|purpose|vis|length])<br>ReadGroup(layerid, group, idx)</td><td>act_read</td>
 <tr><td><a href="action_details.html#redo">Redo</a></td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
 <tr><td>Redraw</td><td>Redraw the entire screen</td><td>Redraw()</td><td></td>
