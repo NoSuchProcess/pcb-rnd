@@ -365,6 +365,8 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_wget_opts_t wopts = {0};
 	int n, found, rv;
 
+
+
 	/* set up filenames */
 	if (CFG.debug) {
 		postfile = "POST.txt";
@@ -375,6 +377,7 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		postfile = rnd_tempfile_name_new("post.txt");
 		tarname = "gerb.tar";
 		gerbdir = "gerbcam";
+TODO("Do not hardwire posftile and tarname");
 	}
 	if (CFG.debug || CFG.verbose)
 		rnd_message(RND_MSG_DEBUG, "pcbway_order: post=%s gerb-pack=%s gerbdir=%s\n", postfile, tarname, gerbdir);
@@ -398,11 +401,6 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		rnd_message(RND_MSG_ERROR, "pcbway_order: failed to tar the gerbers\n");
 		goto error;
 	}
-
-
-
-TODO("read back the dialog values to config fields");
-TODO("Do not hardwire posftile and tarname");
 
 	/* generate unique content separator */
 	strcpy(sep, "----pcb-rnd-");
@@ -463,7 +461,6 @@ TODO("Do not hardwire posftile and tarname");
 	fprintf(f, "--%s--\r\n", sep);
 	fclose(f);
 
-
 	fr = rnd_wget_popen(UPLOAD_URL, 0, &wopts);
 	found = 0;
 	if (fr != NULL) {
@@ -518,6 +515,19 @@ TODO("clean up after the gerbers");
 	}
 }
 
+static pcb_order_field_t *pcbway_dad_wid2field(pcb_order_imp_t *imp, order_ctx_t *octx, int wid)
+{
+	int n;
+	pcbway_form_t *form = octx->odata;
+
+	for(n = 0; n < form->fields.used; n++) {
+		pcb_order_field_t *f = form->fields.array[n];
+		if (f->wid == wid)
+			return f;
+	}
+
+	return NULL;
+}
 
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
@@ -555,6 +565,7 @@ static pcb_order_imp_t pcbway = {
 	NULL,
 	pcbway_load_fields,
 	pcbway_free_fields,
+	pcbway_dad_wid2field,
 	pcbway_populate_dad
 };
 
