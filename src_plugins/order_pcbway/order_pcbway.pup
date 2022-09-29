@@ -6,5 +6,6 @@ $state WIP
 #$extdeps libxml2
 dep order
 dep lib_wget
+dep cam
 default disable
 autoload 1

@@ -33,6 +33,7 @@
 #include <genvector/vts0.h>
 
 #include "board.h"
+#include <librnd/core/actions.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>
@@ -358,27 +359,50 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	order_ctx_t *octx = caller_data;
 	pcbway_form_t *form = octx->odata;
 	FILE *f, *ft, *fr;
-	char sep[32], *s, *sephdr;
+	char sep[32], *s, *sephdr, *postfile, *tarname, *gerbdir, *tmp;
 	static const char rch[] = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ";
-	char *postfile, *tarname;
 	char *hdr[5];
 	rnd_wget_opts_t wopts = {0};
-	int n, found;
+	int n, found, rv;
 
+	/* set up filenames */
 	if (CFG.debug) {
 		postfile = "POST.txt";
 		tarname = "gerb.tar";
+		gerbdir = "gerbcam";
 	}
 	else {
 		postfile = rnd_tempfile_name_new("post.txt");
 		tarname = "gerb.tar";
+		gerbdir = "gerbcam";
 	}
-	rnd_trace("order_pcbway files: post=%s gerber=%s\n", postfile, tarname);
+	if (CFG.debug || CFG.verbose)
+		rnd_message(RND_MSG_DEBUG, "pcbway_order: post=%s gerb-pack=%s gerbdir=%s\n", postfile, tarname, gerbdir);
+
+	/* create the gerber tarball */
+	rnd_mkdir(hidlib, gerbdir, 0600);
+	tmp = rnd_concat(gerbdir, "/brd", NULL);
+	rv = rnd_actionva(hidlib, "export", "cam", "gerber:PCBWay", "--outfile", tmp, NULL);
+	free(tmp);
+	if (rv != 0) {
+		rnd_message(RND_MSG_ERROR, "pcbway_order: failed to cam-export design\n");
+		goto error;
+	}
+
+	tmp = rnd_concat("tar -cf '", tarname, "' ", gerbdir, "/*", NULL);
+	if (CFG.debug || CFG.verbose)
+		rnd_message(RND_MSG_DEBUG, "pcbway_order: tar command line: '%s'\n", tmp);
+	rv = rnd_system(hidlib, tmp);
+	free(tmp);
+	if (rv != 0) {
+		rnd_message(RND_MSG_ERROR, "pcbway_order: failed to tar the gerbers\n");
+		goto error;
+	}
+
 
 
 TODO("read back the dialog values to config fields");
 TODO("Do not hardwire posftile and tarname");
-TODO("Use CAM export to generate the tarball");
 
 	/* generate unique content separator */
 	strcpy(sep, "----pcb-rnd-");
@@ -486,6 +510,7 @@ TODO("Use CAM export to generate the tarball");
 	else
 		rnd_message(RND_MSG_ERROR, "pcbway_order: failed upload the order\n(may be temporary network error)\n");
 
+	error:;
 	free(sephdr);
 	if (!CFG.debug) {
 		rnd_tempfile_unlink(postfile);
