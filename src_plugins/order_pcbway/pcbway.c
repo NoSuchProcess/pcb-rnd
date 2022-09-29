@@ -360,10 +360,21 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	FILE *f, *ft, *fr;
 	char sep[32], *s, *sephdr;
 	static const char rch[] = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ";
-	char *postfile = "POST.txt", *tarname = "gerb.tar";
+	char *postfile, *tarname;
 	char *hdr[5];
 	rnd_wget_opts_t wopts = {0};
 	int n, found;
+
+	if (CFG.debug) {
+		postfile = "POST.txt";
+		tarname = "gerb.tar";
+	}
+	else {
+		postfile = rnd_tempfile_name_new("post.txt");
+		tarname = "gerb.tar";
+	}
+	rnd_trace("order_pcbway files: post=%s gerber=%s\n", postfile, tarname);
+
 
 TODO("read back the dialog values to config fields");
 TODO("Do not hardwire posftile and tarname");
@@ -476,6 +487,10 @@ TODO("Use CAM export to generate the tarball");
 		rnd_message(RND_MSG_ERROR, "pcbway_order: failed upload the order\n(may be temporary network error)\n");
 
 	free(sephdr);
+	if (!CFG.debug) {
+		rnd_tempfile_unlink(postfile);
+TODO("clean up after the gerbers");
+	}
 }
 
 

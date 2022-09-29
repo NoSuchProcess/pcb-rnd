@@ -8,6 +8,7 @@ typedef struct {
 		const struct {
 			RND_CFT_STRING api_key;
 			RND_CFT_BOOLEAN verbose;             /* print log messages about the web traffic the plugin does */
+			RND_CFT_BOOLEAN debug;               /* use predictable temp file names and keep temp files for debugging */
 			RND_CFT_INTEGER cache_update_sec;    /* re-download cached vendor files if they are older than the value specified here, in sec */
 		} order_pcbway;
 	} plugins;
