@@ -42,6 +42,7 @@
 #include "../src_plugins/order/order.h"
 #include "order_pcbway_conf.h"
 #include "../src_plugins/order_pcbway/conf_internal.c"
+#include "conf_core.h"
 
 conf_order_pcbway_t conf_order_pcbway;
 
@@ -453,10 +454,10 @@ TODO("Use CAM export to generate the tarball");
 							}
 						}
 						if (ok) {
-							const char *browser = "www-browser";
-							cmd = rnd_strdup_printf("%s '%s' &", browser, url);
+							cmd = rnd_strdup_printf("%s '%s' &", conf_core.rc.web_browser, url);
 							rnd_message(RND_MSG_INFO, "Running command: %s\n", cmd);
-							rnd_system(hidlib, cmd);
+							if (rnd_system(hidlib, cmd) != 0)
+								rnd_message(RND_MSG_ERROR, "pcbway_order: failed to execute web browser with the above command line.\nDid you configure rc/web_browser?\n");
 							free(cmd);
 						}
 					}
