@@ -365,7 +365,8 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_wget_opts_t wopts = {0};
 	int n, found;
 
-TODO("Do not hardwire postile and tarname");
+TODO("read back the dialog values to config fields");
+TODO("Do not hardwire posftile and tarname");
 TODO("Use CAM export to generate the tarball");
 
 	/* generate unique content separator */
