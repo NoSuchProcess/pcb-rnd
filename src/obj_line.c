@@ -278,6 +278,9 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 
 	/* common overlapping segment */
 	if (ov_o1n && ov_n2o) {
+		if (rnd_distance2(old_line->Point1.X, old_line->Point1.Y, new_line->Point2.X, new_line->Point2.Y) <= 4*4)
+			return PCB_LINMER_NONE; /* don't merge if points are within rounding error range: they are the same point in a \_ configuration but with a few nm error that looks like an overlap */
+
 		out->Point1.X = old_line->Point2.X;
 		out->Point1.Y = old_line->Point2.Y;
 		out->Point2.X = new_line->Point1.X;
@@ -286,6 +289,9 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 	}
 
 	if (ov_o1n && ov_n1o) {
+		if (rnd_distance2(old_line->Point1.X, old_line->Point1.Y, new_line->Point1.X, new_line->Point1.Y) <= 4*4)
+			return PCB_LINMER_NONE; /* don't merge if points are within rounding error range: they are the same point in a \_ configuration but with a few nm error that looks like an overlap */
+
 		out->Point1.X = old_line->Point2.X;
 		out->Point1.Y = old_line->Point2.Y;
 		out->Point2.X = new_line->Point2.X;
@@ -294,6 +300,9 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 	}
 
 	if (ov_o2n && ov_n2o) {
+		if (rnd_distance2(old_line->Point2.X, old_line->Point2.Y, new_line->Point2.X, new_line->Point2.Y) <= 4*4)
+			return PCB_LINMER_NONE; /* don't merge if points are within rounding error range: they are the same point in a \_ configuration but with a few nm error that looks like an overlap */
+
 		out->Point1.X = old_line->Point1.X;
 		out->Point1.Y = old_line->Point1.Y;
 		out->Point2.X = new_line->Point1.X;
@@ -302,6 +311,9 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 	}
 
 	if (ov_o2n && ov_n1o) {
+		if (rnd_distance2(old_line->Point2.X, old_line->Point2.Y, new_line->Point1.X, new_line->Point1.Y) <= 4*4)
+			return PCB_LINMER_NONE; /* don't merge if points are within rounding error range: they are the same point in a \_ configuration but with a few nm error that looks like an overlap */
+
 		out->Point1.X = old_line->Point1.X;
 		out->Point1.Y = old_line->Point1.Y;
 		out->Point2.X = new_line->Point2.X;
