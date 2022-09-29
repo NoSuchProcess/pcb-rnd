@@ -33,10 +33,13 @@
 
 extern conf_order_t conf_order;
 
+typedef struct pcb_order_field_s pcb_order_field_t;
+
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	vtp0_t names;
+	int wtab; /* widgets */
 	void *odata;                                   /* implementation-specific data of the current order */
 } order_ctx_t;
 
@@ -47,6 +50,7 @@ struct pcb_order_imp_s {
 	int (*enabled)(pcb_order_imp_t *imp);          /* returns 1 if the plugin is enabled */
 	int (*load_fields)(pcb_order_imp_t *imp, order_ctx_t *octx);
 	void (*free_fields)(pcb_order_imp_t *imp, order_ctx_t *octx);
+	pcb_order_field_t *(*wid2field)(pcb_order_imp_t *imp, order_ctx_t *octx, int wid);
 	void (*populate_dad)(pcb_order_imp_t *imp, order_ctx_t *octx);
 };
 
@@ -62,7 +66,7 @@ typedef enum pcb_order_autoload_e {
 	PCB_OAL_LAYERS
 } pcb_order_autoload_t;
 
-typedef struct pcb_order_field_s {
+struct pcb_order_field_s {
 	rnd_hid_attr_type_t type;
 	rnd_hid_attr_val_t val;
 	char **enum_vals;
@@ -70,7 +74,7 @@ typedef struct pcb_order_field_s {
 	pcb_order_autoload_t autoload;
 	int wid;                /* widget id, if any */
 	char name[1];           /* dynamic length */
-} pcb_order_field_t;
+};
 
 /* Build a hbox from a field */
 void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f);

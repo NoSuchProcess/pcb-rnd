@@ -33,6 +33,7 @@ static int order_dialog(void)
 		RND_DAD_COMPFLAG(order_ctx.dlg, RND_HATF_EXPFILL);
 		RND_DAD_BEGIN_TABBED(order_ctx.dlg, order_ctx.names.array);
 			RND_DAD_COMPFLAG(order_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_LEFT_TAB);
+			order_ctx.wtab = RND_DAD_CURRENT(order_ctx.dlg);
 			for(n = 0; n < pcb_order_imps.used; n++) {
 				imp = pcb_order_imps.array[n];
 				if (imp->load_fields(pcb_order_imps.array[n], &order_ctx) == 0) {
@@ -57,6 +58,68 @@ static int order_dialog(void)
 	return 0;
 }
 
+static pcb_order_field_t *attr2field(order_ctx_t *octx, rnd_hid_attribute_t *attr_btn)
+{
+	int tabi = order_ctx.dlg[order_ctx.wtab].val.lng;
+	int wid = attr_btn - octx->dlg;
+	pcb_order_imp_t *imp;
+
+	if ((tabi < 0) || (tabi >= pcb_order_imps.used))
+		return 0;
+
+	imp = pcb_order_imps.array[tabi];
+	if (imp == NULL)
+		return NULL;
+
+	return imp->wid2field(imp, octx, wid);
+}
+
+static void pcb_order_enum_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	order_ctx_t *octx = caller_data;
+	pcb_order_field_t *f = attr2field(octx, attr_btn);
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "order_dlg internal error: can't find field for widget\nPlease report this bug!\n");
+		return;
+	}
+	f->val.lng = attr_btn->val.lng;
+}
+
+static void pcb_order_int_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	order_ctx_t *octx = caller_data;
+	pcb_order_field_t *f = attr2field(octx, attr_btn);
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "order_dlg internal error: can't find field for widget\nPlease report this bug!\n");
+		return;
+	}
+	f->val.lng = attr_btn->val.lng;
+}
+
+static void pcb_order_coord_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	order_ctx_t *octx = caller_data;
+	pcb_order_field_t *f = attr2field(octx, attr_btn);
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "order_dlg internal error: can't find field for widget\nPlease report this bug!\n");
+		return;
+	}
+	f->val.crd = attr_btn->val.crd;
+}
+
+static void pcb_order_str_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	order_ctx_t *octx = caller_data;
+	pcb_order_field_t *f = attr2field(octx, attr_btn);
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "order_dlg internal error: can't find field for widget\nPlease report this bug!\n");
+		return;
+	}
+	free(f->val.str);
+	f->val.str = rnd_strdup(attr_btn->val.str);
+}
+
+
 void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f)
 {
 	RND_DAD_BEGIN_HBOX(octx->dlg);
@@ -68,19 +131,23 @@ void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f)
 			case RND_HATT_ENUM:
 				RND_DAD_ENUM(octx->dlg, f->enum_vals);
 				RND_DAD_DEFAULT_NUM(octx->dlg, f->val.lng);
+				RND_DAD_CHANGE_CB(octx->dlg, pcb_order_enum_chg_cb);
 				break;
 			case RND_HATT_INTEGER:
 				RND_DAD_INTEGER(octx->dlg);
 				RND_DAD_DEFAULT_NUM(octx->dlg, f->val.lng);
+				RND_DAD_CHANGE_CB(octx->dlg, pcb_order_int_chg_cb);
 				break;
 			case RND_HATT_COORD:
 				RND_DAD_COORD(octx->dlg);
 				RND_DAD_MINMAX(octx->dlg, 0, RND_COORD_MAX);
 				RND_DAD_DEFAULT_NUM(octx->dlg, f->val.crd);
+				RND_DAD_CHANGE_CB(octx->dlg, pcb_order_coord_chg_cb);
 				break;
 			case RND_HATT_STRING:
 				RND_DAD_STRING(octx->dlg);
 				RND_DAD_DEFAULT_PTR(octx->dlg, f->val.str);
+				RND_DAD_CHANGE_CB(octx->dlg, pcb_order_str_chg_cb);
 				break;
 			case RND_HATT_LABEL: break;
 			default:
