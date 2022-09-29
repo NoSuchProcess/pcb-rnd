@@ -36,6 +36,7 @@
 #include <librnd/core/actions.h>
 #include "search.h"
 #include "data_list.h"
+#include "undo.h"
 
 #define PCB do_not_use_PCB
 
