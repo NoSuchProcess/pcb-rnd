@@ -89,7 +89,48 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>6/6mil</Value>
             <Value>8/8mil</Value>
         </MinTrackSpacing>
-        <Qty group="pcb" type="integer" default="5" note="Number of copies to be fabricated"></Qty>
+        <Qty group="pcb" type="enum" default="5" note="Number of copies to be fabricated">
+            <Value>5</Value>
+            <Value>10</Value>
+            <Value>15</Value>
+            <Value>20</Value>
+            <Value>25</Value>
+            <Value>30</Value>
+            <Value>40</Value>
+            <Value>50</Value>
+            <Value>75</Value>
+            <Value>100</Value>
+            <Value>125</Value>
+            <Value>150</Value>
+            <Value>200</Value>
+            <Value>250</Value>
+            <Value>300</Value>
+            <Value>350</Value>
+            <Value>400</Value>
+            <Value>450</Value>
+            <Value>500</Value>
+            <Value>600</Value>
+            <Value>700</Value>
+            <Value>800</Value>
+            <Value>900</Value>
+            <Value>1000</Value>
+            <Value>1500</Value>
+            <Value>2000</Value>
+            <Value>2500</Value>
+            <Value>3000</Value>
+            <Value>3500</Value>
+            <Value>4000</Value>
+            <Value>4500</Value>
+            <Value>5000</Value>
+            <Value>5500</Value>
+            <Value>6000</Value>
+            <Value>6500</Value>
+            <Value>7000</Value>
+            <Value>7500</Value>
+            <Value>8000</Value>
+            <Value>9000</Value>
+            <Value>10000</Value>
+        </Qty>
         <SolderMask group="pcb" type="enum" default="Green" note="Color of the solder mask">
             <Value>Green</Value>
             <Value>Red</Value>
