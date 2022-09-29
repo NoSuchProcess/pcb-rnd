@@ -48,6 +48,7 @@ conf_order_pcbway_t conf_order_pcbway;
 
 #define CFG conf_order_pcbway.plugins.order_pcbway
 #define SERVER "http://api-partner.pcbway.com"
+#define UPLOAD_URL "https://www.pcbway.com/common/PCB-rndUpFile"
 
 typedef struct pcbway_form_s {
 	vtp0_t fields;   /* of pcb_order_field_t */
@@ -427,7 +428,7 @@ TODO("Use CAM export to generate the tarball");
 	fclose(f);
 
 
-	fr = rnd_wget_popen("https://www.pcbway.com/common/PCB-rndUpFile", 0, &wopts);
+	fr = rnd_wget_popen(UPLOAD_URL, 0, &wopts);
 	found = 0;
 	if (fr != NULL) {
 		char *line, tmp[1024], *re, *end, *url;
