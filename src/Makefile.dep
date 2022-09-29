@@ -1216,7 +1216,7 @@
  flag.h data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h conf_core.h \
  ../src_plugins/import_sch2/import_sch_conf.h \
  ../src_plugins/import_sch2/import_sch_dlg.c \
  ../src_plugins/import_sch2/import_sch_conf_fields.h
@@ -2424,7 +2424,7 @@
  rats_patch.h board.h ../src_plugins/order/order.h \
  ../src_plugins/order/order_conf.h \
  ../src_plugins/order_pcbway/order_pcbway_conf.h \
- ../src_plugins/order_pcbway/conf_internal.c \
+ ../src_plugins/order_pcbway/conf_internal.c conf_core.h \
  ../src_plugins/order_pcbway/order_pcbway_conf_fields.h
 ../src_plugins/polycombine/polycombine.o: \
  ../src_plugins/polycombine/polycombine.c ../config.h board.h \
@@ -3839,7 +3839,7 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h move.h \
  funchash_core.h funchash_core_list.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h netlist.h
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h netlist.h event.h
 remove.o: remove.c ../config.h conf_core.h globalconst.h board.h \
  vtroutestyle.h attrib.h global_typedefs.h \
  ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/glyph.h \
