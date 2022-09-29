@@ -230,8 +230,9 @@ static int pcb_pstk_replace_proto(pcb_pstk_t *dst, const pcb_pstk_proto_t *src)
 	return 0;
 }
 
-static const char pcb_acts_PadstackReplace[] = "PadstackReplace(object|selected, buffer|style)";
-static const char pcb_acth_PadstackReplace[] = "Replace padstack prototypes from buffer's first padstack or from style";
+/* DOC: padstackreplace.html */
+static const char pcb_acts_PadstackReplace[] = "PadstackReplace(object|selected, buffer|tool)";
+static const char pcb_acth_PadstackReplace[] = "Replace padstack prototypes from buffer's first padstack or from the via tool";
 fgw_error_t pcb_act_PadstackReplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
@@ -253,7 +254,7 @@ fgw_error_t pcb_act_PadstackReplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				src_proto = pcb_pstk_get_proto(ps);
 			}
 			break;
-		case F_Style:
+		case F_Tool:
 			src_proto = pcb_pstk_get_proto_(pcb->Data, conf_core.design.via_proto);
 			break;
 		default:
