@@ -1,0 +1,13 @@
+Replacing padstacks, especially within multiple subcircuits, is a tedious
+task because the prototype of the new padstack needs to be added in each
+local padstack prototype library (e.g. one per subcircuit). The PadstackReplace()
+action can automate this.
+<p>
+First argument is destination padstack, the object that is going to be changed.
+It is either <i>object</i> for a single padstack under the cursor, or <i>selected</i>
+for all selected padstacks. Both work on padstacks within subcircuits.
+<p>
+The second argument is source padstack, from which the prototype (geometry)
+is copied. It can be <i>tool</i> for using the via tool's padstac prototype
+(which is usually from the current style) or <i>buffer</i> which uses the
+first padstack found in the current buffer.
