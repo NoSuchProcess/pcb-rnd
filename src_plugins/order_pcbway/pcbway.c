@@ -375,15 +375,14 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	}
 	else {
 		postfile = rnd_tempfile_name_new("post.txt");
-		tarname = "gerb.tar";
-		gerbdir = "gerbcam";
-TODO("Do not hardwire posftile and tarname");
+		tarname = rnd_tempfile_name_new("gerb.tar");
+		gerbdir = rnd_tempfile_name_new("gerbcam");
 	}
 	if (CFG.debug || CFG.verbose)
 		rnd_message(RND_MSG_DEBUG, "pcbway_order: post=%s gerb-pack=%s gerbdir=%s\n", postfile, tarname, gerbdir);
 
 	/* create the gerber tarball */
-	rnd_mkdir(hidlib, gerbdir, 0600);
+	rnd_mkdir(hidlib, gerbdir, 0700);
 	tmp = rnd_concat(gerbdir, "/brd", NULL);
 	rv = rnd_actionva(hidlib, "export", "cam", "gerber:PCBWay", "--outfile", tmp, NULL);
 	free(tmp);
@@ -511,7 +510,8 @@ TODO("Do not hardwire posftile and tarname");
 	free(sephdr);
 	if (!CFG.debug) {
 		rnd_tempfile_unlink(postfile);
-TODO("clean up after the gerbers");
+		rnd_tempfile_unlink(tarname);
+TODO("remove the gerber files");
 	}
 }
 
