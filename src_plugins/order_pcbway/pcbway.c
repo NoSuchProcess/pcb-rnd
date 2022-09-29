@@ -37,6 +37,7 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/plugins/lib_wget/lib_wget.h>
@@ -351,6 +352,34 @@ static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 	free(form);
 }
 
+static void rm_files(rnd_hidlib_t *hidlib, const char *dir)
+{
+	DIR *d = rnd_opendir(hidlib, dir);
+	struct dirent *de;
+	gds_t tmp = {0};
+	int saved;
+
+	if (d == NULL)
+		return;
+
+	gds_append_str(&tmp, dir);
+	gds_append(&tmp, '/');
+	saved = tmp.used;
+	while((de = rnd_readdir(d)) != NULL) {
+		int r;
+
+		if (de->d_name[0] == '.')
+			continue;
+
+		tmp.used = saved;
+		gds_append_str(&tmp, de->d_name);
+		r = rnd_unlink(hidlib, tmp.array);
+		rnd_trace("unlink: '%s' %d\n", tmp.array, r);
+	}
+
+	rnd_closedir(d);
+	gds_uninit(&tmp);
+}
 
 
 static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -511,7 +540,8 @@ static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	if (!CFG.debug) {
 		rnd_tempfile_unlink(postfile);
 		rnd_tempfile_unlink(tarname);
-TODO("remove the gerber files");
+		rm_files(hidlib, gerbdir);
+		rnd_unlink(hidlib, gerbdir);
 	}
 }
 
