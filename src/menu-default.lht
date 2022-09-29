@@ -438,6 +438,12 @@ ha:rnd-menu-v1 {
 						ha:Toggle join       = { action=ChangeJoin(SelectedObjects) }
 						-
 						ha:Apply Pen         = { a={<key>s; <key>a; <key>p}; action=ApplyPen(selected) }
+						ha:Replace selected padstacks {
+							li:submenu {
+								ha:with via tool's padstack      = { action=PadstackReplace(selected, tool) }
+								ha:with first padstack in buffer = { action=PadstackReplace(selected, buffer) }
+							}
+						}
 						-
 						ha:Edit properties   = { a={<key>s; <key>p}; action=propedit(selection) }
 					}
@@ -731,6 +737,12 @@ ha:rnd-menu-v1 {
 				ha:Edit geometry/prototype {action=padstackedit }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
+				ha:Replace padstack {
+					li:submenu {
+						ha:with via tool's padstack      = { action=PadstackReplace(object, tool) }
+						ha:with first padstack in buffer = { action=PadstackReplace(object, buffer) }
+					}
+				}
 				-
 				ha:Remove padstack        { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Break up padstack      { action=PadstackBreakup(object) }
@@ -743,6 +755,12 @@ ha:rnd-menu-v1 {
 				ha:Edit properties        { action=propedit(object) }
 				ha:Edit geometry/prototype {action=padstackedit }
 				ha:Set Same Style         { action=SetSame() }
+				ha:Replace padstack {
+					li:submenu {
+						ha:with via tool's padstack      = { action=PadstackReplace(object, tool) }
+						ha:with first padstack in buffer = { action=PadstackReplace(object, buffer) }
+					}
+				}
 			}
 		}
 
