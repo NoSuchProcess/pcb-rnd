@@ -217,12 +217,101 @@ TODO("pstk: style default proto")
 	return 0;
 }
 
+static int pcb_pstk_replace_proto(pcb_pstk_t *dst, const pcb_pstk_proto_t *src)
+{
+	rnd_cardinal_t pid = pcb_pstk_proto_insert_dup(dst->parent.data, src, 0, 1);
+
+	rnd_trace("PSTK replace %ld!\n", pid);
+
+	if (pid != PCB_PADSTACK_INVALID)
+		pcb_pstk_change_instance(dst, &pid, NULL, NULL, NULL, NULL);
+
+	return 0;
+}
+
+static const char pcb_acts_PadstackReplace[] = "PadstackReplace(object|selected, buffer|style)";
+static const char pcb_acth_PadstackReplace[] = "Replace padstack prototypes from buffer's first padstack or from style";
+fgw_error_t pcb_act_PadstackReplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	int dst_op, src_op, ret = 0;
+	pcb_pstk_proto_t *src_proto = NULL;
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, PadstackReplace, dst_op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_KEYWORD, PadstackReplace, src_op = fgw_keyword(&argv[2]));
+
+
+	switch(src_op) {
+		case F_Buffer:
+			break;
+		case F_Style:
+			src_proto = pcb_pstk_get_proto_(pcb->Data, conf_core.design.via_proto);
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "PadstackReplace: Invalid source padstack (second argument)\n");
+			return FGW_ERR_ARG_CONV;
+	}
+
+	if (src_proto == NULL) {
+		rnd_message(RND_MSG_ERROR, "PadstackReplace: source padstack (second argument): prototype not found\n");
+		return FGW_ERR_ARG_CONV;
+	}
+
+	switch(dst_op) {
+		case F_Selected:
+			{
+				rnd_cardinal_t n;
+				int ret = 0;
+				vtp0_t objs;
+				pcb_any_obj_t **o;
+
+				vtp0_init(&objs);
+
+				/* list all selected padstacks within subcircuits */
+				PCB_SUBC_LOOP(pcb->Data); {
+					pcb_data_list_by_flag(subc->data, &objs, PCB_OBJ_PSTK, PCB_FLAG_SELECTED);
+				} PCB_END_LOOP;
+				
+				/* list all selected board padstacks */
+				pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_PSTK, PCB_FLAG_SELECTED);
+				for(n = 0, o = (pcb_any_obj_t **)objs.array; n < vtp0_len(&objs); n++,o++)
+					ret |= pcb_pstk_replace_proto((pcb_pstk_t *)*o, src_proto);
+				RND_ACT_IRES(ret);
+				vtp0_uninit(&objs);
+			}
+			break;
+		case F_Object:
+			{
+				void *ptr1, *ptr2, *ptr3;
+				pcb_pstk_t *ps;
+				pcb_objtype_t type;
+				rnd_coord_t x, y;
+				rnd_hid_get_coords("Select a padstack to replace", &x, &y, 0);
+				if ((type = pcb_search_screen(x, y, PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_PSTK) {
+					rnd_message(RND_MSG_ERROR, "Need a padstack under the cursor\n");
+					break;
+				}
+				ps = (pcb_pstk_t *)ptr2;
+				ret = pcb_pstk_replace_proto(ps, src_proto);
+			}
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "PadstackReplace: Invalid padstack destination (first argument)\n");
+			return FGW_ERR_ARG_CONV;
+	}
+
+	RND_ACT_IRES(ret);
+	return 0;
+}
+
+
 /* --------------------------------------------------------------------------- */
 
 static rnd_action_t padstack_action_list[] = {
 	{"PadstackConvert", pcb_act_padstackconvert, pcb_acth_padstackconvert, pcb_acts_padstackconvert},
 	{"PadstackBreakup", pcb_act_padstackbreakup, pcb_acth_padstackbreakup, pcb_acts_padstackbreakup},
-	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace}
+	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace},
+	{"PadstackReplace", pcb_act_PadstackReplace, pcb_acth_PadstackReplace, pcb_acts_PadstackReplace}
 };
 
 void pcb_pstk_act_init2(void)
