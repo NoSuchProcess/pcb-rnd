@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 typedef enum {
-	PCB_ORDC_ROOT,
+	PCB_ORDC_BLOCK,
 
 	PCB_ORDC_IF,
 	PCB_ORDC_ERROR,

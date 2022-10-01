@@ -20,7 +20,7 @@ int pcb_ordc_parse_str(pcb_ordc_ctx_t *octx, const char *script)
 
 	if (octx->root == NULL) {
 		octx->root = calloc(sizeof(pcb_ordc_node_t), 1);
-		octx->root->type = PCB_ORDC_ROOT;
+		octx->root->type = PCB_ORDC_BLOCK;
 	}
 
 	pcb_ordc_lex_init(&lctx, pcb_ordc_rules);
@@ -80,7 +80,7 @@ void pcb_ordc_print_tree(FILE *f, pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node, in
 	print_ind(f, indlev);
 
 	switch(node->type) {
-		case PCB_ORDC_ROOT:  printf("root\n"); break;
+		case PCB_ORDC_BLOCK:   printf("block\n"); break;
 
 		case PCB_ORDC_IF:      printf("if()\n"); break;
 		case PCB_ORDC_ERROR:   printf("error()\n"); break;

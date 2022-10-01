@@ -10,7 +10,7 @@
 	double d;
 	int i;
 	char *s;
-	void *tree;
+	pcb_ordc_node_t *tree;
 }
 
 
@@ -76,6 +76,7 @@
 %type <tree> stmt_error
 %type <tree> stmt_block
 %type <tree> statement
+%type <tree> statements
 
 %%
 
@@ -118,7 +119,12 @@ expr:
 
 /*** statements ***/
 stmt_block:
-	'{' statement '}'      { $$ = $2; }
+	'{' statements '}'     { $$ = new_node(PCB_ORDC_BLOCK); $$->ch_first = $2; }
+
+statements:
+	  /* empty */
+	| statement statements                { $$ = $1; $$->next = $2; }
+	;
 
 stmt_if:
 	T_IF '(' expr ')' statement           { $$ = binop(PCB_ORDC_IF, $3, $5); }

@@ -51,7 +51,7 @@ typedef union pcb_ordc_tokunion_u
 	double d;
 	int i;
 	char *s;
-	void *tree;
+	pcb_ordc_node_t *tree;
 } pcb_ordc_tokunion_t;
 #line 3 "../src_plugins/order/const_gram.y"
 typedef struct pcb_ordc_tokstruct_s
