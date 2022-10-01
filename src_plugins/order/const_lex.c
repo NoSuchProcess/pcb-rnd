@@ -103,14 +103,14 @@ static int pcb_ordc_user_code(pcb_ordc_ureglex_t *ctx, void * user_ctx, int rule
 		case 0:{
 #line  41 "const_lex.ul"
 	lval->un.i = atoi(ULX_BUF);
-	return T_INTEGER;
+	return T_CINT;
 
 		}
 		return UREGLEX_NOP;
 		case 1:{
 #line  47 "const_lex.ul"
 	lval->un.d = strtod(ULX_BUF, NULL);
-	return T_FLOAT;
+	return T_CFLOAT;
 
 		}
 		return UREGLEX_NOP;

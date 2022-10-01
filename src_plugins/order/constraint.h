@@ -2,10 +2,20 @@
 #define PCB_ORDER_CONSTRAINT
 
 typedef enum {
+	PCB_ORDC_ROOT,
+
 	PCB_ORDC_IF,
 	PCB_ORDC_ERROR,
 
-	PCB_ORDC_INTEGER,
+	/* consts and variables */
+	PCB_ORDC_CINT,
+	PCB_ORDC_CFLOAT,
+	PCB_ORDC_QSTR,
+	PCB_ORDC_ID,
+	PCB_ORDC_VAR,
+
+	/* casts */
+	PCB_ORDC_INT,
 	PCB_ORDC_FLOAT,
 	PCB_ORDC_STRING,
 
@@ -26,15 +36,11 @@ typedef struct pcb_ordc_node_s pcb_ordc_node_t;
 struct pcb_ordc_node_s {
 	pcb_ordc_node_type_t type;
 	union {
-		struct {
-			pcb_ordc_node_t *o1, *o2;
-		} op;
-		union {
-			long i;
-			double d;
-			char *s;
-		} data;
+		long l;
+		double d;
+		char *s;
 	} val;
+	pcb_ordc_node_t *ch_first, *next;
 };
 
 typedef struct pcb_ordc_ctx_s {

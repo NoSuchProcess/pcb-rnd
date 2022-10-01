@@ -41,12 +41,9 @@ typedef short pcb_ordc_int_t;
  *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
-#include <stdio.h>
 #include "../src_plugins/order/const_gram.h"
 #include "../src_plugins/order/constraint.h"
 
-#define binop(a, b, c) NULL
-#define unop(a, b) NULL
 
 #line 8 "../src_plugins/order/const_gram.y"
 typedef union pcb_ordc_tokunion_u
@@ -65,22 +62,24 @@ typedef struct pcb_ordc_tokstruct_s
 typedef pcb_ordc_tokstruct_t pcb_ordc_STYPE;
 
 
-#define T_ID 257
-#define T_INTEGER 258
-#define T_FLOAT 259
+#define T_CINT 257
+#define T_CFLOAT 258
+#define T_STRING 259
 #define T_QSTR 260
-#define T_EQ 261
-#define T_NEQ 262
-#define T_GE 263
-#define T_LE 264
-#define T_GT 265
-#define T_LT 266
-#define T_AND 267
-#define T_OR 268
-#define T_IF 269
-#define T_ERROR 270
-#define T_INT 271
-#define T_STRING 272
+#define T_ID 261
+#define T_EQ 262
+#define T_NEQ 263
+#define T_GE 264
+#define T_LE 265
+#define T_GT 266
+#define T_LT 267
+#define T_AND 268
+#define T_OR 269
+#define T_IF 270
+#define T_ERROR 271
+#define T_INT 272
+#define T_FLOAT 273
+#define T_STR 274
 #define pcb_ordc_ERRCODE 256
 
 #ifndef pcb_ordc_INITSTACKSIZE

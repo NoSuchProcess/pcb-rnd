@@ -42,22 +42,21 @@
  *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
-#include <stdio.h>
 #include "../src_plugins/order/const_gram.h"
 #include "../src_plugins/order/constraint.h"
 
-#define binop(a, b, c) NULL
-#define unop(a, b) NULL
 
 %}
 
-/* Generic */
-%token T_ID T_INTEGER T_FLOAT T_QSTR
+/* Constants */
+%token T_CINT T_CFLOAT T_STRING T_QSTR T_ID
+
+/* Operators */
 %token T_EQ T_NEQ T_GE T_LE T_GT T_LT T_AND T_OR
 
 /* Keywords for builtin functions */
-%token T_IF T_ERROR
-%token T_INT T_FLOAT T_STRING
+%token T_IF T_ERROR T_INT T_FLOAT T_STR
+
 
 %left T_EQ T_NEQ T_GE T_LE T_GT T_LT
 %left T_OR
@@ -69,8 +68,8 @@
 
 %type <s> T_QSTR
 %type <s> T_ID
-%type <i> T_INTEGER
-%type <d> T_FLOAT
+%type <i> T_CINT
+%type <d> T_CFLOAT
 
 %type <tree> expr
 %type <tree> stmt_if
@@ -82,13 +81,13 @@
 
 file:
 	/* empty */
-	|statement file
+	| statement file    { prepend(ctx->root, $1); }
 	;
 
 statement:
-	  stmt_if
-	| stmt_error
-	| stmt_block
+	  stmt_if           { $$ = $1; }
+	| stmt_error        { $$ = $1; }
+	| stmt_block        { $$ = $1; }
 	;
 
 /*** expressions ***/
@@ -107,8 +106,8 @@ expr:
 	| expr '+' expr         { $$ = binop(PCB_ORDC_ADD, $1, $3); }
 	| expr '-' expr         { $$ = binop(PCB_ORDC_SUB, $1, $3); }
 
-	| T_INTEGER             { $$ = NULL; }
-	| T_FLOAT               { $$ = NULL; }
+	| T_CINT                { $$ = int2node($1); }
+	| T_CFLOAT              { $$ = NULL; }
 	| T_QSTR                { $$ = NULL; }
 	| '$' T_ID              { $$ = NULL; }
 
@@ -122,9 +121,73 @@ stmt_block:
 	'{' statement '}'      { $$ = $2; }
 
 stmt_if:
-	T_IF '(' expr ')' statement           { $$ = NULL; }
+	T_IF '(' expr ')' statement           { $$ = binop(PCB_ORDC_IF, $3, $5); }
 	;
 
 stmt_error:
-	T_ERROR '(' T_ID ',' T_QSTR ')' ';'   { $$ = NULL; }
+	T_ERROR '(' T_ID ',' T_QSTR ')' ';'   { $$ = binop(PCB_ORDC_ERROR, id2node($3), qstr2node($5)); }
 	;
+
+%%
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+
+static pcb_ordc_node_t *new_node(pcb_ordc_node_type_t ty)
+{
+	pcb_ordc_node_t *n = calloc(sizeof(pcb_ordc_node_t), 1);
+	n->type = ty;
+	return n;
+}
+
+static pcb_ordc_node_t *binop(pcb_ordc_node_type_t ty, pcb_ordc_node_t *a, pcb_ordc_node_t *b)
+{
+	pcb_ordc_node_t *n = new_node(ty);
+	assert((a == NULL) || (a->next == NULL));
+	assert((b == NULL) || (b->next == NULL));
+	n->ch_first = a;
+	if (a != NULL)
+		a->next = b;
+	return n;
+}
+
+#define unop(ty, a) binop(ty, a, NULL)
+
+static pcb_ordc_node_t *id2node(char *s)
+{
+	pcb_ordc_node_t *n = new_node(PCB_ORDC_ID);
+	n->val.s = s;
+	return n;
+}
+
+static pcb_ordc_node_t *qstr2node(char *s)
+{
+	pcb_ordc_node_t *n = new_node(PCB_ORDC_QSTR);
+	n->val.s = s;
+	return n;
+}
+
+static pcb_ordc_node_t *int2node(long l)
+{
+	pcb_ordc_node_t *n = new_node(PCB_ORDC_CINT);
+	n->val.l = l;
+	return n;
+}
+
+static pcb_ordc_node_t *float2node(double d)
+{
+	pcb_ordc_node_t *n = new_node(PCB_ORDC_CFLOAT);
+	n->val.d = d;
+	return n;
+}
+
+
+static void prepend(pcb_ordc_node_t *parent, pcb_ordc_node_t *newch)
+{
+	assert(newch->next == NULL);
+
+	newch->next = parent->ch_first;
+	parent->ch_first = newch;
+}
+

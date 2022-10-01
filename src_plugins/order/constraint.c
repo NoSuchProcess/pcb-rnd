@@ -1,5 +1,6 @@
 #include "config.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include "const_gram.h"
 #include "constraint.h"
 #include "const_gram.h"
