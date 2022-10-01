@@ -39,6 +39,7 @@
 #include "plug_footprint.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/paths.h>
 #include "fp_wget_conf.h"
 #include "globalconst.h"
 
@@ -142,11 +143,14 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	fp_get_mode wmode = FP_WGET_OFFLINE;
 	pcb_fplibrary_t *l;
 	char last_sum_fn[RND_PATH_MAX];
+	char *cache_dir;
 
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
 
-	rnd_snprintf(last_sum_fn, sizeof(last_sum_fn), "%s" RND_DIR_SEPARATOR_S "edakrill.last", conf_fp_wget.plugins.fp_wget.cache_dir);
+	cache_dir = rnd_build_fn(NULL, conf_fp_wget.plugins.fp_wget.cache_dir);
+
+	rnd_snprintf(last_sum_fn, sizeof(last_sum_fn), "%s" RND_DIR_SEPARATOR_S "edakrill.last", cache_dir);
 
 	gds_init(&vpath);
 	gds_append_str(&vpath, REQUIRE_PATH_PREFIX);
@@ -158,7 +162,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (force || (conf_fp_wget.plugins.fp_wget.auto_update_edakrill))
 		wmode &= ~FP_WGET_OFFLINE;
 
-	if (fp_wget_open(url_idx_md5, conf_fp_wget.plugins.fp_wget.cache_dir, &f, &fctx, wmode) != 0) {
+	if (fp_wget_open(url_idx_md5, cache_dir, &f, &fctx, wmode) != 0) {
 		if (wmode & FP_WGET_OFFLINE) /* accept that we don't have the index in offline mode */
 			goto quit;
 		goto err;
@@ -184,7 +188,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	else
 		mode = 0;
 
-	if (fp_wget_open(url_idx_list, conf_fp_wget.plugins.fp_wget.cache_dir, &f, &fctx, mode) != 0) {
+	if (fp_wget_open(url_idx_list, cache_dir, &f, &fctx, mode) != 0) {
 		rnd_message(RND_MSG_ERROR, "edakrill: failed to download the new list\n");
 		rnd_remove(NULL, last_sum_fn); /* make sure it is downloaded next time */
 		goto err;
@@ -235,10 +239,12 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	fp_wget_close(&f, &fctx);
 
 	quit:;
+	free(cache_dir);
 	gds_uninit(&vpath);
 	return 0;
 
 	err:;
+	free(cache_dir);
 	gds_uninit(&vpath);
 	return -1;
 }
@@ -287,7 +293,7 @@ static int search_edakrill(char *out, int out_len, FILE *f, const char *fn)
 FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
 {
 	gds_t s;
-	char tmp[1024];
+	char tmp[1024], *cache_dir;
 	FILE *f = NULL;
 	int from_path = (path != NULL) && (strcmp(path, REQUIRE_PATH_PREFIX) == 0);
 
@@ -301,8 +307,10 @@ FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, 
 	if (*name == '/')
 		name++;
 
+	cache_dir = rnd_build_fn(NULL, conf_fp_wget.plugins.fp_wget.cache_dir);
+
 	if (from_path) {
-		if (fp_wget_search(tmp, sizeof(tmp), name, !conf_fp_wget.plugins.fp_wget.auto_update_edakrill, url_idx_list, conf_fp_wget.plugins.fp_wget.cache_dir, search_edakrill) != 0)
+		if (fp_wget_search(tmp, sizeof(tmp), name, !conf_fp_wget.plugins.fp_wget.auto_update_edakrill, url_idx_list, cache_dir, search_edakrill) != 0)
 			goto bad;
 		name = tmp;
 	}
@@ -311,13 +319,14 @@ FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, 
 	gds_append_str(&s, FP_URL);
 	gds_append_str(&s, name);
 
-	fp_wget_open(s.array, conf_fp_wget.plugins.fp_wget.cache_dir, &f, &(fctx->field[FIELD_WGET_CTX].i), FP_WGET_UPDATE);
+	fp_wget_open(s.array, cache_dir, &f, &(fctx->field[FIELD_WGET_CTX].i), FP_WGET_UPDATE);
 
 	gds_uninit(&s);
 
 	bad:;
 	fctx->backend = ctx;
 
+	free(cache_dir);
 	return f;
 }
 
