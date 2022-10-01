@@ -14,6 +14,8 @@ typedef enum {
 	PCB_ORDC_NEQ,
 	PCB_ORDC_GE,
 	PCB_ORDC_LE,
+	PCB_ORDC_GT,
+	PCB_ORDC_LT,
 	PCB_ORDC_ADD,
 	PCB_ORDC_SUB
 } pcb_ordc_node_type_t;
@@ -37,5 +39,8 @@ typedef struct pcb_ordc_ctx_s {
 	int dummy;
 	pcb_ordc_node_t *root;
 } pcb_ordc_ctx_t;
+
+int pcb_ordc_parse_str(pcb_ordc_ctx_t *ctx, const char *script);
+
 
 #endif
