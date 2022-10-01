@@ -2399,6 +2399,13 @@
  vtpadstack_t.h event.h change.h board.h vtroutestyle.h rats_patch.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h plug_footprint.h data.h \
  obj_subc.h netlist.h funchash_core.h funchash_core_list.h search.h
+../src_plugins/order/const_gram.o: ../src_plugins/order/const_gram.c \
+ ../src_plugins/order/const_gram.h ../src_plugins/order/constraint.h
+../src_plugins/order/const_lex.o: ../src_plugins/order/const_lex.c \
+ ../src_plugins/order/const_gram.h ../src_plugins/order/constraint.h
+../src_plugins/order/constraint.o: ../src_plugins/order/constraint.c \
+ ../src_plugins/order/const_gram.h ../src_plugins/order/const_gram.h \
+ ../src_plugins/order/constraint.h ../src_plugins/order/constraint.h
 ../src_plugins/order/order.o: ../src_plugins/order/order.c ../config.h \
  board.h vtroutestyle.h attrib.h global_typedefs.h \
  ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/glyph.h \
