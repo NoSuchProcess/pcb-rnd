@@ -52,7 +52,7 @@
 %token T_CINT T_CFLOAT T_STRING T_QSTR T_ID
 
 /* Operators */
-%token T_EQ T_NEQ T_GE T_LE T_GT T_LT T_AND T_OR
+%token T_EQ T_NEQ T_GE T_LE T_GT T_LT T_AND T_OR T_NOT
 
 /* Keywords for builtin functions */
 %token T_IF T_ERROR T_INT T_FLOAT T_STR
@@ -63,7 +63,7 @@
 %left T_AND
 %left '+' '-'
 %left '*' '/' '%'
-%left '!'
+%left T_NOT
 %right '(' ')'
 
 %type <s> T_QSTR
@@ -93,6 +93,7 @@ statement:
 /*** expressions ***/
 expr:
 	  '-' expr              { $$ = unop(PCB_ORDC_NEG, $2); }
+	| T_NOT expr            { $$ = unop(PCB_ORDC_NOT, $2); }
 	| '(' expr ')'          { $$ = $2; }
 	| expr T_EQ expr        { $$ = binop(PCB_ORDC_EQ, $1, $3); }
 	| expr T_NEQ expr       { $$ = binop(PCB_ORDC_NEQ, $1, $3); }

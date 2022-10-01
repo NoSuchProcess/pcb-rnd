@@ -18,7 +18,7 @@ int ureglex_strtree_exec(ureglex_strtree_t *ctx, int chr);
 
 #include <stdlib.h>
 #include "ureglex/exec.h"
-int pcb_ordc_strings[] = {2,33,95,2,38,78,2,60,83,2,61,100,2,62,89,2,101,62,2,102,31,2,105,42,2,115,49,2,124,73,4,1,108,1,111,1,97,1,116,3,18,4,2,102,116,2,110,111,4,1,116,1,114,1,105,1,110,1,103,3,16,4,1,114,1,114,1,111,1,114,3,15,4,1,124,3,13,4,1,38,3,12,4,2,61,105,3,11,4,2,61,108,3,10,4,1,61,3,7,4,1,61,3,6,4,3,9,4,3,8,4,1,116,3,17,4,3,14,4};
+int pcb_ordc_strings[] = {2,33,83,2,38,78,2,60,89,2,61,101,2,62,95,2,101,62,2,102,31,2,105,42,2,115,49,2,124,73,4,1,108,1,111,1,97,1,116,3,19,4,2,102,120,2,110,115,4,1,116,1,114,1,105,1,110,1,103,3,17,4,1,114,1,114,1,111,1,114,3,16,4,1,124,3,14,4,1,38,3,13,4,2,61,106,3,12,4,2,61,109,3,11,4,2,61,112,3,10,4,1,61,3,6,4,3,7,4,3,9,4,3,8,4,1,116,3,18,4,3,15,4};
 ureglex_precomp_t pcb_ordc_rules[] = {
 	{pcb_ordc_nfa_0, pcb_ordc_bittab_0, pcb_ordc_chrtyp_0, 1.000000},
 	{pcb_ordc_nfa_1, pcb_ordc_bittab_0, pcb_ordc_chrtyp_0, 1.000000},
@@ -39,9 +39,10 @@ ureglex_precomp_t pcb_ordc_rules[] = {
 	{ureglex_nfa_str, NULL, NULL, 1.000000},
 	{ureglex_nfa_str, NULL, NULL, 1.000000},
 	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
 	{NULL, NULL, NULL, 0.0}
 };
-#define pcb_ordc_num_rules 19
+#define pcb_ordc_num_rules 20
 typedef struct pcb_ordc_ureglex_s {
 	ureglex_precomp_t *rules;
 	char buff[256];
@@ -165,30 +166,34 @@ static int pcb_ordc_user_code(pcb_ordc_ureglex_t *ctx, void * user_ctx, int rule
 		}
 		return UREGLEX_NOP;
 		case 12:{
-               return T_AND;
+                return T_NOT;
 		}
 		return UREGLEX_NOP;
 		case 13:{
-               return T_OR;
+               return T_AND;
 		}
 		return UREGLEX_NOP;
 		case 14:{
-               return T_IF;
+               return T_OR;
 		}
 		return UREGLEX_NOP;
 		case 15:{
-            return T_ERROR;
+               return T_IF;
 		}
 		return UREGLEX_NOP;
 		case 16:{
-           return T_STRING;
+            return T_ERROR;
 		}
 		return UREGLEX_NOP;
 		case 17:{
-              return T_INT;
+           return T_STRING;
 		}
 		return UREGLEX_NOP;
 		case 18:{
+              return T_INT;
+		}
+		return UREGLEX_NOP;
+		case 19:{
             return T_FLOAT;
 		}
 		return UREGLEX_NOP;

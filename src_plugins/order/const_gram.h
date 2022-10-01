@@ -75,11 +75,12 @@ typedef pcb_ordc_tokstruct_t pcb_ordc_STYPE;
 #define T_LT 267
 #define T_AND 268
 #define T_OR 269
-#define T_IF 270
-#define T_ERROR 271
-#define T_INT 272
-#define T_FLOAT 273
-#define T_STR 274
+#define T_NOT 270
+#define T_IF 271
+#define T_ERROR 272
+#define T_INT 273
+#define T_FLOAT 274
+#define T_STR 275
 #define pcb_ordc_ERRCODE 256
 
 #ifndef pcb_ordc_INITSTACKSIZE

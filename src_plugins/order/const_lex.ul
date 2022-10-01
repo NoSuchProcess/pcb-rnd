@@ -75,6 +75,7 @@ rulestring >=                return T_GE;
 rulestring <=                return T_LE;
 rulestring >                 return T_GT;
 rulestring <                 return T_LT;
+rulestring !                 return T_NOT;
 rulestring &&                return T_AND;
 rulestring ||                return T_OR;
 
