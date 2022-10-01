@@ -1,6 +1,8 @@
 #ifndef PCB_ORDER_CONSTRAINT
 #define PCB_ORDER_CONSTRAINT
 
+#include <stdio.h>
+
 typedef enum {
 	PCB_ORDC_ROOT,
 
@@ -49,6 +51,9 @@ typedef struct pcb_ordc_ctx_s {
 } pcb_ordc_ctx_t;
 
 int pcb_ordc_parse_str(pcb_ordc_ctx_t *ctx, const char *script);
+
+/*** For debug ***/
+void pcb_ordc_print_tree(FILE *f, pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node, int indlev);
 
 
 #endif
