@@ -266,8 +266,19 @@ static void conv2str(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
 	} while(0)
 
 
+/* Free temporary vals used by BINOP_GET_OPS */
 #define BINOP_FREE_OPS  do { val_free(&a); val_free(&b); val_free(&c); } while(0)
 
+
+/* Convert a and b to double and set dst long val executing code on da and db.
+   If any op is string, return error */
+#define BINOP_NUMERIC(code) \
+	do { \
+		BINOP_GET_OPS; \
+		if (!binop_str) { code; } \
+		else dst->type = PCB_ORDC_VERR; \
+		BINOP_FREE_OPS; \
+	} while(0)
 
 void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_t *node)
 {
@@ -291,10 +302,13 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 
 		case PCB_ORDC_IF:
 			pcb_ordc_exec_node(ctx, &a, node->ch_first);
-			if (val2bool(a) == 1) {
+			r = val2bool(a);
+			if (r == 1) {
 				pcb_ordc_exec_node(ctx, &b, node->ch_first->next);
 				val_free(&b);
 			}
+			else if (r == -1)
+				dst->type = PCB_ORDC_VERR;
 			val_free(&a);
 			break;
 
@@ -305,6 +319,7 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 		case PCB_ORDC_CINT:
 			dst->type = PCB_ORDC_VLNG; dst->val.l = node->val.l;
 			break;
+
 		case PCB_ORDC_CFLOAT:
 			dst->type = PCB_ORDC_VDBL; dst->val.d = node->val.d;
 			break;
@@ -358,9 +373,19 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 			BINOP_FREE_OPS;
 
 		case PCB_ORDC_GE:
+			BINOP_NUMERIC(dst->val.l = (da >= db));
+			break;
+
 		case PCB_ORDC_LE:
+			BINOP_NUMERIC(dst->val.l = (da <= db));
+			break;
+
 		case PCB_ORDC_GT:
+			BINOP_NUMERIC(dst->val.l = (da > db));
+			break;
+
 		case PCB_ORDC_LT:
+			BINOP_NUMERIC(dst->val.l = (da < db));
 			break;
 
 		case PCB_ORDC_AND:
@@ -385,15 +410,34 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 			val_free(&a);
 			break;
 
+		case PCB_ORDC_ADD:
+			dst->type = PCB_ORDC_VDBL;
+			BINOP_NUMERIC(dst->val.d = da + db);
+			break;
 
-		case PCB_ORDC_ADD:     printf("add\n"); break;
-		case PCB_ORDC_SUB:     printf("sub\n"); break;
-		case PCB_ORDC_MULT:    printf("mult\n"); break;
-		case PCB_ORDC_DIV:     printf("div\n"); break;
-		case PCB_ORDC_MOD:     printf("mod\n"); break;
+		case PCB_ORDC_SUB:
+			dst->type = PCB_ORDC_VDBL;
+			BINOP_NUMERIC(dst->val.d = da - db);
+			break;
+
+		case PCB_ORDC_MULT:
+			dst->type = PCB_ORDC_VDBL;
+			BINOP_NUMERIC(dst->val.d = da * db);
+			break;
+
+		case PCB_ORDC_DIV:
+			dst->type = PCB_ORDC_VDBL;
+			BINOP_NUMERIC(dst->val.d = (db == 0) ? 0 : (da / db));
+			break;
+
+		case PCB_ORDC_MOD:
+			dst->type = PCB_ORDC_VDBL;
+			BINOP_NUMERIC(dst->val.d = (db == 0) ? 0 : fmod(da, db));
+			break;
 
 		default:
-			printf("UNKNONW %d\n", node->type);
+			dst->type = PCB_ORDC_VERR;
+			break;
 	}
 }
 
