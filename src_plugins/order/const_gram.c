@@ -15,49 +15,64 @@
 #include "../src_plugins/order/const_gram.h"
 static const pcb_ordc_int_t pcb_ordc_lhs[] = {                    -1,
     0,    0,    5,    5,    5,    1,    1,    1,    1,    1,
-    1,    1,    1,    1,    1,    1,    1,    1,    1,    4,
-    2,    3,
+    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+    1,    1,    1,    1,    4,    2,    3,
 };
 static const pcb_ordc_int_t pcb_ordc_len[] = {                     2,
     0,    2,    1,    1,    1,    2,    3,    3,    3,    3,
-    3,    3,    3,    3,    3,    1,    1,    1,    2,    3,
-    5,    7,
+    3,    3,    3,    3,    3,    3,    3,    1,    1,    1,
+    2,    4,    4,    4,    3,    5,    7,
 };
 static const pcb_ordc_int_t pcb_ordc_defred[] = {                  0,
     0,    0,    0,    0,    3,    4,    5,    0,    0,    0,
-    0,    2,   16,   17,   18,    0,    0,    0,    0,    0,
-   20,    6,    0,   19,    0,    0,    0,    0,    0,    0,
+    0,    2,   18,    0,   20,    0,    0,    0,    0,    0,
+    0,    0,   25,    0,    0,    0,    6,    0,   21,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    7,    0,    0,    0,    0,    0,
-    0,   14,   15,   21,    0,    0,   22,
+    0,    0,    0,   16,   17,   26,    0,   24,   22,   23,
+    0,   27,
 };
 static const pcb_ordc_int_t pcb_ordc_dgoto[] = {                   4,
-   19,    5,    6,    7,    8,
+   21,    5,    6,    7,    8,
 };
-static const pcb_ordc_int_t pcb_ordc_sindex[] = {               -122,
-  -29,  -26, -122,    0,    0,    0,    0, -122,   14, -242,
- -100,    0,    0,    0,    0,   14,   14, -230,  -41,  -16,
-    0,    0,  -38,    0,   14,   14,   14,   14,   14,   14,
-   14,   14, -122, -229,    0,  -33,  -33,  -33,  -33,  -33,
-  -33,    0,    0,    0,  -11,  -27,    0,
+static const pcb_ordc_int_t pcb_ordc_sindex[] = {               -121,
+  -28,  -27, -121,    0,    0,    0,    0, -121,  -36, -243,
+ -110,    0,    0,  -22,    0,  -20,  -18,  -36,  -36, -241,
+  -35,  -21,    0,  -36,  -36,  -36,    0,  -24,    0,  -36,
+  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36, -121,
+ -236,  -16,   -8,    1,    0,   64,   64,   64,   64,   64,
+   64,  -38,  -42,    0,    0,    0,  -15,    0,    0,    0,
+  -31,    0,
 };
-static const pcb_ordc_int_t pcb_ordc_rindex[] = {                 33,
-    0,    0,    0,    0,    0,    0,    0,   33,    0,    0,
+static const pcb_ordc_int_t pcb_ordc_rindex[] = {                 30,
+    0,    0,    0,    0,    0,    0,    0,   30,    0,    0,
+    0,    0,    0,    9,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,  -28,  -25,  -15,  -12,   -2,
-    1,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,   33,   39,   45,   51,   57,
+   63,   17,   25,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,
 };
-static const pcb_ordc_int_t pcb_ordc_gindex[] = {                 26,
-   -8,    0,    0,    0,    3,
+static const pcb_ordc_int_t pcb_ordc_gindex[] = {                 23,
+   87,    0,    0,    0,    8,
 };
-#define pcb_ordc_TABLESIZE 274
-static const pcb_ordc_int_t pcb_ordc_table[] = {                  33,
-    3,   31,   35,   32,   31,   11,   32,   22,   23,   31,
-    9,   32,    8,   10,   20,    9,   36,   37,   38,   39,
-   40,   41,   42,   43,   21,   10,   24,   34,   11,   46,
-   45,   47,    1,   12,    0,   44,    0,    0,   12,    0,
-    0,   13,    0,    0,    0,    0,    0,    0,    0,   18,
-    0,    0,    0,   17,    0,    0,    0,    0,   16,    0,
+#define pcb_ordc_TABLESIZE 332
+static const pcb_ordc_int_t pcb_ordc_table[] = {                  20,
+   38,    3,   39,   19,   38,   40,   39,   38,   18,   39,
+   11,    9,   10,   22,   23,   29,   45,   24,   38,   25,
+   39,   26,   41,   57,   58,   61,   38,   62,   39,    1,
+   12,    0,   59,    0,   38,    0,   39,    0,    0,    0,
+    0,   60,    0,   38,    0,   39,    0,   56,    0,   19,
+    0,   19,    0,   19,    0,    0,    0,   14,    0,    0,
+    0,    0,    0,    0,    0,   15,    0,    0,    0,    0,
+    0,    0,    0,    8,    0,    0,    0,    0,    0,    9,
+    0,    0,    0,    0,    0,   10,    0,    0,    0,    0,
+    0,   11,    0,    0,    0,    0,    0,   12,    0,    0,
+    0,    0,    0,   13,   27,   28,   38,    0,   39,    0,
+   42,   43,   44,    0,    0,    0,   46,   47,   48,   49,
+   50,   51,   52,   53,   54,   55,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    1,    2,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -65,29 +80,35 @@ static const pcb_ordc_int_t pcb_ordc_table[] = {                  33,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    1,    2,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,   25,
-   26,   27,   25,   26,   27,    0,   28,   29,   30,   28,
-   29,   30,    8,    8,    8,    9,    9,    9,    0,    8,
-    8,    8,    9,    9,    9,   10,   10,   10,   11,   11,
-   11,    0,   10,   10,   10,   11,   11,   11,   12,   12,
-   12,   13,   13,   13,    0,   12,   12,   12,   13,   13,
-   13,   13,   14,   15,
+    0,   13,   14,   15,   36,   30,   31,   32,   33,   34,
+   35,   36,   37,    0,   16,   17,   30,   31,   32,   33,
+   34,   35,   36,   37,   30,   31,   32,   33,   34,   35,
+   36,   37,   30,   31,   32,   33,   34,   35,   36,   37,
+    0,   30,   31,   32,   33,   34,   35,   36,   37,   19,
+   19,   19,   19,   19,   19,   19,   19,   14,   14,   14,
+   14,   14,   14,   14,   14,   15,   15,   15,   15,   15,
+   15,    0,   15,    8,    8,    8,    8,    8,    8,    9,
+    9,    9,    9,    9,    9,   10,   10,   10,   10,   10,
+   10,   11,   11,   11,   11,   11,   11,   12,   12,   12,
+   12,   12,   12,   13,   13,   13,   13,   13,   13,    0,
+   36,   37,
 };
-static const pcb_ordc_int_t pcb_ordc_check[] = {                  41,
-  123,   43,   41,   45,   43,    3,   45,   16,   17,   43,
-   40,   45,   41,   40,  257,   41,   25,   26,   27,   28,
-   29,   30,   31,   32,  125,   41,  257,   44,   41,   41,
-  260,   59,    0,    8,   -1,   33,   -1,   -1,   41,   -1,
-   -1,   41,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   36,
-   -1,   -1,   -1,   40,   -1,   -1,   -1,   -1,   45,   -1,
+static const pcb_ordc_int_t pcb_ordc_check[] = {                  36,
+   43,  123,   45,   40,   43,   41,   45,   43,   45,   45,
+    3,   40,   40,  257,  125,  257,   41,   40,   43,   40,
+   45,   40,   44,  260,   41,   41,   43,   59,   45,    0,
+    8,   -1,   41,   -1,   43,   -1,   45,   -1,   -1,   -1,
+   -1,   41,   -1,   43,   -1,   45,   -1,   40,   -1,   41,
+   -1,   43,   -1,   45,   -1,   -1,   -1,   41,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   41,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   41,   -1,   -1,   -1,   -1,   -1,   41,
+   -1,   -1,   -1,   -1,   -1,   41,   -1,   -1,   -1,   -1,
+   -1,   41,   -1,   -1,   -1,   -1,   -1,   41,   -1,   -1,
+   -1,   -1,   -1,   41,   18,   19,   43,   -1,   45,   -1,
+   24,   25,   26,   -1,   -1,   -1,   30,   31,   32,   33,
+   34,   35,   36,   37,   38,   39,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,  269,  270,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
@@ -95,21 +116,18 @@ static const pcb_ordc_int_t pcb_ordc_check[] = {                  41,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,  264,  265,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  261,
-  262,  263,  261,  262,  263,   -1,  268,  269,  270,  268,
-  269,  270,  261,  262,  263,  261,  262,  263,   -1,  268,
-  269,  270,  268,  269,  270,  261,  262,  263,  261,  262,
-  263,   -1,  268,  269,  270,  268,  269,  270,  261,  262,
-  263,  261,  262,  263,   -1,  268,  269,  270,  268,  269,
-  270,  258,  259,  260,
+   -1,  258,  259,  260,  267,  261,  262,  263,  264,  265,
+  266,  267,  268,   -1,  271,  272,  261,  262,  263,  264,
+  265,  266,  267,  268,  261,  262,  263,  264,  265,  266,
+  267,  268,  261,  262,  263,  264,  265,  266,  267,  268,
+   -1,  261,  262,  263,  264,  265,  266,  267,  268,  261,
+  262,  263,  264,  265,  266,  267,  268,  261,  262,  263,
+  264,  265,  266,  267,  268,  261,  262,  263,  264,  265,
+  266,   -1,  268,  261,  262,  263,  264,  265,  266,  261,
+  262,  263,  264,  265,  266,  261,  262,  263,  264,  265,
+  266,  261,  262,  263,  264,  265,  266,  261,  262,  263,
+  264,  265,  266,  261,  262,  263,  264,  265,  266,   -1,
+  267,  268,
 };
 #define pcb_ordc_FINAL 4
 #define pcb_ordc_MAXTOKEN 272
@@ -126,8 +144,8 @@ static const char *const pcb_ordc_name[] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,"T_ID","T_INTEGER","T_FLOAT","T_QSTR","T_EQ","T_NEQ","T_GE",
-"T_IF","T_ERROR","T_INTVAL","T_FLOATVAL","T_LE","T_GT","T_LT","\"||\"","\"&&\"",
-0,0,0,0,0,0,0,"illegal-symbol",
+"T_LE","T_GT","T_LT","T_AND","T_OR","T_IF","T_ERROR","T_INT","T_STRING",0,0,0,0,
+0,0,0,"illegal-symbol",
 };
 static const char *const pcb_ordc_rule[] = {
 "$accept : file",
@@ -144,12 +162,17 @@ static const char *const pcb_ordc_rule[] = {
 "expr : expr T_LE expr",
 "expr : expr T_GT expr",
 "expr : expr T_LT expr",
+"expr : expr T_AND expr",
+"expr : expr T_OR expr",
 "expr : expr '+' expr",
 "expr : expr '-' expr",
 "expr : T_INTEGER",
 "expr : T_FLOAT",
 "expr : T_QSTR",
 "expr : '$' T_ID",
+"expr : T_INT '(' expr ')'",
+"expr : T_STRING '(' expr ')'",
+"expr : T_FLOAT '(' expr ')'",
 "stmt_block : '{' statement '}'",
 "stmt_if : T_IF '(' expr ')' statement",
 "stmt_error : T_ERROR '(' T_ID ',' T_QSTR ')' ';'",
@@ -394,20 +417,20 @@ case 13:
 	{ yyctx->val.un.tree = binop(PCB_ORDC_LT, yyctx->stack.l_mark[-2].un.tree, yyctx->stack.l_mark[0].un.tree); }
 break;
 case 14:
-#line 105 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = binop(PCB_ORDC_ADD, yyctx->stack.l_mark[-2].un.tree, yyctx->stack.l_mark[0].un.tree); }
+#line 104 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = binop(PCB_ORDC_AND, yyctx->stack.l_mark[-2].un.tree, yyctx->stack.l_mark[0].un.tree); }
 break;
 case 15:
-#line 106 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = binop(PCB_ORDC_SUB, yyctx->stack.l_mark[-2].un.tree, yyctx->stack.l_mark[0].un.tree); }
+#line 105 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = binop(PCB_ORDC_OR, yyctx->stack.l_mark[-2].un.tree, yyctx->stack.l_mark[0].un.tree); }
 break;
 case 16:
-#line 108 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = NULL; }
+#line 107 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = binop(PCB_ORDC_ADD, yyctx->stack.l_mark[-2].un.tree, yyctx->stack.l_mark[0].un.tree); }
 break;
 case 17:
-#line 109 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = NULL; }
+#line 108 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = binop(PCB_ORDC_SUB, yyctx->stack.l_mark[-2].un.tree, yyctx->stack.l_mark[0].un.tree); }
 break;
 case 18:
 #line 110 "../src_plugins/order/const_gram.y"
@@ -418,18 +441,38 @@ case 19:
 	{ yyctx->val.un.tree = NULL; }
 break;
 case 20:
-#line 116 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = yyctx->stack.l_mark[-1].un.tree; }
+#line 112 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = NULL; }
 break;
 case 21:
-#line 119 "../src_plugins/order/const_gram.y"
+#line 113 "../src_plugins/order/const_gram.y"
 	{ yyctx->val.un.tree = NULL; }
 break;
 case 22:
-#line 123 "../src_plugins/order/const_gram.y"
+#line 115 "../src_plugins/order/const_gram.y"
 	{ yyctx->val.un.tree = NULL; }
 break;
-#line 445 "../src_plugins/order/const_gram.c"
+case 23:
+#line 116 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = NULL; }
+break;
+case 24:
+#line 117 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = NULL; }
+break;
+case 25:
+#line 122 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = yyctx->stack.l_mark[-1].un.tree; }
+break;
+case 26:
+#line 125 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = NULL; }
+break;
+case 27:
+#line 129 "../src_plugins/order/const_gram.y"
+	{ yyctx->val.un.tree = NULL; }
+break;
+#line 488 "../src_plugins/order/const_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;

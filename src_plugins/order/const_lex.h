@@ -54,7 +54,7 @@ int ureglex_exec(ureglex_t *r);
 #endif
 /* exec.h END } */
 
-#define pcb_ordc_num_rules 16
+#define pcb_ordc_num_rules 19
 typedef struct pcb_ordc_ureglex_s {
 	ureglex_precomp_t *rules;
 	char buff[256];

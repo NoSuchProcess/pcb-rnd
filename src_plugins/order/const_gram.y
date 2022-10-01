@@ -53,15 +53,15 @@
 
 /* Generic */
 %token T_ID T_INTEGER T_FLOAT T_QSTR
-%token T_EQ T_NEQ T_GE
+%token T_EQ T_NEQ T_GE T_LE T_GT T_LT T_AND T_OR
 
 /* Keywords for builtin functions */
 %token T_IF T_ERROR
-%token T_INTVAL T_FLOATVAL
+%token T_INT T_FLOAT T_STRING
 
 %left T_EQ T_NEQ T_GE T_LE T_GT T_LT
-%left "||"
-%left "&&"
+%left T_OR
+%left T_AND
 %left '+' '-'
 %left '*' '/' '%'
 %left '!'
@@ -101,6 +101,8 @@ expr:
 	| expr T_LE expr        { $$ = binop(PCB_ORDC_LE, $1, $3); }
 	| expr T_GT expr        { $$ = binop(PCB_ORDC_GT, $1, $3); }
 	| expr T_LT expr        { $$ = binop(PCB_ORDC_LT, $1, $3); }
+	| expr T_AND expr       { $$ = binop(PCB_ORDC_AND, $1, $3); }
+	| expr T_OR expr        { $$ = binop(PCB_ORDC_OR, $1, $3); }
 
 	| expr '+' expr         { $$ = binop(PCB_ORDC_ADD, $1, $3); }
 	| expr '-' expr         { $$ = binop(PCB_ORDC_SUB, $1, $3); }
@@ -109,6 +111,10 @@ expr:
 	| T_FLOAT               { $$ = NULL; }
 	| T_QSTR                { $$ = NULL; }
 	| '$' T_ID              { $$ = NULL; }
+
+	| T_INT '(' expr ')'    { $$ = NULL; }
+	| T_STRING '(' expr ')' { $$ = NULL; }
+	| T_FLOAT '(' expr ')'  { $$ = NULL; }
 	;
 
 /*** statements ***/

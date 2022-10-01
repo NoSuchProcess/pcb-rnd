@@ -60,7 +60,7 @@ code
 	return T_QSTR;
 
 rule chars
-regex [(){}|$&,*/+%-]
+regex [(){}$,*/+%;-]
 code
 	return *ULX_BUF;
 
@@ -75,8 +75,11 @@ rulestring >=                return T_GE;
 rulestring <=                return T_LE;
 rulestring >                 return T_GT;
 rulestring <                 return T_LT;
+rulestring &&                return T_AND;
+rulestring ||                return T_OR;
 
 rulestring if                return T_IF;
 rulestring error             return T_ERROR;
-rulestring intval            return T_INTVAL;
-rulestring floatval          return T_FLOATVAL;
+rulestring string            return T_STRING;
+rulestring int               return T_INT;
+rulestring float             return T_FLOAT;

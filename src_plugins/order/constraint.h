@@ -16,6 +16,8 @@ typedef enum {
 	PCB_ORDC_LE,
 	PCB_ORDC_GT,
 	PCB_ORDC_LT,
+	PCB_ORDC_AND,
+	PCB_ORDC_OR,
 	PCB_ORDC_ADD,
 	PCB_ORDC_SUB
 } pcb_ordc_node_type_t;
