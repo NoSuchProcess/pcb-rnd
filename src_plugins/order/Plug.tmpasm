@@ -6,7 +6,13 @@ put /local/pcb/mod/MENUFILE {order-menu.lht}
 put /local/pcb/mod/MENUVAR {order_menu}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/order/order.o
+	$(PLUGDIR)/order/const_gram.o
+	$(PLUGDIR)/order/const_lex.o
+	$(PLUGDIR)/order/constraint.o
 @]
+
+put /local/pcb/mod/BYACCIC  {$(PLUGDIR)/order/const_gram}
+put /local/pcb/mod/UREGLEX  {$(PLUGDIR)/order/const_lex}
 
 switch /local/pcb/order/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
