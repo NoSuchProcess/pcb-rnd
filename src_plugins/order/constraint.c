@@ -340,7 +340,12 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 			break;
 
 		case PCB_ORDC_VAR:
-			printf("var '$%s'\n", node->val.s);
+			dst->type = PCB_ORDC_VERR; /* assume error and let var_cb override it */
+
+			if (ctx->var_cb == NULL)
+				break; /* everything evaluates to error */
+
+			ctx->var_cb(ctx, dst, node->val.s); /* no need to convert; grammar ensures static string */
 			break;
 
 		case PCB_ORDC_INT:
