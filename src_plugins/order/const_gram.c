@@ -218,6 +218,13 @@ static pcb_ordc_node_t *qstr2node(char *s)
 	return n;
 }
 
+static pcb_ordc_node_t *var2node(char *s)
+{
+	pcb_ordc_node_t *n = new_node(PCB_ORDC_VAR);
+	n->val.s = s;
+	return n;
+}
+
 static pcb_ordc_node_t *int2node(long l)
 {
 	pcb_ordc_node_t *n = new_node(PCB_ORDC_CINT);
@@ -241,7 +248,7 @@ static void prepend(pcb_ordc_node_t *parent, pcb_ordc_node_t *newch)
 	parent->ch_first = newch;
 }
 
-#line 257 "../src_plugins/order/const_gram.c"
+#line 264 "../src_plugins/order/const_gram.c"
 
 #if pcb_ordc_DEBUG
 #include <stdio.h> /* needed for printf */
@@ -516,27 +523,27 @@ case 18:
 break;
 case 19:
 #line 110 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = NULL; }
+	{ yyctx->val.un.tree = float2node(yyctx->stack.l_mark[0].un.d); }
 break;
 case 20:
 #line 111 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = NULL; }
+	{ yyctx->val.un.tree = qstr2node(yyctx->stack.l_mark[0].un.s); }
 break;
 case 21:
 #line 112 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = NULL; }
+	{ yyctx->val.un.tree = var2node(yyctx->stack.l_mark[0].un.s); }
 break;
 case 22:
 #line 114 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = NULL; }
+	{ yyctx->val.un.tree = unop(PCB_ORDC_INT, yyctx->stack.l_mark[-1].un.tree); }
 break;
 case 23:
 #line 115 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = NULL; }
+	{ yyctx->val.un.tree = unop(PCB_ORDC_STRING, yyctx->stack.l_mark[-1].un.tree); }
 break;
 case 24:
 #line 116 "../src_plugins/order/const_gram.y"
-	{ yyctx->val.un.tree = NULL; }
+	{ yyctx->val.un.tree = unop(PCB_ORDC_FLOAT, yyctx->stack.l_mark[-1].un.tree); }
 break;
 case 25:
 #line 121 "../src_plugins/order/const_gram.y"
@@ -550,7 +557,7 @@ case 27:
 #line 128 "../src_plugins/order/const_gram.y"
 	{ yyctx->val.un.tree = binop(PCB_ORDC_ERROR, id2node(yyctx->stack.l_mark[-4].un.s), qstr2node(yyctx->stack.l_mark[-2].un.s)); }
 break;
-#line 566 "../src_plugins/order/const_gram.c"
+#line 573 "../src_plugins/order/const_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;

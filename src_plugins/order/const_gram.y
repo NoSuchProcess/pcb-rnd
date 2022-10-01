@@ -107,13 +107,13 @@ expr:
 	| expr '-' expr         { $$ = binop(PCB_ORDC_SUB, $1, $3); }
 
 	| T_CINT                { $$ = int2node($1); }
-	| T_CFLOAT              { $$ = NULL; }
-	| T_QSTR                { $$ = NULL; }
-	| '$' T_ID              { $$ = NULL; }
+	| T_CFLOAT              { $$ = float2node($1); }
+	| T_QSTR                { $$ = qstr2node($1); }
+	| '$' T_ID              { $$ = var2node($2); }
 
-	| T_INT '(' expr ')'    { $$ = NULL; }
-	| T_STRING '(' expr ')' { $$ = NULL; }
-	| T_FLOAT '(' expr ')'  { $$ = NULL; }
+	| T_INT '(' expr ')'    { $$ = unop(PCB_ORDC_INT, $3); }
+	| T_STRING '(' expr ')' { $$ = unop(PCB_ORDC_STRING, $3); }
+	| T_FLOAT '(' expr ')'  { $$ = unop(PCB_ORDC_FLOAT, $3); }
 	;
 
 /*** statements ***/
@@ -164,6 +164,13 @@ static pcb_ordc_node_t *id2node(char *s)
 static pcb_ordc_node_t *qstr2node(char *s)
 {
 	pcb_ordc_node_t *n = new_node(PCB_ORDC_QSTR);
+	n->val.s = s;
+	return n;
+}
+
+static pcb_ordc_node_t *var2node(char *s)
+{
+	pcb_ordc_node_t *n = new_node(PCB_ORDC_VAR);
 	n->val.s = s;
 	return n;
 }
