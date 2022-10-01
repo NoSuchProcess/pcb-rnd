@@ -95,10 +95,12 @@ expr:
 	  '-' expr              { $$ = unop(PCB_ORDC_NEG, $2); }
 	| '(' expr ')'          { $$ = $2; }
 	| expr "==" expr        { $$ = binop(PCB_ORDC_EQ, $1, $3); }
+	| expr "!=" expr        { $$ = binop(PCB_ORDC_NEQ, $1, $3); }
 	| expr ">=" expr        { $$ = binop(PCB_ORDC_GE, $1, $3); }
+	| expr "<=" expr        { $$ = binop(PCB_ORDC_LE, $1, $3); }
 
 	| expr '+' expr         { $$ = binop(PCB_ORDC_ADD, $1, $3); }
-	| expr '-' expr         { $$ = binop(PCB_ORDC_ADD, $1, $3); }
+	| expr '-' expr         { $$ = binop(PCB_ORDC_SUB, $1, $3); }
 
 	| T_INTEGER             { $$ = NULL; }
 	| T_FLOAT               { $$ = NULL; }
