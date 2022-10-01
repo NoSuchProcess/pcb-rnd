@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/rnd_printf.h>
+#include <librnd/core/error.h>
 #include "const_gram.h"
 #include "constraint.h"
 #include "const_gram.h"
@@ -276,7 +277,10 @@ static void conv2str(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
 	do { \
 		BINOP_GET_OPS; \
 		if (!binop_str) { code; } \
-		else dst->type = PCB_ORDC_VERR; \
+		else { \
+			rnd_message(RND_MSG_ERROR, "order: constraint script error: string in numeric op\n"); \
+			dst->type = PCB_ORDC_VERR; \
+		} \
 		BINOP_FREE_OPS; \
 	} while(0)
 
@@ -342,10 +346,14 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 		case PCB_ORDC_VAR:
 			dst->type = PCB_ORDC_VERR; /* assume error and let var_cb override it */
 
-			if (ctx->var_cb == NULL)
+			if (ctx->var_cb == NULL) {
+				rnd_message(RND_MSG_ERROR, "order: internal error: no var_cb provided\n");
 				break; /* everything evaluates to error */
+			}
 
 			ctx->var_cb(ctx, dst, node->val.s); /* no need to convert; grammar ensures static string */
+			if (dst->type == PCB_ORDC_VERR)
+				rnd_message(RND_MSG_ERROR, "order: constraint script error: no such variable '%s'\n", node->val.s);
 			break;
 
 		case PCB_ORDC_INT:
@@ -449,6 +457,7 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 
 		default:
 			dst->type = PCB_ORDC_VERR;
+			rnd_message(RND_MSG_ERROR, "order: internal error: uknown instruction\n");
 			break;
 	}
 }
