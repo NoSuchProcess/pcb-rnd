@@ -81,8 +81,7 @@
 %%
 
 file:
-	/* empty */
-	| statement file    { prepend(ctx->root, $1); }
+		statements        { ctx->root->ch_first = $1; }
 	;
 
 statement:
@@ -122,7 +121,7 @@ stmt_block:
 	'{' statements '}'     { $$ = new_node(PCB_ORDC_BLOCK); $$->ch_first = $2; }
 
 statements:
-	  /* empty */
+	  /* empty */                         { $$ = NULL; }
 	| statement statements                { $$ = $1; $$->next = $2; }
 	;
 
@@ -194,13 +193,3 @@ static pcb_ordc_node_t *float2node(double d)
 	n->val.d = d;
 	return n;
 }
-
-
-static void prepend(pcb_ordc_node_t *parent, pcb_ordc_node_t *newch)
-{
-	assert(newch->next == NULL);
-
-	newch->next = parent->ch_first;
-	parent->ch_first = newch;
-}
-
