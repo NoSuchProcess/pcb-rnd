@@ -56,9 +56,9 @@ struct pcb_ordc_node_s {
 typedef struct pcb_ordc_val_s {
 	enum { PCB_ORDC_VLNG, PCB_ORDC_VDBL, PCB_ORDC_VCSTR, PCB_ORDC_VDSTR, PCB_ORDC_VERR } type;
 	union {
-		long l;
-		double d;
-		char *s;
+		long l;    /* when type == PCB_ORDC_VLNG */
+		double d;  /* when type == PCB_ORDC_VDBL */
+		char *s;  /* when type == PCB_ORDC_VCSTR or PCB_ORDC_VDSTR; DSTR is free()'d after use */
 	} val;
 } pcb_ordc_val_t;
 
