@@ -48,6 +48,7 @@ struct pcb_ordc_node_s {
 		double d;
 		char *s;
 	} val;
+	void *ucache;
 	pcb_ordc_node_t *ch_first, *next;
 };
 
@@ -67,8 +68,14 @@ struct pcb_ordc_ctx_s {
 	pcb_ordc_node_t *root;
 
 	/*** application provided callbacks ***/
-	void (*error_cb)(pcb_ordc_ctx_t *ctx, const char *varname, const char *msg);
-	void (*var_cb)(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname);
+	/* note:  ucache is a (void *) stored in the node triggering the call; the
+	   caller may cache varname resolution there */
+
+	/* called on error() from the script */
+	void (*error_cb)(pcb_ordc_ctx_t *ctx, const char *varname, const char *msg, void **ucache);
+
+	/* called on $var from the script, should load dst->type and dst->val */
+	void (*var_cb)(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname, void **ucache);
 };
 
 int pcb_ordc_parse_str(pcb_ordc_ctx_t *ctx, const char *script);

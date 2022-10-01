@@ -322,7 +322,7 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 
 			pcb_ordc_exec_node(ctx, &a, node->ch_first);
 			pcb_ordc_exec_node(ctx, &b, node->ch_first->next);
-			ctx->error_cb(ctx, a.val.s, b.val.s); /* no need to convert; grammar ensures static strings */
+			ctx->error_cb(ctx, a.val.s, b.val.s, &node->ch_first->ucache); /* no need to convert; grammar ensures static strings */
 			val_free(&a);
 			val_free(&b);
 			break;
@@ -351,7 +351,7 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 				break; /* everything evaluates to error */
 			}
 
-			ctx->var_cb(ctx, dst, node->val.s); /* no need to convert; grammar ensures static string */
+			ctx->var_cb(ctx, dst, node->val.s, &node->ucache); /* no need to convert; grammar ensures static string */
 			if (dst->type == PCB_ORDC_VERR)
 				rnd_message(RND_MSG_ERROR, "order: constraint script error: no such variable '%s'\n", node->val.s);
 			break;
