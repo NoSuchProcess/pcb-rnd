@@ -53,12 +53,13 @@
 
 /* Generic */
 %token T_ID T_INTEGER T_FLOAT T_QSTR
+%token T_EQ T_NEQ T_GE
 
 /* Keywords for builtin functions */
 %token T_IF T_ERROR
 %token T_INTVAL T_FLOATVAL
 
-%left "==" ">=" "<=" ">" "<"
+%left T_EQ T_NEQ T_GE T_LE T_GT T_LT
 %left "||"
 %left "&&"
 %left '+' '-'
@@ -94,10 +95,12 @@ statement:
 expr:
 	  '-' expr              { $$ = unop(PCB_ORDC_NEG, $2); }
 	| '(' expr ')'          { $$ = $2; }
-	| expr "==" expr        { $$ = binop(PCB_ORDC_EQ, $1, $3); }
-	| expr "!=" expr        { $$ = binop(PCB_ORDC_NEQ, $1, $3); }
-	| expr ">=" expr        { $$ = binop(PCB_ORDC_GE, $1, $3); }
-	| expr "<=" expr        { $$ = binop(PCB_ORDC_LE, $1, $3); }
+	| expr T_EQ expr        { $$ = binop(PCB_ORDC_EQ, $1, $3); }
+	| expr T_NEQ expr       { $$ = binop(PCB_ORDC_NEQ, $1, $3); }
+	| expr T_GE expr        { $$ = binop(PCB_ORDC_GE, $1, $3); }
+	| expr T_LE expr        { $$ = binop(PCB_ORDC_LE, $1, $3); }
+	| expr T_GT expr        { $$ = binop(PCB_ORDC_GT, $1, $3); }
+	| expr T_LT expr        { $$ = binop(PCB_ORDC_LT, $1, $3); }
 
 	| expr '+' expr         { $$ = binop(PCB_ORDC_ADD, $1, $3); }
 	| expr '-' expr         { $$ = binop(PCB_ORDC_SUB, $1, $3); }

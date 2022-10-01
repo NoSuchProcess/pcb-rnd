@@ -4,7 +4,7 @@ static const unsigned char pcb_ordc_chrtyp_0[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 static const unsigned char pcb_ordc_nfa_1[] = {4,11,3,0,0,0,0,0,32,255,131,0,0,0,40,0,0,0,0,0,3,0,0,0,0,0,64,0,0,0,0,0,0,0,0,0,0,11,3,0,0,0,0,0,40,255,3,32,0,0,0,32,0,0,0,0,0,0,0};
 static const unsigned char pcb_ordc_nfa_2[] = {4,3,0,0,0,0,0,0,0,0,254,255,255,7,254,255,255,7,11,3,0,0,0,0,0,32,255,3,254,255,255,135,254,255,255,7,0,0,0};
 static const unsigned char pcb_ordc_nfa_3[] = {4,1,34,6,1,11,3,255,255,255,255,251,255,255,255,255,255,255,255,255,255,255,255,0,7,1,1,34,0,0};
-static const unsigned char pcb_ordc_nfa_4[] = {4,3,0,0,0,0,98,191,0,112,0,0,0,0,0,0,0,16,0};
+static const unsigned char pcb_ordc_nfa_4[] = {4,3,0,0,0,0,112,191,0,0,0,0,0,0,0,0,0,56,0};
 static const unsigned char pcb_ordc_nfa_5[] = {4,3,0,38,0,0,1,0,0,0,0,0,0,0,0,0,0,0,11,3,0,38,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 /* strtree.h BEGIN { */
 #ifndef UREGLEX_STRTREE_H
@@ -18,7 +18,7 @@ int ureglex_strtree_exec(ureglex_strtree_t *ctx, int chr);
 
 #include <stdlib.h>
 #include "ureglex/exec.h"
-int pcb_ordc_strings[] = {2,101,34,2,102,10,2,105,27,4,1,108,1,111,1,97,1,116,1,118,1,97,1,108,3,9,4,2,102,56,2,110,45,4,1,114,1,114,1,111,1,114,3,7,4,1,116,1,118,1,97,1,108,3,8,4,3,6,4};
+int pcb_ordc_strings[] = {2,33,69,2,60,57,2,61,74,2,62,63,2,101,46,2,102,22,2,105,39,4,1,108,1,111,1,97,1,116,1,118,1,97,1,108,3,15,4,2,102,96,2,110,85,4,1,114,1,114,1,111,1,114,3,13,4,2,61,79,3,11,4,2,61,82,3,10,4,1,61,3,7,4,1,61,3,6,4,3,9,4,3,8,4,1,116,1,118,1,97,1,108,3,14,4,3,12,4};
 ureglex_precomp_t pcb_ordc_rules[] = {
 	{pcb_ordc_nfa_0, pcb_ordc_bittab_0, pcb_ordc_chrtyp_0, 1.000000},
 	{pcb_ordc_nfa_1, pcb_ordc_bittab_0, pcb_ordc_chrtyp_0, 1.000000},
@@ -30,9 +30,15 @@ ureglex_precomp_t pcb_ordc_rules[] = {
 	{ureglex_nfa_str, NULL, NULL, 1.000000},
 	{ureglex_nfa_str, NULL, NULL, 1.000000},
 	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
 	{NULL, NULL, NULL, 0.0}
 };
-#define pcb_ordc_num_rules 10
+#define pcb_ordc_num_rules 16
 typedef struct pcb_ordc_ureglex_s {
 	ureglex_precomp_t *rules;
 	char buff[256];
@@ -132,18 +138,42 @@ static int pcb_ordc_user_code(pcb_ordc_ureglex_t *ctx, void * user_ctx, int rule
 		}
 		return UREGLEX_NOP;
 		case 6:{
-               return T_IF;
+               return T_EQ;
 		}
 		return UREGLEX_NOP;
 		case 7:{
-            return T_ERROR;
+               return T_NEQ;
 		}
 		return UREGLEX_NOP;
 		case 8:{
-           return T_INTVAL;
+               return T_GE;
 		}
 		return UREGLEX_NOP;
 		case 9:{
+               return T_LE;
+		}
+		return UREGLEX_NOP;
+		case 10:{
+                return T_GT;
+		}
+		return UREGLEX_NOP;
+		case 11:{
+                return T_LT;
+		}
+		return UREGLEX_NOP;
+		case 12:{
+               return T_IF;
+		}
+		return UREGLEX_NOP;
+		case 13:{
+            return T_ERROR;
+		}
+		return UREGLEX_NOP;
+		case 14:{
+           return T_INTVAL;
+		}
+		return UREGLEX_NOP;
+		case 15:{
          return T_FLOATVAL;
 		}
 		return UREGLEX_NOP;

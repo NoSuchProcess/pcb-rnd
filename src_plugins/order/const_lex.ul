@@ -60,7 +60,7 @@ code
 	return T_QSTR;
 
 rule chars
-regex [()|&<>=!,*/+%-]
+regex [(){}|$&,*/+%-]
 code
 	return *ULX_BUF;
 
@@ -68,6 +68,13 @@ rule blank
 regex [ \t\n\r]+
 code
 	ULX_IGNORE;
+
+rulestring ==                return T_EQ;
+rulestring !=                return T_NEQ;
+rulestring >=                return T_GE;
+rulestring <=                return T_LE;
+rulestring >                 return T_GT;
+rulestring <                 return T_LT;
 
 rulestring if                return T_IF;
 rulestring error             return T_ERROR;
