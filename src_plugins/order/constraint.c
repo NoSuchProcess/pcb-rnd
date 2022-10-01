@@ -106,6 +106,9 @@ void pcb_ordc_print_tree(FILE *f, pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node, in
 		case PCB_ORDC_OR:      printf("or\n"); break;
 		case PCB_ORDC_ADD:     printf("add\n"); break;
 		case PCB_ORDC_SUB:     printf("sub\n"); break;
+		case PCB_ORDC_MULT:    printf("mult\n"); break;
+		case PCB_ORDC_DIV:     printf("div\n"); break;
+		case PCB_ORDC_MOD:     printf("mod\n"); break;
 
 		default:
 			printf("UNKNONW %d\n", node->type);

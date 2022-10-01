@@ -105,6 +105,9 @@ expr:
 
 	| expr '+' expr         { $$ = binop(PCB_ORDC_ADD, $1, $3); }
 	| expr '-' expr         { $$ = binop(PCB_ORDC_SUB, $1, $3); }
+	| expr '*' expr         { $$ = binop(PCB_ORDC_MULT, $1, $3); }
+	| expr '/' expr         { $$ = binop(PCB_ORDC_DIV, $1, $3); }
+	| expr '%' expr         { $$ = binop(PCB_ORDC_MOD, $1, $3); }
 
 	| T_CINT                { $$ = int2node($1); }
 	| T_CFLOAT              { $$ = float2node($1); }

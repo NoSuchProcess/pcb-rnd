@@ -31,7 +31,10 @@ typedef enum {
 	PCB_ORDC_AND,
 	PCB_ORDC_OR,
 	PCB_ORDC_ADD,
-	PCB_ORDC_SUB
+	PCB_ORDC_SUB,
+	PCB_ORDC_MULT,
+	PCB_ORDC_DIV,
+	PCB_ORDC_MOD
 } pcb_ordc_node_type_t;
 
 typedef struct pcb_ordc_node_s pcb_ordc_node_t;
