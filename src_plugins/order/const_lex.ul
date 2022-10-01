@@ -30,6 +30,7 @@ top_code
 	 *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
 	 */
 	#include <stdlib.h>
+	#include <string.h>
 	#include <librnd/core/compat_misc.h>
 	#include "../src_plugins/order/const_gram.h"
 	#define lval  ((pcb_ordc_STYPE *)(user_ctx))

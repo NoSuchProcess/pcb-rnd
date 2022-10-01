@@ -75,6 +75,7 @@ typedef struct pcb_ordc_ureglex_s {
 	 *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
 	 */
 	#include <stdlib.h>
+	#include <string.h>
 	#include <librnd/core/compat_misc.h>
 	#include "../src_plugins/order/const_gram.h"
 	#define lval  ((pcb_ordc_STYPE *)(user_ctx))
@@ -91,41 +92,41 @@ static int pcb_ordc_user_code(pcb_ordc_ureglex_t *ctx, void * user_ctx, int rule
 	(void)rule;
 	switch(ruleid) {
 		case 0:{
-#line  40 "const_lex.ul"
+#line  41 "const_lex.ul"
 	lval->un.i = atoi(ULX_BUF);
 	return T_INTEGER;
 
 		}
 		return UREGLEX_NOP;
 		case 1:{
-#line  46 "const_lex.ul"
+#line  47 "const_lex.ul"
 	lval->un.d = strtod(ULX_BUF, NULL);
 	return T_FLOAT;
 
 		}
 		return UREGLEX_NOP;
 		case 2:{
-#line  52 "const_lex.ul"
+#line  53 "const_lex.ul"
 	lval->un.s = rnd_strdup(ULX_BUF);
 	return T_ID;
 
 		}
 		return UREGLEX_NOP;
 		case 3:{
-#line  58 "const_lex.ul"
+#line  59 "const_lex.ul"
 	lval->un.s = rnd_strndup(ULX_TAGP(1), ULX_TAGL(1));
 	return T_QSTR;
 
 		}
 		return UREGLEX_NOP;
 		case 4:{
-#line  64 "const_lex.ul"
+#line  65 "const_lex.ul"
 	return *ULX_BUF;
 
 		}
 		return UREGLEX_NOP;
 		case 5:{
-#line  69 "const_lex.ul"
+#line  70 "const_lex.ul"
 	ULX_IGNORE;
 
 		}
