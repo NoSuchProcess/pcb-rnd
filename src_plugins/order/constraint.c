@@ -313,7 +313,14 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 			break;
 
 		case PCB_ORDC_ERROR:
-			printf("error!\n");
+			if (ctx->error_cb == NULL)
+				break;
+
+			pcb_ordc_exec_node(ctx, &a, node->ch_first);
+			pcb_ordc_exec_node(ctx, &b, node->ch_first->next);
+			ctx->error_cb(ctx, a.val.s, b.val.s); /* no need to convert; grammar ensures static strings */
+			val_free(&a);
+			val_free(&b);
 			break;
 
 		case PCB_ORDC_CINT:

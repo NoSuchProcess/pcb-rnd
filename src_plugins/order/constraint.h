@@ -61,10 +61,14 @@ typedef struct pcb_ordc_val_s {
 	} val;
 } pcb_ordc_val_t;
 
-typedef struct pcb_ordc_ctx_s {
-	int dummy;
+typedef struct pcb_ordc_ctx_s pcb_ordc_ctx_t;
+struct pcb_ordc_ctx_s {
+	void *user_data;
 	pcb_ordc_node_t *root;
-} pcb_ordc_ctx_t;
+
+	/*** application provided callbacks ***/
+	void (*error_cb)(pcb_ordc_ctx_t *ctx, const char *varname, const char *msg);
+};
 
 int pcb_ordc_parse_str(pcb_ordc_ctx_t *ctx, const char *script);
 
