@@ -30,7 +30,7 @@ struct pcb_ordc_node_s {
 			double d;
 			char *s;
 		} data;
-	}
+	} val;
 };
 
 typedef struct pcb_ordc_ctx_s {
