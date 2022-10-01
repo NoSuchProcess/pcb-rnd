@@ -58,6 +58,12 @@ typedef struct pcb_ordc_ctx_s {
 
 int pcb_ordc_parse_str(pcb_ordc_ctx_t *ctx, const char *script);
 
+
+void pcb_ordc_uninit(pcb_ordc_ctx_t *ctx);
+
+void pcb_ordc_free_tree(pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node);
+
+
 /*** For debug ***/
 void pcb_ordc_print_tree(FILE *f, pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node, int indlev);
 

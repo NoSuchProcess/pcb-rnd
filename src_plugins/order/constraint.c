@@ -121,3 +121,31 @@ void pcb_ordc_print_tree(FILE *f, pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node, in
 		pcb_ordc_print_tree(f, ctx, n, indlev+1);
 }
 
+
+void pcb_ordc_free_tree(pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node)
+{
+	pcb_ordc_node_t *n, *next;
+
+	switch(node->type) {
+		case PCB_ORDC_QSTR:
+		case PCB_ORDC_ID:
+		case PCB_ORDC_VAR:
+			free(node->val.s);
+			break;
+		default:
+			break;
+	}
+
+	for(n = node->ch_first; n != NULL; n = next) {
+		next = n->next;
+		pcb_ordc_free_tree(ctx, n);
+	}
+
+	free(node);
+}
+
+void pcb_ordc_uninit(pcb_ordc_ctx_t *ctx)
+{
+	pcb_ordc_free_tree(ctx, ctx->root);
+	ctx->root = NULL;
+}
