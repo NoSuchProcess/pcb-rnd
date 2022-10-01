@@ -51,6 +51,16 @@ struct pcb_ordc_node_s {
 	pcb_ordc_node_t *ch_first, *next;
 };
 
+/* expression value, during execution */
+typedef struct pcb_ordc_val_s {
+	enum { PCB_ORDC_VLNG, PCB_ORDC_VDBL, PCB_ORDC_VCSTR, PCB_ORDC_VDSTR, PCB_ORDC_VERR } type;
+	union {
+		long l;
+		double d;
+		char *s;
+	} val;
+} pcb_ordc_val_t;
+
 typedef struct pcb_ordc_ctx_s {
 	int dummy;
 	pcb_ordc_node_t *root;
@@ -63,6 +73,7 @@ void pcb_ordc_uninit(pcb_ordc_ctx_t *ctx);
 
 void pcb_ordc_free_tree(pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node);
 
+pcb_ordc_exec(pcb_ordc_ctx_t *ctx);
 
 /*** For debug ***/
 void pcb_ordc_print_tree(FILE *f, pcb_ordc_ctx_t *ctx, pcb_ordc_node_t *node, int indlev);

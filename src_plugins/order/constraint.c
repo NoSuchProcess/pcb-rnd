@@ -1,6 +1,8 @@
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/rnd_printf.h>
 #include "const_gram.h"
 #include "constraint.h"
 #include "const_gram.h"
@@ -149,3 +151,258 @@ void pcb_ordc_uninit(pcb_ordc_ctx_t *ctx)
 	pcb_ordc_free_tree(ctx, ctx->root);
 	ctx->root = NULL;
 }
+
+/* Returns 0 or 1 for valid bool values, -1 for error */
+static int val2bool(pcb_ordc_val_t v)
+{
+	switch(v.type) {
+		case PCB_ORDC_VLNG: return !!v.val.l;
+		case PCB_ORDC_VDBL: return v.val.l != 0;
+		case PCB_ORDC_VCSTR: return *v.val.s != '\0';
+		case PCB_ORDC_VDSTR: return *v.val.s != '\0';
+		case PCB_ORDC_VERR: return -1;
+	}
+	return -1;
+}
+
+static void val_free(pcb_ordc_val_t *v)
+{
+	if (v->type == PCB_ORDC_VDSTR) {
+		free(v->val.s);
+		v->val.s = NULL;
+	}
+}
+
+static void conv2bool(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
+{
+	int b = val2bool(src);
+	if (b >= 0) {
+		dst->type = PCB_ORDC_VLNG; dst->val.l = b;
+	}
+	else
+		dst->type = PCB_ORDC_VERR;
+}
+
+static void conv2lng(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
+{
+	dst->type = PCB_ORDC_VLNG;
+
+	switch(src.type) {
+		case PCB_ORDC_VLNG: dst->val.l = src.val.l; break;
+		case PCB_ORDC_VDBL: dst->val.l = rnd_round(src.val.d); break;
+		case PCB_ORDC_VCSTR:
+		case PCB_ORDC_VDSTR:
+			dst->val.l = strtol(src.val.s, NULL, 10);
+			break;
+		case PCB_ORDC_VERR: dst->type = PCB_ORDC_VERR;
+	}
+}
+
+static void conv2dbl(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
+{
+	dst->type = PCB_ORDC_VDBL;
+
+	switch(src.type) {
+		case PCB_ORDC_VLNG: dst->val.d = src.val.l; break;
+		case PCB_ORDC_VDBL: dst->val.d = rnd_round(src.val.d); break;
+		case PCB_ORDC_VCSTR:
+		case PCB_ORDC_VDSTR:
+			dst->val.d = strtod(src.val.s, NULL);
+			break;
+		case PCB_ORDC_VERR: dst->type = PCB_ORDC_VERR;
+	}
+}
+
+static void conv2str(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
+{
+	dst->type = PCB_ORDC_VDSTR;
+
+	switch(src.type) {
+		case PCB_ORDC_VLNG: dst->val.s = rnd_strdup_printf("%ld", src.val.l); break;
+		case PCB_ORDC_VDBL: dst->val.s = rnd_strdup_printf("%f", src.val.d); break;
+		case PCB_ORDC_VCSTR: dst->val.s = src.val.s; dst->type = PCB_ORDC_VCSTR; break;
+		case PCB_ORDC_VDSTR: dst->val.s = rnd_strdup(src.val.s); break;
+		case PCB_ORDC_VERR: dst->type = PCB_ORDC_VERR;
+	}
+}
+
+/* convert two child subtrees to operands, then set binop_str.
+   If binop_str is 1, load sa and sb to point to the strings.
+   If binop_str is 1, load da and db to numbers loaded from the ops.
+   return error early; propagate long to double or anything to string */
+#define BINOP_GET_OPS \
+	do { \
+		c.type = PCB_ORDC_VLNG; \
+		binop_str = 0; \
+		pcb_ordc_exec_node(ctx, &a, node->ch_first); \
+		pcb_ordc_exec_node(ctx, &b, node->ch_first->next); \
+		if ((a.type == PCB_ORDC_VERR) || (b.type == PCB_ORDC_VERR)) { \
+			dst->type = PCB_ORDC_VERR; \
+		} \
+		else if ((a.type == PCB_ORDC_VCSTR) || (a.type == PCB_ORDC_VDSTR)) { \
+			binop_str = 1; \
+			sa = a.val.s; \
+			if ((b.type != PCB_ORDC_VCSTR) && (b.type != PCB_ORDC_VDSTR)) { \
+				conv2str(&c, b); \
+				sb = c.val.s; \
+			} \
+			else \
+				sb = b.val.s; \
+		} \
+		else if ((b.type == PCB_ORDC_VCSTR) || (b.type == PCB_ORDC_VDSTR)) { \
+			binop_str = 1; \
+			sb = b.val.s; \
+			if ((a.type != PCB_ORDC_VCSTR) && (a.type != PCB_ORDC_VDSTR)) { \
+				conv2str(&c, a); \
+				sa = c.val.s; \
+			} \
+			else \
+				sa = a.val.s; \
+		} \
+		else { \
+			da = (a.type == PCB_ORDC_VDBL) ? a.val.d : a.val.l; \
+			db = (b.type == PCB_ORDC_VDBL) ? b.val.d : b.val.l; \
+		} \
+	} while(0)
+
+
+#define BINOP_FREE_OPS  do { val_free(&a); val_free(&b); val_free(&c); } while(0)
+
+
+void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_t *node)
+{
+	pcb_ordc_node_t *n;
+	pcb_ordc_val_t a, b, c;
+	const char *sa, *sb;
+	double da, db;
+	int binop_str, r;
+
+	dst->type = PCB_ORDC_VLNG; dst->val.l = 0;
+
+	switch(node->type) {
+		case PCB_ORDC_BLOCK:
+			for(n = node->ch_first; n != NULL; n = n->next) {
+				pcb_ordc_exec_node(ctx, &a, n);
+				if (a.type == PCB_ORDC_VERR)
+					dst->type = PCB_ORDC_VERR;
+				val_free(&a);
+			}
+			break;
+
+		case PCB_ORDC_IF:
+			pcb_ordc_exec_node(ctx, &a, node->ch_first);
+			if (val2bool(a) == 1) {
+				pcb_ordc_exec_node(ctx, &b, node->ch_first->next);
+				val_free(&b);
+			}
+			val_free(&a);
+			break;
+
+		case PCB_ORDC_ERROR:
+			printf("error!\n");
+			break;
+
+		case PCB_ORDC_CINT:
+			dst->type = PCB_ORDC_VLNG; dst->val.l = node->val.l;
+			break;
+		case PCB_ORDC_CFLOAT:
+			dst->type = PCB_ORDC_VDBL; dst->val.d = node->val.d;
+			break;
+
+		case PCB_ORDC_QSTR:
+			dst->type = PCB_ORDC_VCSTR; dst->val.s = node->val.s;
+			break;
+
+		case PCB_ORDC_ID:
+			dst->type = PCB_ORDC_VCSTR; dst->val.s = node->val.s;
+			break;
+
+		case PCB_ORDC_VAR:
+			printf("var '$%s'\n", node->val.s);
+			break;
+
+		case PCB_ORDC_INT:
+			pcb_ordc_exec_node(ctx, &a, node->ch_first);
+			conv2lng(dst, a);
+			val_free(&a);
+			break;
+
+		case PCB_ORDC_FLOAT:
+			pcb_ordc_exec_node(ctx, &a, node->ch_first);
+			conv2dbl(dst, a);
+			val_free(&a);
+			break;
+
+		case PCB_ORDC_STRING:
+			pcb_ordc_exec_node(ctx, &a, node->ch_first);
+			conv2str(dst, a);
+			val_free(&a);
+			break;
+
+		case PCB_ORDC_NEG:
+			pcb_ordc_exec_node(ctx, &a, node->ch_first);
+			conv2bool(dst, a);
+			dst->val.l = !dst->val.l;
+			val_free(&a);
+			break;
+
+		case PCB_ORDC_EQ:
+			BINOP_GET_OPS;
+			dst->val.l = binop_str ? (strcmp(sa, sb) == 0) : (da == db);
+			BINOP_FREE_OPS;
+			break;
+
+		case PCB_ORDC_NEQ:
+			BINOP_GET_OPS;
+			dst->val.l = binop_str ? (strcmp(sa, sb) != 0) : (da != db);
+			BINOP_FREE_OPS;
+
+		case PCB_ORDC_GE:
+		case PCB_ORDC_LE:
+		case PCB_ORDC_GT:
+		case PCB_ORDC_LT:
+			break;
+
+		case PCB_ORDC_AND:
+			BINOP_GET_OPS;
+			dst->val.l = binop_str ? ((*sa != '\0') && (*sb != '\0')) : (!!da && !!db);
+			BINOP_FREE_OPS;
+			break;
+
+		case PCB_ORDC_OR:
+			BINOP_GET_OPS;
+			dst->val.l = binop_str ? ((*sa != '\0') || (*sb != '\0')) : (!!da || !!db);
+			BINOP_FREE_OPS;
+			break;
+
+		case PCB_ORDC_NOT:
+			pcb_ordc_exec_node(ctx, &a, node->ch_first);
+			r = val2bool(a);
+			if (r >= 0)
+				dst->val.l = !r;
+			else
+				dst->type = PCB_ORDC_VERR;
+			val_free(&a);
+			break;
+
+
+		case PCB_ORDC_ADD:     printf("add\n"); break;
+		case PCB_ORDC_SUB:     printf("sub\n"); break;
+		case PCB_ORDC_MULT:    printf("mult\n"); break;
+		case PCB_ORDC_DIV:     printf("div\n"); break;
+		case PCB_ORDC_MOD:     printf("mod\n"); break;
+
+		default:
+			printf("UNKNONW %d\n", node->type);
+	}
+}
+
+int pcb_ordc_exec(pcb_ordc_ctx_t *ctx)
+{
+	pcb_ordc_val_t res;
+
+	pcb_ordc_exec_node(ctx, &res, ctx->root);
+
+	return val2bool(res);
+}
+
