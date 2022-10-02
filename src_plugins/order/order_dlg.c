@@ -137,6 +137,11 @@ void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f)
 		RND_DAD_BEGIN_VBOX(octx->dlg);
 			RND_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
 		RND_DAD_END(octx->dlg);
+		RND_DAD_LABEL(octx->dlg, "");
+			f->wwarn = RND_DAD_CURRENT(octx->dlg);
+		RND_DAD_BEGIN_VBOX(octx->dlg);
+			RND_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_END(octx->dlg);
 		switch(f->type) {
 			case RND_HATT_ENUM:
 				RND_DAD_ENUM(octx->dlg, f->enum_vals);
@@ -165,4 +170,17 @@ void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f)
 		}
 		f->wid = RND_DAD_CURRENT(octx->dlg);
 	RND_DAD_END(octx->dlg);
+}
+
+void pcb_order_field_error(order_ctx_t *octx, pcb_order_field_t *f, const char *details)
+{
+	rnd_hid_attr_val_t hv;
+
+	if (details != NULL)
+		hv.str = "ERROR";
+	else
+		hv.str = "";
+
+	rnd_gui->attr_dlg_set_value(octx->dlg_hid_ctx, f->wwarn, &hv);
+	rnd_gui->attr_dlg_set_help(octx->dlg_hid_ctx, f->wwarn, details);
 }

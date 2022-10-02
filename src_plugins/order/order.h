@@ -76,11 +76,16 @@ struct pcb_order_field_s {
 	char *help;
 	pcb_order_autoload_t autoload;
 	int wid;                /* widget id, if any */
+	int wwarn;              /* widget id for the warning widget */
 	char name[1];           /* dynamic length */
 };
 
 /* Build a hbox from a field */
 void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f);
+
+/* When the dialog is already active, indicate an error for field or remove
+   indication if details is NULL. */
+void pcb_order_field_error(order_ctx_t *octx, pcb_order_field_t *f, const char *details);
 
 
 /* Free data stored in a field, but not the field itself. Note: ->name and
