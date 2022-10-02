@@ -393,6 +393,7 @@ void pcb_ordc_exec_node(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, pcb_ordc_node_
 			BINOP_GET_OPS;
 			dst->val.l = binop_str ? (strcmp(sa, sb) != 0) : (da != db);
 			BINOP_FREE_OPS;
+			break;
 
 		case PCB_ORDC_GE:
 			BINOP_NUMERIC(dst->val.l = (da >= db));
