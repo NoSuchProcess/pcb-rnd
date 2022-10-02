@@ -205,7 +205,7 @@ static void conv2dbl(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
 
 	switch(src.type) {
 		case PCB_ORDC_VLNG: dst->val.d = src.val.l; break;
-		case PCB_ORDC_VDBL: dst->val.d = rnd_round(src.val.d); break;
+		case PCB_ORDC_VDBL: dst->val.d = src.val.d; break;
 		case PCB_ORDC_VCSTR:
 		case PCB_ORDC_VDSTR:
 			dst->val.d = strtod(src.val.s, NULL);
