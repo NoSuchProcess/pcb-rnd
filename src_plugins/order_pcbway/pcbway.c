@@ -296,6 +296,11 @@ static void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname
 	rnd_trace("constraint var resolve: %s\n", varname);
 }
 
+static void field_change_cb(order_ctx_t *octx, pcb_order_field_t *f)
+{
+	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
+	pcb_ordc_exec(&form->ordc);
+}
 
 static int pcbway_load_constraints_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
@@ -329,6 +334,7 @@ rnd_trace("not root\n");
 
 	form->ordc.error_cb = error_cb;
 	form->ordc.var_cb = var_cb;
+	octx->field_change_cb = field_change_cb;
 
 	return 0;
 }
