@@ -1,0 +1,8 @@
+This is the old API for quotes, not used at the moment.
+
+The old API could take shipping address and give quotes for different
+options but wanted to _download_ gerbers from an URL and pcb-rnd was not
+going to run a web server.
+
+The new API takes a http post upload of parameters and gerbers but does
+not provide quotes (and does not handle shipping).
