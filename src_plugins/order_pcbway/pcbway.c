@@ -291,9 +291,42 @@ static void error_cb(pcb_ordc_ctx_t *ctx, const char *varname, const char *msg, 
 	rnd_trace("Constraint error: %s: %s\n", varname, msg);
 }
 
-static void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname, void **ucache)
+static void var_cb(pcb_ordc_ctx_t *octx, pcb_ordc_val_t *dst, const char *varname, void **ucache)
 {
-	rnd_trace("constraint var resolve: %s\n", varname);
+	pcbway_form_t *form = (pcbway_form_t *)octx->user_data;
+	pcb_order_field_t *f = *ucache;
+
+	if (f == NULL) {
+		long n;
+
+		for(n = 0; n < form->fields.used; n++) {
+			f = form->fields.array[n];
+			if (strcmp(f->name, varname) == 0) {
+				*ucache = f;
+				break;
+			}
+		}
+		
+		f = *ucache;
+	}
+
+	if (f == NULL)
+		return; /* dst remains in its initial error state */
+
+	switch(f->type) {
+		case RND_HATT_INTEGER: dst->type = PCB_ORDC_VLNG; dst->val.l = f->val.lng; break;
+		case RND_HATT_COORD:   dst->type = PCB_ORDC_VDBL; dst->val.d = RND_COORD_TO_MM(f->val.crd); break;
+		case RND_HATT_STRING:  dst->type = PCB_ORDC_VCSTR; dst->val.s = f->val.str; break;
+		case RND_HATT_ENUM:
+			dst->type = PCB_ORDC_VCSTR; 
+			if (f->val.lng >= 0)
+				dst->val.s = f->enum_vals[f->val.lng];
+			else
+				dst->val.s = "";
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "order_pcbway internal error: invalid field type\n");
+	}
 }
 
 static void field_change_cb(order_ctx_t *octx, pcb_order_field_t *f)
@@ -334,6 +367,7 @@ rnd_trace("not root\n");
 
 	form->ordc.error_cb = error_cb;
 	form->ordc.var_cb = var_cb;
+	form->ordc.user_data = form;
 	octx->field_change_cb = field_change_cb;
 
 	return 0;
