@@ -187,6 +187,7 @@ static void conv2bool(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
 static void conv2lng(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
 {
 	dst->type = PCB_ORDC_VLNG;
+	dst->val.l = 0;
 
 	switch(src.type) {
 		case PCB_ORDC_VLNG: dst->val.l = src.val.l; break;
@@ -202,6 +203,7 @@ static void conv2lng(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
 static void conv2dbl(pcb_ordc_val_t *dst, pcb_ordc_val_t src)
 {
 	dst->type = PCB_ORDC_VDBL;
+	dst->val.d = 0;
 
 	switch(src.type) {
 		case PCB_ORDC_VLNG: dst->val.d = src.val.l; break;
