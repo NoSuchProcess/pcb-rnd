@@ -9,7 +9,7 @@ static void error_cb(pcb_ordc_ctx_t *ctx, const char *varname, const char *msg, 
 	printf("Constraint error: %s: %s\n", varname, msg);
 }
 
-void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname, void **ucache)
+static void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname, void **ucache)
 {
 	if (strcmp(varname, "one") == 0) {
 		dst->type = PCB_ORDC_VLNG;
