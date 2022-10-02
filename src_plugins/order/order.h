@@ -43,7 +43,7 @@ struct order_ctx_s {
 	vtp0_t names;
 	int wtab; /* widgets */
 	void *odata;                                   /* implementation-specific data of the current order */
-	void (*field_change_cb)(order_ctx_t *octx, pcb_order_field_t *f) /* called after a field has been changed from the GUI */
+	void (*field_change_cb)(order_ctx_t *octx, pcb_order_field_t *f); /* called after a field has been changed from the GUI */
 };
 
 /* order implementation - registered by an order plugin */
