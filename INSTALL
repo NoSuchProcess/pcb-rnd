@@ -18,7 +18,7 @@ For users:
               Non-standard installation: doc/INSTALL.librnd.txt
  - optional: imagemagick for running the pixmap export tests
 
-When configuring librnd:
+When configuring librnd (headers also installed; e.g. -dev or -devel packages):
  - optional: glib and gtk2 if you are using the GTK GUI
  - optional: gtkglext if you need opengl rendering with gtk2
  - optional: libepoxy if you need gtk4
