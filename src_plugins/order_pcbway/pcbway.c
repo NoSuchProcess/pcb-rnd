@@ -199,6 +199,57 @@ static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
 }
 #endif
 
+static void pcbway_load_field_from_attrib(pcb_board_t *pcb, pcb_order_field_t *f)
+{
+	const char *aval = NULL;
+	char *key = rnd_concat("order_pcbway::", f->name, NULL);
+
+	aval = pcb_attribute_get(&pcb->Attributes, key);
+	if (aval != NULL) {
+		char *end, **ev;
+		long n, l;
+		double d;
+		rnd_bool succ;
+
+		switch(f->type) {
+			case RND_HATT_INTEGER:
+				l = strtol(aval, &end, 10);
+				if (*end == '\0')
+					f->val.lng = l;
+				else
+					rnd_message(RND_MSG_ERROR, "invalid integer in PCB attribute %s\n", key);
+				break;
+
+			case RND_HATT_COORD:
+				d = rnd_get_value(aval, NULL, NULL, &succ);
+				if (succ)
+					f->val.crd = d;
+				else
+					rnd_message(RND_MSG_ERROR, "invalid coord in PCB attribute %s\n", key);
+				break;
+			case RND_HATT_STRING:
+				free((char *)f->val.str);
+				f->val.str = rnd_strdup(aval);
+				break;
+			case RND_HATT_ENUM:
+				l = -1;
+				for(n = 0, ev = f->enum_vals; *ev != NULL; ev++,n++) {
+					if (strcmp(*ev, aval) == 0) {
+						l = n;
+						break;
+					}
+				}
+				if (l >= 0)
+					f->val.lng = l;
+				else
+					rnd_message(RND_MSG_ERROR, "invalid enum value in PCB attribute %s\n", key);
+				break;
+			default:
+				break;
+		}
+	}
+	free(key);
+}
 
 static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
@@ -276,6 +327,8 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		if (strcmp(f->name, "boardLayer") == 0)          f->autoload = PCB_OAL_LAYERS;
 		else if (strcmp(f->name, "boardWidth") == 0)     f->autoload = PCB_OAL_WIDTH;
 		else if (strcmp(f->name, "boardHeight") == 0)    f->autoload = PCB_OAL_HEIGHT;
+		else
+			pcbway_load_field_from_attrib(PCB, f);
 
 		pcb_order_autoload_field(octx, f);
 
@@ -679,9 +732,10 @@ static pcb_order_field_t *pcbway_dad_wid2field(pcb_order_imp_t *imp, order_ctx_t
 	return NULL;
 }
 
+
 static void pcbway_data_update(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
-	int n;
+	long n;
 	order_ctx_t *octx = caller_data;
 	pcbway_form_t *form = octx->odata;
 
@@ -690,6 +744,7 @@ static void pcbway_data_update(void *hid_ctx, void *caller_data, rnd_hid_attribu
 		pcb_order_field_t *f = form->fields.array[n];
 
 		pcb_order_autoload_field(octx, f);
+		pcbway_load_field_from_attrib(PCB, f);
 
 		switch(f->type) {
 			case RND_HATT_INTEGER:
@@ -713,8 +768,49 @@ static void pcbway_data_update(void *hid_ctx, void *caller_data, rnd_hid_attribu
 
 static void pcbway_data_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
+	long n, restore;
 	order_ctx_t *octx = caller_data;
 	pcbway_form_t *form = octx->odata;
+	gds_t key = {0};
+
+	gds_append_str(&key, "order_pcbway::");
+	restore = key.used;
+
+	for(n = 0; n < form->fields.used; n++) {
+		pcb_order_field_t *f = form->fields.array[n];
+		const char *val = NULL;
+		char tmp[256];
+
+		if (f->autoload != PCB_OAL_none)
+			continue;
+
+		switch(f->type) {
+			case RND_HATT_INTEGER:
+				sprintf(tmp, "%ld", f->val.lng);
+				val = tmp;
+				break;
+			case RND_HATT_COORD:
+				rnd_sprintf(tmp, "%$mm", f->val.crd);
+				val = tmp;
+				break;
+			case RND_HATT_STRING:
+				val = f->val.str;
+				break;
+			case RND_HATT_ENUM:
+				if (f->val.lng >= 0)
+					val = f->enum_vals[f->val.lng];
+				break;
+			default:
+				rnd_message(RND_MSG_ERROR, "order_pcbway internal error: invalid field type\n");
+		}
+		if (val != NULL) {
+			gds_append_str(&key, f->name);
+			pcb_attribute_set(PCB, &PCB->Attributes, key.array, val, 0);
+			key.used = restore;
+		}
+	}
+
+	gds_uninit(&key);
 }
 
 
@@ -745,7 +841,7 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 				RND_DAD_HELP(octx->dlg, "Copy data from board to form");
 				RND_DAD_CHANGE_CB(octx->dlg, pcbway_data_update);
 			RND_DAD_BUTTON(octx->dlg, "Save data");
-				RND_DAD_HELP(octx->dlg, "Save data that is not generated or loaded from board data into PCBWay-specific config in the board file");
+				RND_DAD_HELP(octx->dlg, "Save data that is not generated or loaded from board data into PCBWay-specific attributes in the board file");
 				RND_DAD_CHANGE_CB(octx->dlg, pcbway_data_save);
 			RND_DAD_BEGIN_VBOX(octx->dlg);
 				RND_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
