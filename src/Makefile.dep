@@ -2404,8 +2404,9 @@
 ../src_plugins/order/const_lex.o: ../src_plugins/order/const_lex.c \
  ../src_plugins/order/const_gram.h ../src_plugins/order/constraint.h
 ../src_plugins/order/constraint.o: ../src_plugins/order/constraint.c \
- ../src_plugins/order/const_gram.h ../src_plugins/order/const_gram.h \
- ../src_plugins/order/constraint.h ../src_plugins/order/constraint.h
+ ../config.h ../src_plugins/order/const_gram.h \
+ ../src_plugins/order/const_gram.h ../src_plugins/order/constraint.h \
+ ../src_plugins/order/constraint.h ../src_plugins/order/const_lex.h
 ../src_plugins/order/order.o: ../src_plugins/order/order.c ../config.h \
  board.h vtroutestyle.h attrib.h global_typedefs.h \
  ../src_3rd/rnd_inclib/font/font.h ../src_3rd/rnd_inclib/font/glyph.h \
@@ -2429,7 +2430,7 @@
  obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  obj_text_list.h obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h \
  rats_patch.h board.h ../src_plugins/order/order.h \
- ../src_plugins/order/order_conf.h \
+ ../src_plugins/order/order_conf.h ../src_plugins/order/constraint.h \
  ../src_plugins/order_pcbway/order_pcbway_conf.h \
  ../src_plugins/order_pcbway/conf_internal.c conf_core.h \
  ../src_plugins/order_pcbway/order_pcbway_conf_fields.h
