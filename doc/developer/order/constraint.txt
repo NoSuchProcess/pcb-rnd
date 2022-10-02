@@ -1,0 +1,61 @@
+The constraint scripting language is a small Domain Specific Language
+designed to verify form data before submitting an order.
+
+Data types are: integer, float, string. When converting to boolean,
+numeric value 0 means false, anything else means true; a string is false
+if it is empty, else it is true.
+
+The script is an ordered sequence of statements. A statement is one of:
+- if (expr) statement
+- error(varname, explanation);
+- {} block (multiple statements wrapped in curly braces)
+
+An expression is:
+- a constant
+- a variable
+- parenthesis to change precedence: (expr)
+- logical and: expr && expr
+- logical or: expr || expr
+- logical not: !expr
+- equality comparison (numbers and strings):
+  - equal: expr == expr
+  - not equal: expr != expr
+- arithmetic comparison (numbers only):
+  - greater than: expr > expr
+  - greater than or equal: expr >= expr
+  - less than: expr < expr
+  - less than or equal: expr <= expr
+- arithmetic operators (numbers only):
+  - numeric negation: - expr
+  - addition: expr + expr
+  - subtraction: expr - expr
+  - multiplication: expr / expr
+  - modulo: expr % expr
+- explicit type conversion:
+  - convert to integer: int(expr)
+  - convert to float: float(expr)
+  - convert to string: string(expr)
+
+Constants:
+- a decimal integer
+- a decimal floating point number
+- a string in double quotes, e.g. "foo"
+
+Variables are $fieldname, where fieldname is a case sensitive field
+name from the form.
+
+Logic operations result in an integer, 0 or 1. Numbers are converted to
+float for arithmetic operations. When any of the operands of an equality
+operator is a string, both operands are converted to string. String
+equality is case sensitive.
+
+When a string is given to the explicit numerical conversions int() and
+float(), they convert the leading sequence of characters as long as a
+valid number is detected and ignore the rest of the string. If there is
+no valid leading numeric, 0 is returned. For example "19 oz copper" is
+converted to 19 (or 19.0) and "no copper" is converted to 0.
+
+Error()'s first argument is a variable name without $ or double-quote. The
+second argument is always a double quoted string. $variables are
+evaluated to int, float or string, depending on field type; enum fields
+are always evaluated to (enum value) strings.
