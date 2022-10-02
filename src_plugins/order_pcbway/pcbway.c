@@ -679,6 +679,45 @@ static pcb_order_field_t *pcbway_dad_wid2field(pcb_order_imp_t *imp, order_ctx_t
 	return NULL;
 }
 
+static void pcbway_data_update(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	int n;
+	order_ctx_t *octx = caller_data;
+	pcbway_form_t *form = octx->odata;
+
+	for(n = 0; n < form->fields.used; n++) {
+		rnd_hid_attr_val_t hv;
+		pcb_order_field_t *f = form->fields.array[n];
+
+		pcb_order_autoload_field(octx, f);
+
+		switch(f->type) {
+			case RND_HATT_INTEGER:
+			case RND_HATT_ENUM:
+				hv.lng = f->val.lng;
+				rnd_gui->attr_dlg_set_value(octx->dlg_hid_ctx, f->wid, &hv);
+				break;
+			case RND_HATT_COORD:
+				hv.crd = f->val.crd;
+				rnd_gui->attr_dlg_set_value(octx->dlg_hid_ctx, f->wid, &hv);
+				break;
+			case RND_HATT_STRING:
+				hv.str = f->val.str;
+				rnd_gui->attr_dlg_set_value(octx->dlg_hid_ctx, f->wid, &hv);
+				break;
+			default:
+				rnd_message(RND_MSG_ERROR, "order_pcbway internal error: invalid field type\n");
+		}
+	}
+}
+
+static void pcbway_data_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	order_ctx_t *octx = caller_data;
+	pcbway_form_t *form = octx->odata;
+}
+
+
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
 	int n;
@@ -704,6 +743,10 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 		RND_DAD_BEGIN_HBOX(octx->dlg);
 			RND_DAD_BUTTON(octx->dlg, "Update data");
 				RND_DAD_HELP(octx->dlg, "Copy data from board to form");
+				RND_DAD_CHANGE_CB(octx->dlg, pcbway_data_update);
+			RND_DAD_BUTTON(octx->dlg, "Save data");
+				RND_DAD_HELP(octx->dlg, "Save data that is not generated or loaded from board data into PCBWay-specific config in the board file");
+				RND_DAD_CHANGE_CB(octx->dlg, pcbway_data_save);
 			RND_DAD_BEGIN_VBOX(octx->dlg);
 				RND_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
 			RND_DAD_END(octx->dlg);
