@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Each subtree is an API and has a flat, _ordered_ list of fields.
+Each type="form" subtree is an API and has a flat, _ordered_ list of fields.
 Each field may have the following properties:
   type: integer, enum, mm, string, enum:country:code, enum:country:name
   note: human readable explanation of what the field is for
@@ -14,7 +14,7 @@ Types enum:country:code and enum:country:name are enums whose values are
 loaded from the list acquired using the api/Address/GetCountry API.
 -->
 <PCBWayAPI>
-    <PcbQuotationRequest note="PCB quote interface" path="api/Pcb/PcbQuotation">
+    <PcbQuotationRequest type="form" note="PCB quote interface" path="api/Pcb/PcbQuotation">
         <boardWidth group="pcb" type="mm" default="100" note="Board width"></boardWidth>
         <boardHeight group="pcb" type="mm" default="100" note="board height"></boardHeight>
         <boardLayer group="pcb" type="enum" default="2" note="Number of copper layers">
@@ -168,9 +168,152 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>No</Value>
         </Goldfingers>
     </PcbQuotationRequest>
+
+<!--
+The constraint scripting language is a small Domain Specific Language
+designed to verify form data before submitting an order.
+
+Data types are: integer, float, string. When converting to boolean,
+numeric value 0 means false, anything else means true; a string is false
+if it is empty, else it is true.
+
+The script is an ordered sequence of statements. A statement is one of:
+- if (expr) statement
+- error(varname, explanation);
+- {} block (multiple statements wrapped in curly braces)
+
+An expression is:
+- a constant
+- a variable
+- parenthesis to change precedence: (expr)
+- logical and: expr && expr
+- logical or: expr || expr
+- logical not: !expr
+- equality comparison (numbers and strings):
+  - equal: expr == expr
+  - not equal: expr != expr
+- arithmetic comparison (numbers only):
+  - greater than: expr > expr
+  - greater than or equal: expr >= expr
+  - less than: expr < expr
+  - less than or equal: expr <= expr
+- arithmetic operators (numbers only):
+  - numeric negation: - expr
+  - addition: expr + expr
+  - subtraction: expr - expr
+  - multiplication: expr / expr
+  - modulo: expr % expr
+- explicit type conversion:
+  - convert to integer: int(expr)
+  - convert to float: float(expr)
+  - convert to string: string(expr)
+
+Constants:
+- a decimal integer
+- a decimal floating point number
+- a string in double quotes, e.g. "foo"
+
+Variables are $fieldname, where fieldname is a case sensitive field
+name from the form.
+
+Logic operations result in an integer, 0 or 1. Numbers are converted to
+float for arithmetic operations. When any of the operands of an equality
+operator is a string, both operands are converted to string. String
+equality is case sensitive.
+
+When a string is given to the explicit numerical conversions int() and
+float(), they convert the leading sequence of characters as long as a
+valid number is detected and ignore the rest of the string. If there is
+no valid leading numeric, 0 is returned. For example "19 oz copper" is
+converted to 19 (or 19.0) and "no copper" is converted to 0.
+
+Error()'s first argument is a variable name without $ or double-quote. The
+second argument is always a double quoted string. $variables are
+evaluated to int, float or string, depending on field type; enum fields
+are always evaluated to (enum value) strings.
+-->
+    <PcbQuotationConstraints type="constraints">
+        <![CDATA[
+        if (($Material == "Aluminum board") || ($Material == "Copper")) {
+            if ((int($boardLayer) != 1) && (int($boardLayer) != 2))
+                error(boardLayer, "Aluminium/copper board must have 1 or 2 layers");
+            if (float($Thickness) <= 0.3)
+                error(Thickness, "Aluminium/copper board must be thicker than 0.3mm");
+            if (int($MinTrackSpacing) < 4)
+                error(MinTrackSpacing, "Minimum track spacing must be at least 4/4");
+            if ((int($boardLayer) == 1) && (float($MinHoleSize) < 0.8))
+                error(MinHoleSize, "1-layer metal core board holes must be at least 0.8mm in diameter");
+            if ((int($boardLayer) == 2) && (float($MinHoleSize) < 0.2))
+                error(MinHoleSize, "2-layer metal core board holes must be at least 0.2mm in diameter");
+            if ((int($MinTrackSpacing) == 4) || (int($MinTrackSpacing) == 5)) {
+                if (int($FinishedCopper) != 1)
+                    error(FinishedCopper, "Aluminum/copper board with 4/4 or 5/5 spacing must have finished copper 1 oz Cu");
+            }
+            if (int($MinTrackSpacing) == 6) {
+                if ((int($FinishedCopper) != 1) && (int($FinishedCopper) != 2))
+                    error(FinishedCopper, "Aluminum/copper board with 6/6 spacing must have finished copper 1 or 2 oz Cu");
+            }
+            if (int($MinTrackSpacing) == 8) {
+                if ((int($FinishedCopper) != 1) && (int($FinishedCopper) != 2) && (int($FinishedCopper) != 3) && (int($FinishedCopper) != 4))
+                    error(FinishedCopper, "Aluminum/copper board with 8/8 spacing must have finished copper 1, 2, 3 or 4 oz Cu");
+            }
+        }
+
+        if ($Material == "FR-4") {
+            if (int($boardLayer) == 4) {
+                if ((float($Thickness) < 0.4) || (float($Thickness) > 3.2))
+                   error(Thickness, "4-layer FR4 board must be between 0.4 and 3.2 in thickness");
+            }
+            if (int($boardLayer) == 6) {
+                if ((float($Thickness) < 0.8) || (float($Thickness) > 3.2))
+                   error(Thickness, "6-layer FR4 board must be between 0.8 and 3.2 in thickness");
+            }
+            if (int($boardLayer) == 8) {
+                if ((float($Thickness) < 1.0) || (float($Thickness) > 3.2))
+                   error(Thickness, "8-layer FR4 board must be between 1.0 and 3.2 in thickness");
+            }
+            if (int($boardLayer) == 10) {
+                if ((float($Thickness) < 1.2) || (float($Thickness) > 3.2))
+                   error(Thickness, "10-layer FR4 board must be between 1.2 and 3.2 in thickness");
+            }
+            if (int($boardLayer) == 12) {
+                if ((float($Thickness) < 1.6) || (float($Thickness) > 3.2))
+                   error(Thickness, "12-layer FR4 board must be between 1.6 and 3.2 in thickness");
+            }
+            if (int($boardLayer) == 14) {
+                if ((float($Thickness) < 2.0) || (float($Thickness) > 3.2))
+                   error(Thickness, "14-layer FR4 board must be between 2.0 and 3.2 in thickness");
+            }
+            if ((float($MinHoleSize) < 0.15) || (float($MinHoleSize) > 0.3)) {
+                error(MinHoleSize, "Mininum hole size on FR-4 must be between 0.15 and 0.3");
+            }
+            if ((int($MinTrackSpacing) == 3) || (int($MinTrackSpacing) == 4) || (int($MinTrackSpacing) == 5)) {
+                if (int($FinishedCopper) != 1)
+                    error(FinishedCopper, "FR4 board with 3/3 or 4/4 or 5/5 spacing must have finished copper 1 oz Cu");
+            }
+            if (int($MinTrackSpacing) == 6) {
+                if ((int($FinishedCopper) != 1) && (int($FinishedCopper) != 2))
+                    error(FinishedCopper, "FR4 board with 6/6 spacing must have finished copper 1 or 2 oz Cu");
+            }
+            if (int($MinTrackSpacing) == 8) {
+                if ((int($FinishedCopper) < 1) && (int($FinishedCopper) > 13))
+                    error(FinishedCopper, "FR4 board with 8/8 spacing must have finished copper between 1 and 13 oz Cu");
+            }
+        }
+
+        if ($Silkscreen == "Black") {
+            if (($SolderMask == "Red") || ($SolderMask == "Blue") || ($SolderMask == "Black") || ($SolderMask == "Purple") || ($SolderMask == "Matt black") || ($SolderMask == "Matt green"))
+                error(Silkscreen, "Invalid SilkScreen/soldermask color combination with. Please choose White for SilkScreen!");
+        }
+        if ($Silkscreen == "White") {
+            if ($SolderMask == "White")
+                error(Silkscreen, "Invalid SilkScreen/soldermask color combination with. Please choose Black for SilkScreen!");
+        }
+        if (float($Thickness) < 0.6) {
+            if (($SurfaceFinish == "HASL with lead") || ($SurfaceFinish == "HASL lead free"))
+                error(Thickness, "Board must be at least 0.6mm thick for HASL finish. Select a thicker board or a different finish!");
+        }
+        ]]>
+    </PcbQuotationConstraints>
 </PCBWayAPI>
-
-
-
-
 
