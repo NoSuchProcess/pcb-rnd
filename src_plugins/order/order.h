@@ -35,13 +35,16 @@ extern conf_order_t conf_order;
 
 typedef struct pcb_order_field_s pcb_order_field_t;
 
-typedef struct{
+typedef struct  order_ctx_s  order_ctx_t;
+
+struct order_ctx_s {
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	vtp0_t names;
 	int wtab; /* widgets */
 	void *odata;                                   /* implementation-specific data of the current order */
-} order_ctx_t;
+	void (*field_change_cb)(order_ctx_t *octx, pcb_order_field_t *f) /* called after a field has been changed from the GUI */
+};
 
 /* order implementation - registered by an order plugin */
 typedef struct pcb_order_imp_s pcb_order_imp_t;

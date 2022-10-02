@@ -74,6 +74,12 @@ static pcb_order_field_t *attr2field(order_ctx_t *octx, rnd_hid_attribute_t *att
 	return imp->wid2field(imp, octx, wid);
 }
 
+static void cb_notify(order_ctx_t *octx, pcb_order_field_t *f)
+{
+	if (octx->field_change_cb != NULL)
+		octx->field_change_cb(octx, f);
+}
+
 static void pcb_order_enum_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	order_ctx_t *octx = caller_data;
@@ -83,6 +89,7 @@ static void pcb_order_enum_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attr
 		return;
 	}
 	f->val.lng = attr_btn->val.lng;
+	cb_notify(octx, f);
 }
 
 static void pcb_order_int_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
@@ -94,6 +101,7 @@ static void pcb_order_int_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 		return;
 	}
 	f->val.lng = attr_btn->val.lng;
+	cb_notify(octx, f);
 }
 
 static void pcb_order_coord_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
@@ -105,6 +113,7 @@ static void pcb_order_coord_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_att
 		return;
 	}
 	f->val.crd = attr_btn->val.crd;
+	cb_notify(octx, f);
 }
 
 static void pcb_order_str_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
@@ -117,6 +126,7 @@ static void pcb_order_str_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 	}
 	free(f->val.str);
 	f->val.str = rnd_strdup(attr_btn->val.str);
+	cb_notify(octx, f);
 }
 
 
