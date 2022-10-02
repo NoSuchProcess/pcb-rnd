@@ -57,6 +57,8 @@ typedef struct pcbway_form_s {
 	vtp0_t fields;   /* of pcb_order_field_t */
 	vts0_t country_codes;
 	pcb_ordc_ctx_t ordc; /* ordering constraint script */
+	order_ctx_t *octx;
+	unsigned has_errors:1;
 } pcbway_form_t;
 
 static int pcbway_cache_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, rnd_wget_opts_t *wopts)
@@ -286,30 +288,42 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 	return 0;
 }
 
+#define UCACHE_FIELD_LOOKUP() \
+do { \
+	if (f == NULL) { \
+		long n; \
+		for(n = 0; n < form->fields.used; n++) { \
+			f = form->fields.array[n]; \
+			if (strcmp(f->name, varname) == 0) { \
+				*ucache = f; \
+				break; \
+			} \
+		} \
+		f = *ucache; \
+	} \
+} while(0)
+
 static void error_cb(pcb_ordc_ctx_t *ctx, const char *varname, const char *msg, void **ucache)
 {
-	rnd_trace("Constraint error: %s: %s\n", varname, msg);
-}
-
-static void var_cb(pcb_ordc_ctx_t *octx, pcb_ordc_val_t *dst, const char *varname, void **ucache)
-{
-	pcbway_form_t *form = (pcbway_form_t *)octx->user_data;
+	pcbway_form_t *form = (pcbway_form_t *)ctx->user_data;
+	order_ctx_t *octx = form->octx;
 	pcb_order_field_t *f = *ucache;
 
-	if (f == NULL) {
-		long n;
+	UCACHE_FIELD_LOOKUP();
+	if (f == NULL)
+		return; /* dst remains in its initial error state */
 
-		for(n = 0; n < form->fields.used; n++) {
-			f = form->fields.array[n];
-			if (strcmp(f->name, varname) == 0) {
-				*ucache = f;
-				break;
-			}
-		}
-		
-		f = *ucache;
-	}
+	rnd_message(RND_MSG_ERROR, "PCBWay constraint error: %s: %s\n", varname, msg);
+	pcb_order_field_error(octx, f, msg);
+	form->has_errors = 1;
+}
 
+static void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname, void **ucache)
+{
+	pcbway_form_t *form = (pcbway_form_t *)ctx->user_data;
+	pcb_order_field_t *f = *ucache;
+
+	UCACHE_FIELD_LOOKUP();
 	if (f == NULL)
 		return; /* dst remains in its initial error state */
 
@@ -332,6 +346,18 @@ static void var_cb(pcb_ordc_ctx_t *octx, pcb_ordc_val_t *dst, const char *varnam
 static void field_change_cb(order_ctx_t *octx, pcb_order_field_t *f)
 {
 	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
+
+	/* clear previous errors */
+	if (form->has_errors) {
+		long n;
+
+		for(n = 0; n < form->fields.used; n++) {
+			f = form->fields.array[n];
+			pcb_order_field_error(octx, f, NULL);
+		}
+		form->has_errors = 0;
+	}
+
 	pcb_ordc_exec(&form->ordc);
 }
 
@@ -368,6 +394,7 @@ rnd_trace("not root\n");
 	form->ordc.error_cb = error_cb;
 	form->ordc.var_cb = var_cb;
 	form->ordc.user_data = form;
+	form->octx = octx;
 	octx->field_change_cb = field_change_cb;
 
 	return 0;
