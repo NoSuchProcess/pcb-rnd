@@ -42,6 +42,7 @@
 #include <librnd/core/compat_fs.h>
 #include <librnd/plugins/lib_wget/lib_wget.h>
 #include "../src_plugins/order/order.h"
+#include "../src_plugins/order/constraint.h"
 #include "order_pcbway_conf.h"
 #include "../src_plugins/order_pcbway/conf_internal.c"
 #include "conf_core.h"
@@ -55,6 +56,7 @@ conf_order_pcbway_t conf_order_pcbway;
 typedef struct pcbway_form_s {
 	vtp0_t fields;   /* of pcb_order_field_t */
 	vts0_t country_codes;
+	pcb_ordc_ctx_t ordc; /* ordering constraint script */
 } pcbway_form_t;
 
 static int pcbway_cache_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, rnd_wget_opts_t *wopts)
@@ -284,6 +286,53 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 	return 0;
 }
 
+static void error_cb(pcb_ordc_ctx_t *ctx, const char *varname, const char *msg, void **ucache)
+{
+	rnd_trace("Constraint error: %s: %s\n", varname, msg);
+}
+
+static void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname, void **ucache)
+{
+	rnd_trace("constraint var resolve: %s\n", varname);
+}
+
+
+static int pcbway_load_constraints_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
+{
+	xmlNode *n, *cd;
+	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
+	const char *script = NULL;
+
+	for(root = root->children; (root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PcbQuotationConstraints") != 0); root = root->next) ;
+
+	if (root == NULL) {
+rnd_trace("not root\n");
+		return -1;
+	}
+
+	n = root->children;
+	cd = n->next;
+
+	/* script should be in a CDATA because of the &&'s and < in the script */
+	if ((cd != NULL) && (cd->type == XML_CDATA_SECTION_NODE))
+		script = (char *)cd->content;
+	else {
+		if (n->type != XML_TEXT_NODE) /* fallback to plain text, just in case */
+			return -1;
+		script = (char *)n->content;
+	}
+
+	if (pcb_ordc_parse_str(&form->ordc, script) != 0)
+		return -1;
+
+	rnd_message(RND_MSG_INFO, "Succesfully compiled PCBWay's order Constraint Script\n");
+
+	form->ordc.error_cb = error_cb;
+	form->ordc.var_cb = var_cb;
+
+	return 0;
+}
+
 static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
 	char *cachedir, *path, *country_fn;
@@ -318,7 +367,11 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 			else 
 #endif
 			if (pcbway_load_fields_(&PCB->hidlib, imp, octx, root) != 0) {
-				rnd_message(RND_MSG_ERROR, "order_pcbway: xml error: invalid API xml\n");
+				rnd_message(RND_MSG_ERROR, "order_pcbway: xml error: invalid API xml: missing or bad fields subtree\n");
+				res = -1;
+			}
+			if (pcbway_load_constraints_(&PCB->hidlib, imp, octx, root) != 0) {
+				rnd_message(RND_MSG_ERROR, "order_pcbway: xml error: invalid API xml: missing or bad constraint script\n");
 				res = -1;
 			}
 			free(country_fn);
@@ -567,8 +620,13 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 	RND_DAD_BEGIN_VBOX(octx->dlg);
 		RND_DAD_COMPFLAG(octx->dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
 
-		for(n = 0; n < form->fields.used; n++)
-			pcb_order_dad_field(octx, form->fields.array[n]);
+		if (form != NULL) {
+			for(n = 0; n < form->fields.used; n++)
+				pcb_order_dad_field(octx, form->fields.array[n]);
+		}
+		else
+			RND_DAD_LABEL(octx->dlg, "ERROR: failed to parse PCBWay API xml");
+
 
 		RND_DAD_BEGIN_VBOX(octx->dlg);
 			RND_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
