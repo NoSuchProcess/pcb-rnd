@@ -11,7 +11,7 @@ NOTE: If you are packaging pcb-rnd for an OS distribution, please read
 Summary of dependencies:
 For users:
  - mandatory: C compiler
- - mandatory: make
+ - mandatory: make (BSD make won't work)
  - mandatory: librnd >=3.2.0 installed
               Get it at: see http://www.repo.hu/projects/librnd
               Standard: install librnd in /usr/local or /usr
