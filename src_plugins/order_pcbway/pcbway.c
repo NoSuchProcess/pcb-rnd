@@ -251,6 +251,26 @@ static void pcbway_load_field_from_attrib(pcb_board_t *pcb, pcb_order_field_t *f
 	free(key);
 }
 
+static void check_constraints(order_ctx_t *octx)
+{
+	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
+	pcb_order_field_t *f;
+
+	/* clear previous errors */
+	if (form->has_errors) {
+		long n;
+
+		for(n = 0; n < form->fields.used; n++) {
+			f = form->fields.array[n];
+			pcb_order_field_error(octx, f, NULL);
+		}
+		form->has_errors = 0;
+	}
+
+	pcb_ordc_exec(&form->ordc);
+}
+
+
 static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
 	xmlNode *n, *v;
@@ -327,10 +347,9 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		if (strcmp(f->name, "boardLayer") == 0)          f->autoload = PCB_OAL_LAYERS;
 		else if (strcmp(f->name, "boardWidth") == 0)     f->autoload = PCB_OAL_WIDTH;
 		else if (strcmp(f->name, "boardHeight") == 0)    f->autoload = PCB_OAL_HEIGHT;
-		else
-			pcbway_load_field_from_attrib(PCB, f);
 
 		pcb_order_autoload_field(octx, f);
+		pcbway_load_field_from_attrib(PCB, f);
 
 		vtp0_append(&form->fields, f);
 		if (form->fields.used > 128) {
@@ -394,25 +413,6 @@ static void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname
 		default:
 			rnd_message(RND_MSG_ERROR, "order_pcbway internal error: invalid field type\n");
 	}
-}
-
-static void check_constraints(order_ctx_t *octx)
-{
-	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
-	pcb_order_field_t *f;
-
-	/* clear previous errors */
-	if (form->has_errors) {
-		long n;
-
-		for(n = 0; n < form->fields.used; n++) {
-			f = form->fields.array[n];
-			pcb_order_field_error(octx, f, NULL);
-		}
-		form->has_errors = 0;
-	}
-
-	pcb_ordc_exec(&form->ordc);
 }
 
 static void field_change_cb(order_ctx_t *octx, pcb_order_field_t *f)
@@ -486,8 +486,8 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 		root = xmlDocGetRootElement(doc);
 		if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0)) {
 			octx->odata = calloc(sizeof(pcbway_form_t), 1);
-			country_fn = rnd_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
 #if 0
+			country_fn = rnd_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
 			if (pcbway_load_countries(octx->odata, country_fn) != 0)
 				res = -1;
 			else 
@@ -500,7 +500,9 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 				rnd_message(RND_MSG_ERROR, "order_pcbway: xml error: invalid API xml: missing or bad constraint script\n");
 				res = -1;
 			}
+#if 0
 			free(country_fn);
+#endif
 		}
 		else
 			rnd_message(RND_MSG_ERROR, "order_pcbway: xml error: root is not <PCBWayAPI>\n");
