@@ -863,13 +863,19 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 	RND_DAD_END(octx->dlg);
 }
 
+static void pcbway_dad_inited(pcb_order_imp_t *imp, order_ctx_t *octx)
+{
+	check_constraints(octx);
+}
+
 static pcb_order_imp_t pcbway = {
 	"PCBWay",
 	NULL,
 	pcbway_load_fields,
 	pcbway_free_fields,
 	pcbway_dad_wid2field,
-	pcbway_populate_dad
+	pcbway_populate_dad,
+	pcbway_dad_inited
 };
 
 
