@@ -2417,10 +2417,10 @@
  crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h layer.h ../src_plugins/order/order_conf.h \
- ../src_plugins/order/conf_internal.c ../src_plugins/order/order.h \
- ../src_plugins/order/order_conf.h ../src_plugins/order/menu_internal.c \
- ../src_plugins/order/order_dlg.c \
+ vtpadstack_t.h funchash_core.h funchash_core_list.h layer.h \
+ ../src_plugins/order/order_conf.h ../src_plugins/order/conf_internal.c \
+ ../src_plugins/order/order.h ../src_plugins/order/order_conf.h \
+ ../src_plugins/order/menu_internal.c ../src_plugins/order/order_dlg.c \
  ../src_plugins/order/order_conf_fields.h
 ../src_plugins/order_pcbway/pcbway.o: \
  ../src_plugins/order_pcbway/pcbway.c ../config.h board.h vtroutestyle.h \
