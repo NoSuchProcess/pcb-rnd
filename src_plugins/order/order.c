@@ -31,6 +31,7 @@
 #include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
+#include "funchash_core.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid_dad.h>
@@ -147,6 +148,18 @@ static void autoload_field_lng(order_ctx_t *octx, pcb_order_field_t *f, long l, 
 	}
 }
 
+static int has_outline(pcb_board_t *pcb)
+{
+	long i;
+	pcb_layergrp_t *g;
+
+	for(i = 0, g = pcb->LayerGroups.grp; i < pcb->LayerGroups.len; i++,g++)
+		if ((PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) && (!pcb_layergrp_is_pure_empty(pcb, i)))
+			return 1;
+
+	return 0;
+}
+
 void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 {
 	rnd_box_t bb;
@@ -156,12 +169,20 @@ void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 	switch(f->autoload) {
 		case PCB_OAL_none: return;
 		case PCB_OAL_WIDTH:
-			pcb_data_bbox(&bb, PCB->Data, 0);
-			autoload_field_crd(octx, f, bb.X2 - bb.X1);
+			if (has_outline(PCB)) {
+				pcb_data_bbox(&bb, PCB->Data, 0);
+				autoload_field_crd(octx, f, bb.X2 - bb.X1);
+			}
+			else
+				autoload_field_crd(octx, f, PCB->hidlib.size_x);
 			break;
 		case PCB_OAL_HEIGHT:
-			pcb_data_bbox(&bb, PCB->Data, 0);
-			autoload_field_crd(octx, f, bb.Y2 - bb.Y1);
+			if (has_outline(PCB)) {
+				pcb_data_bbox(&bb, PCB->Data, 0);
+				autoload_field_crd(octx, f, bb.Y2 - bb.Y1);
+			}
+			else
+				autoload_field_crd(octx, f, PCB->hidlib.size_y);
 			break;
 		case PCB_OAL_LAYERS:
 			for(gid = 0, l = 0; gid < PCB->LayerGroups.len; gid++)
