@@ -396,9 +396,10 @@ static void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname
 	}
 }
 
-static void field_change_cb(order_ctx_t *octx, pcb_order_field_t *f)
+static void check_constraints(order_ctx_t *octx)
 {
 	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
+	pcb_order_field_t *f;
 
 	/* clear previous errors */
 	if (form->has_errors) {
@@ -412,6 +413,11 @@ static void field_change_cb(order_ctx_t *octx, pcb_order_field_t *f)
 	}
 
 	pcb_ordc_exec(&form->ordc);
+}
+
+static void field_change_cb(order_ctx_t *octx, pcb_order_field_t *f)
+{
+	check_constraints(octx);
 }
 
 static int pcbway_load_constraints_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
@@ -733,7 +739,7 @@ static pcb_order_field_t *pcbway_dad_wid2field(pcb_order_imp_t *imp, order_ctx_t
 }
 
 
-static void pcbway_data_update(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+static void pcbway_data_update_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	long n;
 	order_ctx_t *octx = caller_data;
@@ -764,9 +770,10 @@ static void pcbway_data_update(void *hid_ctx, void *caller_data, rnd_hid_attribu
 				rnd_message(RND_MSG_ERROR, "order_pcbway internal error: invalid field type\n");
 		}
 	}
+	check_constraints(octx);
 }
 
-static void pcbway_data_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+static void pcbway_data_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	long n, restore;
 	order_ctx_t *octx = caller_data;
@@ -839,10 +846,10 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 		RND_DAD_BEGIN_HBOX(octx->dlg);
 			RND_DAD_BUTTON(octx->dlg, "Update data");
 				RND_DAD_HELP(octx->dlg, "Copy data from board to form");
-				RND_DAD_CHANGE_CB(octx->dlg, pcbway_data_update);
+				RND_DAD_CHANGE_CB(octx->dlg, pcbway_data_update_cb);
 			RND_DAD_BUTTON(octx->dlg, "Save data");
 				RND_DAD_HELP(octx->dlg, "Save data that is not generated or loaded from board data into PCBWay-specific attributes in the board file");
-				RND_DAD_CHANGE_CB(octx->dlg, pcbway_data_save);
+				RND_DAD_CHANGE_CB(octx->dlg, pcbway_data_save_cb);
 			RND_DAD_BEGIN_VBOX(octx->dlg);
 				RND_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
 			RND_DAD_END(octx->dlg);
