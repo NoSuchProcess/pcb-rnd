@@ -55,6 +55,13 @@ static int order_dialog(void)
 	order_ctx.active = 1;
 
 	RND_DAD_NEW("order", order_ctx.dlg, "Order PCB", &order_ctx, rnd_false, order_close_cb);
+
+	for(n = 0; n < pcb_order_imps.used; n++) {
+		imp = pcb_order_imps.array[n];
+		if (imp->dad_inited != NULL)
+			imp->dad_inited(pcb_order_imps.array[n], &order_ctx);
+	}
+
 	return 0;
 }
 

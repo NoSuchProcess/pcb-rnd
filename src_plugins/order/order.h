@@ -55,6 +55,7 @@ struct pcb_order_imp_s {
 	void (*free_fields)(pcb_order_imp_t *imp, order_ctx_t *octx);
 	pcb_order_field_t *(*wid2field)(pcb_order_imp_t *imp, order_ctx_t *octx, int wid);
 	void (*populate_dad)(pcb_order_imp_t *imp, order_ctx_t *octx);
+	void (*dad_inited)(pcb_order_imp_t *imp, order_ctx_t *octx); /* optional: called right after the dialog box is open */
 };
 
 extern vtp0_t pcb_order_imps; /* of (pcb_order_imp_t *) items */
