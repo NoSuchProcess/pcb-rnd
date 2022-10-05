@@ -1,3 +1,4 @@
+36904	configure	enable plugin the order and order_pcbway plugins
 36851	configure	order plugin: constraint language
 36722	configure	import_sch from sch-rnd
 36610	configure	remove local implementation of export and print dialogs in favor of librnd's
