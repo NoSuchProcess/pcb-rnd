@@ -159,6 +159,14 @@ static void pcb_ch_editpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 	}
 }
 
+static void pcb_editpoint_flush(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	/* clear all editpoint lists because the old list may hold objects just
+	   deleted; the edit will trigger a redraw anyway */
+	editpoint_raw[0].used = editpoint_raw[1].used = 0;
+}
+
+
 int pplg_check_ver_ch_editpoint(int ver_needed) { return 0; }
 
 void pplg_uninit_ch_editpoint(void)
@@ -182,6 +190,7 @@ int pplg_init_ch_editpoint(void)
 #include "ch_editpoint_conf_fields.h"
 
 	rnd_event_bind(PCB_EVENT_CROSSHAIR_NEW_POS, pcb_ch_editpoint, NULL, pcb_ch_editpoint_cookie);
+	rnd_event_bind(PCB_EVENT_BOARD_EDITED, pcb_editpoint_flush, NULL, pcb_ch_editpoint_cookie);
 
 	rnd_hid_menu_load(rnd_gui, NULL, pcb_ch_editpoint_cookie, 100, NULL, 0, ch_editpoint_menu, "plugin: ch_editpoint");
 
