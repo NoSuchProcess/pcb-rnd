@@ -68,12 +68,14 @@ RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_xform_mx_t mx, const unsign
 	}
 	else if (tiny == RND_FONT_TINY_CHEAP) {
 		if (h <= rnd_render->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
-			w = rnd_font_string_width(font, scx, string);
+			w = rnd_font_string_width(font, 1.0, string); /* scx=1 because mx xformation will scale it up anyway */
+			h = rnd_font_string_height(font, 1.0, string);
 			cheap_text_line(mx, 0, h/2, w, h/2, cb, cb_ctx);
 			return 1;
 		}
 		else if (h <= rnd_render->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
-			w = rnd_font_string_width(font, scx, string);
+			w = rnd_font_string_width(font, 1.0, string); /* scx=1 because mx xformation will scale it up anyway */
+			h = rnd_font_string_height(font, 1.0, string);
 			h /= 4;
 			cheap_text_line(mx, 0, h,   w, h,   cb, cb_ctx);
 			cheap_text_line(mx, 0, h,   w, h*3, cb, cb_ctx);
