@@ -1037,7 +1037,7 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_Rotate90[] = "pcb_move_obj(steps)";
+static const char pcb_acts_Rotate90[] = "Rotate90(steps)";
 static const char pcb_acth_Rotate90[] = "Rotates the object under the crosshair by 90 degree steps.";
 /* DOC: rotate90.html */
 static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
