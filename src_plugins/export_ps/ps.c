@@ -312,6 +312,7 @@ static struct {
 	rnd_bool is_paste;
 
 	int ovr_all;
+	int had_page; /* 1 if we ever wrote a page */
 } global;
 
 static const rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n)
@@ -413,11 +414,14 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.exps.view.X2 = PCB->hidlib.size_x;
 	global.exps.view.Y2 = PCB->hidlib.size_y;
 
+	global.had_page = 0;
+
 	/* print ToC */
 	if ((!global.multi_file && !global.multi_file_cam) && (options[HA_toc].lng)) {
 		rnd_ps_begin_toc(&global.ps);
 		rnd_app.expose_main(&ps_hid, &global.exps, xform);
 		rnd_ps_end_toc(&global.ps);
+		global.had_page = 1;
 	}
 
 	/* print page(s) */
@@ -558,7 +562,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		double boffset;
 		int mirror_this = 0;
 
-		if ((!ps_cam.active) && (global.ps.pagecount != 0)) {
+		if ((!ps_cam.active) && (global.ps.pagecount != 0) && global.had_page) {
 			rnd_fprintf(global.ps.outf, "showpage\n");
 		}
 		if ((!ps_cam.active && global.multi_file) || (ps_cam.active && ps_cam.fn_changed)) {
@@ -575,6 +579,8 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 
 			rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 		}
+		else
+			global.had_page = 1;
 
 		if (global.mirror)
 			mirror_this = !mirror_this;
