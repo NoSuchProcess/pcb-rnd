@@ -75,7 +75,7 @@ ha:rnd-menu-v1 {
 						@import_geo
 						-
 						@import_sch
-						ha:Load netlist file                 = {                             action=Load(Netlist) }
+						ha:Load netlist file (detect format) = {                             action=Load(Netlist) }
 					}
 				}
 				-
