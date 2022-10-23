@@ -49,27 +49,12 @@ conf_import_sch_rnd_t conf_import_sch_rnd;
 
 static pcb_plug_import_t import_sch_rnd;
 
-
-extern int pcb_io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f);
-
 int sch_rnd_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
-	FILE *f;
-
-	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs < 1))
-		return 0; /* only pure netlist import is supported, only if there are files */
-
-	f = rnd_fopen(&PCB->hidlib, args[0], "r");
-	if (f == NULL)
-		return 0;
-
-	if (!pcb_io_tedax_test_parse(NULL, 0, args[0], f)) {
-		fclose(f);
-		return 0;
-	}
-	fclose(f);
-
-	return 200;
+	/* Native file format would be lihata sch-rnd schematics;
+	   but we do not attempt to directly load a lihata files as generic netlist
+	   import, only through import_sch2 so refuse this */
+	return 0;
 }
 
 static int sch_rnd_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
