@@ -111,7 +111,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (!pcb_import_netlist(RND_ACT_HIDLIB, pcb->Netlistname))
 				pcb_netlist_changed(1);
 			else
-				rnd_message(RND_MSG_ERROR, "None of the netlist import plugins could handle that file (unknown or broken file format?)\n");
+				rnd_message(RND_MSG_ERROR, "None of the netlist import plugins could handle that file:\nunknown/broken file format or partial load due to errors in the file\n");
 			break;
 
 		case F_Revert:
