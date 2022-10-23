@@ -105,7 +105,7 @@ int tedax_drc_query_def_parse(pcb_board_t *pcb, FILE *f, const char *src, char *
 	return 0;
 }
 
-int tedax_drc_query_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, const char *src, int silent)
+int tedax_drc_query_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, const char *src, int silent, int mandatory)
 {
 	char line[520], *argv[16];
 	int argc;
@@ -141,7 +141,7 @@ int tedax_drc_query_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, const c
 				return -1;
 		}
 	}
-	return (cnt == 0) ? -1 : 0;
+	return ((cnt == 0) && mandatory) ? -1 : 0;
 }
 
 int tedax_drc_query_load(pcb_board_t *pcb, const char *fn, const char *blk_id, const char *src, int silent)
@@ -154,7 +154,7 @@ int tedax_drc_query_load(pcb_board_t *pcb, const char *fn, const char *blk_id, c
 		rnd_message(RND_MSG_ERROR, "tedax_drc_query_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
-	res = tedax_drc_query_fload(pcb, f, blk_id, src, silent);
+	res = tedax_drc_query_fload(pcb, f, blk_id, src, silent, 1);
 	fclose(f);
 	return res;
 }
