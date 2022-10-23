@@ -431,7 +431,6 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	int save_ons[PCB_MAX_LAYER];
 	rnd_box_t tmp, *bbox;
 	rnd_xform_t xform;
-	FILE *f;
 
 	rnd_drwpx_init(pctx, &PCB->hidlib);
 
@@ -473,29 +472,29 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	}
 
 	if (png_cam.fn_template == NULL) {
-		f = rnd_fopen_askovr(&PCB->hidlib, png_cam.active ? png_cam.fn : filename, "wb", NULL);
-		if (f == NULL) {
+		png_f = rnd_fopen_askovr(&PCB->hidlib, png_cam.active ? png_cam.fn : filename, "wb", NULL);
+		if (png_f == NULL) {
 			perror(filename);
 			rnd_drwpx_uninit(pctx);
 			return;
 		}
 	}
 	else
-		f = NULL;
+		png_f = NULL;
 
 	png_hid.force_compositing = !!pctx->photo_mode;
 
 	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	png_hid_export_to_file(f, options, &xform);
+	png_hid_export_to_file(png_f, options, &xform);
 
 	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_restore_layer_ons(save_ons);
 
-	png_finish(f);
-	if (f != NULL)
-		fclose(f);
+	png_finish(png_f);
+	if (png_f != NULL)
+		fclose(png_f);
 
 
 	png_photo_post_export();
