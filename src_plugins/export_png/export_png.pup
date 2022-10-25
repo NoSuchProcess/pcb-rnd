@@ -6,6 +6,7 @@ $fmt-native no
 $fmt-feature-w render in .png
 $fmt-feature-w render in .gif
 $fmt-feature-w render in .jpeg
+$extdeps libgd
 $package export
 dep lib_exp_pixmap
 default buildin
