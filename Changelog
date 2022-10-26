@@ -1,3 +1,250 @@
+pcb-rnd 3.0.6 (r36924)
+~~~~~~~~~~~~~~~~~~~~~~
+	[act_draw]
+		-Add: Arc2Lines() for line approximating arcs
+
+	[act_read]
+		-Fix: wrong description on ReadBoard()
+		-Fix: IDP error message printed the wrong syntax text (for idplist)
+
+	[build]
+		-Fix: buildin.hidlib.c is long gone, do not attempt to sue it for make dep
+		-Update: require librnd 3.2.x to configure
+		-Add: print which app required librnd to avoid possible confusion
+
+	[cam]
+		-Add: name all HPANE/VPANE so their positions are saved
+
+	[ch_endpoint]
+		-Fix: endpoint mark object list is flushed on board edit so that it won't remember delted objects - fixes invalid memory access after undo list clear
+
+	[core]
+		-Cleanup: remove code dup with librnd (exec_prefix calculation)
+		-Fix: don't use floating abs() on coords in point-on-arc
+		-Fix: ChangeName(Subc) used the wrong coords for screen search
+		-Fix: SetThermal() to noshape may have set the wrong thermal style due to uninitialized local var
+		-Fix: SetThermal() picks up padstacks on Object
+		-Fix: low level drc check for broken copper ring around pstk: HSHADOW should never break as there's no copper
+		-Fix: always report error if buffer save fails because of no plugin available to handle it
+		-Fix: always report error if board save fails on no available plugin
+		-Fix: extobj GUI helper for coord read: empty string means 0
+		-Fix: use rnd_hid_print_all_gui_plugins() for printing GUI HID plugins
+		-Fix: missing fclose() after saving multiple footprints in a lib
+		-Fix: back annotation: don't lose new footprint value
+		-Fix: ratch patch: remove netlist change event binding on uninit
+		-Fix: do not crash if ThermScale is set to 0
+		-Fix: don't crash on ThermScale being zero on round thermals
+		-Fix: rounding error in line merge caused bougusly removing the mid point of a -\ joint when endpoints were only a few nanometer away, mistaking it for an overlap
+		-Fix: more detailed error message on detect-format netlist import, also listing partial import as a reason
+		-Add: pcb_line_modify(): undoable line geometry (optional endpoint, thickness and clearance) modifier
+		-Add: more details on librnd version in --version
+		-Add: save first padstack from buffer to file (with menu)
+		-Add: rats_patch: hook for removing entries that got already resolved
+		-Add: rats_patch: cleanup func: iterate over the list of patches and prepare for removing the ones that are done
+		-Add: rats patch cleanup: recognize of an addconn or delcon is done and remove it
+		-Add: rats patch cleanup call: remove subc attribute change if it's already done (on fwd annotation)
+		-Add: plug_io: "alternate extension" field to be able to support "old file name endings" for the Ringdove switchover
+		-Add: config setting: rc/web_browser to that plugins depending on external web services (e.g. order pcb) can run the borwser preferred by the user
+		-Add: PadstackReplace() action and implementation for replacing from current style
+
+	[ddraft]
+		-Fix: don't return const enum (const is not too useful on integral types)
+
+	[dialogs]
+		-Del: get rid of local dlg_export implementation in favor of librnd's
+		-Fix: LayerPropGui() does require a layer ID argument
+		-Fix: parametric library: when generating parameter list, omit parameters with unknown type
+		-Fix: map argument of gui_fpmap_choose() is mandatory
+		-Fix: layer flag dialog shouldn't crash if group name is NULL
+		-Fix: do not let the parametric library window open for non-parametric footprints
+		-Fix: pass on real IO-type from the save action to the io plugin's save-as sub-dialog code; this fixes the bug that saving a footprint would offer the format specific settings of the board
+		-Add: name all HPANE/VPANE so their positions are saved
+
+	[djopt]
+		-Fix: do not check twice if object is a via in miter()
+
+	[doc]
+		-Cleanup: missing <p>'s
+		-Update: whishlist: Chris's original item for our own schematics editor is now done
+		-Fix: lihata format doc: menu and menu-patch root titles for rnd- prefix
+		-Fix: install more files from developer/
+		-Fix: kiwiirc doesn't fully hide user IP
+		-Add: fill in plugin external deps for the packager's doc
+		-Add: make it clear that pcb-rnd's license does not affect data edited with pcb-rnd
+		-Add: comment on BSD make in INSTALL
+		-Update: motivation/plans for 2022 and 2023 (sch-rnd!)
+
+	[draw_csect]
+		-Fix: don't crash on NULL group name
+		-Fix: inhibit layer group change events until all steps of layer group creation are done
+		-Fix: don't test for the same group type twice
+
+	[draw_fontsel]
+		-Fix: uninitialized fields of the quickhand line object
+
+	[drc_query]
+		-Fix: avoid invalid free() when config node fails to register
+		-Add: name all HPANE/VPANE so their positions are saved
+
+	[export_debug]
+		-Add: script-readable, line oriented plain text export for easier comparison (disabled-by-default, not packaged)
+		-Add: --stateless and --compact for easier comparison
+
+	[export_gerber]
+		-Fix: aperture lookup needs coord, not double for diameter (may fix a bug when exporting empty gerber file)
+
+	[export_lpr]
+		-Del: local lpr HID implementation in favor of librnd's
+
+	[export_png]
+		-Del: remove local gd png draw code in favor of librnd's
+		-Del: ./configure detection of gd formats and SetResolution: handled by librnd; still need to detect gd because photo mode export depends on it
+		-Cleanup: code clarity: don't !pointer
+		-Fix: don't use separate FILE * for cam export and normal export; fixes the bug that cam export png never finished the file
+		-Add: extdep on libgd because of the photo mode export
+
+	[export_ps]
+		-Del: remove local low level ps/eps draw functionality, use librnd's instead
+		-Fix: don't export excess showpage on top of the file
+
+	[export_stl]
+		-Fix: off-by-one bug when applying user specified model translation in Z direction
+
+	[export_svg]
+		-Del: low level svg draw code in favor of librnd's
+
+	[export_xy]
+		-Fix: when counting heavy terminals for pins, accept them on both top and bottom side copper
+
+	[find.c]
+		-Fix: bug in pcb_isc_line_polyline() corner case handler when polyline is fully within the line: instead of building a rectangle, the code really made a bow by starting the corner list with opposite-corner coordinates
+
+	[font (new font engine)]
+		-Import: 2d mx transformations
+		-Add: explain what xdelta is
+		-Add: naive reimplementation of the low level font rendering with a generic API
+		-Add: generic lihata loader
+		-Change: switch over from srtiped xyxyxy poly representation to xxxxyyy - more efficeint because the HID draw backend expects this format
+		-Fix: did not set arc object thickness in transformation
+		-Add: pcb-rnd compatibility mode that reimplements the line thickness scaling bug
+		-Add: reproduce "arc thicnkess ignores minimum thickness in bbox calculation" if compat mode is enabled
+		-Update: when loading old geda pcb boards, run compatibility mode font normalization, just in case it makes a difference for lines in the future
+		-Add: font v1 fixup call because the format doesn't have unknown glyph and font height
+		-Add: optional "_justify" string render API for word or glyph justified rendering
+		-Add: calculate both centerline and real font height (with stroke thickness accounted for)
+		-Fix: user decompose callback differs from rnd font string draw callback in the atom type passed
+		-Fix: cheap font draw: do not scale the font twice (more accurate bounding box match)
+
+	[fontmode]
+		-Cleanup: reorder code for readability
+		-Cleanup: case sensitivity: the only place where we use camelcase, for historical reason, is action names
+		-Cleanup: get rid of global var PCB dependency wherever it's possible
+		-Fix: a glyph (symbol) that is empty but has a non-zero xdelta should be marked valid; common example: whitespace
+		-Fix: FontEdit(): if the source board has changes, ask whether losing those changes are okay not only when the new board is created but before the current font is unlinked
+		-Fix: in board2font conversion calculate width of glyph properly when it has arcs: consider arc centerline, not outer contour
+		-Fix: save code: when clamping for glyph width arc bbox right, also tune for thickness in the if()
+		-Fix: loading a font directly for font edit works from GUI too
+		-Add: FontXform() with shear and move
+		-Add: FontXform(scale, sx, sy)
+		-Add: FontXform(rotate, deg)
+		-Add: FontSave() takes an optional file name to ease debugging
+		-Add: explicit FontNormalize() action
+		-Add: FontSetXdelta() to automate setting the same delta behind every glyph
+
+	[footprint]
+		-Add: parametric dip(): add an optional pitch parameter for pin spacing within a row
+
+	[fp_fs]
+		-Fix: don't crash on mapping symlink cycle in the footprint lib
+		-Fix: when searching the file system for a matching footprint name, refuse to accept directories
+		-Add: configure .rf for "extension removal" so *.rf in the lib is found
+
+	[fp_wget]
+		-Fix: edakrill search fopen(): uninitialized var could make not-found return non-NULL
+		-Fix: make cache_dir a template so that ~ and $ and % substitutions are performed
+
+	[import_mentor_sch]
+		-Fix: uninitialized memory made nethlp_load_part_map() likely never return 0 as number of parts mapped
+
+	[import_pxm_gd]
+		-Del: remove plugin in favor of librnd's
+
+	[import_pxm_pnm]
+		-Del: remove plugin in favor of librnd's
+
+	[import_sch2]
+		-Add: when relative paths enabled, convert GUI-browsed sch file to $(rc.path.design)-relative
+		-Add: enable design relative path in default config
+
+	[import_sch_rnd]
+		-Add: plugin for importing schematics from sch-rnd sheets
+
+	[import_ttf]
+		-Add: name all HPANE/VPANE so their positions are saved
+
+	[io_altium]
+		-Fix: wrong range check on internal layer IDs when determining how to handle "poly pour"
+
+	[io_eagle]
+		-Fix: did not throw warning when only bottom pad size differed
+
+	[io_hyp]
+		-Fix: assume component side by default on missing layer name
+		-Fix: potentially uninit'd var in padstack shape write (e.g. for hshadow)
+
+	[io_kicad]
+		-Fix: coord parse: set output coord to 0 on error to silence compiler warnings and make debugging easier
+
+	[io_lihata]
+		-Fix: read: error message refers to the wrong lihata node when reporting netlist patch key syntax error
+		-Fix: no need to check twice for quoting ':' when writing strings
+		-Add: use the new font loader too when loading font from a file
+		-Add: be able to directly load a font file (and start the font editor on it)
+		-Add: warn on thermal scale too small on load already
+		-Add: use .lht for altnerate extension so that pcb-rnd -x foo.lht removes .lht as expected
+		-Change: switch over to the new Ringdove file name ending conventions: .rp for PCBs and .rf for footprints
+
+	[io_pads]
+		-Fix: potentially uninitialized variable in part parse debug trace
+
+	[io_pcb]
+		-Add: load font into the new font engine as well
+		-Add: warn when saving font glyphs with non-line atoms (format can't express that)
+		-Add: io incompat warning when saving a board with multiple fonts
+		-Add: warn on thermal scale too small on load already
+
+	[io_tedax]
+		-Fix: typo while saving drc_query rules potentially made empty save
+		-Fix: drc query block is optional in a netlist file, don't report error if it's not found
+
+	[lib_compat_help]
+		-Fix: typo stopped the code from realizing y-offseted circle padstack shape while expecting centered shape
+
+	[lib_hid_pcbui]
+		-Fix: x;y parameters to DescribeLocation() are mandatory
+
+	[libcdtr]
+		-Fix: missing cast from whatever-coord-type to double in debug print
+
+	[menu]
+		-Fix: make it more clear that the generic import netlist menu item will detect netlist format
+		-Add: PadstackReplace for object (from context popup) and for selected, both from buffer and tool
+
+	[order]
+		-Add: new plugin for ordering PCB directly at fabs
+		-Add: implement ordering API for PCBWay
+
+	[propedit]
+		-Add: name all HPANE/VPANE so their positions are saved
+
+	[query]
+		-Fix: do not return ptr free'd
+
+	[tests]
+		-Del: conf test - moved to librnd
+		-Add: order_const tester (pcb ordering plugin)
+
+
 pcb-rnd 3.0.5 (r36457)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[ar_extern]
