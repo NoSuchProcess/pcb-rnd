@@ -1,11 +1,11 @@
 $class feature
 $short board ordering from PCBWay
 $long order from PCBWay through the Internet
-$state WIP
-#$package cloud
-#$extdeps libxml2
+$state works
+$package cloud
+$extdeps libxml2 librnd-cloud
 dep order
 dep lib_wget
 dep cam
-default disable
+default buildin
 autoload 1
