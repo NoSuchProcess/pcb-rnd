@@ -21,7 +21,8 @@ B. changes that probably DO need action
 
 2. new ./configure line for the new plugins
 
-3. package pcb-rnd-cloud now depends on package pcb-rnd-export
+3. package pcb-rnd-cloud now depends on package pcb-rnd-export (and
+   still depends on librnd-cloud)
 
 4. new plugins in package pcb-rnd-cloud: order and order_pcbway
 
@@ -31,7 +32,9 @@ B. changes that probably DO need action
 
 7. pcb-rnd-core description clarification
 
-TODO: new librnd dependencies in export_svg, png, ps, eps, export_lpr
+8. package pcb-rnd-export depends on librnd-pixmap (and also directly depends
+   on libgd, which is also a dependency of librnd-pixmap)
+
 
 Packaging changes between 3.0.5 and 3.0.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
