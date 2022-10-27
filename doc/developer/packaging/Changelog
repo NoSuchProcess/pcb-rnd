@@ -26,14 +26,19 @@ B. changes that probably DO need action
 
 4. new plugins in package pcb-rnd-cloud: order and order_pcbway
 
-5. new external package dependency: package pcb-rnd-cloud depends on libxml2
+5. new plugin in package pcb-rnd-import-net: import_sch_rnd
 
-6. package pcb-rnd-import-geo doesn't directly depend on libgd anymore
+6. new external package dependency: package pcb-rnd-cloud depends on libxml2
 
-7. pcb-rnd-core description clarification
+7. package pcb-rnd-import-geo doesn't directly depend on libgd anymore
 
-8. package pcb-rnd-export depends on librnd-pixmap (and also directly depends
+8. pcb-rnd-core description clarification
+
+9. package pcb-rnd-export depends on librnd-pixmap (and also directly depends
    on libgd, which is also a dependency of librnd-pixmap)
+
+10. plugins import_pxm_gd and import_pxm_pnm has been moved to librnd so
+    they are removed from pcb-rnd-import-geo package.
 
 
 Packaging changes between 3.0.5 and 3.0.4
