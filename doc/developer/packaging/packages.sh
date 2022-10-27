@@ -277,6 +277,19 @@ print in_librnd, $1 > "L1"
 		return s
 	}
 
+	function uniq(str    ,A,B,v,n,res)
+	{
+		v = split(str, A)
+		for(n = 1; n <= v; n++)
+			B[A[n]] = 1
+		for(n in B)
+			if (res == "")
+				res = n
+			else
+				res = res " " n
+		return res
+	}
+
 	END {
 
 #		for(plg in PLUGIN_DEP)
@@ -349,7 +362,7 @@ print in_librnd, $1 > "L1"
 		for(plg in PLUGIN)
 			EXTDEPS[PLUGIN[plg]] = EXTDEPS[PLUGIN[plg]] " " PUPEXTDEPS[plg]
 		for(pkg in PKG)
-			print "<tr><th>" pkg "<td>" EXTDEPS[pkg]
+			print "<tr><th>" pkg "<td>" uniq(EXTDEPS[pkg])
 		print "</table>"
 
 
