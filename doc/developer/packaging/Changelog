@@ -8,11 +8,30 @@ How to get a release candidate tarball in /tmp:
 Packaging changes between 3.0.6 and 3.0.5
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO: librnd dep >=3.2.0
+A. changes that probably don't need action
+
+1. documented external package dependencies per plugin
+
+2. make install: more developer docs are installed
+
+
+B. changes that probably DO need action
+
+1. this version depends on librnd >=3.2.0
+
+2. new ./configure line for the new plugins
+
+3. package pcb-rnd-cloud now depends on package pcb-rnd-export
+
+4. new plugins in package pcb-rnd-cloud: order and order_pcbway
+
+5. new external package dependency: package pcb-rnd-cloud depends on libxml2
+
+6. package pcb-rnd-import-geo doesn't directly depend on libgd anymore
+
+7. pcb-rnd-core description clarification
+
 TODO: new librnd dependencies in export_svg, png, ps, eps, export_lpr
-TODO: more developer docs are installed
-TODO: import_geo doesn't directly depend on libgd anymore
-TODO: pcb-rnd-core description clarification
 
 Packaging changes between 3.0.5 and 3.0.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
