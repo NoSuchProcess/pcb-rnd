@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- CLEANUP: remove rc/have_regex from conf: we always have regex from librnd
 
 2. For later releases ===============================================================================
 - FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
@@ -21,7 +22,6 @@
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
-- CLEANUP: remove rc/have_regex from conf: we always have regex from librnd
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
 - CLEANUP/FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
