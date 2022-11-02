@@ -1,4 +1,4 @@
-pcb-rnd 3.0.6 (r36924)
+pcb-rnd 3.0.6 (r36946)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
 		-Add: Arc2Lines() for line approximating arcs
