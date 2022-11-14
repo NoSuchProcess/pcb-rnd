@@ -4,6 +4,7 @@
 - CLEANUP: remove rc/have_regex from conf: we always have regex from librnd
 
 2. For later releases ===============================================================================
+- FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
 - FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
 - FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
 	- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
