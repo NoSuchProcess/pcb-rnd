@@ -25,6 +25,7 @@
 - BUG: erratic intnoconn {c r} behaviour. See intnoconn-test.rs, exported intnoconn-test-net.net and intnoconn-test.rp using imported net. load the .rp and use {c r}. note shorts flagged by intnoconn sections. move resistor from layout margins onto layout area and use {c r}. shorts no longer found. Seems to be a failure to allocate intnoconn groups to terminals outside the layout area when there is more than one of the same subc using an intnoconn group. Does not happen with intnoconn-test2.rp which uses different coil subcs; see also intnoconn-test-net2.rp [report: Erich]
 - BUG: lock tool does not work on imported pixmap. start pcb-rnd, import pixmap using doc/resources/header_600.png, and note inability to lock pixmap with lock tool. {e p} has to be used to lock it.[report: Erich]
 - BUG: cursor click selection logic for pixmaps always selects pixmap, even if pixmap set to render:under, making it hard to move subc, lines, etc.. about once on top of the pixmap [report: Erich]
+- BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
