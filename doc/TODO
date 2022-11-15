@@ -28,6 +28,7 @@
 - BUG: cursor click selection logic for pixmaps always selects pixmap, even if pixmap set to render:under, making it hard to move subc, lines, etc.. about once on top of the pixmap [report: Erich]
 - BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 - BUG: rotate does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
+- BUG?: pixmap attached to internal layer, if set to render "under", renders on top of copper on top layer when internal layer active. Feature vs bug. [report: Erich]
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
