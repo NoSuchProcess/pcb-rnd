@@ -448,7 +448,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 					RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-top */
 						RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 						RND_DAD_PREVIEW(netlist_ctx.dlg, netlist_expose, netlist_mouse, NULL, NULL, &netlist_ctx.bb_prv, 100, 100, &netlist_ctx);
-							RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
+							RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_PRV_DESIGN);
 							netlist_ctx.wprev = RND_DAD_CURRENT(netlist_ctx.dlg);
 					RND_DAD_END(netlist_ctx.dlg);
 					RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-bottom */

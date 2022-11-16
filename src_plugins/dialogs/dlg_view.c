@@ -632,7 +632,7 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, NULL, 100, 100, ctx);
 					ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
-					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD | preview_flipflags);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_DESIGN | preview_flipflags);
 				RND_DAD_LABEL(ctx->dlg, "(description)");
 					ctx->wdescription = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "(measure)");
@@ -679,7 +679,7 @@ static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char 
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			RND_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, NULL, 100, 100, ctx);
 				ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
-				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD | preview_flipflags);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_DESIGN | preview_flipflags);
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "(description)");
 					ctx->wdescription = RND_DAD_CURRENT(ctx->dlg);
