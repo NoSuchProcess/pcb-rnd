@@ -13,8 +13,8 @@
 
 #define version "3.1.0-dev"
 
-#define REQ_LIBRND_MAJOR 3
-#define REQ_LIBRND_MINOR 2
+#define REQ_LIBRND_MAJOR 4
+#define REQ_LIBRND_MINOR 0
 
 #define TOSTR_(x) #x
 #define TOSTR(x) TOSTR_(x)
@@ -118,7 +118,7 @@ int hook_postarg()
 	char *tmp;
 	const char *libad;
 
-	put("/local/pcb/librnd_template", tmp = str_concat("", TO_STR(LIBRND_PREFIX), "/", get("/local/libarchdir"), "/librnd3/scconfig/template", NULL));
+	put("/local/pcb/librnd_template", tmp = str_concat("", TO_STR(LIBRND_PREFIX), "/", get("/local/libarchdir"), "/librnd4/scconfig/template", NULL));
 	free(tmp);
 
 	/* if librnd is installed at some custom path, we'll need to have a -I on CFLAGS and -L on LDFLAGS */

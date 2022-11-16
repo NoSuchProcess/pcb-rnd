@@ -38,6 +38,6 @@ LIBDIR_INSTALLED=@/local/prefix@/lib/pcb-rnd
 
 # Where librnd is installed, full path to the .mak file to auto-setup
 LIBRND_PREFIX=@/local/pcb/librnd_prefix@
-LIBRND_MAK=$(LIBRND_PREFIX)/share/librnd3/librnd.mak
+LIBRND_MAK=$(LIBRND_PREFIX)/share/librnd4/librnd.mak
 
 @]

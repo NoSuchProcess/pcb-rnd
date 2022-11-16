@@ -4,7 +4,7 @@ if test -z "$LIBRND_PREFIX"
 then
 	for P in /usr/local /opt/librnd /usr $HOME/usr
 	do
-		if test -e "$P/include/librnd/core/config.h"
+		if test -e "$P/include/librnd4/librnd/core/config.h"
 		then
 			LIBRND_PREFIX="$P"
 			break
@@ -30,7 +30,7 @@ doc/INSTALL.librnd.txt and set LIBRND_PREFIX accordingly
 		;;
 	/usr/include) ;;
 	/usr/local/include) ;;
-	*) LIBRND_EXTRA_INCLUDE="$LIBRND_PREFIX/include"
+	*) LIBRND_EXTRA_INCLUDE="$LIBRND_PREFIX/include/librnd4"
 esac
 
 

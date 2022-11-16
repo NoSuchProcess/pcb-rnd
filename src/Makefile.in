@@ -1,4 +1,4 @@
-append /local/pcb/CFLAGS [@-I. -I.. -I@/local/pcb/librnd_prefix@/include/librnd/src_3rd @?/local/pcb/librnd_extra_inc@ -I../src_3rd -I../src -I../src_3rd/liblihata @]
+append /local/pcb/CFLAGS [@-I. -I.. -I@/local/pcb/librnd_prefix@/include/librnd4 -I@/local/pcb/librnd_prefix@/include/librnd4/librnd/src_3rd @?/local/pcb/librnd_extra_inc@ -I../src_3rd -I../src -I../src_3rd/liblihata @]
 append /local/pcb/LDFLAGS [@@?/local/pcb/librnd_extra_ldf@@]
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
@@ -17,7 +17,7 @@ if /local/pcb/want_static_librnd
 then
 	put /local/pcb/librnd_extra_mak [@
 # static librd link: need to get all librnd ldlibs
-include $(LIBRND_PREFIX)/share/librnd3/librnd.mak
+include $(LIBRND_PREFIX)/share/librnd4/librnd.mak
 @]
 	put /local/pcb/librnd_extra_ldlibs {$(LDFLAGS_LIBRND)}
 else
@@ -245,7 +245,7 @@ ROOT=..
 # librnd installation
 LIBRND_PREFIX=@/local/pcb/librnd_prefix@
 @/local/pcb/librnd_extra_mak@
-LIBRND_LIBDIR=$(LIBRND_PREFIX)/@/local/libarchdir@/librnd3
+LIBRND_LIBDIR=$(LIBRND_PREFIX)/@/local/libarchdir@/librnd4
 LIBRND_L=$(LIBRND_PREFIX)/@/local/libarchdir@
 LIBRND_PLUGDIR=$(LIBRND_LIBDIR)/plugins
 

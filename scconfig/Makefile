@@ -85,12 +85,12 @@ menucfg: $(OBJS) $(MENULIB_OBJS) $(BIN)/default/main_lib.o $(BIN)/default/main_c
 menucfg.o: menucfg.c
 	$(CC) -c $(CFLAGS) -o menucfg.o menucfg.c
 
-LIBRNDSCC=$(LIBRND_PREFIX)/include/librnd/scconfig
+LIBRNDSCC=$(LIBRND_PREFIX)/include/librnd4/librnd/scconfig
 RNDHOOKS=$(LIBRNDSCC)/plugin_3state.h $(LIBRNDSCC)/hooks_common.h
 
-hooks.o: hooks.c $(RNDHOOKS) plugins.h Rev.h $(LIBRND_PREFIX)/include/librnd/scconfig
+hooks.o: hooks.c $(RNDHOOKS) plugins.h Rev.h $(LIBRND_PREFIX)/include/librnd4/librnd/scconfig
 
-librnd_ver.o: librnd_ver.c $(LIBRND_PREFIX)/include/librnd/config.h
+librnd_ver.o: librnd_ver.c $(LIBRND_PREFIX)/include/librnd4/librnd/config.h
 	$(CC) -c $(CFLAGS) -o librnd_ver.o librnd_ver.c
 
 $(BIN)/util/arg_auto_set.o: $(SRC)/util/arg_auto_set.c $(SRC)/util/arg_auto_set.h
