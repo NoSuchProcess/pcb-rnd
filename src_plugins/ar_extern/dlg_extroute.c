@@ -196,7 +196,7 @@ static void save_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	fname = rnd_hid_fileselect(rnd_gui, "Save autoroute settings to...",
 		"Pick a file for saving autoroute settings to.\n",
-		"autoroute.cfg.lht", ".lht", NULL, "ar_extern", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+		"autoroute.cfg.lht", ".lht", NULL, "ar_extern", 0, NULL);
 
 	if (fname == NULL)
 		return;

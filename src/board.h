@@ -61,6 +61,7 @@ typedef htsp_t pcb_netlist_t;
    saved with the layout. */
 struct pcb_board_s {
 	rnd_hidlib_t hidlib;
+	char *name;                                     /* name of the board */
 
 	long ID;
 	char *PrintFilename;                            /* from print dialog */

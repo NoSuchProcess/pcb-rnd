@@ -257,7 +257,7 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	if (*cwd == '\0')
 		rnd_get_wd(cwd);
 
-	name = rnd_hid_fileselect(rnd_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+	name = rnd_hid_fileselect(rnd_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", 0, NULL);
 	if (name == NULL)
 		return;
 

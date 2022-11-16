@@ -569,7 +569,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	timer_ctx.ptr = &save;
 	save.timer_active = 1;
 	save.timer = rnd_gui->add_timer(rnd_gui, save_timer, 300, timer_ctx); /* the timer needs to run at least once, to get some initialization done that can be done only after fmtsub got created */
-	final_name = rnd_hid_fileselect(rnd_gui, prompt, NULL, name_in, NULL, NULL, "board", RND_HID_FSD_MAY_NOT_EXIST, fmtsub);
+	final_name = rnd_hid_fileselect(rnd_gui, prompt, NULL, name_in, NULL, NULL, "board", 0, fmtsub);
 	if (save.timer_active)
 		rnd_gui->stop_timer(rnd_gui, save.timer);
 	free(name_in);

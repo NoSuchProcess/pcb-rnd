@@ -991,7 +991,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 
 	fname = rnd_hid_fileselect(rnd_gui, "Save mesh settings...",
 															"Picks file for saving mesh settings.\n",
-															default_file, ".lht", NULL, "mesh", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+															default_file, ".lht", NULL, "mesh", 0, NULL);
 	if (fname == NULL)
 		return; /* cancel */
 

@@ -383,7 +383,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (fn == NULL) {
 			int sr = save_fmt_dialog("Save footprint lib to file ...", "Choose a file to save all subcircuits to.\n",
-				&default_file, "save_lib_file", RND_HID_FSD_MAY_NOT_EXIST, &name, &fmt);
+				&default_file, "save_lib_file", 0, &name, &fmt);
 			if (sr != 0) {
 				RND_ACT_IRES(-1);
 				return 0;
@@ -416,7 +416,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (fn == NULL) {
 			int sr = save_fmt_dialog("Save footprint lib to directory ...", "Choose a file name pattern to save all subcircuits to.\n",
-				&default_file, "save_lib_dir", RND_HID_FSD_IS_TEMPLATE, &name, &fmt);
+				&default_file, "save_lib_dir", 0, &name, &fmt);
 			if (sr != 0) {
 				RND_ACT_IRES(-1);
 				return 0;
@@ -512,7 +512,7 @@ fgw_error_t pcb_act_PadstackSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (fn == NULL) {
 		int sr = save_fmt_dialog("Save padstack to file ...", "Choose a file to save padstack to.\n",
-			&default_file, "save_pstk_file", RND_HID_FSD_MAY_NOT_EXIST, &name, &fmt);
+			&default_file, "save_pstk_file", 0, &name, &fmt);
 		if (sr != 0) {
 			RND_ACT_IRES(-1);
 			return 0;

@@ -300,7 +300,7 @@ fgw_error_t pcb_act_LoadPixmap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char *nfn;
 		nfn = rnd_hid_fileselect(rnd_gui, "Load pixmap into buffer gfx...",
 			"Choose a file to load the pixmap\nfor the gfx object to be created\nin the buffer.\n",
-			default_file, ".*", NULL, "gfx", RND_HID_FSD_READ | RND_HID_FSD_MAY_NOT_EXIST, NULL);
+			default_file, ".*", NULL, "gfx", RND_HID_FSD_READ, NULL);
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
@@ -1121,7 +1121,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (argc <= 2) {
 				name = rnd_hid_fileselect(rnd_gui, "Load Paste Buffer ...",
 					"Choose a file to load the contents of the\npaste buffer from.\n",
-					default_file, ".lht", NULL, "buffer", RND_HID_FSD_READ | RND_HID_FSD_MAY_NOT_EXIST, NULL);
+					default_file, ".lht", NULL, "buffer", RND_HID_FSD_READ, NULL);
 
 				if (default_file) {
 					free(default_file);

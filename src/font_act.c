@@ -150,7 +150,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = rnd_hid_fileselect(rnd_gui, "Save PCB font file...",
 																"Picks a PCB font file to save.\n",
-																default_file, ".font", NULL, "pcbfont", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+																default_file, ".font", NULL, "pcbfont", 0, NULL);
 		if (fname == NULL)
 			RND_ACT_FAIL(save_font_to);
 		if (default_file != NULL) {
