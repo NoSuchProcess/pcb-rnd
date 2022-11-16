@@ -692,7 +692,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	}
 
 		if ((how == 0) || (revert))
-			pcb_board_changed(revert);
+			pcb_board_replaced(revert);
 
 #ifdef DEBUG
 		end = clock();
@@ -718,7 +718,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	}
 
 	if (!(how & PCB_INHIBIT_BOARD_CHANGED))
-		pcb_board_changed(0);
+		pcb_board_replaced(0);
 
 	/* release unused memory */
 	pcb_board_remove(newPCB);

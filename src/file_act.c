@@ -182,7 +182,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		pcb_layervis_reset_stack(&pcb->hidlib);
 		pcb_center_display(pcb, pcb->hidlib.size_x / 2, pcb->hidlib.size_y / 2);
-		pcb_board_changed(0);
+		pcb_board_replaced(0);
 		rnd_hid_redraw(pcb);
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 		RND_ACT_IRES(0);
