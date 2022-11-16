@@ -161,7 +161,7 @@ int pcb_board_normalize(pcb_board_t *pcb);
 /* sets or resets changed flag and redraws status */
 void pcb_board_set_changed_flag(pcb_board_t *pcb, rnd_bool New);
 
-/* Shorthand for emitting a board changed event (RND_EVENT_BOARD_CHANGED) */
+/* Shorthand for emitting a board replaced event (RND_EVENT_BOARD_REPLACED) */
 void pcb_board_changed(int reverted);
 
 

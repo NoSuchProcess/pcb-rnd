@@ -564,7 +564,7 @@ static void exc_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc
 
 static void pcb_openems_excitation_init(void)
 {
-	rnd_event_bind(RND_EVENT_BOARD_CHANGED, exc_ev_board_changed, NULL, openems_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_REPLACED, exc_ev_board_changed, NULL, openems_cookie);
 }
 
 static void pcb_openems_excitation_uninit(void)

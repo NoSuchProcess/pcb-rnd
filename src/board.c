@@ -381,7 +381,7 @@ void pcb_board_changed(int reverted)
 {
 	if ((rnd_gui != NULL) && (rnd_gui->set_hidlib != NULL))
 		rnd_gui->set_hidlib(rnd_gui, &PCB->hidlib);
-	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, "i", reverted);
+	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_REPLACED, "i", reverted);
 }
 
 int pcb_board_normalize(pcb_board_t *pcb)

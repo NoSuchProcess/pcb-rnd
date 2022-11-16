@@ -299,7 +299,7 @@ int pplg_init_show_netnames(void)
 #include "show_netnames_conf_fields.h"
 
 	rnd_event_bind(PCB_EVENT_BOARD_EDITED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
-	rnd_event_bind(RND_EVENT_BOARD_CHANGED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_REPLACED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
 	rnd_event_bind(RND_EVENT_GUI_DRAW_OVERLAY_XOR, show_netnames_render, NULL, pcb_show_netnames_cookie);
 	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, show_netnames_inv_cache, NULL, pcb_show_netnames_cookie);
 	rnd_event_bind(PCB_EVENT_FONT_CHANGED, show_netnames_inv_cache, NULL, pcb_show_netnames_cookie);

@@ -878,7 +878,7 @@ void pcb_propdlg_init(void)
 	}
 
 	rnd_event_bind(PCB_EVENT_BOARD_EDITED, propedit_brd_chg, NULL, pcb_propedit_cookie);
-	rnd_event_bind(RND_EVENT_BOARD_CHANGED, propedit_brd_unload, NULL, pcb_propedit_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_REPLACED, propedit_brd_unload, NULL, pcb_propedit_cookie);
 }
 
 void pcb_propdlg_uninit(void)

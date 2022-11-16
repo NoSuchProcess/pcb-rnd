@@ -115,7 +115,7 @@ TODO(": rewrite this - this is very unpcb-rnd")
 
 	/* notify GUI */
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
-	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_REPLACED, NULL);
 
 	RND_ACT_IRES(retval);
 	return 0;

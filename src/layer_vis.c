@@ -363,7 +363,7 @@ void pcb_layer_vis_init(void)
 		rnd_conf_hid_set_cb(n_mask, layer_vis_conf_id, &cbs_mask);
 	}
 
-	rnd_event_bind(RND_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_REPLACED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 }
 
