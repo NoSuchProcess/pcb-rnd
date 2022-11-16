@@ -370,7 +370,7 @@ void pcb_board_set_changed_flag(pcb_board_t *pcb, rnd_bool New)
 	pcb->Changed = New;
 
 	if (old != New)
-		rnd_event(&pcb->hidlib, RND_EVENT_BOARD_META_CHANGED, NULL);
+		rnd_event(&pcb->hidlib, RND_EVENT_DESIGN_META_CHANGED, NULL);
 
 	if (New)
 		rnd_event(&pcb->hidlib, PCB_EVENT_BOARD_EDITED, NULL);
@@ -381,7 +381,7 @@ void pcb_board_replaced(int reverted)
 {
 	if ((rnd_gui != NULL) && (rnd_gui->set_hidlib != NULL))
 		rnd_gui->set_hidlib(rnd_gui, &PCB->hidlib);
-	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_REPLACED, "i", reverted);
+	rnd_event(&PCB->hidlib, RND_EVENT_DESIGN_REPLACED, "i", reverted);
 }
 
 int pcb_board_normalize(pcb_board_t *pcb)

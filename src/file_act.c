@@ -265,7 +265,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			if (pcb_save_pcb(RND_ACT_HIDLIB->filename, NULL) == 0)
 				pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_false);
-			rnd_event(RND_ACT_HIDLIB, RND_EVENT_BOARD_FN_CHANGED, NULL);
+			rnd_event(RND_ACT_HIDLIB, RND_EVENT_DESIGN_FN_CHANGED, NULL);
 			return 0;
 
 		case F_LayoutAs:
@@ -273,7 +273,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_false);
 				free(RND_ACT_HIDLIB->filename);
 				RND_ACT_HIDLIB->filename = rnd_strdup(name);
-				rnd_event(RND_ACT_HIDLIB, RND_EVENT_BOARD_FN_CHANGED, NULL);
+				rnd_event(RND_ACT_HIDLIB, RND_EVENT_DESIGN_FN_CHANGED, NULL);
 			}
 			return 0;
 
