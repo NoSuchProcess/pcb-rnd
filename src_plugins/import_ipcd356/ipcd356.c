@@ -275,8 +275,8 @@ static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *t
 		}
 	}
 
-	y = pcb->hidlib.size_y - tf->cy;
-	if ((y < 0) || (y > pcb->hidlib.size_y) || (tf->cx < 0) || (tf->cx > pcb->hidlib.size_x))
+	y = pcb->hidlib.dwg.Y2 - tf->cy;
+	if ((y < pcb->hidlib.dwg.Y1) || (y > pcb->hidlib.dwg.Y2) || (tf->cx < pcb->hidlib.dwg.X1) || (tf->cx > pcb->hidlib.dwg.X2))
 		rnd_message(RND_MSG_WARNING, "Test feature ended up out of the board extents in %s:%ld - board too small please use autocrop()\n", fn, lineno);
 	ps = pcb_pstk_new_from_shape(data, tf->cx, y, tf->hole, tf->is_plated, conf_core.design.bloat, sh);
 

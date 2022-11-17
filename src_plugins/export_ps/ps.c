@@ -409,10 +409,10 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	/* reset static vars */
 	rnd_ps_use_gc(&global.ps, NULL);
 
-	global.exps.view.X1 = 0;
-	global.exps.view.Y1 = 0;
-	global.exps.view.X2 = PCB->hidlib.size_x;
-	global.exps.view.Y2 = PCB->hidlib.size_y;
+	global.exps.view.X1 = PCB->hidlib.dwg.X1;
+	global.exps.view.Y1 = PCB->hidlib.dwg.Y1;
+	global.exps.view.X2 = PCB->hidlib.dwg.X2;
+	global.exps.view.Y2 = PCB->hidlib.dwg.Y2;
 
 	global.had_page = 0;
 
@@ -600,7 +600,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		   If users don't want to make smaller boards, or use fewer drill
 		   sizes, they can always ignore this sheet. */
 		if (PCB_LAYER_IS_FAB(flags, purpi)) {
-			rnd_coord_t natural = boffset - RND_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
+			rnd_coord_t natural = boffset - RND_MIL_TO_COORD(500) - (PCB->hidlib.dwg.Y1 + PCB->hidlib.dwg.Y2) / 2;
 			rnd_coord_t needed = pcb_stub_draw_fab_overhang();
 			rnd_fprintf(global.ps.outf, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
 			if (needed > natural)

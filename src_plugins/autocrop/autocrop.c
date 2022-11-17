@@ -54,13 +54,13 @@ static fgw_error_t pcb_act_autocrop(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	w = ((box.X2 + dx) / PCB->hidlib.grid + 2) * PCB->hidlib.grid;
 	h = ((box.Y2 + dy) / PCB->hidlib.grid + 2) * PCB->hidlib.grid;
 
-	if ((dx == 0) && (dy == 0) && (w == PCB->hidlib.size_x) && (h == PCB->hidlib.size_y))
+	if ((dx == 0) && (dy == 0) && (w == PCB->hidlib.dwg.X2) && (h == PCB->hidlib.dwg.Y2))
 		return 0;
 
 	pcb_draw_inhibit_inc();
 	pcb_data_clip_inhibit_inc(PCB->Data);
 	pcb_data_move(PCB->Data, dx, dy, 1);
-	pcb_board_resize(w, h, 1);
+	pcb_board_resize(0, 0, w, h, 1);
 	pcb_data_clip_inhibit_dec(PCB->Data, 1);
 	pcb_draw_inhibit_dec();
 

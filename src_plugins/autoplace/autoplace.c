@@ -268,9 +268,10 @@ static const rnd_box_t *r_find_neighbor(rnd_rtree_t * rtree, const rnd_box_t * b
 	ni.trap = *box;
 	ni.search_dir = search_direction;
 
-	bbox.X1 = bbox.Y1 = 0;
-	bbox.X2 = PCB->hidlib.size_x;
-	bbox.Y2 = PCB->hidlib.size_y;
+	bbox.X1 = PCB->hidlib.dwg.X1;
+	bbox.Y1 = PCB->hidlib.dwg.Y2;
+	bbox.X2 = PCB->hidlib.dwg.X2;
+	bbox.Y2 = PCB->hidlib.dwg.Y2;
 	/* rotate so that we can use the 'north' case for everything */
 	RND_BOX_ROTATE_TO_NORTH(bbox, search_direction);
 	RND_BOX_ROTATE_TO_NORTH(ni.trap, search_direction);
@@ -592,8 +593,8 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 	case 0:
 		{														/* shift! */
 			rnd_coord_t grid;
-			double scaleX = RND_CLAMP(sqrt(T), RND_MIL_TO_COORD(2.5), PCB->hidlib.size_x / 3);
-			double scaleY = RND_CLAMP(sqrt(T), RND_MIL_TO_COORD(2.5), PCB->hidlib.size_y / 3);
+			double scaleX = RND_CLAMP(sqrt(T), RND_MIL_TO_COORD(2.5), rnd_dwg_get_size_x(&PCB->hidlib) / 3);
+			double scaleY = RND_CLAMP(sqrt(T), RND_MIL_TO_COORD(2.5), rnd_dwg_get_size_y(&PCB->hidlib) / 3);
 			pt.which = SHIFT;
 			pt.DX = scaleX * 2 * ((((double) rnd_rand()) / RAND_MAX) - 0.5);
 			pt.DY = scaleY * 2 * ((((double) rnd_rand()) / RAND_MAX) - 0.5);
@@ -605,10 +606,10 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 			/* limit DX/DY so we don't fall off board */
 			{
 				pcb_subc_t *s = (pcb_subc_t *)pt.comp;
-				pt.DX = MAX(pt.DX, -s->BoundingBox.X1);
-				pt.DX = MIN(pt.DX, PCB->hidlib.size_x - s->BoundingBox.X2);
-				pt.DY = MAX(pt.DY, -s->BoundingBox.Y1);
-				pt.DY = MIN(pt.DY, PCB->hidlib.size_y - s->BoundingBox.Y2);
+				pt.DX = MAX(pt.DX, PCB->hidlib.dwg.X1 - s->BoundingBox.X1);
+				pt.DX = MIN(pt.DX, PCB->hidlib.dwg.X2 - s->BoundingBox.X2);
+				pt.DY = MAX(pt.DY, PCB->hidlib.dwg.Y1 - s->BoundingBox.Y1);
+				pt.DY = MIN(pt.DY, PCB->hidlib.dwg.Y2 - s->BoundingBox.Y2);
 			}
 			/* all done but the movin' */
 			break;

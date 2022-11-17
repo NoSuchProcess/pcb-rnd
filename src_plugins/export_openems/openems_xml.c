@@ -107,10 +107,10 @@ TODO("layer: consider multiple outline layers instead")
 	}
 	else {
 		/* rectangular board size */
-		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", 0, 0);
-		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", ctx->pcb->hidlib.size_x, 0);
-		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", ctx->pcb->hidlib.size_x, -ctx->pcb->hidlib.size_y);
-		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", 0, -ctx->pcb->hidlib.size_y);
+		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", ctx->pcb->hidlib.dwg.X1, -ctx->pcb->hidlib.dwg.Y1);
+		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", ctx->pcb->hidlib.dwg.X2, -ctx->pcb->hidlib.dwg.Y1);
+		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", ctx->pcb->hidlib.dwg.X2, -ctx->pcb->hidlib.dwg.Y2);
+		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", ctx->pcb->hidlib.dwg.X1, -ctx->pcb->hidlib.dwg.Y2);
 	}
 	rnd_fprintf(ctx->f, "          </LinPoly>\n");
 	return 0;
@@ -147,10 +147,10 @@ static int openems_wr_xml_layers(wctx_t *ctx)
 	int err = 0;
 
 
-	ectx.view.X1 = 0;
-	ectx.view.Y1 = 0;
-	ectx.view.X2 = ctx->pcb->hidlib.size_x;
-	ectx.view.Y2 = ctx->pcb->hidlib.size_y;
+	ectx.view.X1 = ctx->pcb->hidlib.dwg.X1;
+	ectx.view.Y1 = ctx->pcb->hidlib.dwg.Y2;
+	ectx.view.X2 = ctx->pcb->hidlib.dwg.X2;
+	ectx.view.Y2 = ctx->pcb->hidlib.dwg.Y2;
 
 	rnd_app.expose_main(&openems_hid, &ectx, NULL);
 	openems_wr_xml_layergrp_end(ctx);

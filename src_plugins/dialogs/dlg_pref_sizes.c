@@ -48,8 +48,8 @@ static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
 
 	if (tabdata->lock)
 		return;
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wwidth, crd, PCB->hidlib.size_x);
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wheight, crd, PCB->hidlib.size_y);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wwidth, crd, rnd_dwg_get_size_x(&PCB->hidlib));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wheight, crd, rnd_dwg_get_size_y(&PCB->hidlib));
 }
 
 /* Dialog box to actual board size */
@@ -59,8 +59,10 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	DEF_TABDATA;
 
 	tabdata->lock++;
-	if ((PCB->hidlib.size_x != ctx->dlg[tabdata->wwidth].val.crd) || (PCB->hidlib.size_y != ctx->dlg[tabdata->wheight].val.crd)) {
-		pcb_board_resize(ctx->dlg[tabdata->wwidth].val.crd, ctx->dlg[tabdata->wheight].val.crd, 1);
+	if ((rnd_dwg_get_size_x(&PCB->hidlib) != ctx->dlg[tabdata->wwidth].val.crd) || (rnd_dwg_get_size_y(&PCB->hidlib) != ctx->dlg[tabdata->wheight].val.crd)) {
+		rnd_coord_t x1 = PCB->hidlib.dwg.X1, y1 = PCB->hidlib.dwg.Y1;
+		rnd_coord_t x2 = PCB->hidlib.dwg.X1 + ctx->dlg[tabdata->wwidth].val.crd, y2 = PCB->hidlib.dwg.Y2 + ctx->dlg[tabdata->wheight].val.crd;
+		pcb_board_resize(x1, y1, x2, y2, 1);
 		pcb_undo_inc_serial();
 	}
 	tabdata->lock--;
@@ -130,13 +132,13 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 			RND_DAD_COORD(ctx->dlg);
 				tabdata->wwidth = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, RND_MM_TO_COORD(1), RND_MAX_COORD);
-				RND_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_x);
+				RND_DAD_DEFAULT_NUM(ctx->dlg, rnd_dwg_get_size_x(&PCB->hidlib));
 				RND_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
 			RND_DAD_LABEL(ctx->dlg, "Height=");
 			RND_DAD_COORD(ctx->dlg);
 				tabdata->wheight = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, RND_MM_TO_COORD(1), RND_MAX_COORD);
-				RND_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_y);
+				RND_DAD_DEFAULT_NUM(ctx->dlg, rnd_dwg_get_size_y(&PCB->hidlib));
 				RND_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
 		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);

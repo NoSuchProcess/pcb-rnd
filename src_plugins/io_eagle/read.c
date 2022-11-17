@@ -554,10 +554,10 @@ static pcb_subc_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, long l
 
 static void size_bump(read_state_t *st, rnd_coord_t x, rnd_coord_t y)
 {
-	if (x > st->pcb->hidlib.size_x)
-		st->pcb->hidlib.size_x = x;
-	if (y > st->pcb->hidlib.size_y)
-		st->pcb->hidlib.size_y = y;
+	if (x > st->pcb->hidlib.dwg.X2)
+		st->pcb->hidlib.dwg.X2 = x;
+	if (y > st->pcb->hidlib.dwg.Y2)
+		st->pcb->hidlib.dwg.Y2 = y;
 }
 
 /* Convert eagle Rxxx to degrees. Binary n*1024 string converted to Rxxx in eagle_bin.c */
@@ -1697,7 +1697,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				ang = 0;
 
 			if (back)
-				pcb_subc_change_side(new_subc, 2 * y - st->pcb->hidlib.size_y);
+				pcb_subc_change_side(new_subc, 2 * y - st->pcb->hidlib.dwg.Y2);
 
 			size_bump(st, new_subc->BoundingBox.X2, new_subc->BoundingBox.Y2);
 		}
@@ -2142,7 +2142,7 @@ static int io_eagle_parse_footprint_any(read_state_t *st, pcb_plug_io_t *ctx, pc
 		pcb_subc_t *subc = st->fp_parent_data->subc.lst.first;
 		if (subc != NULL) {
 			pcb_undo_freeze_add();
-			pcb_data_mirror(st->fp_data, -PCB->hidlib.size_y, PCB_TXM_COORD | PCB_TXM_ROT, 0, 0);
+			pcb_data_mirror(st->fp_data, -PCB->hidlib.dwg.Y2, PCB_TXM_COORD | PCB_TXM_ROT, 0, 0);
 			pcb_undo_unfreeze_add();
 			pcb_subc_create_aux(subc, 0, 0, 0, 0);
 		}

@@ -110,7 +110,7 @@ static const rnd_export_opt_t *gcode_get_export_options(rnd_hid_t *hid, int *n)
 }
 
 #define TX(x) (x)
-#define TY_MIRROR(y) (gctx.pcb->hidlib.size_y - (y))
+#define TY_MIRROR(y) (gctx.pcb->hidlib.dwg.Y2 - (y))
 #define TY_NORMAL(y) (y)
 #define TY(y) (gctx.grp->ltype & PCB_LYT_BOTTOM ? TY_MIRROR(y) : TY_NORMAL(y))
 

@@ -97,7 +97,8 @@ pcb_board_t *pcb_board_new_(rnd_bool SetDefaultNames)
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
 	ptr->hidlib.grid = rnd_conf.editor.grid;
 
-	ptr->hidlib.size_y = ptr->hidlib.size_x = RND_MM_TO_COORD(20); /* should be overriden by the default design */
+	ptr->hidlib.dwg.Y1 = ptr->hidlib.dwg.X1 = 0;
+	ptr->hidlib.dwg.Y2 = ptr->hidlib.dwg.X2 = RND_MM_TO_COORD(20); /* should be overriden by the default design */
 	ptr->ID = pcb_create_ID_get();
 	ptr->ThermScale = 0.5;
 
@@ -266,10 +267,12 @@ rnd_bool pcb_board_change_name(char *Name)
 	return rnd_true;
 }
 
-static void pcb_board_resize_(pcb_board_t *pcb, rnd_coord_t Width, rnd_coord_t Height)
+static void pcb_board_resize_(pcb_board_t *pcb, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb->hidlib.size_x = Width;
-	pcb->hidlib.size_y = Height;
+	pcb->hidlib.dwg.X1 = x1;
+	pcb->hidlib.dwg.Y1 = y1;
+	pcb->hidlib.dwg.X2 = x2;
+	pcb->hidlib.dwg.Y2 = y2;
 
 	if (pcb == PCB)
 		pcb_board_replaced(0);
@@ -279,7 +282,7 @@ static void pcb_board_resize_(pcb_board_t *pcb, rnd_coord_t Width, rnd_coord_t H
 
 typedef struct {
 	pcb_board_t *pcb;
-	rnd_coord_t w, h;
+	rnd_coord_t x1, y1, x2, y2;
 	double thermal_scale;
 } undo_board_size_t;
 
@@ -287,11 +290,12 @@ static int undo_board_size_swap(void *udata)
 {
 	undo_board_size_t *s = udata;
 
-	if ((s->w != s->pcb->hidlib.size_x) || (s->h != s->pcb->hidlib.size_y)) {
-		rnd_coord_t oldw = s->pcb->hidlib.size_x, oldh = s->pcb->hidlib.size_y;
-		pcb_board_resize_(s->pcb, s->w, s->h);
-		s->w = oldw;
-		s->h = oldh;
+	if ((s->x1 != s->pcb->hidlib.dwg.X1) || (s->y1 != s->pcb->hidlib.dwg.Y1) || (s->x2 != s->pcb->hidlib.dwg.X2) || (s->y2 != s->pcb->hidlib.dwg.Y2)) {
+		rnd_coord_t old_x1 = s->pcb->hidlib.dwg.X1, old_y1 = s->pcb->hidlib.dwg.Y1;
+		rnd_coord_t old_x2 = s->pcb->hidlib.dwg.X2, old_y2 = s->pcb->hidlib.dwg.Y2;
+		pcb_board_resize_(s->pcb, s->x1, s->y1, s->x2, s->y2);
+		s->x1 = old_x1; s->y1 = old_y1;
+		s->x2 = old_x2; s->y2 = old_y2;
 	}
 	if (s->thermal_scale != s->pcb->ThermScale) {
 		rnd_swap(double, s->thermal_scale, s->pcb->ThermScale);
@@ -304,8 +308,8 @@ static int undo_board_size_swap(void *udata)
 static void undo_board_size_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_board_size_t *s = udata;
-	if ((s->w != s->pcb->hidlib.size_x) || (s->w != s->pcb->hidlib.size_y))
-		rnd_snprintf(dst, dst_len, "board_size: %mmx%mm ", s->w, s->h);
+	if ((s->x1 != s->pcb->hidlib.dwg.X1) || (s->y1 != s->pcb->hidlib.dwg.Y1) || (s->x2 != s->pcb->hidlib.dwg.X2) || (s->y2 != s->pcb->hidlib.dwg.Y2))
+		rnd_snprintf(dst, dst_len, "board_size: %mm;%mm .. %mm;%mm ", s->x1, s->y1, s->x2, s->y2);
 	if (s->thermal_scale != s->pcb->ThermScale)
 		rnd_snprintf(dst, dst_len, "thermal scale: %f", s->thermal_scale);
 }
@@ -318,19 +322,24 @@ static const uundo_oper_t undo_board_size = {
 	undo_board_size_print
 };
 
-void pcb_board_resize(rnd_coord_t width, rnd_coord_t height, int undoable)
+void pcb_board_resize(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int undoable)
 {
 	undo_board_size_t *s;
 
 	if (!undoable) {
-		pcb_board_resize_(PCB, width, height);
+		pcb_board_resize_(PCB, x1, y1, x2, y2);
 		return;
 	}
 
+	if ((x1 != 0) || (y1 != 0))
+		rnd_message(RND_MSG_ERROR, "pcb_board_resize(): drawing area should start at 0;0 for compatibility reasons\n");
+
 	s = pcb_undo_alloc(PCB, &undo_board_size, sizeof(undo_board_size_t));
 	s->pcb = PCB;
-	s->w = width;
-	s->h = height;
+	s->x1 = x1;
+	s->y1 = y1;
+	s->x2 = x2;
+	s->y2 = y2;
 	s->thermal_scale = PCB->ThermScale;
 	undo_board_size_swap(s);
 }
@@ -348,8 +357,10 @@ void pcb_board_chg_thermal_scale(double thermal_scale, int undoable)
 
 	s = pcb_undo_alloc(PCB, &undo_board_size, sizeof(undo_board_size_t));
 	s->pcb = PCB;
-	s->w = PCB->hidlib.size_x;
-	s->h = PCB->hidlib.size_y;
+	s->x1 = PCB->hidlib.dwg.X1;
+	s->y1 = PCB->hidlib.dwg.Y1;
+	s->x2 = PCB->hidlib.dwg.X2;
+	s->y2 = PCB->hidlib.dwg.Y2;
 	s->thermal_scale = thermal_scale;
 	undo_board_size_swap(s);
 }
@@ -392,13 +403,13 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	if (pcb_data_bbox(&b, pcb->Data, rnd_false) == NULL)
 		return -1;
 
-	if ((b.X2 - b.X1) > pcb->hidlib.size_x) {
-		pcb->hidlib.size_x = b.X2 - b.X1;
+	if ((b.X2 - b.X1) > pcb->hidlib.dwg.X2) {
+		pcb->hidlib.dwg.X2 = b.X2 - b.X1;
 		chg++;
 	}
 
-	if ((b.Y2 - b.Y1) > pcb->hidlib.size_y) {
-		pcb->hidlib.size_y = b.Y2 - b.Y1;
+	if ((b.Y2 - b.Y1) > pcb->hidlib.dwg.Y2) {
+		pcb->hidlib.dwg.Y2 = b.Y2 - b.Y1;
 		chg++;
 	}
 

@@ -258,7 +258,7 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	rnd_coord_t via_dia2 = pcb_pstk_pen_dia(PCB) / 2;
 
 	/* print dims */
-	rnd_fprintf(f, "(%d %d %d)\n", (int)(RND_COORD_TO_MM(pcb->hidlib.size_x)+0.5), (int)(RND_COORD_TO_MM(pcb->hidlib.size_y)+0.5), stack->maxlayer);
+	rnd_fprintf(f, "(%d %d %d)\n", (int)(RND_COORD_TO_MM(pcb->hidlib.dwg.X2)+0.5), (int)(RND_COORD_TO_MM(pcb->hidlib.dwg.Y2)+0.5), stack->maxlayer);
 
 	/* print tracks */
 	for(e = htpp_first(&nmap->netmap.n2o); e != NULL; e = htpp_next(&nmap->netmap.n2o, e)) {

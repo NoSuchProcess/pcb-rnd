@@ -1163,9 +1163,10 @@ static routedata_t *CreateRouteData()
 	rd->max_bloat = BLOAT(&rd->defaultstyle);
 	rd->max_keep = conf_core.design.clearance;
 	/* create styles structures */
-	bbox.X1 = bbox.Y1 = 0;
-	bbox.X2 = PCB->hidlib.size_x;
-	bbox.Y2 = PCB->hidlib.size_y;
+	bbox.X1 = PCB->hidlib.dwg.X1;
+	bbox.Y1 = PCB->hidlib.dwg.Y1;
+	bbox.X2 = PCB->hidlib.dwg.X2;
+	bbox.Y2 = PCB->hidlib.dwg.Y2;
 	for (i = 0; i < rd->max_styles + 1; i++) {
 		pcb_route_style_t *style = (i < rd->max_styles) ? &PCB->RouteStyle.array[i] : &rd->defaultstyle;
 		rd->styles[i] = style;
@@ -2080,10 +2081,10 @@ struct E_result *Expand(rnd_rtree_t * rtree, edge_t * e, const rnd_box_t * box)
 	 */
 	switch (e->expand_dir) {
 	case RND_ANY_DIR:
-		ans.inflated.X1 = (e->rb->came_from == RND_EAST ? ans.orig.X1 : 0);
-		ans.inflated.Y1 = (e->rb->came_from == RND_SOUTH ? ans.orig.Y1 : 0);
-		ans.inflated.X2 = (e->rb->came_from == RND_WEST ? ans.orig.X2 : PCB->hidlib.size_x);
-		ans.inflated.Y2 = (e->rb->came_from == RND_NORTH ? ans.orig.Y2 : PCB->hidlib.size_y);
+		ans.inflated.X1 = (e->rb->came_from == RND_EAST ? ans.orig.X1 : PCB->hidlib.dwg.X1);
+		ans.inflated.Y1 = (e->rb->came_from == RND_SOUTH ? ans.orig.Y1 : PCB->hidlib.dwg.Y1);
+		ans.inflated.X2 = (e->rb->came_from == RND_WEST ? ans.orig.X2 : PCB->hidlib.dwg.X2);
+		ans.inflated.Y2 = (e->rb->came_from == RND_NORTH ? ans.orig.Y2 : PCB->hidlib.dwg.Y2);
 		if (e->rb->came_from == RND_NORTH)
 			ans.done = noshrink = _SOUTH;
 		else if (e->rb->came_from == RND_EAST)
@@ -2107,7 +2108,7 @@ struct E_result *Expand(rnd_rtree_t * rtree, edge_t * e, const rnd_box_t * box)
 		ans.done = _SOUTH + _WEST;
 		noshrink = 0;
 		ans.inflated.X1 = box->X1 - ans.bloat;
-		ans.inflated.X2 = PCB->hidlib.size_x;
+		ans.inflated.X2 = PCB->hidlib.dwg.X2;
 		ans.inflated.Y2 = box->Y2 + ans.bloat;
 		ans.inflated.Y1 = 0;
 		break;
@@ -2117,14 +2118,14 @@ struct E_result *Expand(rnd_rtree_t * rtree, edge_t * e, const rnd_box_t * box)
 		ans.inflated.Y1 = box->Y1 - ans.bloat;
 		ans.inflated.Y2 = box->Y2 + ans.bloat;
 		ans.inflated.X1 = box->X1;
-		ans.inflated.X2 = PCB->hidlib.size_x;
+		ans.inflated.X2 = PCB->hidlib.dwg.X2;
 		break;
 	case RND_SE:
 		ans.done = _NORTH + _WEST;
 		noshrink = 0;
 		ans.inflated.X1 = box->X1 - ans.bloat;
-		ans.inflated.X2 = PCB->hidlib.size_x;
-		ans.inflated.Y2 = PCB->hidlib.size_y;
+		ans.inflated.X2 = PCB->hidlib.dwg.X2;
+		ans.inflated.Y2 = PCB->hidlib.dwg.Y2;
 		ans.inflated.Y1 = box->Y1 - ans.bloat;
 		break;
 	case RND_SOUTH:
@@ -2133,14 +2134,14 @@ struct E_result *Expand(rnd_rtree_t * rtree, edge_t * e, const rnd_box_t * box)
 		ans.inflated.X1 = box->X1 - ans.bloat;
 		ans.inflated.X2 = box->X2 + ans.bloat;
 		ans.inflated.Y1 = box->Y1;
-		ans.inflated.Y2 = PCB->hidlib.size_y;
+		ans.inflated.Y2 = PCB->hidlib.dwg.Y2;
 		break;
 	case RND_SW:
 		ans.done = _NORTH + _EAST;
 		noshrink = 0;
 		ans.inflated.X1 = 0;
 		ans.inflated.X2 = box->X2 + ans.bloat;
-		ans.inflated.Y2 = PCB->hidlib.size_y;
+		ans.inflated.Y2 = PCB->hidlib.dwg.Y2;
 		ans.inflated.Y1 = box->Y1 - ans.bloat;
 		break;
 	case RND_WEST:
@@ -2175,11 +2176,11 @@ struct E_result *Expand(rnd_rtree_t * rtree, edge_t * e, const rnd_box_t * box)
 	else
 		ans.done |= _NORTH;
 	if (ans.e && !boink_box(ans.e, &ans, RND_EAST))
-		ans.inflated.X2 = PCB->hidlib.size_x;
+		ans.inflated.X2 = PCB->hidlib.dwg.X2;
 	else
 		ans.done |= _EAST;
 	if (ans.s && !boink_box(ans.s, &ans, RND_SOUTH))
-		ans.inflated.Y2 = PCB->hidlib.size_y;
+		ans.inflated.Y2 = PCB->hidlib.dwg.Y2;
 	else
 		ans.done |= _SOUTH;
 	if (ans.w && !boink_box(ans.w, &ans, RND_WEST))
@@ -2296,13 +2297,13 @@ moveable_edge(vector_t * result, const rnd_box_t * box, rnd_direction_t dir,
 	case RND_EAST:
 		b.X1 = b.X2;
 		b.X2++;
-		if (b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat)
+		if (b.X2 >= PCB->hidlib.dwg.Y2 - AutoRouteParameters.bloat)
 			return;										/* off board edge */
 		break;
 	case RND_SOUTH:
 		b.Y1 = b.Y2;
 		b.Y2++;
-		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat)
+		if (b.Y2 >= PCB->hidlib.dwg.Y2 - AutoRouteParameters.bloat)
 			return;										/* off board edge */
 		break;
 	case RND_WEST:
@@ -2312,25 +2313,25 @@ moveable_edge(vector_t * result, const rnd_box_t * box, rnd_direction_t dir,
 			return;										/* off board edge */
 		break;
 	case RND_NE:
-		if (b.Y1 <= AutoRouteParameters.bloat + 1 && b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat - 1)
+		if (b.Y1 <= AutoRouteParameters.bloat + 1 && b.X2 >= PCB->hidlib.dwg.X2 - AutoRouteParameters.bloat - 1)
 			return;										/* off board edge */
 		if (b.Y1 <= AutoRouteParameters.bloat + 1)
 			dir = RND_EAST;								/* north off board edge */
-		if (b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat - 1)
+		if (b.X2 >= PCB->hidlib.dwg.X2 - AutoRouteParameters.bloat - 1)
 			dir = RND_NORTH;							/* east off board edge */
 		break;
 	case RND_SE:
-		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat - 1 && b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat - 1)
+		if (b.Y2 >= PCB->hidlib.dwg.Y2 - AutoRouteParameters.bloat - 1 && b.X2 >= PCB->hidlib.dwg.X2 - AutoRouteParameters.bloat - 1)
 			return;										/* off board edge */
-		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat - 1)
+		if (b.Y2 >= PCB->hidlib.dwg.Y2 - AutoRouteParameters.bloat - 1)
 			dir = RND_EAST;								/* south off board edge */
-		if (b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat - 1)
+		if (b.X2 >= PCB->hidlib.dwg.X2 - AutoRouteParameters.bloat - 1)
 			dir = RND_SOUTH;							/* east off board edge */
 		break;
 	case RND_SW:
-		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat - 1 && b.X1 <= AutoRouteParameters.bloat + 1)
+		if (b.Y2 >= PCB->hidlib.dwg.Y2 - AutoRouteParameters.bloat - 1 && b.X1 <= AutoRouteParameters.bloat + 1)
 			return;										/* off board edge */
-		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat - 1)
+		if (b.Y2 >= PCB->hidlib.dwg.Y2 - AutoRouteParameters.bloat - 1)
 			dir = RND_WEST;								/* south off board edge */
 		if (b.X1 <= AutoRouteParameters.bloat + 1)
 			dir = RND_SOUTH;							/* west off board edge */

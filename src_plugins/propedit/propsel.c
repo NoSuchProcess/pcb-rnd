@@ -128,8 +128,8 @@ static void map_board(pcb_propedit_t *ctx, pcb_board_t *pcb)
 {
 	map_add_prop(ctx, "p/board/name",   String, pcb->hidlib.name);
 	map_add_prop(ctx, "p/board/filename",   String, pcb->hidlib.filename);
-	map_add_prop(ctx, "p/board/width", rnd_coord_t, pcb->hidlib.size_x);
-	map_add_prop(ctx, "p/board/height", rnd_coord_t, pcb->hidlib.size_y);
+	map_add_prop(ctx, "p/board/width", rnd_coord_t, rnd_dwg_get_size_x(&pcb->hidlib));
+	map_add_prop(ctx, "p/board/height", rnd_coord_t, rnd_dwg_get_size_y(&pcb->hidlib));
 	map_attr(ctx, &pcb->Attributes);
 }
 
@@ -518,9 +518,9 @@ static int set_common(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 	return 0;
 }
 
-static int brd_resize(rnd_coord_t w, rnd_coord_t h)
+static int brd_resize(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb_board_resize(w, h, 0);
+	pcb_board_resize(x1, y1, x2, y2, 0);
 	return 1;
 }
 
@@ -547,10 +547,10 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 		}
 
 		if (st->c_valid && (strcmp(pn, "width") == 0) &&
-		    brd_resize(st->c, PCB->hidlib.size_y)) DONE;
+		    brd_resize(PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X1 + st->c, PCB->hidlib.dwg.Y2)) DONE;
 
 		if (st->c_valid && (strcmp(pn, "height") == 0) &&
-		    brd_resize(PCB->hidlib.size_x,st->c)) DONE;
+		    brd_resize(PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y1 + st->c)) DONE;
 	}
 }
 

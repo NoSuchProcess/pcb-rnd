@@ -56,7 +56,7 @@ static pcb_cam_t gerber_cam;
 
 /* These are for films */
 #define gerberX(pcb, x) ((rnd_coord_t) (x))
-#define gerberY(pcb, y) ((rnd_coord_t) ((pcb)->hidlib.size_y - (y)))
+#define gerberY(pcb, y) ((rnd_coord_t) ((pcb)->hidlib.dwg.Y2 - (y)))
 #define gerberXOffset(pcb, x) ((rnd_coord_t) (x))
 #define gerberYOffset(pcb, y) ((rnd_coord_t) (-(y)))
 
@@ -371,10 +371,10 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	lastgroup = -1;
 	lastcolor = -1;
 
-	ctx.view.X1 = 0;
-	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->hidlib.size_x;
-	ctx.view.Y2 = PCB->hidlib.size_y;
+	ctx.view.X1 = PCB->hidlib.dwg.X1;
+	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
+	ctx.view.X2 = PCB->hidlib.dwg.X2;
+	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
 
 	pagecount = 1;
 	reset_apertures();
@@ -550,7 +550,7 @@ static int gerber_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const
 		fprintf(f, "G04 For: %s *\r\n", pcb_author());
 
 		fprintf(f, "G04 Format: Gerber/RS-274X *\r\n");
-		rnd_fprintf(f, "G04 PCB-Dimensions: %[4] %[4] *\r\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
+		rnd_fprintf(f, "G04 PCB-Dimensions: %[4] %[4] *\r\n", rnd_dwg_get_size_x(&PCB->hidlib), rnd_dwg_get_size_y(&PCB->hidlib));
 		fprintf(f, "G04 PCB-Coordinate-Origin: lower left *\r\n");
 
 		/* Unit and coord format */
@@ -611,10 +611,10 @@ emit_outline:
 				rnd_hid_set_line_width(gc, conf_core.design.min_wid);
 			else
 				rnd_hid_set_line_width(gc, AUTO_OUTLINE_WIDTH);
-			rnd_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
-			rnd_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
-			rnd_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
-			rnd_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
+			rnd_render->draw_line(gc, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y1);
+			rnd_render->draw_line(gc, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y2);
+			rnd_render->draw_line(gc, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
+			rnd_render->draw_line(gc, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y2, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
 			rnd_hid_destroy_gc(gc);
 		}
 	}

@@ -416,10 +416,10 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 	if (netlist_ctx.active)
 		return; /* do not open another */
 
-	netlist_ctx.bb_prv.X1 = 0;
-	netlist_ctx.bb_prv.Y1 = 0;
-	netlist_ctx.bb_prv.X2 = pcb->hidlib.size_x;
-	netlist_ctx.bb_prv.Y2 = pcb->hidlib.size_y;
+	netlist_ctx.bb_prv.X1 = pcb->hidlib.dwg.X1;
+	netlist_ctx.bb_prv.Y1 = pcb->hidlib.dwg.Y1;
+	netlist_ctx.bb_prv.X2 = pcb->hidlib.dwg.X2;
+	netlist_ctx.bb_prv.Y2 = pcb->hidlib.dwg.Y2;
 	netlist_ctx.pcb = pcb;
 
 	RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */

@@ -361,10 +361,10 @@ TODO("layer: consider multiple outline layers instead")
 	}
 	else {
 		/* rectangular board size */
-		rnd_fprintf(ctx->f, "outline_xy(1, 1) = 0; outline_xy(2, 1) = 0;\n");
-		rnd_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = 0;\n", ctx->pcb->hidlib.size_x);
-		rnd_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->hidlib.size_x, -ctx->pcb->hidlib.size_y);
-		rnd_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->hidlib.size_y);
+		rnd_fprintf(ctx->f, "outline_xy(1, 1) = %mm; outline_xy(2, 1) = %mm;\n", ctx->pcb->hidlib.dwg.X1, -ctx->pcb->hidlib.dwg.Y1);
+		rnd_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = %mm;\n", ctx->pcb->hidlib.dwg.X2, -ctx->pcb->hidlib.dwg.Y1);
+		rnd_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->hidlib.dwg.X2, -ctx->pcb->hidlib.dwg.Y2);
+		rnd_fprintf(ctx->f, "outline_xy(1, 4) = %mm; outline_xy(2, 4) = %mm;\n", ctx->pcb->hidlib.dwg.X1, -ctx->pcb->hidlib.dwg.Y2);
 	}
 
 	/* create all substrate layers using this polygon*/
@@ -631,10 +631,10 @@ static void openems_hid_export_to_file(const char *filename, FILE *the_file, FIL
 	wctx.fmt_matlab = fmt_matlab;
 	ems_ctx = &wctx;
 
-	ctx.view.X1 = 0;
-	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->hidlib.size_x;
-	ctx.view.Y2 = PCB->hidlib.size_y;
+	ctx.view.X1 = PCB->hidlib.dwg.X1;
+	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
+	ctx.view.X2 = PCB->hidlib.dwg.X2;
+	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
 
 	f = the_file;
 

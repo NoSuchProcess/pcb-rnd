@@ -1448,12 +1448,12 @@ YY_RULE_SETUP
 case 52:
 YY_RULE_SETUP
 #line 105 "query_l.l"
-{ qry_lval.c = PCB->hidlib.size_x; return T_INT; }
+{ qry_lval.c = rnd_dwg_get_size_x(&PCB->hidlib); return T_INT; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 106 "query_l.l"
-{ qry_lval.c = PCB->hidlib.size_y; return T_INT; }
+{ qry_lval.c = rnd_dwg_get_size_y(&PCB->hidlib); return T_INT; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP

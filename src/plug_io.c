@@ -643,11 +643,11 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 		pcb_board_new_postproc(PCB, 0);
 		if (how == 0) {
 			/* update cursor location */
-			PCB->hidlib.ch_x = pcb_crosshair.X = PCB->hidlib.size_x/2;
-			PCB->hidlib.ch_y = pcb_crosshair.Y = PCB->hidlib.size_y/2;
+			PCB->hidlib.ch_x = pcb_crosshair.X = (PCB->hidlib.dwg.X1 + PCB->hidlib.dwg.X2) / 2;
+			PCB->hidlib.ch_y = pcb_crosshair.Y = (PCB->hidlib.dwg.Y1 + PCB->hidlib.dwg.Y2) / 2;
 
 			/* update cursor confinement and output area (scrollbars) */
-			pcb_board_resize(PCB->hidlib.size_x, PCB->hidlib.size_y, 0);
+			pcb_board_resize(PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2, 0);
 		}
 
 		/* have to be called after pcb_board_resize() so vis update is after a board changed update */
@@ -834,7 +834,7 @@ int pcb_load_pcb(const char *file, const char *fmt, rnd_bool require_font, int h
 				res = -1;
 			}
 			else
-				pcb_board_resize(b.X2*1.5, b.Y2*1.5, 0);
+				pcb_board_resize(b.X1, b.Y1, b.X2*1.5, b.Y2*1.5, 0);
 		}
 	}
 	return res;

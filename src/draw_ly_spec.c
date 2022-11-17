@@ -293,7 +293,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		rnd_render->set_color(pcb_draw_out.fgGC, &PCB->Data->Layer[goutl->lid[0]].meta.real.color);
 		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 		rnd_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
-		rnd_render->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		rnd_render->draw_rect(pcb_draw_out.fgGC, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
 
 		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		rnd_render->end_layer(rnd_render);

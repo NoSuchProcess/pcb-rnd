@@ -65,7 +65,7 @@ static void place_subc(pcb_subc_t *sc)
 	dx += PCB->hidlib.grid;
 
 	/* Figure out if this row has room.  If not, start a new row */
-	if (minx != GAP && GAP + sc->BoundingBox.X2 + dx > PCB->hidlib.size_x) {
+	if (minx != GAP && GAP + sc->BoundingBox.X2 + dx > PCB->hidlib.dwg.X2) {
 		miny = maxy + GAP;
 		minx = GAP;
 		place_subc(sc); /* recurse can't loop, now minx==GAP */

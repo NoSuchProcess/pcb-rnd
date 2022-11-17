@@ -631,7 +631,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if ((dia < 1) || (dia > (PCB->hidlib.size_x + PCB->hidlib.size_y)/4)) {
+	if ((dia < 1) || (dia > (rnd_dwg_get_size_x(&PCB->hidlib) + rnd_dwg_get_size_y(&PCB->hidlib))/4)) {
 		rnd_message(RND_MSG_ERROR, "circle(): invalid diameter\n");
 		RND_ACT_IRES(1);
 		return 0;

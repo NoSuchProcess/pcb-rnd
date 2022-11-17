@@ -149,7 +149,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	fprintf(f, "\nbegin board v1 ");
 	tedax_fprint_escape(f, pcb->hidlib.name);
 	fputc('\n', f);
-	rnd_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->hidlib.size_x, pcb->hidlib.size_y);
+	rnd_fprintf(f, " drawing_area %.06mm %.06mm %.06mm %.06mm\n", pcb->hidlib.dwg.X1, pcb->hidlib.dwg.Y1, pcb->hidlib.dwg.X2, pcb->hidlib.dwg.Y2);
 	for(n = 0, a = pcb->Attributes.List; n < pcb->Attributes.Number; n++,a++) {
 		rnd_fprintf(f, " attr ");
 		tedax_fprint_escape(f, a->name);
@@ -386,8 +386,10 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			if (!succ) errexit("Invalid y2 coord in drawing_area\n");
 			if ((x1 >= x2) || (y1 >= y2)) errexit("Invalid (unordered, negative box) drawing area\n");
 			if ((x1 < 0) || (y1 < 0)) rnd_message(RND_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()\n");
-			PCB->hidlib.size_x = x2 - x1;
-			PCB->hidlib.size_y = y2 - y1;
+			PCB->hidlib.dwg.X1 = /*x1*/ 0;
+			PCB->hidlib.dwg.Y1 = /*y1*/ 0;
+			PCB->hidlib.dwg.X2 = x2;
+			PCB->hidlib.dwg.Y2 = y2;
 		}
 		else if (strcmp(argv[0], "attr") == 0) {
 			reqarg("attr", 3);

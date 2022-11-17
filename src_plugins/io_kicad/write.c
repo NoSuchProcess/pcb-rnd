@@ -924,22 +924,22 @@ static void kicad_paper(wctx_t *ctx, int ind)
 
 TODO(": rewrite this: rather have a table and a loop that hardwired calculations in code")
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
-	if (RND_COORD_TO_MIL(PCB->hidlib.size_x) > A4WidthMil || RND_COORD_TO_MIL(PCB->hidlib.size_y) > A4HeightMil) {
+	if (RND_COORD_TO_MIL(PCB->hidlib.dwg.X2) > A4WidthMil || RND_COORD_TO_MIL(PCB->hidlib.dwg.Y2) > A4HeightMil) {
 		sheetHeight = A4WidthMil; /* 11.7" */
 		sheetWidth = 2 * A4HeightMil; /* 16.5" */
 		paperSize = 3; /* this is A3 size */
 	}
-	if (RND_COORD_TO_MIL(PCB->hidlib.size_x) > sheetWidth || RND_COORD_TO_MIL(PCB->hidlib.size_y) > sheetHeight) {
+	if (RND_COORD_TO_MIL(PCB->hidlib.dwg.X2) > sheetWidth || RND_COORD_TO_MIL(PCB->hidlib.dwg.Y2) > sheetHeight) {
 		sheetHeight = 2 * A4HeightMil; /* 16.5" */
 		sheetWidth = 2 * A4WidthMil; /* 23.4" */
 		paperSize = 2; /* this is A2 size */
 	}
-	if (RND_COORD_TO_MIL(PCB->hidlib.size_x) > sheetWidth || RND_COORD_TO_MIL(PCB->hidlib.size_y) > sheetHeight) {
+	if (RND_COORD_TO_MIL(PCB->hidlib.dwg.X2) > sheetWidth || RND_COORD_TO_MIL(PCB->hidlib.dwg.Y2) > sheetHeight) {
 		sheetHeight = 2 * A4WidthMil; /* 23.4" */
 		sheetWidth = 4 * A4HeightMil; /* 33.1" */
 		paperSize = 1; /* this is A1 size */
 	}
-	if (RND_COORD_TO_MIL(PCB->hidlib.size_x) > sheetWidth || RND_COORD_TO_MIL(PCB->hidlib.size_y) > sheetHeight) {
+	if (RND_COORD_TO_MIL(PCB->hidlib.dwg.X2) > sheetWidth || RND_COORD_TO_MIL(PCB->hidlib.dwg.Y2) > sheetHeight) {
 		sheetHeight = 4 * A4HeightMil; /* 33.1" */
 		sheetWidth = 4 * A4WidthMil; /* 46.8"  */
 		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
@@ -951,20 +951,20 @@ TODO(": rewrite this: rather have a table and a loop that hardwired calculations
 		rnd_coord_t LayoutYOffset;
 
 		/* we now sort out the offsets for centring the layout in the chosen sheet size here */
-		if (sheetWidth > RND_COORD_TO_MIL(PCB->hidlib.size_x)) { /* usually A4, bigger if needed */
+		if (sheetWidth > RND_COORD_TO_MIL(PCB->hidlib.dwg.X2)) { /* usually A4, bigger if needed */
 			/* fprintf(ctx->f, "%d ", sheetWidth);  legacy kicad: elements decimils, sheet size mils */
-			LayoutXOffset = RND_MIL_TO_COORD(sheetWidth) / 2 - PCB->hidlib.size_x / 2;
+			LayoutXOffset = RND_MIL_TO_COORD(sheetWidth) / 2 - PCB->hidlib.dwg.X2 / 2;
 		}
 		else { /* the layout is bigger than A0; most unlikely, but... */
-			/* rnd_fprintf(ctx->f, "%.0ml ", PCB->hidlib.size_x); */
+			/* rnd_fprintf(ctx->f, "%.0ml ", PCB->hidlib.dwg.X2); */
 			LayoutXOffset = 0;
 		}
-		if (sheetHeight > RND_COORD_TO_MIL(PCB->hidlib.size_y)) {
+		if (sheetHeight > RND_COORD_TO_MIL(PCB->hidlib.dwg.Y2)) {
 			/* fprintf(ctx->f, "%d", sheetHeight); */
-			LayoutYOffset = RND_MIL_TO_COORD(sheetHeight) / 2 - PCB->hidlib.size_y / 2;
+			LayoutYOffset = RND_MIL_TO_COORD(sheetHeight) / 2 - PCB->hidlib.dwg.Y2 / 2;
 		}
 		else { /* the layout is bigger than A0; most unlikely, but... */
-			/* rnd_fprintf(ctx->f, "%.0ml", PCB->hidlib.size_y); */
+			/* rnd_fprintf(ctx->f, "%.0ml", PCB->hidlib.dwg.Y2); */
 			LayoutYOffset = 0;
 	}
 
@@ -980,21 +980,21 @@ static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, rnd_coo
 	fprintf(ctx->f, "%*s", ind, "");
 	rnd_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->ox, ctx->oy,
-		ctx->pcb->hidlib.size_x + ctx->ox, ctx->oy,
+		ctx->pcb->hidlib.dwg.X2 + ctx->ox, ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
 	rnd_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
-		ctx->pcb->hidlib.size_x + ctx->ox, ctx->oy,
-		ctx->pcb->hidlib.size_x + ctx->ox, ctx->pcb->hidlib.size_y + ctx->oy,
+		ctx->pcb->hidlib.dwg.X2 + ctx->ox, ctx->oy,
+		ctx->pcb->hidlib.dwg.X2 + ctx->ox, ctx->pcb->hidlib.dwg.Y2 + ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
 	rnd_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
-		ctx->pcb->hidlib.size_x + ctx->ox, ctx->pcb->hidlib.size_y + ctx->oy,
-		ctx->ox, ctx->pcb->hidlib.size_y + ctx->oy,
+		ctx->pcb->hidlib.dwg.X2 + ctx->ox, ctx->pcb->hidlib.dwg.Y2 + ctx->oy,
+		ctx->ox, ctx->pcb->hidlib.dwg.Y2 + ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
 	rnd_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
-		ctx->ox, ctx->pcb->hidlib.size_y + ctx->oy,
+		ctx->ox, ctx->pcb->hidlib.dwg.Y2 + ctx->oy,
 		ctx->ox, ctx->oy,
 		lynam, thick);
 }

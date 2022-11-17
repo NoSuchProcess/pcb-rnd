@@ -132,7 +132,7 @@ void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const r
 void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const rnd_box_t *within_area);
 
 #define	PCB_SWAP_X(x)		(RND_SWAP_SIGN_X(x))
-#define	PCB_SWAP_Y(y)		(PCB->hidlib.size_y +RND_SWAP_SIGN_Y(y))
+#define	PCB_SWAP_Y(y)		(PCB->hidlib.dwg.Y2 +RND_SWAP_SIGN_Y(y))
 
 #define	PCB_CSWAP_X(x, w, cond)		((cond) ? (RND_SWAP_SIGN_X(x)) : (x))
 #define	PCB_CSWAP_Y(y, h, cond)		((cond) ? (h+RND_SWAP_SIGN_Y(y)) : (y))
@@ -146,7 +146,7 @@ rnd_bool pcb_board_change_name(char *Name);
 
 /* changes the maximum size of a layout, notifies the GUI
  * and adjusts the cursor confinement box */
-void pcb_board_resize(rnd_coord_t Width, rnd_coord_t Height, int undoable);
+void pcb_board_resize(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int undoable);
 
 /* change the thermal scale of the board, update the GUI */
 void pcb_board_chg_thermal_scale(double thermal_scale, int undoable);

@@ -59,7 +59,7 @@ typedef struct hyp_wr_s {
 /* pcb-rnd y-axis points down; hyperlynx y-axis points up */
 static rnd_coord_t flip(rnd_coord_t y)
 {
-	return (PCB->hidlib.size_y - y);
+	return (PCB->hidlib.dwg.Y2 - y);
 }
 
 static void hyp_grp_init(hyp_wr_t *wr)
@@ -371,10 +371,10 @@ static int write_board(hyp_wr_t * wr)
 	if (!has_outline) {
 		/* implicit outline */
 		fprintf(wr->f, "* implicit outline derived from board width and height\n");
-		write_pr_line(wr, 0, 0, PCB->hidlib.size_x, 0);
-		write_pr_line(wr, 0, 0, 0, PCB->hidlib.size_y);
-		write_pr_line(wr, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
-		write_pr_line(wr, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		write_pr_line(wr, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y1);
+		write_pr_line(wr, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y2);
+		write_pr_line(wr, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
+		write_pr_line(wr, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y2, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
 	}
 	else { /* explicit outline */
 		for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {

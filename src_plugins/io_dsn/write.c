@@ -94,7 +94,7 @@ static void group_name(char *dst, const char *src, rnd_layergrp_id_t gid)
 /* Board coords */
 #define COORD(c)  (c)
 #define COORDX(x) (x)
-#define COORDY(y) (PCB->hidlib.size_y - (y))
+#define COORDY(y) (PCB->hidlib.dwg.Y2 - (y))
 
 /* local coords (subc or padstack context) */
 #define LCOORD(c)  (c)
@@ -141,7 +141,7 @@ static void dsn_write_boundary(dsn_write_t *wctx)
 {
 	pcb_poly_t *bp;
 
-	rnd_fprintf(wctx->f, "    (boundary (rect pcb %[4] %[4] %[4] %[4]))\n", 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+	rnd_fprintf(wctx->f, "    (boundary (rect pcb %[4] %[4] %[4] %[4]))\n", PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
 
 	bp = pcb_topoly_1st_outline(wctx->pcb, PCB_TOPOLY_KEEP_ORIG | PCB_TOPOLY_FLOATING);
 	if (bp != NULL) {

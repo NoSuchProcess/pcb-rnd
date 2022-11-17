@@ -107,10 +107,10 @@ void exp_hpgl_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, 
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t ctx;
 
-	ctx.view.X1 = 0;
-	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->hidlib.size_x;
-	ctx.view.Y2 = PCB->hidlib.size_y;
+	ctx.view.X1 = PCB->hidlib.dwg.X1;
+	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
+	ctx.view.X2 = PCB->hidlib.dwg.X2;
+	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
 
 	f = the_file;
 

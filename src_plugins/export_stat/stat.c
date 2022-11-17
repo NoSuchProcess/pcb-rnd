@@ -339,8 +339,8 @@ static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		height = bb.Y2 - bb.Y1;
 	}
 	else {
-		width = PCB->hidlib.size_x;
-		height = PCB->hidlib.size_y;
+		width = rnd_dwg_get_size_x(&PCB->hidlib);
+		height = rnd_dwg_get_size_y(&PCB->hidlib);
 	}
 
 	fprintf(f, "	ha:board {\n");

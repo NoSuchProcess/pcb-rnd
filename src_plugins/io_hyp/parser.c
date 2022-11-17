@@ -650,12 +650,12 @@ void hyp_resize_board()
 		}
 	}
 
-	width = max(PCB->hidlib.size_x, x_max - x_min + slack);
-	height = max(PCB->hidlib.size_y, y_max - y_min + slack);
+	width = max(rnd_dwg_get_size_x(&PCB->hidlib), x_max - x_min + slack);
+	height = max(rnd_dwg_get_size_y(&PCB->hidlib), y_max - y_min + slack);
 
 	/* resize if board too small */
-	if ((width > PCB->hidlib.size_x) || (height > PCB->hidlib.size_y))
-		pcb_board_resize(width, height, 0);
+	if ((width > PCB->hidlib.dwg.X2) || (height > PCB->hidlib.dwg.Y2))
+		pcb_board_resize(0, 0, width, height, 0);
 
 	return;
 

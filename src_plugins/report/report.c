@@ -805,7 +805,7 @@ static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	printf("Filename: %s\n", PCB->hidlib.filename);
-	rnd_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
+	rnd_printf("Size: %ml x %ml mils, %mm x %mm mm\n", rnd_dwg_get_size_x(&PCB->hidlib), rnd_dwg_get_size_y(&PCB->hidlib), rnd_dwg_get_size_x(&PCB->hidlib), rnd_dwg_get_size_y(&PCB->hidlib));
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		rnd_layergrp_id_t lg = pcb_layer_get_group(PCB, i);
 		unsigned int gflg = pcb_layergrp_flags(PCB, lg);

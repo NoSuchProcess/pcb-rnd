@@ -100,11 +100,11 @@ static fgw_error_t pcb_act_ReadBoard(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(cmd) {
 		case act_read_keywords_width:
 		case act_read_keywords_size_x:
-			res->type = FGW_COORD; fgw_coord(res) = pcb->hidlib.size_x;
+			res->type = FGW_COORD; fgw_coord(res) = rnd_dwg_get_size_x(&pcb->hidlib);
 			return 0;
 		case act_read_keywords_height:
 		case act_read_keywords_size_y:
-			res->type = FGW_COORD; fgw_coord(res) = pcb->hidlib.size_y;
+			res->type = FGW_COORD; fgw_coord(res) = rnd_dwg_get_size_y(&pcb->hidlib);
 			return 0;
 		default:
 			return FGW_ERR_ARG_CONV;

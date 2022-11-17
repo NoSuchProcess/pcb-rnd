@@ -915,8 +915,8 @@ void pcb_crosshair_grid_fit(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 
 	oldx = pcb_crosshair.X;
 	oldy = pcb_crosshair.Y;
-	pcb->hidlib.ch_x = pcb_crosshair.X = RND_CLAMP(X, -pcb->hidlib.size_x/2, pcb->hidlib.size_x*3/2);
-	pcb->hidlib.ch_y = pcb_crosshair.Y = RND_CLAMP(Y, -pcb->hidlib.size_y/2, pcb->hidlib.size_y*3/2);
+	pcb->hidlib.ch_x = pcb_crosshair.X = RND_CLAMP(X, pcb->hidlib.dwg.X1 - rnd_dwg_get_size_x(&pcb->hidlib)/2, pcb->hidlib.dwg.X2 + rnd_dwg_get_size_x(&pcb->hidlib)/2);
+	pcb->hidlib.ch_y = pcb_crosshair.Y = RND_CLAMP(Y, pcb->hidlib.dwg.Y1 - rnd_dwg_get_size_y(&pcb->hidlib)/2, pcb->hidlib.dwg.Y2 + rnd_dwg_get_size_y(&pcb->hidlib)/2);
 
 	nearest_grid_x = rnd_grid_fit(pcb_crosshair.X, pcb->hidlib.grid, pcb->hidlib.grid_ox);
 	nearest_grid_y = rnd_grid_fit(pcb_crosshair.Y, pcb->hidlib.grid, pcb->hidlib.grid_oy);

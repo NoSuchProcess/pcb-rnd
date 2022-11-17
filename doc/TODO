@@ -57,6 +57,8 @@
 	- keep numeric format: test all
 	- keep unknown subtrees
 	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
+- FEATURE: lihata board v9:
+	- replace board/size with the bbox representation
 - BUG: I/O bugs:
 	- eagle:
 		- BUG: xml: eagle XML import fails on polygon import reported by miloh, test file pcb-rnd-aux poly_selfi/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?

@@ -34,7 +34,7 @@
  <path d="M 1.90500000 0.00000000 A 1.9050 1.9050 0 0 1 0.0000 1.9050" stroke-width="0.5080" stroke="#000000" stroke-linecap="round" fill="none"/>
  <line x1="2.5400" y1="5.7150" x2="2.5400" y2="3.1750" stroke-width="0.5080" stroke="#000000" stroke-linecap="round"/>
 </g>
-<mask id="comp_clip_1" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
+<mask id="comp_clip_1" maskUnits="userSpaceOnUse" x="0.0000" y="0.0000" width="12.7000" height="12.7000">
  <polygon points="4.4450,0.6350 4.4450,4.4450 0.6350,4.4450 0.6350,0.6350 " stroke-width="0.010" stroke="#FFFFFF" fill="#FFFFFF"/>
  <polygon points="12.0650,0.6350 12.0650,12.0650 5.0800,12.0650 5.0800,0.6350 " stroke-width="0.010" stroke="#FFFFFF" fill="#FFFFFF"/>
  <polygon points="11.4300,1.2700 11.4300,11.4300 5.7150,11.4300 5.7150,1.2700 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
@@ -53,7 +53,7 @@
 <!--normal-->
  <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
-<mask id="comp_clip_2" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
+<mask id="comp_clip_2" maskUnits="userSpaceOnUse" x="0.0000" y="0.0000" width="12.7000" height="12.7000">
 <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#FFFFFF" stroke="none"/>
 </mask>
 </defs>
@@ -67,7 +67,7 @@
 <g id="comp_pixel_3">
  <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
 </g>
-<mask id="comp_clip_3" maskUnits="userSpaceOnUse" x="0" y="0" width="12.7000" height="12.7000">
+<mask id="comp_clip_3" maskUnits="userSpaceOnUse" x="0.0000" y="0.0000" width="12.7000" height="12.7000">
  <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#FFFFFF" stroke-linecap="round" fill="none"/>
 </mask>
 </defs>

@@ -30,7 +30,7 @@
 
 
 #define TRX_(x) (x)
-#define TRY_(y) (PCB->hidlib.size_y - (y))
+#define TRY_(y) (PCB->hidlib.dwg.Y2 - (y))
 
 #define TRX(x)
 #define TRY(y) y = TRY_(y)

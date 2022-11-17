@@ -555,9 +555,9 @@ static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, const st
 	}
 
 	if (options[HA_zcent].lng)
-		stl_hid_export_to_file(f, options, PCB->hidlib.size_y, -thick/2, +thick/2, fmt);
+		stl_hid_export_to_file(f, options, PCB->hidlib.dwg.Y2, -thick/2, +thick/2, fmt);
 	else
-		stl_hid_export_to_file(f, options, PCB->hidlib.size_y, 0, thick, fmt);
+		stl_hid_export_to_file(f, options, PCB->hidlib.dwg.Y2, 0, thick, fmt);
 
 	fclose(f);
 	pcb_cam_end(&cam);

@@ -196,7 +196,7 @@ static void draw_fab_layer(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid
 	PCB_END_LOOP;
 	if (!found) {
 		rnd_hid_set_line_width(gc, FAB_LINE_W);
-		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + RND_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
+		text_at(info, gc, PCB->hidlib.dwg.X2 / 2, PCB->hidlib.dwg.Y2 + RND_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}
 }
 
@@ -308,18 +308,18 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 	}
 	if (!found) {
 		rnd_hid_set_line_width(gc, RND_MIL_TO_COORD(10));
-		rnd_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
-		rnd_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
-		rnd_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
-		rnd_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		rnd_render->draw_line(gc, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y1);
+		rnd_render->draw_line(gc, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y2);
+		rnd_render->draw_line(gc, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y1, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
+		rnd_render->draw_line(gc, PCB->hidlib.dwg.X1, PCB->hidlib.dwg.Y2, PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
 		/*FPrintOutline (); */
 		rnd_hid_set_line_width(gc, FAB_LINE_W);
 		text_at(info, gc, RND_MIL_TO_COORD(2000), yoff, 0,
-						"Maximum Dimensions: %f mils wide, %f mils high", RND_COORD_TO_MIL(PCB->hidlib.size_x), RND_COORD_TO_MIL(PCB->hidlib.size_y));
-		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + RND_MIL_TO_COORD(20), 1,
+						"Maximum Dimensions: %f mils wide, %f mils high", RND_COORD_TO_MIL(rnd_dwg_get_size_x(&PCB->hidlib)), RND_COORD_TO_MIL(rnd_dwg_get_size_y(&PCB->hidlib)));
+		text_at(info, gc, (PCB->hidlib.dwg.X1+PCB->hidlib.dwg.X2) / 2, PCB->hidlib.dwg.Y2 + RND_MIL_TO_COORD(20), 1,
 						"Board outline is the centerline of this %f mil"
 						" rectangle - 0,0 to %f,%f mils",
-						RND_COORD_TO_MIL(FAB_LINE_W), RND_COORD_TO_MIL(PCB->hidlib.size_x), RND_COORD_TO_MIL(PCB->hidlib.size_y));
+						RND_COORD_TO_MIL(FAB_LINE_W), RND_COORD_TO_MIL(PCB->hidlib.dwg.X2), RND_COORD_TO_MIL(PCB->hidlib.dwg.Y2));
 	}
 	yoff -= TEXT_LINE;
 

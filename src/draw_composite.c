@@ -43,7 +43,7 @@ static void comp_fill_board(comp_ctx_t *ctx)
 {
 	rnd_render->set_color(pcb_draw_out.fgGC, ctx->color);
 	if (ctx->info->drawn_area == NULL)
-		rnd_render->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->info->pcb->hidlib.size_x, ctx->info->pcb->hidlib.size_y);
+		rnd_render->fill_rect(pcb_draw_out.fgGC, ctx->info->pcb->hidlib.dwg.X1, ctx->info->pcb->hidlib.dwg.Y1, ctx->info->pcb->hidlib.dwg.X2, ctx->info->pcb->hidlib.dwg.Y2);
 	else
 		rnd_render->fill_rect(pcb_draw_out.fgGC, ctx->info->drawn_area->X1, ctx->info->drawn_area->Y1, ctx->info->drawn_area->X2, ctx->info->drawn_area->Y2);
 }

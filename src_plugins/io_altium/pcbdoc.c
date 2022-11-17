@@ -130,7 +130,7 @@ static rnd_coord_t conv_coordx_field(rctx_t *rctx, altium_field_t *field)
 
 static rnd_coord_t conv_coordy_field(rctx_t *rctx, altium_field_t *field)
 {
-	return rctx->pcb->hidlib.size_y - conv_coord_field(field);
+	return rctx->pcb->hidlib.dwg.Y2 - conv_coord_field(field);
 }
 
 static double conv_double_field(altium_field_t *field)
@@ -456,10 +456,10 @@ static void altium_finalize_layers(rctx_t *rctx)
 	for(n = 37; n <= 52; n++) {
 		if (rctx->midly[n] != NULL) {
 			pcb_poly_t *poly = pcb_poly_new(rctx->midly[n], 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
-			pcb_poly_point_new(poly, 0, 0);
-			pcb_poly_point_new(poly, rctx->pcb->hidlib.size_x, 0);
-			pcb_poly_point_new(poly, rctx->pcb->hidlib.size_x, rctx->pcb->hidlib.size_y);
-			pcb_poly_point_new(poly, 0, rctx->pcb->hidlib.size_y);
+			pcb_poly_point_new(poly, rctx->pcb->hidlib.dwg.X1, rctx->pcb->hidlib.dwg.Y1);
+			pcb_poly_point_new(poly, rctx->pcb->hidlib.dwg.X2, rctx->pcb->hidlib.dwg.Y1);
+			pcb_poly_point_new(poly, rctx->pcb->hidlib.dwg.X2, rctx->pcb->hidlib.dwg.Y2);
+			pcb_poly_point_new(poly, rctx->pcb->hidlib.dwg.X1, rctx->pcb->hidlib.dwg.Y2);
 			pcb_add_poly_on_layer(rctx->midly[n], poly);
 			plane[n-37] = poly;
 			pcb_attribute_put(&(poly->Attributes), "altium::plane", "yes");
@@ -494,8 +494,8 @@ static int altium_parse_board(rctx_t *rctx)
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_board]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_board], rec)) {
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
-				case altium_kw_field_sheetheight: rctx->pcb->hidlib.size_x = conv_coord_field(field); break;
-				case altium_kw_field_sheetwidth:  rctx->pcb->hidlib.size_y = conv_coord_field(field); break;
+				case altium_kw_field_sheetheight: rctx->pcb->hidlib.dwg.X2 = conv_coord_field(field); break;
+				case altium_kw_field_sheetwidth:  rctx->pcb->hidlib.dwg.Y2 = conv_coord_field(field); break;
 				case altium_kw_field_togglelayers:
 					{
 						int len;
@@ -512,11 +512,11 @@ static int altium_parse_board(rctx_t *rctx)
 					/* vx[0-4] and vy[0-4] */
 					if ((tolower(field->key[0]) == 'v') && isdigit(field->key[2]) && (field->key[3] == 0)) {
 						if (tolower(field->key[1]) == 'x') {
-							BUMP_COORD(rctx->pcb->hidlib.size_x, conv_coord_field(field));
+							BUMP_COORD(rctx->pcb->hidlib.dwg.X2, conv_coord_field(field));
 							rctx->has_bnd |= 1;
 						}
 						if (tolower(field->key[1]) == 'y') {
-							BUMP_COORD(rctx->pcb->hidlib.size_y, conv_coord_field(field));
+							BUMP_COORD(rctx->pcb->hidlib.dwg.Y2, conv_coord_field(field));
 							rctx->has_bnd |= 2;
 						}
 					}
@@ -542,7 +542,7 @@ static int altium_parse_board(rctx_t *rctx)
 	}
 
 	if (rctx->has_bnd != 3)
-		rctx->pcb->hidlib.size_x = rctx->pcb->hidlib.size_y = 0;
+		rctx->pcb->hidlib.dwg.X2 = rctx->pcb->hidlib.dwg.Y2 = 0;
 
 	/*** create the layer stack (copper only) ***/
 
@@ -1825,11 +1825,14 @@ static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, cons
 	if (rctx.has_bnd != 3) {
 		rnd_box_t b;
 		pcb_data_bbox(&b, rctx.pcb->Data, 0);
-		rctx.pcb->hidlib.size_x = b.X2-b.X1;
-		rctx.pcb->hidlib.size_y = b.Y2-b.Y1;
+		rctx.pcb->hidlib.dwg.X1 = b.X1;
+		rctx.pcb->hidlib.dwg.Y1 = b.Y1;
+		rctx.pcb->hidlib.dwg.X2 = b.X2;
+		rctx.pcb->hidlib.dwg.Y2 = b.Y2;
+/* autocrop-like move, pre-librnd4:
 		pcb_data_move(rctx.pcb->Data, -b.X1, -b.Y1, 0);
 		rctx.moved_x = -b.X1;
-		rctx.moved_y = -b.Y1;
+		rctx.moved_y = -b.Y1;*/
 		rnd_message(RND_MSG_ERROR, "Board without contour or body - can not determine real size\n");
 	}
 

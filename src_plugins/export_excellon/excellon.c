@@ -27,7 +27,7 @@ conf_excellon_t conf_excellon;
 static int exc_aperture_cnt;
 
 #define excellonDrX(pcb, x) ((rnd_coord_t) (x))
-#define excellonDrY(pcb, y) ((rnd_coord_t) ((pcb)->hidlib.size_y - (y)))
+#define excellonDrY(pcb, y) ((rnd_coord_t) ((pcb)->hidlib.dwg.Y2 - (y)))
 
 typedef struct {
 	const char *hdr1;
@@ -245,10 +245,10 @@ static void excellon_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	if (!excellon_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	ctx.view.X1 = 0;
-	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->hidlib.size_x;
-	ctx.view.Y2 = PCB->hidlib.size_y;
+	ctx.view.X1 = PCB->hidlib.dwg.X1;
+	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
+	ctx.view.X2 = PCB->hidlib.dwg.X2;
+	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
 
 	lastwidth = -1;
 	finding_apertures = 1;

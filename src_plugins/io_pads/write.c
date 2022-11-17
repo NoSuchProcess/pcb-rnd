@@ -72,7 +72,7 @@ typedef struct {
 
 #define CRD(c)   (c)
 #define CRDX(c)  CRD(c)
-#define CRDY(c)  CRD((wctx->writing_partdecal ? 0 : wctx->pcb->hidlib.size_y) - (c))
+#define CRDY(c)  CRD((wctx->writing_partdecal ? 0 : wctx->pcb->hidlib.dwg.Y2) - (c))
 #define ROT(r)   (r)
 
 #include "write_layer.c"
@@ -108,7 +108,7 @@ static int pads_write_blk_pcb(write_ctx_t *wctx)
 	rnd_fprintf(wctx->f, "DOTGRID      %[4]  %[4]      Space between graphic dots\r\n", CRD(rnd_conf.editor.grid), CRD(rnd_conf.editor.grid));
 	fprintf(wctx->f, "SCALE        10.000              Scale of window expansion\r\n");
 	rnd_fprintf(wctx->f, "ORIGIN       %[4]  %[4]      User defined origin location\r\n", CRD(wctx->pcb->hidlib.grid_ox), CRD(wctx->pcb->hidlib.grid_oy));
-	rnd_fprintf(wctx->f, "WINDOWCENTER %[4] %[4]     Point defining the center of the window\r\n", CRD(wctx->pcb->hidlib.size_x/2.0), CRD(wctx->pcb->hidlib.size_y/2.0));
+	rnd_fprintf(wctx->f, "WINDOWCENTER %[4] %[4]     Point defining the center of the window\r\n", CRD((wctx->pcb->hidlib.dwg.X1+wctx->pcb->hidlib.dwg.X2)/2.0), CRD((wctx->pcb->hidlib.dwg.Y1+wctx->pcb->hidlib.dwg.Y2)/2.0));
 	fprintf(wctx->f, "BACKUPTIME       20              Number of minutes between database backups\r\n");
 	fprintf(wctx->f, "REAL WIDTH        2              Widths greater then this are displayed real size\r\n");
 	fprintf(wctx->f, "ALLSIGONOFF       1              All signal nets displayed on/off\r\n");

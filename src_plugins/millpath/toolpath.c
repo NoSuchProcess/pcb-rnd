@@ -257,8 +257,8 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 		result->remain = pcb_poly_new_from_rectangle(result->res_remply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
 	}
 	else {
-		result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->hidlib.size_x, pcb->hidlib.size_y, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
-		result->remain = pcb_poly_new_from_rectangle(result->res_remply, 0, 0, pcb->hidlib.size_x, pcb->hidlib.size_y, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
+		result->fill = pcb_poly_new_from_rectangle(result->res_ply, pcb->hidlib.dwg.X1, pcb->hidlib.dwg.Y1, pcb->hidlib.dwg.X2, pcb->hidlib.dwg.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
+		result->remain = pcb_poly_new_from_rectangle(result->res_remply, pcb->hidlib.dwg.X1, pcb->hidlib.dwg.Y1, pcb->hidlib.dwg.X2, pcb->hidlib.dwg.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
 	}
 
 	pcb_poly_init_clip(pcb->Data, result->res_ply, result->fill);

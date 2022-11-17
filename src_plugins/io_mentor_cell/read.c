@@ -1217,8 +1217,8 @@ TODO("netclass: set nc for net's netclass");
 		rnd_box_t bb;
 		pcb_data_normalize(ctx->pcb->Data);
 		pcb_data_bbox(&bb, ctx->pcb->Data, 0);
-		ctx->pcb->hidlib.size_x = bb.X2;
-		ctx->pcb->hidlib.size_y = bb.Y2;
+		ctx->pcb->hidlib.dwg.X2 = bb.X2;
+		ctx->pcb->hidlib.dwg.Y2 = bb.Y2;
 	}
 
 	return 0;

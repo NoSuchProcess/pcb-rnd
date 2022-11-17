@@ -1981,8 +1981,8 @@ yyreduce:
 #line 318 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->hidlib.name = (yyvsp[-1].string);
-				yyPCB->hidlib.size_x = RND_MAX_COORD;
-				yyPCB->hidlib.size_y = RND_MAX_COORD;
+				yyPCB->hidlib.dwg.X2 = RND_MAX_COORD;
+				yyPCB->hidlib.dwg.Y2 = RND_MAX_COORD;
 				old_fmt = 1;
 			}
 #line 1989 "parse_y.c" /* yacc.c:1652  */
@@ -1992,8 +1992,8 @@ yyreduce:
 #line 325 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->hidlib.name = (yyvsp[-3].string);
-				yyPCB->hidlib.size_x = OU ((yyvsp[-2].measure));
-				yyPCB->hidlib.size_y = OU ((yyvsp[-1].measure));
+				yyPCB->hidlib.dwg.X2 = OU ((yyvsp[-2].measure));
+				yyPCB->hidlib.dwg.Y2 = OU ((yyvsp[-1].measure));
 				old_fmt = 1;
 			}
 #line 2000 "parse_y.c" /* yacc.c:1652  */
@@ -2003,8 +2003,8 @@ yyreduce:
 #line 332 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->hidlib.name = (yyvsp[-3].string);
-				yyPCB->hidlib.size_x = NU ((yyvsp[-2].measure));
-				yyPCB->hidlib.size_y = NU ((yyvsp[-1].measure));
+				yyPCB->hidlib.dwg.X2 = NU ((yyvsp[-2].measure));
+				yyPCB->hidlib.dwg.Y2 = NU ((yyvsp[-1].measure));
 				old_fmt = 0;
 			}
 #line 2011 "parse_y.c" /* yacc.c:1652  */

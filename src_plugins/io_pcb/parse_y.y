@@ -317,22 +317,22 @@ pcbname
 		: T_PCB '(' STRING ')'
 			{
 				yyPCB->hidlib.name = $3;
-				yyPCB->hidlib.size_x = RND_MAX_COORD;
-				yyPCB->hidlib.size_y = RND_MAX_COORD;
+				yyPCB->hidlib.dwg.X2 = RND_MAX_COORD;
+				yyPCB->hidlib.dwg.Y2 = RND_MAX_COORD;
 				old_fmt = 1;
 			}
 		| T_PCB '(' STRING measure measure ')'
 			{
 				yyPCB->hidlib.name = $3;
-				yyPCB->hidlib.size_x = OU ($4);
-				yyPCB->hidlib.size_y = OU ($5);
+				yyPCB->hidlib.dwg.X2 = OU ($4);
+				yyPCB->hidlib.dwg.Y2 = OU ($5);
 				old_fmt = 1;
 			}
 		| T_PCB '[' STRING measure measure ']'
 			{
 				yyPCB->hidlib.name = $3;
-				yyPCB->hidlib.size_x = NU ($4);
-				yyPCB->hidlib.size_y = NU ($5);
+				yyPCB->hidlib.dwg.X2 = NU ($4);
+				yyPCB->hidlib.dwg.Y2 = NU ($5);
 				old_fmt = 0;
 			}
 		;

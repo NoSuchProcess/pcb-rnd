@@ -219,9 +219,9 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 {
 	/* default: bottom left of the drawing area */
 	ctx->ox = 0;
-	ctx->oy = PCB->hidlib.size_y;
-	ctx->bottom_ox = PCB->hidlib.size_x;
-	ctx->bottom_oy = PCB->hidlib.size_y;
+	ctx->oy = PCB->hidlib.dwg.Y2;
+	ctx->bottom_ox = PCB->hidlib.dwg.X2;
+	ctx->bottom_oy = PCB->hidlib.dwg.Y2;
 
 	find_origin_(format_name, "", &ctx->ox, &ctx->oy);
 	find_origin_(format_name, "bottom-", &ctx->bottom_ox, &ctx->bottom_oy);
@@ -388,12 +388,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	}
 	if (strncmp(*input, "boardw%", 7) == 0) {
 		*input += 7;
-		rnd_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.size_x);
+		rnd_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.dwg.X2);
 		return 0;
 	}
 	if (strncmp(*input, "boardh%", 7) == 0) {
 		*input += 7;
-		rnd_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.size_y);
+		rnd_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.dwg.Y2);
 		return 0;
 	}
 	if (strncmp(*input, "subc.", 5) == 0) {

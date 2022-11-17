@@ -174,7 +174,7 @@ void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 				autoload_field_crd(octx, f, bb.X2 - bb.X1);
 			}
 			else
-				autoload_field_crd(octx, f, PCB->hidlib.size_x);
+				autoload_field_crd(octx, f, rnd_dwg_get_size_x(&PCB->hidlib));
 			break;
 		case PCB_OAL_HEIGHT:
 			if (has_outline(PCB)) {
@@ -182,7 +182,7 @@ void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 				autoload_field_crd(octx, f, bb.Y2 - bb.Y1);
 			}
 			else
-				autoload_field_crd(octx, f, PCB->hidlib.size_y);
+				autoload_field_crd(octx, f, rnd_dwg_get_size_y(&PCB->hidlib));
 			break;
 		case PCB_OAL_LAYERS:
 			for(gid = 0, l = 0; gid < PCB->LayerGroups.len; gid++)

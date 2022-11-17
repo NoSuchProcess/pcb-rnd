@@ -373,10 +373,10 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 
 	png_f = the_file;
 
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->hidlib.size_x;
-	region.Y2 = PCB->hidlib.size_y;
+	region.X1 = PCB->hidlib.dwg.X1;
+	region.Y1 = PCB->hidlib.dwg.Y1;
+	region.X2 = PCB->hidlib.dwg.X2;
+	region.Y2 = PCB->hidlib.dwg.Y2;
 
 	png_options = options;
 	if (options[HA_only_visible].lng)

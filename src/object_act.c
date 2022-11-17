@@ -88,7 +88,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t ox, r
 	*dx += pcb->hidlib.grid;
 
 	/* Figure out if this row has room.  If not, start a new row */
-	if (GAP + obj->BoundingBox.X2 + *dx > pcb->hidlib.size_x) {
+	if (GAP + obj->BoundingBox.X2 + *dx > pcb->hidlib.dwg.X2) {
 		*miny = *maxy + GAP;
 		*minx = GAP;
 	}
@@ -111,7 +111,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t ox, r
 	*minx = newx2 + GAP;
 	if (*maxy < newy2) {
 		*maxy = newy2;
-		if (*maxy > pcb->hidlib.size_y - GAP) {
+		if (*maxy > pcb->hidlib.dwg.Y2 - GAP) {
 			*maxy = GAP;
 			rnd_message(RND_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndiesperse restarted from the top.\nExpect overlapping subcircuits\n");
 		}
@@ -179,7 +179,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_freeze_serial();
-				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - RND_ACT_HIDLIB->size_y);
+				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - RND_ACT_HIDLIB->dwg.Y2);
 				pcb_undo_unfreeze_serial();
 				pcb_undo_inc_serial();
 				pcb_draw();
@@ -378,9 +378,9 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 	plc->plc_method = PLC_DISPERSE;
 	plc->rem_method = PLC_SELECT;
 	plc->location = PLC_AT;
-	plc->lx = pcb->hidlib.size_x / 2;
-	plc->ly = pcb->hidlib.size_y / 2;
-	plc->dd = MIN(pcb->hidlib.size_x, pcb->hidlib.size_y) / 10;
+	plc->lx = pcb->hidlib.dwg.X2 / 2;
+	plc->ly = pcb->hidlib.dwg.Y2 / 2;
+	plc->dd = MIN(pcb->hidlib.dwg.X2, pcb->hidlib.dwg.Y2) / 10;
 	plc->c = plc->cx = plc->cy = 0;
 	plc->remlst = NULL;
 
@@ -426,8 +426,8 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 				break;
 			}
 		case PLC_CENTER:
-			plc->lx = pcb->hidlib.size_x / 2;
-			plc->ly = pcb->hidlib.size_y / 2;
+			plc->lx = (pcb->hidlib.dwg.X1 + pcb->hidlib.dwg.X2) / 2;
+			plc->ly = (pcb->hidlib.dwg.Y1 + pcb->hidlib.dwg.Y2) / 2;
 			break;
 	}
 
@@ -455,7 +455,7 @@ static void plc_place(placer_t *plc, rnd_coord_t *ox,  rnd_coord_t *oy)
 			{
 				rnd_coord_t bx = bbx.X2 - bbx.X1, by = bbx.Y2 - bbx.Y1;
 				rnd_coord_t xo = PCB_PASTEBUFFER->X/2, yo = PCB_PASTEBUFFER->Y/2;
-				rnd_coord_t max = (plc->side % 2) ? plc->pcb->hidlib.size_y : plc->pcb->hidlib.size_x;
+				rnd_coord_t max = (plc->side % 2) ? plc->pcb->hidlib.dwg.Y2 : plc->pcb->hidlib.dwg.X2;
 				rnd_coord_t mdim = (plc->side % 2) ? by : bx;
 /*				rnd_coord_t adim = (plc->side % 2) ? bx : by;*/
 				pcb_subc_t *sc;
@@ -469,9 +469,9 @@ static void plc_place(placer_t *plc, rnd_coord_t *ox,  rnd_coord_t *oy)
 
 				switch(plc->side) {
 					case 0: px = xo2 - bbx.X1 + plc->c; py = yo2 - bbx.Y2; break; /* top */
-					case 1: py = yo2 - bbx.Y1 + plc->c; px = xo2 - bbx.X1 + plc->pcb->hidlib.size_x; break; /* right */
-					case 2: px = plc->pcb->hidlib.size_x - (bbx.X2 - xo2 + plc->c); py = yo2 - bbx.Y1 + plc->pcb->hidlib.size_y; break; /* bottom, from right to left */
-					case 3: py = plc->pcb->hidlib.size_y - (bbx.Y2 - yo2 + plc->c); px = xo2 - bbx.X2; break; /* left, from bottom to top */
+					case 1: py = yo2 - bbx.Y1 + plc->c; px = xo2 - bbx.X1 + plc->pcb->hidlib.dwg.X2; break; /* right */
+					case 2: px = plc->pcb->hidlib.dwg.X2 - (bbx.X2 - xo2 + plc->c); py = yo2 - bbx.Y1 + plc->pcb->hidlib.dwg.Y2; break; /* bottom, from right to left */
+					case 3: py = plc->pcb->hidlib.dwg.Y2 - (bbx.Y2 - yo2 + plc->c); px = xo2 - bbx.X2; break; /* left, from bottom to top */
 				}
 
 				plc->c += (double)mdim + RND_MM_TO_COORD(1);
@@ -653,7 +653,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				rnd_coord_t pcx = 0, pcy = 0;
 				pcb_subc_get_origin(psc, &pcx, &pcy);
 				if (!orig_on_top)
-					pcb_subc_change_side(psc, pcy * 2 - RND_ACT_HIDLIB->size_y);
+					pcb_subc_change_side(psc, pcy * 2 - RND_ACT_HIDLIB->dwg.Y2);
 				if (orig_rot != 0) {
 					double cosa, sina;
 					cosa = cos(orig_rot / RND_RAD_TO_DEG);

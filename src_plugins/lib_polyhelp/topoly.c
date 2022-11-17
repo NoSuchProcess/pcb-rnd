@@ -357,7 +357,8 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 	pcb_layer_t *layer;
 	pcb_any_obj_t *best = NULL;
 	rnd_coord_t x, y;
-	double bestd = (double)pcb->hidlib.size_y*(double)pcb->hidlib.size_y + (double)pcb->hidlib.size_x*(double)pcb->hidlib.size_x;
+	double bw = rnd_dwg_get_size_x(&pcb->hidlib), bh = rnd_dwg_get_size_y(&pcb->hidlib);
+	double bestd = bw*bw + bh*bh;
 
 	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 		if (!PCB_LAYER_IS_OUTLINE(pcb_layer_flags(PCB, lid), pcb_layer_purpose(PCB, lid, NULL)))
@@ -395,10 +396,10 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 
 	if (start == NULL) {
 		poly = pcb_poly_alloc(pcb->Data->Layer);
-		pcb_poly_point_new(poly, 0, 0);
-		pcb_poly_point_new(poly, pcb->hidlib.size_x, 0);
-		pcb_poly_point_new(poly, pcb->hidlib.size_x, pcb->hidlib.size_y);
-		pcb_poly_point_new(poly, 0, pcb->hidlib.size_y);
+		pcb_poly_point_new(poly, pcb->hidlib.dwg.X1, pcb->hidlib.dwg.Y1);
+		pcb_poly_point_new(poly, pcb->hidlib.dwg.X2, pcb->hidlib.dwg.Y1);
+		pcb_poly_point_new(poly, pcb->hidlib.dwg.X2, pcb->hidlib.dwg.Y2);
+		pcb_poly_point_new(poly, pcb->hidlib.dwg.X1, pcb->hidlib.dwg.Y2);
 	}
 	else
 		poly = pcb_topoly_conn_with(pcb, start, how, df);

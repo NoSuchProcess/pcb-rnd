@@ -686,7 +686,7 @@ static pcb_subc_t *pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlc
 		rnd_coord_t cx = 0, cy = 0;
 		pcb_subc_get_origin(subc, &cx, &cy);
 		cy += obj->val.subc_from_lib.y;
-		pcb_subc_change_side(nsc, (pcb->hidlib.size_y - 2*cy));
+		pcb_subc_change_side(nsc, (pcb->hidlib.dwg.Y2 - 2*cy));
 		rot = 180-rot;
 	}
 
@@ -833,7 +833,7 @@ void pcb_dlcr_create(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_create_layers(pcb, dlcr);
 	pcb_dlcr_create_pstk_protos(pcb, dlcr, pcb->Data, &dlcr->pstks);
-	pcb->hidlib.size_x = dlcr->board_bbox.X2;
-	pcb->hidlib.size_y = dlcr->board_bbox.Y2;
+	pcb->hidlib.dwg.X2 = dlcr->board_bbox.X2;
+	pcb->hidlib.dwg.Y2 = dlcr->board_bbox.Y2;
 	pcb_dlcr_create_drawings(pcb, dlcr);
 }

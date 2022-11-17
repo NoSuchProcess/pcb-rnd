@@ -133,8 +133,8 @@ static void parse_polyline(long int *nlines, rnd_coord_t clear, const gsxl_node_
 			return;
 		(*nlines)++;
 		if (pn > 0) {
-			/*pcb_line_t *line = */pcb_line_new_merge(layer, lx, PCB->hidlib.size_y - ly,
-				x, PCB->hidlib.size_y - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
+			/*pcb_line_t *line = */pcb_line_new_merge(layer, lx, PCB->hidlib.dwg.Y2 - ly,
+				x, PCB->hidlib.dwg.Y2 - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
 /*				pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, layer, line);*/
 /*				rnd_printf("LINE: %$mm %$mm .. %$mm %$mm\n", lx, ly, x, y);*/
 		}
@@ -199,9 +199,9 @@ static void parse_via(rnd_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	}
 
 	{
-		pcb_pstk_t *ps = pcb_pstk_new(PCB->Data, -1, l1, x, PCB->hidlib.size_y - y, clear, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
+		pcb_pstk_t *ps = pcb_pstk_new(PCB->Data, -1, l1, x, PCB->hidlib.dwg.Y2 - y, clear, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
 		if (ps == NULL)
-			rnd_message(RND_MSG_ERROR, "import_ses: failed to create via at %$mm;%$mm with prototype %ld\n", x, PCB->hidlib.size_y - y, l1);
+			rnd_message(RND_MSG_ERROR, "import_ses: failed to create via at %$mm;%$mm with prototype %ld\n", x, PCB->hidlib.dwg.Y2 - y, l1);
 	}
 }
 

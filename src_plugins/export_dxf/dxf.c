@@ -215,10 +215,10 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, rnd_hid_attr_val_t * options, rnd_xf
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t hectx;
 
-	hectx.view.X1 = 0;
-	hectx.view.Y1 = 0;
-	hectx.view.X2 = PCB->hidlib.size_x;
-	hectx.view.Y2 = PCB->hidlib.size_y;
+	hectx.view.X1 = PCB->hidlib.dwg.X1;
+	hectx.view.Y1 = PCB->hidlib.dwg.Y1;
+	hectx.view.X2 = PCB->hidlib.dwg.X2;
+	hectx.view.Y2 = PCB->hidlib.dwg.Y2;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
@@ -240,7 +240,7 @@ int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 	if (strcmp(name, "extmin") == 0)
 		fprintf(f, "10\n0\n20\n0\n30\n0\n");
 	else if (strcmp(name, "extmax") == 0)
-		rnd_fprintf(f, "10\n%mm\n20\n0\n30\n%mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
+		rnd_fprintf(f, "10\n%mm\n20\n0\n30\n%mm\n", PCB->hidlib.dwg.X2, PCB->hidlib.dwg.Y2);
 	else if (strcmp(name, "layers") == 0) {
 		const char **s;
 		for(s = layer_names; *s != NULL; s++)

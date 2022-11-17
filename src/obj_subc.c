@@ -1306,7 +1306,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 		last = pcb_undo_serial();
 
 		pcb_subc_get_origin(sc, &w, &h);
-		pcb_subc_change_side(sc, 2 * h - PCB->hidlib.size_y);
+		pcb_subc_change_side(sc, 2 * h - PCB->hidlib.dwg.Y2);
 		pcb_undo_truncate_from(last);
 		
 	}
@@ -1395,7 +1395,7 @@ rnd_bool pcb_selected_subc_change_side(void)
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
-				change |= pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB->hidlib.size_y);
+				change |= pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB->hidlib.dwg.Y2);
 			}
 		}
 		PCB_END_LOOP;
@@ -2774,7 +2774,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	}
 
 	if (dst_on_bottom != src_on_bottom)
-		pcb_subc_change_side(placed, 2 * oy - PCB->hidlib.size_y);
+		pcb_subc_change_side(placed, 2 * oy - PCB->hidlib.dwg.Y2);
 
 	if (pcb_subcrepl_apply_thermals_floaters(&repl, placed)) {
 		pcb_opctx_t clip;
