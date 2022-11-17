@@ -90,7 +90,7 @@ static const char *menu_name_fmt = "menu-%s.lht";
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 
 /* for security reasons ignore these nodes when coming from a board or project file */
-static rnd_conf_ignore_t conf_board_ignores[] = {
+static rnd_conf_ignore_t conf_prj_dsg_ignores[] = {
 	{"rc/action_string", 16, 0},
 	{"rc/library_shell", 16, 0},
 	{"rc/file_command", 15, 0},
@@ -413,7 +413,7 @@ int main(int argc, char *argv[])
 
 	rnd_app.conf_internal = rnd_conf_internal;
 	rnd_app.conf_core_postproc = pcb_conf_core_postproc;
-	rnd_app.conf_board_ignores = conf_board_ignores;
+	rnd_app.conf_prj_dsg_ignores = conf_prj_dsg_ignores;
 	rnd_app.conf_ignores = conf_ignores;
 
 
