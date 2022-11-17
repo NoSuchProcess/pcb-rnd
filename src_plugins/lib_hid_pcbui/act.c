@@ -178,7 +178,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /*rnd_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (rnd_coord_t)(x + xoffs), (rnd_coord_t)(y + yoffs));*/
 	rnd_gui->pan(rnd_gui, rnd_round(x + xoffs), rnd_round(y + yoffs), 0);
-	rnd_gui->set_crosshair(rnd_gui, x, y, HID_SC_PAN_VIEWPORT);
+	rnd_gui->set_crosshair(rnd_gui, x, y, RND_SC_PAN_VIEWPORT);
 
 	rnd_gui->invalidate_all(rnd_gui);
 

@@ -1059,7 +1059,7 @@ void pcb_crosshair_grid_fit(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 		pcb_line_enforce_drc(pcb, thick);
 	}
 
-	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
+	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, RND_SC_DO_NOTHING);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1108,7 +1108,7 @@ void pcb_center_display(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 	pcb->hidlib.grid = 1;
 	if (pcb_crosshair_move_absolute(pcb, X, Y))
 		rnd_hid_notify_crosshair_change(&pcb->hidlib, rnd_true);
-	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_WARP_POINTER);
+	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, RND_SC_WARP_POINTER);
 	pcb->hidlib.grid = save_grid;
 }
 
