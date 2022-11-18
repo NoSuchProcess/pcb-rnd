@@ -34,8 +34,8 @@
 #include <string.h>
 #include <genht/hash.h>
 
-#include <rnd_inclib/font/xform_mx.h>
-#include <rnd_inclib/font/font.h>
+#include <librnd/font/xform_mx.h>
+#include <librnd/font/font.h>
 
 #include "font.h"
 #include "board.h"

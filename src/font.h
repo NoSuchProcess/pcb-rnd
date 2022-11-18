@@ -38,7 +38,7 @@
 #include "obj_arc_list.h"
 #include <librnd/core/box.h>
 
-#include <rnd_inclib/font/font.h>
+#include <librnd/font/font.h>
 
 struct pcb_font_s {          /* complete set of symbols */
 	rnd_font_t rnd_font; /* temporary */

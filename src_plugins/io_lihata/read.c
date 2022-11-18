@@ -2160,14 +2160,14 @@ static pcb_data_t *parse_data(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *ds
 #define PARSE_COORD(dst, src)       parse_coord(dst, src)
 #define PARSE_DOUBLE(dst, src)      parse_double(dst, src)
 #define HASH_GET(hash, name)        hash_get(hash, name, 0)
-#define LHT_ERROR                   iolht_error
+#define RND_LHT_ERROR               iolht_error
 
-#include <rnd_inclib/font/font_lht.h>
+#include <librnd/font/font_lht.h>
 
 #undef PARSE_COORD
 #undef PARSE_DOUBLE
 #undef PARSE_HASH_GET
-#undef LHT_ERROR
+#undef RND_LHT_ERROR
 
 static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 {

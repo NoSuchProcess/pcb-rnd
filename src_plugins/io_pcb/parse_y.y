@@ -49,7 +49,7 @@
 #include <librnd/core/compat_misc.h>
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "netlist.h"
-#include <rnd_inclib/font/font.h>
+#include <librnd/font/font.h>
 
 #include "rst_parse.c"
 

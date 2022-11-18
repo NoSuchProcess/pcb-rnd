@@ -5,7 +5,7 @@
 #include <librnd/core/unit.h>
 #include "attrib.h"
 #include <librnd/core/global_typedefs.h>
-#include <rnd_inclib/font/font.h>
+#include <librnd/font/font.h>
 
 /* Elem=RouteStyle; init=0 */
 
