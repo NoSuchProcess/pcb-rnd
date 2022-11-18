@@ -61,7 +61,7 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	tabdata->lock++;
 	if ((rnd_dwg_get_size_x(&PCB->hidlib) != ctx->dlg[tabdata->wwidth].val.crd) || (rnd_dwg_get_size_y(&PCB->hidlib) != ctx->dlg[tabdata->wheight].val.crd)) {
 		rnd_coord_t x1 = PCB->hidlib.dwg.X1, y1 = PCB->hidlib.dwg.Y1;
-		rnd_coord_t x2 = PCB->hidlib.dwg.X1 + ctx->dlg[tabdata->wwidth].val.crd, y2 = PCB->hidlib.dwg.Y2 + ctx->dlg[tabdata->wheight].val.crd;
+		rnd_coord_t x2 = PCB->hidlib.dwg.X1 + ctx->dlg[tabdata->wwidth].val.crd, y2 = PCB->hidlib.dwg.Y1 + ctx->dlg[tabdata->wheight].val.crd;
 		pcb_board_resize(x1, y1, x2, y2, 1);
 		pcb_undo_inc_serial();
 	}
