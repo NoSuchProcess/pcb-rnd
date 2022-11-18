@@ -741,8 +741,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		RND_DAD_BEGIN_HPANE(ctx->dlg);
-			RND_DAD_SET_PANE_NAME(ctx->dlg, "left-right");
+		RND_DAD_BEGIN_HPANE(ctx->dlg, "left-right");
 
 			/* left: property tree and filter */
 			RND_DAD_BEGIN_VBOX(ctx->dlg);

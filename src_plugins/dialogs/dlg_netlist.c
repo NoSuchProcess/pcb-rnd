@@ -425,8 +425,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 	RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */
 		RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 
-		RND_DAD_BEGIN_HPANE(netlist_ctx.dlg);
-			RND_DAD_SET_PANE_NAME(netlist_ctx.dlg, "left-right");
+		RND_DAD_BEGIN_HPANE(netlist_ctx.dlg, "left-right");
 			RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 			whpan = RND_DAD_CURRENT(netlist_ctx.dlg);
 
@@ -441,8 +440,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right */
 				RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_BEGIN_VPANE(netlist_ctx.dlg);
-					RND_DAD_SET_PANE_NAME(netlist_ctx.dlg, "top-bottom");
+				RND_DAD_BEGIN_VPANE(netlist_ctx.dlg, "top-bottom");
 					RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 					wvpan = RND_DAD_CURRENT(netlist_ctx.dlg);
 					RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-top */

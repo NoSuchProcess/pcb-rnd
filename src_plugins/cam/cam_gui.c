@@ -270,8 +270,7 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		RND_DAD_BEGIN_HPANE(ctx->dlg);
-			RND_DAD_SET_PANE_NAME(ctx->dlg, "left-right");
+		RND_DAD_BEGIN_HPANE(ctx->dlg, "left-right");
 
 			RND_DAD_BEGIN_VBOX(ctx->dlg); /* left */
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -295,8 +294,7 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 
 			RND_DAD_BEGIN_VBOX(ctx->dlg); /* right */
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				RND_DAD_BEGIN_VPANE(ctx->dlg);
-					RND_DAD_SET_PANE_NAME(ctx->dlg, "top-bottom");
+				RND_DAD_BEGIN_VPANE(ctx->dlg, "top-bottom");
 					RND_DAD_BEGIN_VBOX(ctx->dlg); /* top */
 						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 						header_label(ctx, "CAM job script");

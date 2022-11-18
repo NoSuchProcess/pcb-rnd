@@ -730,8 +730,7 @@ static void pcb_dlg_library(void)
 
 	RND_DAD_BEGIN_VBOX(library_ctx.dlg);
 		RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
-		RND_DAD_BEGIN_HPANE(library_ctx.dlg);
-			RND_DAD_SET_PANE_NAME(library_ctx.dlg, "left-right");
+		RND_DAD_BEGIN_HPANE(library_ctx.dlg, "left-right");
 
 			/* left */
 			RND_DAD_BEGIN_VBOX(library_ctx.dlg);
@@ -758,8 +757,7 @@ static void pcb_dlg_library(void)
 			RND_DAD_END(library_ctx.dlg);
 
 			/* right */
-			RND_DAD_BEGIN_VPANE(library_ctx.dlg);
-				RND_DAD_SET_PANE_NAME(library_ctx.dlg, "top-bottom");
+			RND_DAD_BEGIN_VPANE(library_ctx.dlg, "top-bottom");
 				RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				RND_DAD_BEGIN_VBOX(library_ctx.dlg);
 					/* right top: preview */
