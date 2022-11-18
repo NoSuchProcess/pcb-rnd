@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include <librnd/core/actions.h>
+#include <librnd/core/hid.h>
 #include "board.h"
 #include "drc.h"
 #include <librnd/core/hidlib_conf.h>

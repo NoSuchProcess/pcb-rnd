@@ -35,6 +35,7 @@
 #include "config.h"
 #include "autoroute.h"
 #include <librnd/core/plugins.h>
+#include <librnd/core/hid.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/event.h>
 #include "funchash_core.h"

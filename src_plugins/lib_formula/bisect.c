@@ -25,7 +25,9 @@
  */
 
 #include "config.h"
+#include <math.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/misc_util.h>
 #include "bisect.h"
 
 #define CALL(dst, value) \
