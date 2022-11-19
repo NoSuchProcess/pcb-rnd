@@ -167,7 +167,7 @@ static void main_path_init(char *exec_prefix)
 	menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
 	menu_file_paths[3] = NULL;
 
-	rnd_pcbhl_conf_postproc(); /* get ~ (home dir) set */
+	rnd_conf_postproc(); /* get ~ (home dir) set */
 
 	rnd_app.conf_userdir_path = CONF_USER_DIR;
 	rnd_app.conf_user_path = conf_fn_compat(CONF_USER_DIR, "/pcb-conf.lht", "/conf_core.lht");
