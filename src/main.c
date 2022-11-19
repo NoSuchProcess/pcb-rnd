@@ -48,7 +48,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "crosshair.h"
 #include <librnd/core/compat_lrealpath.h>
 #include "polygon.h"
-#include <librnd/core/buildin.hidlib.h>
+#include <librnd/hid/buildin.hidlib.h>
 #include "build_run.h"
 #include <librnd/core/file_loaded.h>
 #include "flag.h"
