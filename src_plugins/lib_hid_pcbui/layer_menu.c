@@ -237,7 +237,7 @@ static void layer_install_menu_key(const char *anch, int view)
 }
 
 static int need_layer_menu_update = 0, need_layer_key_update = 0;
-void pcb_layer_menu_batch_timer_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void pcb_layer_menu_batch_timer_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	int keys_done = 0;
 
@@ -265,26 +265,26 @@ void pcb_layer_menu_batch_timer_ev(rnd_hidlib_t *hidlib, void *user_data, int ar
 	}
 }
 
-static void layer_install_menu(rnd_hidlib_t *hidlib)
+static void layer_install_menu(rnd_design_t *hidlib)
 {
 	need_layer_menu_update = 1;
 	rnd_hid_gui_batch_timer(hidlib);
 }
 
-void pcb_layer_menu_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void pcb_layer_menu_update_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	layer_install_menu(hidlib);
 	if ((rnd_gui != NULL) && (rnd_gui->update_menu_checkbox != NULL))
 		rnd_gui->update_menu_checkbox(rnd_gui, NULL);
 }
 
-void pcb_layer_menu_vis_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void pcb_layer_menu_vis_update_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((rnd_gui != NULL) && (rnd_gui->update_menu_checkbox != NULL))
 		rnd_gui->update_menu_checkbox(rnd_gui, NULL);
 }
 
-void pcb_layer_menu_key_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void pcb_layer_menu_key_update_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	need_layer_key_update = 1;
 	rnd_hid_gui_batch_timer(hidlib);

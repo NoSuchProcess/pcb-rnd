@@ -1042,14 +1042,14 @@ static pcb_rb_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t 
 }
 
 /*** event handlers ***/
-static void rbe_reset(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rbe_reset(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	rbnd->lines.used = 0;
 	rbnd->arcs.used = 0;
 }
 
-static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rbe_move(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rb_line_t *ptr = rbnd->lines.array;
@@ -1157,7 +1157,7 @@ static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 	}
 }
 
-static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rbe_draw(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rb_line_t *ptr;
@@ -1273,7 +1273,7 @@ static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 	}
 }
 
-static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rbe_rotate90(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rb_line_t *ptr;
@@ -1324,12 +1324,12 @@ static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 	}
 }
 
-static void rbe_rotate(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rbe_rotate(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 TODO("TODO")
 }
 
-static void rbe_lookup_lines(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rbe_lookup_lines(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	int type = argv[1].d.i;
@@ -1339,7 +1339,7 @@ static void rbe_lookup_lines(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 		pcb_rubber_band_lookup_lines(rbnd, type, ptr1, ptr2, ptr3);
 }
 
-static void rbe_lookup_rats(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rbe_lookup_rats(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	int type = argv[1].d.i;
@@ -1348,7 +1348,7 @@ static void rbe_lookup_rats(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 	pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
 }
 
-static void rbe_constrain_main_line(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rbe_constrain_main_line(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_line_t *line = argv[1].d.p;

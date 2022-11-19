@@ -192,7 +192,7 @@ static void onpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_t 
 		rnd_hid_redraw(PCB);
 }
 
-static void pcb_ch_onpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_ch_onpoint(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_crosshair_t *ch = argv[1].d.p;
 	if (conf_core.editor.highlight_on_point) {

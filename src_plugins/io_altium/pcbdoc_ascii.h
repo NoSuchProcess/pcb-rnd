@@ -35,7 +35,7 @@ typedef struct altium_tree_s {
 } altium_tree_t;
 
 int pcbdoc_ascii_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *file_name, FILE *f);
-int pcbdoc_ascii_parse_file(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *fn);
+int pcbdoc_ascii_parse_file(rnd_design_t *hidlib, altium_tree_t *tree, const char *fn);
 
 #define altium_kw_AUTO (-2)
 altium_record_t *pcbdoc_ascii_new_rec(altium_tree_t *tree, const char *type_s, int type);

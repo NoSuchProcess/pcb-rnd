@@ -113,7 +113,7 @@ static void freert_track_progress(pcb_board_t *pcb, FILE *f, int debug)
 static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
 	char *route_req, *route_res, *end;
-	rnd_hidlib_t *hl = &pcb->hidlib;
+	rnd_design_t *hl = &pcb->hidlib;
 	char *cmd;
 	int n, r, rv = 1, ap = 2, pp = 12, fo=0, test = 0, debug, rich;
 	const char *exe, *installation;
@@ -250,7 +250,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	return rv;
 }
 
-static int freert_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
+static int freert_list_methods(rnd_design_t *hl, vts0_t *dst)
 {
 	vts0_append(dst, rnd_strdup("freerouting_cli"));
 	vts0_append(dst, rnd_strdup("Erich's minimized CLI-only fork"));
@@ -261,7 +261,7 @@ static int freert_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 }
 
 
-static rnd_export_opt_t *freert_list_conf(rnd_hidlib_t *hl, const char *method)
+static rnd_export_opt_t *freert_list_conf(rnd_design_t *hl, const char *method)
 {
 	rnd_export_opt_t *rv = calloc(sizeof(rnd_export_opt_t), 4+1);
 

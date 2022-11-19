@@ -77,7 +77,7 @@ typedef struct {
 
 htsp_t fp_fs_cache;
 
-pcb_plug_fp_map_t *pcb_io_map_footprint_file_cached(rnd_hidlib_t *hl, htsp_t *cache, struct stat *st, const char *path, const char **fmt)
+pcb_plug_fp_map_t *pcb_io_map_footprint_file_cached(rnd_design_t *hl, htsp_t *cache, struct stat *st, const char *path, const char **fmt)
 {
 	pcb_fp_map_cache_t *c;
 	c = htsp_get(cache, path);
@@ -415,7 +415,7 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_
 
 		/* refuse entry if it is a directory */
 		if (found) {
-			rnd_hidlib_t *hidlib = NULL;
+			rnd_design_t *hidlib = NULL;
 			char *fullpath = rnd_concat(subdir, RND_DIR_SEPARATOR_S, name, NULL);
 			if (rnd_is_dir(hidlib, fullpath))
 				found = 0;

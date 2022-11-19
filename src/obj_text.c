@@ -1525,7 +1525,7 @@ static int pcb_text_font_chg_data(pcb_data_t *data, rnd_font_id_t fid)
 	return need_redraw;
 }
 
-static void pcb_text_font_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_text_font_chg(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 
 	if ((argc < 2) || (argv[1].type != RND_EVARG_INT))

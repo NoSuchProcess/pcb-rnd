@@ -196,7 +196,7 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 /* add (or move) selected */
 static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_coord_t X, rnd_coord_t Y, rnd_bool LeaveSelected, rnd_bool on_locked_too, rnd_bool keep_id)
 {
-	rnd_hidlib_t *hidlib = (rnd_hidlib_t *)pcb;
+	rnd_design_t *hidlib = (rnd_design_t *)pcb;
 	pcb_opctx_t ctx;
 
 	ctx.buffer.pcb = pcb;
@@ -560,7 +560,7 @@ static void scale_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 }
 
 /* returns 0 on OK */
-static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y, double *th, int *recurse)
+static int pcb_actgui_ScaleBuffer(rnd_design_t *hidlib, double *x, double *y, double *th, int *recurse)
 {
 	scale_t ctx;
 	int res;

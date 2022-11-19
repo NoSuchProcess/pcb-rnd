@@ -689,7 +689,7 @@ static rnd_action_t rats_patch_action_list[] = {
 	{"SavePatch", pcb_act_SavePatch, pcb_acth_SavePatch, pcb_acts_SavePatch}
 };
 
-static void rats_patch_netlist_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rats_patch_netlist_chg(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_rats_patch_cleanup_patches((pcb_board_t *)hidlib);
 }

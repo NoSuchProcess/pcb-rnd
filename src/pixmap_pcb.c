@@ -71,7 +71,7 @@ rnd_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, rnd_p
 	return pm;
 }
 
-rnd_pixmap_t *pcb_pixmap_insert_neutral_dup(rnd_hidlib_t *hl, pcb_pixmap_hash_t *pmhash, const rnd_pixmap_t *pm)
+rnd_pixmap_t *pcb_pixmap_insert_neutral_dup(rnd_design_t *hl, pcb_pixmap_hash_t *pmhash, const rnd_pixmap_t *pm)
 {
 	rnd_pixmap_t *r;
 

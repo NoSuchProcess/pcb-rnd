@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
+static stl_facet_t *stl_solid_fload(rnd_design_t *hl, FILE *f, const char *fn)
 {
 	stl_facet_t *head = NULL, *tail = NULL, *t;
 	char *cmd, line[512];

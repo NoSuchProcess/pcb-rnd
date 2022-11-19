@@ -3,7 +3,7 @@
 #define STL_TESTER
 #include "../stl_models.c"
 
-stl_facet_t *stl_solid_load(rnd_hidlib_t *hl, const char *fn)
+stl_facet_t *stl_solid_load(rnd_design_t *hl, const char *fn)
 {
 	FILE *f;
 	stl_facet_t *res;

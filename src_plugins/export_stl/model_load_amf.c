@@ -162,7 +162,7 @@ static stl_facet_t *amf_load_mesh(xmlNode *mesh)
 	return head;
 }
 
-static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
+static stl_facet_t *amf_solid_fload(rnd_design_t *hl, FILE *f, const char *fn)
 {
 	xmlDoc *doc;
 	xmlNode *root, *n, *m;
@@ -213,7 +213,7 @@ static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 #else
 
 /* Fallback: still provide a dummy if libxml is not available */
-static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
+static stl_facet_t *amf_solid_fload(rnd_design_t *hl, FILE *f, const char *fn)
 {
 	return &stl_format_not_supported;
 }

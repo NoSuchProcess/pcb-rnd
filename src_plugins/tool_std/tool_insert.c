@@ -62,7 +62,7 @@ void pcb_tool_insert_uninit(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
-void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
+void pcb_tool_insert_notify_mode(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 	switch (pcb_crosshair.AttachedObject.State) {
@@ -136,7 +136,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_insert_adjust_attached_objects(rnd_hidlib_t *hl)
+void pcb_tool_insert_adjust_attached_objects(rnd_design_t *hl)
 {
 	rnd_point_t *pnt;
 	pnt = pcb_adjust_insert_point();
@@ -144,12 +144,12 @@ void pcb_tool_insert_adjust_attached_objects(rnd_hidlib_t *hl)
 		InsertedPoint = *pnt;
 }
 
-void pcb_tool_insert_draw_attached(rnd_hidlib_t *hl)
+void pcb_tool_insert_draw_attached(rnd_design_t *hl)
 {
 	pcb_xordraw_insert_pt_obj();
 }
 
-rnd_bool pcb_tool_insert_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_insert_undo_act(rnd_design_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)

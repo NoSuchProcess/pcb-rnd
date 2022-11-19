@@ -29,7 +29,7 @@
 static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
 	const char *route_req = "rtrnd.1.tdx", *route_res = "rtrnd.2.tdx";
-	rnd_hidlib_t *hl = &pcb->hidlib;
+	rnd_design_t *hl = &pcb->hidlib;
 	char *cmd;
 	int n, r, sargc, rv = 1;
 	fgw_arg_t sres = {0}, *sargv;
@@ -84,7 +84,7 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	return rv;
 }
 
-static int rtrnd_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
+static int rtrnd_list_methods(rnd_design_t *hl, vts0_t *dst)
 {
 	FILE *f;
 	char *cmd, line[1024];
@@ -116,7 +116,7 @@ static int rtrnd_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 }
 
 
-static rnd_export_opt_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
+static rnd_export_opt_t *rtrnd_list_conf(rnd_design_t *hl, const char *method)
 {
 	char *cmd;
 	const char *route_lst = "rtrnd.l.tdx";

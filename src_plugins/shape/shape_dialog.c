@@ -120,7 +120,7 @@ static void shp_chg_circle(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 }
 
 
-static void shape_layer_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void shape_layer_chg(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	void *hid_ctx;
 	int tab;

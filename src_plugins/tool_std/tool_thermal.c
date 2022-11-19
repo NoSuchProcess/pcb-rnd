@@ -90,7 +90,7 @@ void pcb_tool_thermal_on_obj(pcb_any_obj_t *obj, unsigned long lid)
 }
 
 
-void pcb_tool_thermal_notify_mode(rnd_hidlib_t *hl)
+void pcb_tool_thermal_notify_mode(rnd_design_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type, locked = 0;

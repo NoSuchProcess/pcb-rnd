@@ -360,7 +360,7 @@ typedef struct {
 	const char *attr_model_name;
 	const char *attr_xlate, *attr_xlate_old;
 	const char *attr_rotate, *attr_rotate_old;
-	stl_facet_t *(*model_load)(rnd_hidlib_t *hl, FILE *f, const char *fn);
+	stl_facet_t *(*model_load)(rnd_design_t *hl, FILE *f, const char *fn);
 } stl_fmt_t;
 
 static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, const stl_fmt_t *fmt)

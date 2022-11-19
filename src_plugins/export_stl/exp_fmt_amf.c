@@ -75,7 +75,7 @@ static void amf_print_footer(FILE *f)
 	verthash_uninit(&verthash);
 }
 
-static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn);
+static stl_facet_t *amf_solid_fload(rnd_design_t *hl, FILE *f, const char *fn);
 
 static const stl_fmt_t fmt_amf = {
 	/* output */

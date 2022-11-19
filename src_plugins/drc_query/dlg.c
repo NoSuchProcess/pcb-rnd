@@ -209,7 +209,7 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 	}
 }
 
-static void drcq_open_view_win(rnd_hidlib_t *hidlib, pcb_view_list_t *view)
+static void drcq_open_view_win(rnd_design_t *hidlib, pcb_view_list_t *view)
 {
 	fgw_arg_t args[4], ares;
 	args[1].type = FGW_STR; args[1].val.str = "drc_query: manual run";
@@ -811,7 +811,7 @@ static void dlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wdlist]));
-	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	lht_node_t *nd;
 	char *path;
 

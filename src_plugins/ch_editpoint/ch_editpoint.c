@@ -149,7 +149,7 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 		rnd_hid_redraw(PCB);
 }
 
-static void pcb_ch_editpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_ch_editpoint(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_crosshair_t *ch = argv[1].d.p;
 	if (conf_ch_editpoint.plugins.ch_editpoint.enable) {
@@ -159,7 +159,7 @@ static void pcb_ch_editpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 	}
 }
 
-static void pcb_editpoint_flush(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_editpoint_flush(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	/* clear all editpoint lists because the old list may hold objects just
 	   deleted; the edit will trigger a redraw anyway */

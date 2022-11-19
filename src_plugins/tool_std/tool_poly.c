@@ -50,7 +50,7 @@ void pcb_tool_poly_uninit(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
-void pcb_tool_poly_notify_mode(rnd_hidlib_t *hl)
+void pcb_tool_poly_notify_mode(rnd_design_t *hl)
 {
 	rnd_point_t *points = pcb_crosshair.AttachedPolygon.Points;
 	rnd_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
@@ -95,7 +95,7 @@ void pcb_tool_poly_notify_mode(rnd_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_poly_adjust_attached_objects(rnd_hidlib_t *hl)
+void pcb_tool_poly_adjust_attached_objects(rnd_design_t *hl)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
@@ -114,7 +114,7 @@ void pcb_tool_poly_adjust_attached_objects(rnd_hidlib_t *hl)
 	pcb_line_45(line);
 }
 
-void pcb_tool_poly_draw_attached(rnd_hidlib_t *hl)
+void pcb_tool_poly_draw_attached(rnd_design_t *hl)
 {
 	/* draw only if starting point is set */
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
@@ -128,7 +128,7 @@ void pcb_tool_poly_draw_attached(rnd_hidlib_t *hl)
 	}
 }
 
-rnd_bool pcb_tool_poly_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_poly_undo_act(rnd_design_t *hl)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
 		pcb_polygon_go_to_prev_point();
@@ -137,7 +137,7 @@ rnd_bool pcb_tool_poly_undo_act(rnd_hidlib_t *hl)
 	return rnd_true;
 }
 
-rnd_bool pcb_tool_poly_redo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_poly_redo_act(rnd_design_t *hl)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
 		pcb_polygon_go_to_next_point();
@@ -147,7 +147,7 @@ rnd_bool pcb_tool_poly_redo_act(rnd_hidlib_t *hl)
 		return rnd_true;
 }
 
-void pcb_tool_poly_escape(rnd_hidlib_t *hl)
+void pcb_tool_poly_escape(rnd_design_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		rnd_tool_select_by_name(hl, "arrow");

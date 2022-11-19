@@ -1064,7 +1064,7 @@ static void gerber_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, i
 {
 }
 
-static void gerber_session_begin(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void gerber_session_begin(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	gerber_global_aperture_cnt = 0;
 }

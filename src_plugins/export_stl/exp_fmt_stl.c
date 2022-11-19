@@ -102,7 +102,7 @@ static void stl_print_footer(FILE *f)
 	fprintf(f, "endsolid\n");
 }
 
-static stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn);
+static stl_facet_t *stl_solid_fload(rnd_design_t *hl, FILE *f, const char *fn);
 
 static const stl_fmt_t fmt_stl = {
 	/* output */

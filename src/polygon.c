@@ -72,7 +72,7 @@ static int Unsubtract(rnd_polyarea_t * np1, pcb_poly_t * p);
 static const char *polygon_cookie = "core polygon";
 
 
-void pcb_poly_layers_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void pcb_poly_layers_chg(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_layer_t *ly;
 	pcb_data_t *data;

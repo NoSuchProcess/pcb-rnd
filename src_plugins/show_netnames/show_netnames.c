@@ -140,12 +140,12 @@ static void show_netnames_invalidate(void)
 	pcb_qry_uninit(&shn_qctx);
 }
 
-static void show_netnames_inv_cache(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void show_netnames_inv_cache(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	shn_cache_uptodate = 0;
 }
 
-static void show_netnames_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void show_netnames_brd_chg(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (conf_show_netnames.plugins.show_netnames.enable)
 		show_netnames_invalidate();
@@ -246,7 +246,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	return NULL;
 }
 
-static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void show_netnames_render(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb;
 	pcb_draw_info_t *info;

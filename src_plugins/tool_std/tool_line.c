@@ -93,7 +93,7 @@ void pcb_tool_line_uninit(void)
 }
 
 /* creates points of a line (when clicked) */
-static void notify_line(rnd_hidlib_t *hl)
+static void notify_line(rnd_design_t *hl)
 {
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
@@ -145,7 +145,7 @@ static void notify_line(rnd_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
+void pcb_tool_line_notify_mode(rnd_design_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
 	pcb_board_t *pcb = (pcb_board_t *)hl;
@@ -333,7 +333,7 @@ void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_line_adjust_attached_objects(rnd_hidlib_t *hl)
+void pcb_tool_line_adjust_attached_objects(rnd_design_t *hl)
 {
 	/* don't draw outline when ctrl key is pressed */
 	if (rnd_gui->control_is_pressed(rnd_gui)) {
@@ -345,7 +345,7 @@ void pcb_tool_line_adjust_attached_objects(rnd_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_line_draw_attached(rnd_hidlib_t *hl)
+void pcb_tool_line_draw_attached(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -384,7 +384,7 @@ void pcb_tool_line_draw_attached(rnd_hidlib_t *hl)
 	}
 }
 
-rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_line_undo_act(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -452,7 +452,7 @@ rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 	return rnd_true;
 }
 
-rnd_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_line_redo_act(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -470,7 +470,7 @@ rnd_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
 	return rnd_false;
 }
 
-void pcb_tool_line_escape(rnd_hidlib_t *hl)
+void pcb_tool_line_escape(rnd_design_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		rnd_tool_select_by_name(hl, "arrow");

@@ -207,7 +207,7 @@ static char *make_blk(altium_tree_t *tree, const void *str, long len)
 	return make_blk_(tree, str, len, &dummy);
 }
 
-static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *record, int kw, altium_buf_t *tmp, long len, altium_record_t **rec_out)
+static int pcbdoc_bin_parse_ascii(rnd_design_t *hidlib, altium_tree_t *tree, const char *record, int kw, altium_buf_t *tmp, long len, altium_record_t **rec_out)
 {
 	altium_record_t *rec;
 	char *curr, *end;
@@ -240,7 +240,7 @@ static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, con
 	return res;
 }
 
-static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp, const char *recname, int kw)
+static int pcbdoc_bin_parse_any_ascii(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp, const char *recname, int kw)
 {
 	for(;;) {
 		long len = read_rec_l4b(fp, tmp);
@@ -287,32 +287,32 @@ static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree,
 
 /*** file/field parsers ***/
 
-int pcbdoc_bin_parse_board6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_board6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Board", altium_kw_record_board);
 }
 
-int pcbdoc_bin_parse_polygons6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_polygons6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Polygon", altium_kw_record_polygon);
 }
 
-int pcbdoc_bin_parse_classes6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_classes6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Class", altium_kw_record_class);
 }
 
-int pcbdoc_bin_parse_nets6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_nets6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Net", altium_kw_record_net);
 }
 
-int pcbdoc_bin_parse_components6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_components6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Component", altium_kw_record_component);
 }
 
-int pcbdoc_bin_parse_rules6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_rules6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
 		int id;
@@ -330,7 +330,7 @@ int pcbdoc_bin_parse_rules6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 }
 
 
-int pcbdoc_bin_parse_tracks6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_tracks6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
 		unsigned char *d;
@@ -375,7 +375,7 @@ int pcbdoc_bin_parse_tracks6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_fil
 }
 
 
-int pcbdoc_bin_parse_arcs6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_arcs6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
 		unsigned char *d;
@@ -455,7 +455,7 @@ static long altium_bin_text_layer(int *ly1, int offs, int type)
 	return 0;
 }
 
-int pcbdoc_bin_parse_texts6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_texts6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
 		unsigned char *d;
@@ -518,7 +518,7 @@ int pcbdoc_bin_parse_texts6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 }
 
 
-int pcbdoc_bin_parse_fills6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_fills6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
 		unsigned char *d;
@@ -559,7 +559,7 @@ int pcbdoc_bin_parse_fills6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 }
 
 
-int pcbdoc_bin_parse_vias6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_vias6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
 		unsigned char *d;
@@ -608,7 +608,7 @@ TODO("Figure the user routed but pos");
 }
 
 /* parse the fields of a pad (the 120 long block of pads6) */
-static int pcbdoc_bin_parse_pads6_fields(rnd_hidlib_t *hidlib, altium_tree_t *tree, altium_buf_t *tmp, const char *name)
+static int pcbdoc_bin_parse_pads6_fields(rnd_design_t *hidlib, altium_tree_t *tree, altium_buf_t *tmp, const char *name)
 {
 	unsigned char *d = tmp->data;
 	altium_record_t *rec;
@@ -656,7 +656,7 @@ static int pcbdoc_bin_parse_pads6_fields(rnd_hidlib_t *hidlib, altium_tree_t *tr
 	return 0;
 }
 
-int pcbdoc_bin_parse_pads6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+int pcbdoc_bin_parse_pads6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
 		char rtype;
@@ -764,7 +764,7 @@ static ucdf_direntry_t *get_data_de(ucdf_direntry_t *de)
 		} \
 	} while(0)
 
-int pcbdoc_bin_parse_file(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *fn)
+int pcbdoc_bin_parse_file(rnd_design_t *hidlib, altium_tree_t *tree, const char *fn)
 {
 	int res;
 	ucdf_ctx_t uctx = {0};

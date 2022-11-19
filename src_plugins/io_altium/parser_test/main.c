@@ -3,12 +3,12 @@
 #include "pcbdoc_ascii.h"
 
 #undef fopen
-FILE *rnd_fopen(rnd_hidlib_t *hidlib, const char *fn, const char *mode)
+FILE *rnd_fopen(rnd_design_t *hidlib, const char *fn, const char *mode)
 {
 	return fopen(fn, mode);
 }
 
-long rnd_file_size(rnd_hidlib_t *hidlib, const char *path)
+long rnd_file_size(rnd_design_t *hidlib, const char *path)
 {
 	struct stat st;
 	if (stat(path, &st) != 0)

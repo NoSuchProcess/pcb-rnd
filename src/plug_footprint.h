@@ -133,10 +133,10 @@ int pcb_fp_read_lib_all(void);
 int pcb_fp_host_uninit(void);
 
 /* rescan/reload all footprints in the library cache */
-int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l);
+int pcb_fp_rehash(rnd_design_t *hidlib, pcb_fplibrary_t *l);
 
 /* invoke the GUI to choose one footprint name from a footprint map; if
    there's no GUI available, throws a warning and returns the first */
-const char *pcb_fp_map_choose(rnd_hidlib_t *hidlib, const pcb_plug_fp_map_t *map);
+const char *pcb_fp_map_choose(rnd_design_t *hidlib, const pcb_plug_fp_map_t *map);
 
 #endif

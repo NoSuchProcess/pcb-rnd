@@ -722,7 +722,7 @@ int gfx_set_resize_by_pixel_dist(pcb_gfx_t *gfx, long pdx, long pdy, rnd_coord_t
 	return 0;
 }
 
-void gfx_set_resize_gui(rnd_hidlib_t *hl, pcb_gfx_t *gfx, rnd_bool allow_x, rnd_bool allow_y)
+void gfx_set_resize_gui(rnd_design_t *hl, pcb_gfx_t *gfx, rnd_bool allow_x, rnd_bool allow_y)
 {
 	char *lens;
 	rnd_coord_t x1, y1, x2, y2;

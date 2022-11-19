@@ -57,7 +57,7 @@ static const char *SRC_BRD = "<board file>";
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
-static void pref_lib_update_buttons(rnd_hidlib_t *hl)
+static void pref_lib_update_buttons(rnd_design_t *hl)
 {
 	pref_ctx_t *ctx = rnd_pref_get_ctx(hl);
 	DEF_TABDATA;
@@ -124,7 +124,7 @@ static const char *pref_node_src(lht_node_t *nd)
 static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pref_ctx_t *ctx = PREFCTX;
-	rnd_hidlib_t *hl;
+	rnd_design_t *hl;
 	DEF_TABDATA;
 	rnd_conf_listitem_t *i;
 	int idx;
@@ -161,7 +161,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 /* Dialog box to current libraries in config */
 static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	pref_ctx_t *ctx = caller_data;
 	DEF_TABDATA;
 	rnd_hid_tree_t *tree = attr->wdata;
@@ -282,7 +282,7 @@ typedef struct {
 
 static void lib_cell_edit_update(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
-	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
 

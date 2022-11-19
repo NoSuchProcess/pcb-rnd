@@ -253,7 +253,7 @@ static int pcbdoc_ascii_parse_blocks(altium_tree_t *tree, const char *fn)
 	return 0;
 }
 
-int pcbdoc_ascii_parse_file(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *fn)
+int pcbdoc_ascii_parse_file(rnd_design_t *hidlib, altium_tree_t *tree, const char *fn)
 {
 	FILE *f;
 	int res;

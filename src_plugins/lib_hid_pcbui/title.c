@@ -36,7 +36,7 @@
 static gds_t title_buf;
 static int gui_inited = 0, brd_changed;
 
-static void update_title(rnd_hidlib_t *hl, int changed, int is_footprint)
+static void update_title(rnd_design_t *hl, int changed, int is_footprint)
 {
 	const char *filename, *name;
 
@@ -58,14 +58,14 @@ static void update_title(rnd_hidlib_t *hl, int changed, int is_footprint)
 	rnd_gui->set_top_title(rnd_gui, title_buf.array);
 }
 
-static void pcb_title_board_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_title_board_changed_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	brd_changed = 0;
 	update_title(hidlib, pcb->Changed, pcb->is_footprint);
 }
 
-static void pcb_title_meta_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_title_meta_changed_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	if (brd_changed == pcb->Changed)
@@ -74,7 +74,7 @@ static void pcb_title_meta_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int
 	update_title(hidlib, pcb->Changed, pcb->is_footprint);
 }
 
-static void pcb_title_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_title_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	gui_inited = 1;

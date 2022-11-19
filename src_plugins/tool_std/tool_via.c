@@ -48,7 +48,7 @@
 
 #include "obj_pstk_draw.h"
 
-void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
+void pcb_tool_via_notify_mode(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 	pcb_pstk_t *ps;
@@ -76,7 +76,7 @@ void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 }
 
 
-void pcb_tool_via_draw_attached(rnd_hidlib_t *hl)
+void pcb_tool_via_draw_attached(rnd_design_t *hl)
 {
 		static pcb_pstk_t ps; /* initialized to all-zero */
 

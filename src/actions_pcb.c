@@ -336,7 +336,7 @@ void pcb_actions_init_pcb_only(void)
 	}
 }
 
-int pcb_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
+int pcb_act_execute_file(rnd_design_t *hidlib, const char *fn)
 {
 	int res;
 

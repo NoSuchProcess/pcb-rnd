@@ -58,8 +58,8 @@ typedef enum {
 typedef struct {
 	const char *name;
 	int (*route)(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv);
-	int (*list_methods)(rnd_hidlib_t *hl, vts0_t *dst);
-	rnd_export_opt_t *(*list_conf)(rnd_hidlib_t *hl, const char *method);
+	int (*list_methods)(rnd_design_t *hl, vts0_t *dst);
+	rnd_export_opt_t *(*list_conf)(rnd_design_t *hl, const char *method);
 } ext_router_t;
 
 int pcb_ar_extern_progress(double p_total, double p1, double p2);

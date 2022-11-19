@@ -245,7 +245,7 @@ static int *drc_get_disable(const char *name)
 
 static int drc_query_progress(pcb_qry_exec_t *ec, long at, long total);
 
-static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_drc_query(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	gdl_iterator_t it;
@@ -571,7 +571,7 @@ static int pcb_drc_query_def_by_name(const char *name, lht_node_t **nd_out, int 
 }
 
 
-static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, int is_rule, const char *src)
+static int pcb_drc_query_clear(rnd_design_t *hidlib, int is_rule, const char *src)
 {
 	const rnd_conflist_t *l = DRC_QUERY_RULE_OR_DEF(is_rule);
 	gdl_iterator_t it;
@@ -599,7 +599,7 @@ static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, int is_rule, const char *sr
 	return -1;
 }
 
-static int pcb_drc_query_create(rnd_hidlib_t *hidlib, int is_rule, const char *rule)
+static int pcb_drc_query_create(rnd_design_t *hidlib, int is_rule, const char *rule)
 {
 	lht_node_t *nd;
 
@@ -611,7 +611,7 @@ static int pcb_drc_query_create(rnd_hidlib_t *hidlib, int is_rule, const char *r
 
 void d2() {}
 
-static int pcb_drc_query_set(rnd_hidlib_t *hidlib, int is_rule, const char *rule, const char *key, const char *val)
+static int pcb_drc_query_set(rnd_design_t *hidlib, int is_rule, const char *rule, const char *key, const char *val)
 {
 	lht_node_t *nd;
 
@@ -637,7 +637,7 @@ static int pcb_drc_query_set(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 	return 0;
 }
 
-static int pcb_drc_query_remove(rnd_hidlib_t *hidlib, int is_rule, const char *name)
+static int pcb_drc_query_remove(rnd_design_t *hidlib, int is_rule, const char *name)
 {
 	const rnd_conflist_t *l = DRC_QUERY_RULE_OR_DEF(is_rule);
 	gdl_iterator_t it;
@@ -655,7 +655,7 @@ static int pcb_drc_query_remove(rnd_hidlib_t *hidlib, int is_rule, const char *n
 	return -1;
 }
 
-static int pcb_drc_query_get(rnd_hidlib_t *hidlib, int is_rule, const char *rule, const char *key, fgw_arg_t *res)
+static int pcb_drc_query_get(rnd_design_t *hidlib, int is_rule, const char *rule, const char *key, fgw_arg_t *res)
 {
 	lht_node_t *nd;
 
@@ -668,7 +668,7 @@ static int pcb_drc_query_get(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 	return 0;
 }
 
-static int pcb_drc_query_get_rule_defs(rnd_hidlib_t *hidlib, const char *rule, fgw_arg_t *res)
+static int pcb_drc_query_get_rule_defs(rnd_design_t *hidlib, const char *rule, fgw_arg_t *res)
 {
 	htsi_t defs;
 	htsi_entry_t *e;
@@ -711,7 +711,7 @@ static const char pcb_acth_DrcQueryRuleMod[] = "Automated DRC rule editing (for 
 static fgw_error_t pcb_act_DrcQueryRuleMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *target, *key = NULL, *val=NULL;
-	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
+	rnd_design_t *hl = RND_ACT_HIDLIB;
 	int resi = -1;
 
 	RND_ACT_CONVARG(1, FGW_STR, DrcQueryRuleMod, cmd = argv[1].val.str);
@@ -745,7 +745,7 @@ static const char pcb_acth_DrcQueryDefMod[] = "Automated DRC rule editing (for s
 static fgw_error_t pcb_act_DrcQueryDefMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *target, *key = NULL, *val=NULL;
-	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
+	rnd_design_t *hl = RND_ACT_HIDLIB;
 	int resi = -1;
 
 	RND_ACT_CONVARG(1, FGW_STR, DrcQueryDefMod, cmd = argv[1].val.str);
@@ -787,7 +787,7 @@ static fgw_error_t pcb_act_DrcQueryExport(fgw_arg_t *res, int argc, fgw_arg_t *a
 	int ires = 0;
 	const char *id, *fn = NULL, *fmt;
 	char *autofree = NULL;
-	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
+	rnd_design_t *hl = RND_ACT_HIDLIB;
 	const rnd_hid_fsd_filter_t *flt = init_flt(&fmt);
 
 	RND_ACT_CONVARG(1, FGW_STR, DrcQueryExport, id = argv[1].val.str);
@@ -832,7 +832,7 @@ static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *a
 	int ires = 0;
 	const char *fn = NULL, *fmt;
 	char *autofree = NULL;
-	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
+	rnd_design_t *hl = RND_ACT_HIDLIB;
 	FILE *f;
 	fgw_arg_t args[2], tpres;
 	const rnd_hid_fsd_filter_t *flt = init_flt(&fmt);
@@ -890,12 +890,12 @@ static rnd_action_t drc_query_action_list[] = {
 	{"DrcQueryImport", pcb_act_DrcQueryImport, pcb_acth_DrcQueryImport, pcb_acts_DrcQueryImport}
 };
 
-static int drc_query_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root)
+static int drc_query_anyload_subtree(const rnd_anyload_t *al, rnd_design_t *hl, lht_node_t *root)
 {
 	return drc_query_lht_load_subtree(hl, root);
 }
 
-static int drc_query_anyload_file(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd)
+static int drc_query_anyload_file(const rnd_anyload_t *al, rnd_design_t *hl, const char *filename, const char *type, lht_node_t *nd)
 {
 	if (strncmp(type, "pcb-rnd-drc-query", 17) == 0)
 		return drc_query_lht_load_rules(hl, filename);

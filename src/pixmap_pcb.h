@@ -49,7 +49,7 @@ rnd_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, rnd_p
 
 /* Same but doesn't free pm but dups it when inserted; returns the dup'd pixmap
    from the hash. */
-rnd_pixmap_t *pcb_pixmap_insert_neutral_dup(rnd_hidlib_t *hl, pcb_pixmap_hash_t *pmhash, const rnd_pixmap_t *pm);
+rnd_pixmap_t *pcb_pixmap_insert_neutral_dup(rnd_design_t *hl, pcb_pixmap_hash_t *pmhash, const rnd_pixmap_t *pm);
 
 
 /* Allocate and render a transformed version of pm (or return the one from cache if already cached */

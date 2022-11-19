@@ -35,7 +35,7 @@ typedef enum { /* bitfield */
 void pcb_tool_logic_init(void);
 void pcb_tool_logic_uninit(void);
 
-void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t PlaceY, rnd_bool do_rubberband);
+void pcb_tool_attach_for_copy(rnd_design_t *hl, rnd_coord_t PlaceX, rnd_coord_t PlaceY, rnd_bool do_rubberband);
 void pcb_tool_notify_block(void); /* create first or second corner of a marked block (when clicked) */
 
 

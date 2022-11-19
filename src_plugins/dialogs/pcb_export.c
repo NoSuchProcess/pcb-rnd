@@ -43,7 +43,7 @@ static const char pcb_export_cookie[] = "dialogs/pcb_export.c";
 static int have_gui, currly;
 static int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
 
-static void pcb_export_begin_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_export_begin_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	currly = PCB_CURRLID(PCB);
 	have_gui = (rnd_gui != NULL) && rnd_gui->gui;
@@ -53,7 +53,7 @@ static void pcb_export_begin_ev(rnd_hidlib_t *hidlib, void *user_data, int argc,
 	}
 }
 
-static void pcb_export_end_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_export_end_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (have_gui) {
 		pcb_hid_restore_layer_ons(save_l_ons);

@@ -61,7 +61,7 @@ typedef struct pcbway_form_s {
 	unsigned has_errors:1;
 } pcbway_form_t;
 
-static int pcbway_cache_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, rnd_wget_opts_t *wopts)
+static int pcbway_cache_update_(rnd_design_t *hidlib, const char *url, const char *path, int update, rnd_wget_opts_t *wopts)
 {
 	double mt, now = rnd_dtime(), timeout;
 
@@ -97,7 +97,7 @@ static int pcbway_cache_update_(rnd_hidlib_t *hidlib, const char *url, const cha
 	return 0;
 }
 
-static int pcbway_cache_update(rnd_hidlib_t *hidlib)
+static int pcbway_cache_update(rnd_design_t *hidlib)
 {
 	char *hdr[5];
 	rnd_wget_opts_t wopts;
@@ -271,7 +271,7 @@ static void check_constraints(order_ctx_t *octx)
 }
 
 
-static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
+static int pcbway_load_fields_(rnd_design_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
 	xmlNode *n, *v;
 	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
@@ -420,7 +420,7 @@ static void field_change_cb(order_ctx_t *octx, pcb_order_field_t *f)
 	check_constraints(octx);
 }
 
-static int pcbway_load_constraints_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
+static int pcbway_load_constraints_(rnd_design_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
 	xmlNode *n, *cd;
 	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
@@ -533,7 +533,7 @@ static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 	free(form);
 }
 
-static void rm_files(rnd_hidlib_t *hidlib, const char *dir)
+static void rm_files(rnd_design_t *hidlib, const char *dir)
 {
 	DIR *d = rnd_opendir(hidlib, dir);
 	struct dirent *de;
@@ -565,7 +565,7 @@ static void rm_files(rnd_hidlib_t *hidlib, const char *dir)
 
 static void pcbway_order_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hidlib_t *hidlib = &PCB->hidlib;
+	rnd_design_t *hidlib = &PCB->hidlib;
 	order_ctx_t *octx = caller_data;
 	pcbway_form_t *form = octx->odata;
 	FILE *f, *ft, *fr;

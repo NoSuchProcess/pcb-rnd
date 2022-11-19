@@ -679,7 +679,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 		rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy);
 }
 
-void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib)
+void pcb_crosshair_attached_clean(rnd_design_t *hidlib)
 {
 	if (xordraw_cache.pline != NULL)
 		rnd_poly_contour_del(&xordraw_cache.pline);
@@ -688,7 +688,7 @@ void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib)
 		rnd_polyarea_free(&xordraw_cache.pa);
 }
 
-void pcb_crosshair_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
+void pcb_crosshair_draw_attached(rnd_design_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	if (!inhibit_drawing_mode) {
 		rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_RESET, 1, NULL);
@@ -713,7 +713,7 @@ void pcb_crosshair_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_
 		rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_FLUSH, 1, NULL);
 }
 
-void pcb_crosshair_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
+void pcb_crosshair_draw_marks(rnd_design_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	rnd_coord_t ms = conf_core.appearance.mark_size, ms2 = ms / 2;
 
@@ -907,7 +907,7 @@ static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_dat
  */
 void pcb_crosshair_grid_fit(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 {
-	rnd_hidlib_t *hidlib = &pcb->hidlib;
+	rnd_design_t *hidlib = &pcb->hidlib;
 	rnd_coord_t nearest_grid_x, nearest_grid_y, oldx, oldy;
 	void *ptr1, *ptr2, *ptr3;
 	struct snap_data snap_data;
@@ -1113,7 +1113,7 @@ void pcb_center_display(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 }
 
 /* allocate GC only when the GUI is already up and running */
-static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pcb_crosshair_gui_init(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_crosshair.GC = rnd_hid_make_gc();
 
@@ -1193,7 +1193,7 @@ typedef struct {
 	int obj, line, box;
 } old_crosshair_t;
 
-void *pcb_crosshair_suspend(rnd_hidlib_t *hl)
+void *pcb_crosshair_suspend(rnd_design_t *hl)
 {
 	old_crosshair_t *buf = malloc(sizeof(old_crosshair_t));
 
@@ -1208,7 +1208,7 @@ void *pcb_crosshair_suspend(rnd_hidlib_t *hl)
 	return buf;
 }
 
-void pcb_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
+void pcb_crosshair_restore(rnd_design_t *hl, void *susp_data)
 {
 	old_crosshair_t *buf = susp_data;
 
@@ -1222,7 +1222,7 @@ void pcb_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 }
 
 
-void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
+void pcb_hidlib_crosshair_move_to(rnd_design_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 	if (!mouse_mot) {
 		rnd_hid_notify_crosshair_change(hl, rnd_false);

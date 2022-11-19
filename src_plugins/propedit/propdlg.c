@@ -844,7 +844,7 @@ static void propdlg_unit_change(rnd_conf_native_t *cfg, int arr_idx)
 	}
 }
 
-static void propedit_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void propedit_brd_chg(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	propdlg_t *pd;
 	for(pd = gdl_first(&propdlgs); pd != NULL; pd = gdl_next(&propdlgs, pd))
@@ -852,7 +852,7 @@ static void propedit_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 			prop_refresh(pd);
 }
 
-static void propedit_brd_unload(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void propedit_brd_unload(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	propdlg_t *pd, *next;
 

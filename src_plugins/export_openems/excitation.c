@@ -555,7 +555,7 @@ static char *pcb_openems_excitation_get(pcb_board_t *pcb, int fmt_matlab)
 	return excitations[exc_ctx.selected].get(exc_ctx.selected, fmt_matlab);
 }
 
-static void exc_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void exc_ev_board_changed(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	load_selector();
 	if (exc_ctx.active)

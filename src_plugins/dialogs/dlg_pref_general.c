@@ -47,7 +47,7 @@ static pref_confitem_t perf_cli[] = {
 
 static void pref_general_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	pref_ctx_t *ctx = caller_data;
 
 	if (rnd_pref_dlg2conf_pre(hl, ctx) == NULL)

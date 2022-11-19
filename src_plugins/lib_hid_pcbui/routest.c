@@ -122,7 +122,7 @@ static void rst_force_update_chk_and_dlg()
 
 static int need_rst_menu = 0;
 
-void pcb_rst_menu_batch_timer_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void pcb_rst_menu_batch_timer_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (need_rst_menu) {
 /*		rnd_trace("layer key update timer!\n");*/
@@ -133,7 +133,7 @@ void pcb_rst_menu_batch_timer_ev(rnd_hidlib_t *hidlib, void *user_data, int argc
 
 
 static int rst_lock = 0;
-static void rst_update(rnd_hidlib_t *hidlib)
+static void rst_update(rnd_design_t *hidlib)
 {
 	if (rst_lock) return;
 	rst_lock++;
@@ -234,12 +234,12 @@ static void rst_docked_create()
 }
 
 
-void pcb_rst_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void pcb_rst_update_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rst_update(hidlib);
 }
 
-void pcb_rst_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void pcb_rst_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (RND_HAVE_GUI_ATTR_DLG) {
 		rst_docked_create();

@@ -664,7 +664,7 @@ static void vendor_free_all(void)
 }
 
 /* Tune newly placed padstacks */
-static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void vendor_new_pstk(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_pstk_t *ps;
 	rnd_cardinal_t dummy;
@@ -676,7 +676,7 @@ static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 	apply_vendor_pstk1(ps, &dummy);
 }
 
-static int vendor_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root)
+static int vendor_anyload_subtree(const rnd_anyload_t *al, rnd_design_t *hl, lht_node_t *root)
 {
 	return vendor_load_root(root->file_name, root, 0);
 }

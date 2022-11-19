@@ -53,7 +53,7 @@ void pcb_tool_rectangle_uninit(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
-void pcb_tool_rectangle_notify_mode(rnd_hidlib_t *hl)
+void pcb_tool_rectangle_notify_mode(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -94,7 +94,7 @@ void pcb_tool_rectangle_notify_mode(rnd_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_rectangle_adjust_attached_objects(rnd_hidlib_t *hl)
+void pcb_tool_rectangle_adjust_attached_objects(rnd_design_t *hl)
 {
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_SECOND:						/* one corner is selected */
@@ -107,7 +107,7 @@ void pcb_tool_rectangle_adjust_attached_objects(rnd_hidlib_t *hl)
 	}
 }
 
-rnd_bool pcb_tool_rectangle_anydo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_rectangle_anydo_act(rnd_design_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
@@ -115,7 +115,7 @@ rnd_bool pcb_tool_rectangle_anydo_act(rnd_hidlib_t *hl)
 	return rnd_true;
 }
 
-void pcb_tool_rectangle_escape(rnd_hidlib_t *hl)
+void pcb_tool_rectangle_escape(rnd_design_t *hl)
 {
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 		rnd_tool_select_by_name(hl, "arrow");

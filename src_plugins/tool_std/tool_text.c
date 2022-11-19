@@ -45,7 +45,7 @@
 #include "obj_text_draw.h"
 
 
-void pcb_tool_text_notify_mode(rnd_hidlib_t *hl)
+void pcb_tool_text_notify_mode(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 	char *string;
@@ -71,7 +71,7 @@ void pcb_tool_text_notify_mode(rnd_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_text_draw_attached(rnd_hidlib_t *hl)
+void pcb_tool_text_draw_attached(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 	pcb_text_t text = {0};

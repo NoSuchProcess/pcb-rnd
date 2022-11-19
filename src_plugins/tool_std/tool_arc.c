@@ -74,7 +74,7 @@ void pcb_tool_arc_uninit(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
-void pcb_tool_arc_notify_mode(rnd_hidlib_t *hl)
+void pcb_tool_arc_notify_mode(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -132,12 +132,12 @@ rnd_trace("arc: %mm %mm wh %mm %mm\n", hl->tool_x, hl->tool_y, wx, wy);
 	}
 }
 
-void pcb_tool_arc_adjust_attached_objects(rnd_hidlib_t *hl)
+void pcb_tool_arc_adjust_attached_objects(rnd_design_t *hl)
 {
 	pcb_crosshair.AttachedBox.otherway = rnd_gui->shift_is_pressed(rnd_gui);
 }
 
-void pcb_tool_arc_draw_attached(rnd_hidlib_t *hl)
+void pcb_tool_arc_draw_attached(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -171,7 +171,7 @@ void pcb_tool_arc_draw_attached(rnd_hidlib_t *hl)
 
 }
 
-rnd_bool pcb_tool_arc_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_arc_undo_act(rnd_design_t *hl)
 {
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
@@ -193,7 +193,7 @@ rnd_bool pcb_tool_arc_undo_act(rnd_hidlib_t *hl)
 	return rnd_true;
 }
 
-void pcb_tool_arc_escape(rnd_hidlib_t *hl)
+void pcb_tool_arc_escape(rnd_design_t *hl)
 {
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 		rnd_tool_select_by_name(hl, "arrow");

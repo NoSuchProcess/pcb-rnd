@@ -469,7 +469,7 @@ static void excellon_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y,
 {
 }
 
-static void exc_session_begin(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void exc_session_begin(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	exc_aperture_cnt = 0;
 }

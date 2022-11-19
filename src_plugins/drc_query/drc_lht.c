@@ -28,7 +28,7 @@
  *
  */
 
-static int drc_query_lht_save_def(rnd_hidlib_t *hl, lht_node_t *ndefs, const char *def_id)
+static int drc_query_lht_save_def(rnd_design_t *hl, lht_node_t *ndefs, const char *def_id)
 {
 	lht_node_t *norig;
 	if (pcb_drc_query_def_by_name(def_id, &norig, 0) != 0)
@@ -37,7 +37,7 @@ static int drc_query_lht_save_def(rnd_hidlib_t *hl, lht_node_t *ndefs, const cha
 	return 0;
 }
 
-static int drc_query_lht_save_rule(rnd_hidlib_t *hl, const char *fn, const char *rule_id)
+static int drc_query_lht_save_rule(rnd_design_t *hl, const char *fn, const char *rule_id)
 {
 	htsi_t defs;
 	htsi_entry_t *e;
@@ -108,7 +108,7 @@ static int reloc_children(lht_node_t *dst, lht_node_t *src)
 	return res;
 }
 
-static int drc_query_lht_load_subtree(rnd_hidlib_t *hl, lht_node_t *root)
+static int drc_query_lht_load_subtree(rnd_design_t *hl, lht_node_t *root)
 {
 	lht_node_t *ndefs, *nrules, *nd, *dst;
 	int res = 0;
@@ -150,7 +150,7 @@ static int drc_query_lht_load_subtree(rnd_hidlib_t *hl, lht_node_t *root)
 
 }
 
-static int drc_query_lht_load_rules(rnd_hidlib_t *hl, const char *fn)
+static int drc_query_lht_load_rules(rnd_design_t *hl, const char *fn)
 {
 	FILE *f;
 	lht_doc_t *doc;

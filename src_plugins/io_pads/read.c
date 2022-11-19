@@ -358,7 +358,7 @@ static void postproc_thermal(pads_read_ctx_t *rctx)
 
 int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
-	rnd_hidlib_t *hl = &PCB->hidlib;
+	rnd_design_t *hl = &PCB->hidlib;
 	FILE *f;
 	int ret = 0;
 	pads_read_ctx_t rctx = {0};
