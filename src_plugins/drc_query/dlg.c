@@ -226,7 +226,7 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_hid_text_t *txt = atxt->wdata;
 	char *script = txt->hid_get_text(atxt, hid_ctx);
 	pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
-	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_design(hid_ctx);
 	pcb_qry_exec_t ec;
 
 	pcb_qry_init(&ec, pcb, NULL, -1);
@@ -541,7 +541,7 @@ static void rlist_btn_remove_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wrlist]));
-	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_design(hid_ctx);
 	rnd_conf_role_t role;
 
 	if (row == NULL) {
@@ -635,7 +635,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	const char *script;
 	rnd_conf_role_t role;
 	pcb_view_list_t *view;
-	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_design(hid_ctx);
 	pcb_qry_exec_t ec;
 
 	rlist_fetch();
@@ -659,7 +659,7 @@ static void rlist_btn_export_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wrlist]));
-	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_design(hid_ctx);
 
 	if (row == NULL) {
 		rnd_message(RND_MSG_ERROR, "Select a rule first\n");
@@ -671,7 +671,7 @@ static void rlist_btn_export_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 
 static void rlist_btn_import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
-	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_design(hid_ctx);
 
 	rnd_actionva(&pcb->hidlib, "DrcQueryImport", NULL);
 	drc_rlist_pcb2dlg();
@@ -811,7 +811,7 @@ static void dlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wdlist]));
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 	lht_node_t *nd;
 	char *path;
 

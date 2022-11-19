@@ -349,12 +349,12 @@ static void all_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 static void all_vis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_actionva(rnd_gui->get_dad_hidlib(hid_ctx), "ToggleView", "all", "vis", "set", NULL);
+	rnd_actionva(rnd_gui->get_dad_design(hid_ctx), "ToggleView", "all", "vis", "set", NULL);
 }
 
 static void all_invis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_actionva(rnd_gui->get_dad_hidlib(hid_ctx), "ToggleView", "all", "vis", "clear", NULL);
+	rnd_actionva(rnd_gui->get_dad_design(hid_ctx), "ToggleView", "all", "vis", "clear", NULL);
 }
 
 /* Select the first visible layer (physically) below the one turned off or

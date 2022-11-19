@@ -160,8 +160,8 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_save_in_tmp();
 
 		pcb_crosshair_move_absolute(pcb, RND_COORD_MAX, RND_COORD_MAX); /* make sure the crosshair is not above any object so ch* plugins release their highlights */
-		if (rnd_gui->set_hidlib != NULL)
-			rnd_gui->set_hidlib(rnd_gui, NULL);
+		if (rnd_gui->set_design != NULL)
+			rnd_gui->set_design(rnd_gui, NULL);
 
 		pcb_draw_inhibit_inc();
 		pcb_board_remove(pcb);
@@ -169,8 +169,8 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB = pcb = pcb_board_new(1);
 #define PCB do_not_use
 		pcb_board_new_postproc(pcb, 1);
-		if (rnd_gui->set_hidlib != NULL)
-			rnd_gui->set_hidlib(rnd_gui, &pcb->hidlib);
+		if (rnd_gui->set_design != NULL)
+			rnd_gui->set_design(rnd_gui, &pcb->hidlib);
 		pcb_draw_inhibit_dec();
 
 		pcb_set_design_dir(NULL);

@@ -81,7 +81,7 @@ void pcb_dlg_pref_color_close(pref_ctx_t *ctx)
 
 static void pref_color_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
 
@@ -97,7 +97,7 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 static void pref_color_layer_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 	pref_ctx_t *ctx = caller_data;
 	DEF_TABDATA;
 	int idx = (int *)attr->user_data - tabdata->wlayer;

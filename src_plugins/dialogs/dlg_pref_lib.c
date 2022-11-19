@@ -73,7 +73,7 @@ static void pref_lib_update_buttons(rnd_design_t *hl)
 
 static void pref_lib_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pref_lib_update_buttons(rnd_gui->get_dad_hidlib(hid_ctx));
+	pref_lib_update_buttons(rnd_gui->get_dad_design(hid_ctx));
 }
 
 static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
@@ -136,7 +136,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 	if ((tabdata->lock) || (!ctx->active))
 		return;
 
-	hl = rnd_gui->get_dad_hidlib(ctx->dlg_hid_ctx);
+	hl = rnd_gui->get_dad_design(ctx->dlg_hid_ctx);
 	attr = &ctx->dlg[tabdata->wlist];
 
 	/* copy everything from the config tree to the dialog */
@@ -161,7 +161,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 /* Dialog box to current libraries in config */
 static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 	pref_ctx_t *ctx = caller_data;
 	DEF_TABDATA;
 	rnd_hid_tree_t *tree = attr->wdata;
@@ -212,7 +212,7 @@ static void lib_btn_remove(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 	if (rnd_dad_tree_remove(attr, r) == 0) {
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
-		pref_lib_update_buttons(rnd_gui->get_dad_hidlib(hid_ctx));
+		pref_lib_update_buttons(rnd_gui->get_dad_design(hid_ctx));
 	}
 }
 
@@ -282,7 +282,7 @@ typedef struct {
 
 static void lib_cell_edit_update(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
 

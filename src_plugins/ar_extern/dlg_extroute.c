@@ -192,7 +192,7 @@ static void save_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 {
 	FILE *f;
 	char *fname;
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 
 	fname = rnd_hid_fileselect(rnd_gui, "Save autoroute settings to...",
 		"Pick a file for saving autoroute settings to.\n",
@@ -216,7 +216,7 @@ static void load_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 {
 	FILE *f;
 	char *fname;
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 
 	fname = rnd_hid_fileselect(rnd_gui, "Load autoroute settings from...",
 		"Pick a file for loading autoroute settings from.\n",

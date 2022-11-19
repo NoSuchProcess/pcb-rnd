@@ -59,7 +59,7 @@ static void pref_board_brd2dlg(pref_ctx_t *ctx)
 /* Dialog box to actual board meta */
 static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 	int changed = 0;
 	const char *newname, *oldname;
@@ -92,7 +92,7 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribu
 
 static void pref_board_edit_attr(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_design(hid_ctx);
 	rnd_actionva(hl, "Propedit", "board", NULL);
 }
 
