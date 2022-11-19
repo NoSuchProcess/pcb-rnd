@@ -521,7 +521,7 @@ static int png_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 static int is_mask;
 
-static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
+static int png_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	if (flags & PCB_LYT_UI)
 		return 0;
@@ -553,7 +553,7 @@ static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 	is_mask = (flags & PCB_LYT_MASK);
 
 	if (pctx->photo_mode)
-		return png_set_layer_group_photo(group, purpose, purpi, layer, flags, is_empty, xform);
+		return png_set_layer_group_photo(group, design, purpose, purpi, layer, flags, is_empty, xform);
 
 	if (png_cam.active) /* CAM decided already */
 		return 1;

@@ -1512,7 +1512,7 @@ TODO("layer: need to pass the flags of the group, not the flags of the layer onc
 		rnd_layergrp_id_t grp;
 		rnd_layer_id_t lid = v->new_id;
 		grp = pcb_layer_get_group(pcb, lid);
-		return rnd_render->set_layer_group(rnd_render, grp, v->purpose, v->purpi, lid, v->type, is_empty, xform);
+		return rnd_render->set_layer_group(rnd_render, &pcb->hidlib, grp, v->purpose, v->purpi, lid, v->type, is_empty, xform);
 	}
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
@@ -1529,7 +1529,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, rnd_xform_t **xform
 		*xform = NULL;
 
 	if (rnd_render->set_layer_group != NULL)
-		return rnd_render->set_layer_group(rnd_render, -1, NULL, -1, pcb_layer_id(first->parent.data, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty, xform);
+		return rnd_render->set_layer_group(rnd_render, NULL, -1, NULL, -1, pcb_layer_id(first->parent.data, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty, xform);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;

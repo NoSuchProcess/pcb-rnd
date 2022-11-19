@@ -31,9 +31,9 @@
 #include "funchash_core.h"
 #include "layer.h"
 
-static int (*gui_set_layer_group)(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform);
+static int (*gui_set_layer_group)(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform);
 
-static int common_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
+static int common_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group(PCB)) {
@@ -77,17 +77,17 @@ static int common_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const
 	return 0;
 }
 
-static int pcbui_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
+static int pcbui_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	int res;
 
-	res = gui_set_layer_group(hid, group, purpose, purpi, layer, flags, is_empty, xform);
+	res = gui_set_layer_group(hid, design, group, purpose, purpi, layer, flags, is_empty, xform);
 
 	/* if the HID doesn't want it, don't even bother running the above heuristics */
 	if (res == 0)
 		return 0;
 
-	return common_set_layer_group(hid, group, purpose, purpi, layer, flags, is_empty, xform);
+	return common_set_layer_group(hid, design, group, purpose, purpi, layer, flags, is_empty, xform);
 }
 
 static void pcb_rendering_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])

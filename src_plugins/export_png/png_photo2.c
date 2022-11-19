@@ -129,7 +129,7 @@ static void subtract(rnd_drwpx_color_struct_t * dest, double a_amount, const rnd
 	clip(dest, dest);
 }
 
-static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
+static int png_set_layer_group_photo(rnd_layergrp_id_t group, rnd_design_t *design, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	/* workaround: the outline layer vs. alpha breaks if set twice and the draw
 	   code may set it twice (if there's no mech layer), but always in a row */
