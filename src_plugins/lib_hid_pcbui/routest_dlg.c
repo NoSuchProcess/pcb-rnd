@@ -26,7 +26,7 @@
 
 /* included from routest.c - split for clarity */
 
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include "route_style.h"
 #include "data.h"
 

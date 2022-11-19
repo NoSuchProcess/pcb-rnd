@@ -64,7 +64,7 @@
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include "netlist.h"
 
 #include <genregex/regex_sei.h>

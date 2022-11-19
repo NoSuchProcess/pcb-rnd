@@ -37,7 +37,7 @@
 #include "board.h"
 #include "data.h"
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include "undo.h"
 #include "polygon.h"
 #include <librnd/poly/offset.h>

@@ -43,7 +43,7 @@
 #include "rotate.h"
 #include "search.h"
 #include "thermal.h"
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 
 #include "conf_core.h"
 

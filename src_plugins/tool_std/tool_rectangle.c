@@ -40,7 +40,7 @@
 #include "data.h"
 #include "draw.h"
 #include "tool_logic.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "undo.h"
 
 #include "obj_poly_draw.h"

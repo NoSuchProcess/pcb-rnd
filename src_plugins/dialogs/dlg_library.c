@@ -41,13 +41,13 @@
 #include "event.h"
 #include "obj_subc.h"
 #include "plug_footprint.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "undo.h"
 
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
+#include <librnd/hid/hid_init.h>
 
 #include "dlg_library.h"
 

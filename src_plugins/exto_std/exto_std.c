@@ -39,8 +39,8 @@
 #include "extobj.h"
 #include "extobj_helper.h"
 #include "conf_core.h"
-#include <librnd/core/hid_inlines.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_inlines.h>
+#include <librnd/hid/hid_dad.h>
 
 #include "line_of_vias.c"
 #include "dimension.c"

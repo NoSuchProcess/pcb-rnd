@@ -32,7 +32,7 @@
 #include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include "event.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/rnd_printf.h>

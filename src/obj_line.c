@@ -42,7 +42,7 @@
 #include "thermal.h"
 #include <librnd/core/compat_misc.h>
 #include "rotate.h"
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include <librnd/core/misc_util.h>
 
 #include "obj_line.h"

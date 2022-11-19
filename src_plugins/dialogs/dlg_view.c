@@ -39,9 +39,9 @@
 #include "drc.h"
 #include "actions_pcb.h"
 #include <librnd/core/event.h>
-#include <librnd/core/hid_inlines.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_inlines.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include "undo.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/misc_util.h>

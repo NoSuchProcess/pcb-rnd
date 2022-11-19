@@ -33,8 +33,8 @@
 #include <genvector/gds_char.h>
 #include <genvector/vtp0.h>
 
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/hid_init.h>
 #include <librnd/core/plugins.h>
 #include "event.h"
 #include <librnd/core/actions.h>

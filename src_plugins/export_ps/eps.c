@@ -23,11 +23,11 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/plugins/lib_exp_text/draw_eps.h>
 
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_nogui.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_nogui.h>
 #include "ps.h"
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid_attrib.h>
 #include "hid_cam.h"
 #include "funchash_core.h"
 

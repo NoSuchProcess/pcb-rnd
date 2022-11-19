@@ -37,9 +37,9 @@
 
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_menu.h>
 
 #include "ttf_load.h"
 #include "str_approx.h"

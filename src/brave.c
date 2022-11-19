@@ -38,7 +38,7 @@
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 
 pcb_brave_t pcb_brave = 0;
 static const char brave_cookie[] = "brave";

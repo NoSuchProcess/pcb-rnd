@@ -60,7 +60,7 @@
 #include "pcb_minuid.h"
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include "extobj.h"
 
 #define SUBC_AUX_NAME "subc-aux"

@@ -30,7 +30,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/compat_lrealpath.h>

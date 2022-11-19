@@ -39,7 +39,7 @@
 #include "crosshair.h"
 #include <librnd/core/actions.h>
 #include "polygon.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 
 void pcb_tool_poly_uninit(void)

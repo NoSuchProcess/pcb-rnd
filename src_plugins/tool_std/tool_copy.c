@@ -39,7 +39,7 @@
 #include "crosshair.h"
 #include "search.h"
 #include "tool_logic.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 void pcb_tool_copy_uninit(void)
 {

@@ -44,12 +44,12 @@
 #include "obj_subc_parent.h"
 #include "obj_pstk_inlines.h"
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_nogui.h>
+#include <librnd/hid/hid_nogui.h>
 #include "hid_cam.h"
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/hid_init.h>
 #include "../src_plugins/lib_polyhelp/topoly.h"
 #include "mesh.h"
 

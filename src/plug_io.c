@@ -60,7 +60,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include "event.h"
 #include <librnd/core/compat_misc.h>
 #include "route_style.h"
@@ -70,7 +70,7 @@
 #include <librnd/core/safe_fs.h>
 #include "plug_footprint.h"
 #include <librnd/core/file_loaded.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "view.h"
 
 pcb_plug_io_t *pcb_plug_io_chain = NULL;

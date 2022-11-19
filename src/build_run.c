@@ -34,7 +34,7 @@
 #include "conf_core.h"
 #include "board.h"
 #include "build_run.h"
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include "plug_io.h"
 #include <librnd/core/compat_misc.h>
 

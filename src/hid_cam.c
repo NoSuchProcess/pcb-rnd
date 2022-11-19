@@ -36,7 +36,7 @@
 #include "board.h"
 #include "data.h"
 #include "hid_cam.h"
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/compat_misc.h>
 #include "layer_addr.h"
 #include "layer_vis.h"

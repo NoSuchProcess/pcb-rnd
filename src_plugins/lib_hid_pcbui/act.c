@@ -33,7 +33,7 @@
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include "draw.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "layer.h"
 #include "layer_vis.h"
 #include "search.h"

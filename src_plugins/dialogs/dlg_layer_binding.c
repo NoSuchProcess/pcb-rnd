@@ -31,7 +31,7 @@
 #include <librnd/core/event.h>
 #include "conf_core.h"
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include "funchash_core.h"
 #include "obj_subc.h"
 #include "search.h"

@@ -31,7 +31,7 @@
 #include "board.h"
 #include "data.h"
 #include <librnd/core/event.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/core/compat_fs.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>

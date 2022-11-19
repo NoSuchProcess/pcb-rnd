@@ -42,7 +42,7 @@
 #include "obj_pstk.h"
 #include "search.h"
 #include "thermal.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 void pcb_tool_thermal_on_obj(pcb_any_obj_t *obj, unsigned long lid)
 {

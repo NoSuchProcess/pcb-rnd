@@ -29,9 +29,9 @@
 #include <genvector/vti0.h>
 #include <genvector/vtp0.h>
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/hid_cfg.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/plugins/lib_hid_common/xpm.h>
 
 #include <librnd/core/actions.h>

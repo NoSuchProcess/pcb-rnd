@@ -52,11 +52,11 @@
 #include "plug_io.h"
 #include <librnd/core/safe_fs.h>
 
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_nogui.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_nogui.h>
 
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid_attrib.h>
 #include "hid_cam.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"

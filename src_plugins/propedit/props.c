@@ -29,7 +29,7 @@
 #include <librnd/core/compat_misc.h>
 #include "board.h"
 #include <librnd/core/rnd_printf.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <genht/hash.h>
 /*#define HT_INVALID_VALUE ((pcb_propval_t){PCB_PROPT_invalid, {0}})*/
 #define HT(x) htprop_ ## x

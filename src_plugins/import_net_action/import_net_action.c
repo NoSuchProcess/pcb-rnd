@@ -44,7 +44,7 @@
 
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 
 static int net_action_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {

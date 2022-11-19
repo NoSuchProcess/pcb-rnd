@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 
 const char pcb_acts_PrintCalibrate[] = "PrintCalibrate()";

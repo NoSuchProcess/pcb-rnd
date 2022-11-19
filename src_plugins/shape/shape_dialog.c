@@ -1,4 +1,4 @@
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 
 typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)

@@ -35,7 +35,7 @@
 #include "config.h"
 #include "data.h"
 #include <librnd/core/actions.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "remove.h"
 #include "board.h"
 #include "layer_ui.h"

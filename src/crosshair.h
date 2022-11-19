@@ -31,7 +31,7 @@
 #define PCB_CROSSHAIR_H
 
 #include "config.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/hidlib.h>
 #include "obj_line.h"
 #include "obj_poly.h"

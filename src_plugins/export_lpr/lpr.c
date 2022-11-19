@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <stdio.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 
 
 #include "../export_ps/ps.h"

@@ -31,7 +31,7 @@
 #include "data.h"
 #include "data_it.h"
 #include "conf_core.h"
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include "undo.h"
 #include <librnd/poly/rtree.h>
 #include "search.h"

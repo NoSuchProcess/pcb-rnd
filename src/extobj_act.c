@@ -29,10 +29,10 @@
 #include <librnd/core/actions.h>
 #include "conf_core.h"
 #include "funchash_core.h"
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include "search.h"
 #include "undo.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 #include "extobj.h"
 

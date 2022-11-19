@@ -31,9 +31,9 @@
 #include "data.h"
 #include "obj_subc.h"
 #include "vtpadstack.h"
-#include <librnd/core/hid_inlines.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_inlines.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/safe_fs.h>
 #include "obj_pstk.h"

@@ -10,7 +10,7 @@ SRC=$(ROOT)/src
 SRC_3RD=$(ROOT)/src_3rd
 CFLAGS = $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND) -I$(UNM) -I$(LHT) -I$(SRC) -I$(ROOT)
 LDFLAGS = $(LDFLAGS_LIBRND)
-LDLIBS = -lrnd-hid -lrnd-3rd $(LDFLAGS_LIBRND_FUNGW) -lm
+LDLIBS = -lrnd-core -lrnd-3rd $(LDFLAGS_LIBRND_FUNGW) -lm
 
 test: tester.diff
 	@echo "uniq_name:           *** QC PASS ***"

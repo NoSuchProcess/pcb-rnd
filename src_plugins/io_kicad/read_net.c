@@ -44,7 +44,7 @@
 
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 
 #define if_strval(node, name) \
 	if (strcmp(node->str, #name) == 0) { \

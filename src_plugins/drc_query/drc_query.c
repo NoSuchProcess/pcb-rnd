@@ -35,7 +35,7 @@
 #include <liblihata/dom.h>
 #include <liblihata/tree.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/anyload.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>

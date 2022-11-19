@@ -82,7 +82,7 @@
 #include "search.h"
 #include "find.h"
 
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include "menu_internal.c"
 
 #define abort1() fprintf(stderr, "abort at line %d\n", __LINE__), abort()

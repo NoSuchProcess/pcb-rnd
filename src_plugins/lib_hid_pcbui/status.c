@@ -29,9 +29,9 @@
 #include <genvector/gds_char.h>
 
 #include "board.h"
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_cfg_input.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_cfg_input.h>
+#include <librnd/hid/hid_dad.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/plugins/lib_hid_common/xpm.h>

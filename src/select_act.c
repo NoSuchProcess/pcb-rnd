@@ -40,14 +40,14 @@
 #include "undo.h"
 #include "funchash_core.h"
 
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "select.h"
 #include "draw.h"
 #include "remove.h"
 #include "move.h"
 #include "tool_logic.h"
-#include <librnd/core/grid.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/grid.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 

@@ -41,7 +41,7 @@
 #include "thermal.h"
 #include <librnd/core/compat_misc.h>
 #include "draw_wireframe.h"
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 
 #include "obj_arc.h"
 #include "obj_arc_op.h"

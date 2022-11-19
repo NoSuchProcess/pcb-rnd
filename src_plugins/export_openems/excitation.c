@@ -26,7 +26,7 @@
 
 #include "config.h"
 
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include "event.h"
 
 #define MAX_EXC 16

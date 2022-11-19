@@ -49,10 +49,10 @@
 #include "search.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include "layer_vis.h"
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "netlist.h"
 #include "plug_io.h"
 #include "obj_pstk_inlines.h"

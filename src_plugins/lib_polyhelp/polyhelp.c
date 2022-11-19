@@ -38,7 +38,7 @@
 #include "undo.h"
 #include <librnd/core/box.h>
 #include <librnd/poly/offset.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 
 #include "topoly.h"
 
@@ -49,7 +49,7 @@ static const char *polyhelp_cookie = "lib_polyhelp";
 #include "data.h"
 #include "conf_core.h"
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/actions.h>
 
 void pcb_pline_fprint_anim(FILE *f, const rnd_pline_t *pl)

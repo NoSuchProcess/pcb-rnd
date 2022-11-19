@@ -35,7 +35,7 @@
 #include "read.h"
 #include "write.h"
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/compat_misc.h>
 #include "plug_io.h"
 #include <librnd/core/plugins.h>

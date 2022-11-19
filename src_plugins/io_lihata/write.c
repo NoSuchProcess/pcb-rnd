@@ -46,7 +46,7 @@
 #include "rats_patch.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/base64.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 #include <librnd/core/misc_util.h>
 #include "layer.h"
 #include "common.h"
@@ -60,7 +60,7 @@
 #include "thermal.h"
 #include "funchash_core.h"
 #include "netlist.h"
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_compat_help/route_style.h"

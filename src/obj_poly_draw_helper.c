@@ -29,10 +29,10 @@
  */
 
 #include "config.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "polygon.h"
 #include "obj_poly.h"
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 
 static rnd_coord_t *fc_x = NULL, *fc_y = NULL;
 static size_t fc_alloced = 0;

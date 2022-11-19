@@ -28,9 +28,9 @@
 
 #include <librnd/core/hidlib_conf.h>
 #include "event.h"
-#include <librnd/core/grid.h>
+#include <librnd/hid/grid.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include <librnd/core/conf_hid.h>
 
 #include "board.h"

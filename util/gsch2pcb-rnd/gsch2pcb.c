@@ -46,7 +46,7 @@
 #include <librnd/core/misc_util.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/file_loaded.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include "method.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"

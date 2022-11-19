@@ -52,7 +52,7 @@
 #include <librnd/core/safe_fs.h>
 #include "flag_str.h"
 #include "obj_common.h"
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 #define PCB do_not_use_PCB
 

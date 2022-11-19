@@ -44,7 +44,7 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include "layer.h"

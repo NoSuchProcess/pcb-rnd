@@ -29,7 +29,7 @@
 
 #include "config.h"
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "plug_io.h"
 #include "read.h"
 #include "read_dru.h"

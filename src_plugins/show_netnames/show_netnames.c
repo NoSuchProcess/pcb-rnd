@@ -28,7 +28,7 @@
 
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include <genht/htpp.h>
 #include <genht/hash.h>
 

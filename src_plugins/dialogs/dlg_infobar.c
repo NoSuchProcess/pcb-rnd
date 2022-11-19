@@ -31,7 +31,7 @@
 #include "config.h"
 #include <librnd/core/actions.h>
 #include "board.h"
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/plugins/lib_hid_common/xpm.h>
 #include <librnd/plugins/lib_hid_common/dlg_comm_m.h>
 #include "plug_io.h"

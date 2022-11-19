@@ -51,7 +51,7 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
 #include "conf_core.h"
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 

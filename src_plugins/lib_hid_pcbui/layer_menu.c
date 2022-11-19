@@ -37,7 +37,7 @@
 #include "layer_grp.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/hid_cfg.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 
 #include "layer_menu.h"
 

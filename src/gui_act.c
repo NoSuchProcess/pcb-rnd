@@ -38,8 +38,8 @@
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include "data.h"
-#include <librnd/core/tool.h>
-#include <librnd/core/grid.h>
+#include <librnd/hid/tool.h>
+#include <librnd/hid/grid.h>
 #include <librnd/core/error.h>
 #include "undo.h"
 #include "funchash_core.h"
@@ -51,7 +51,7 @@
 #include "find.h"
 #include "data_it.h"
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include <librnd/core/compat_misc.h>
 #include "event.h"
 #include "layer.h"
@@ -59,10 +59,10 @@
 #include "layer_grp.h"
 #include "layer_vis.h"
 #include "attrib.h"
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 #include "operation.h"
 #include "obj_subc_op.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "route_style.h"
 #include "tool_logic.h"
 #include "obj_text_op.h"

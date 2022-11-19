@@ -8,7 +8,7 @@
 #include <genht/hash.h>
 
 /* Required for win32 path hack: */
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 conf_core_t conf_core;
 

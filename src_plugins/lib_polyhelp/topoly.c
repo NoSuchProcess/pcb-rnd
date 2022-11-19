@@ -42,7 +42,7 @@
 #include "find.h"
 #include "polygon.h"
 #include "search.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/actions.h>
 #include "funchash_core.h"
 

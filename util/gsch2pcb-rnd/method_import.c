@@ -33,7 +33,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/misc_util.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 char *cmd_file_name;
 char *pcb_file_name;

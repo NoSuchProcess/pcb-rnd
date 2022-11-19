@@ -45,7 +45,7 @@
 #include "obj_subc_parent.h"
 #include <librnd/core/rnd_printf.h>
 #include "search.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "layer_ui.h"
 #include "netlist.h"
 

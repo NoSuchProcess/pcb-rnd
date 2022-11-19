@@ -40,7 +40,7 @@
 #include <librnd/poly/rtree.h>
 #include "stub_draw.h"
 #include "layer_ui.h"
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include <librnd/core/conf_hid.h>
 #include "funchash_core.h"
 

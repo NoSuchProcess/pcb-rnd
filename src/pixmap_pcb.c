@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <genht/htsp.h>
 
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 #include <librnd/core/error.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/compat_misc.h>

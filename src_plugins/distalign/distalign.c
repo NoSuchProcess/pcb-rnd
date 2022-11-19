@@ -23,7 +23,7 @@
 #include "config.h"
 #include "data.h"
 #include "data_it.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/poly/rtree.h>
 #include "undo.h"
 #include <librnd/core/error.h>

@@ -47,7 +47,7 @@
 #include "undo.h"
 #include "vtpadstack.h"
 #include "event.h"
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include <librnd/poly/offset.h>
 
 #define SQR(o) ((o)*(o))

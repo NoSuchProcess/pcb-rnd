@@ -30,7 +30,7 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 #include <librnd/core/paths.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
 
 typedef struct pref_libhelp_ctx_s {

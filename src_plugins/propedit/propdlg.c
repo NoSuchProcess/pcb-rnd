@@ -32,10 +32,10 @@
 
 #include "board.h"
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include <librnd/core/conf_hid.h>
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include "netlist.h"
 #include "event.h"
 

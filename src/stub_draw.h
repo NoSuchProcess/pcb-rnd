@@ -31,7 +31,7 @@
 #ifndef PCB_STUB_DRAW_FAB_H
 #define PCB_STUB_DRAW_FAB_H
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/rnd_bool.h>
 #include <librnd/core/global_typedefs.h>
 #include "draw.h"

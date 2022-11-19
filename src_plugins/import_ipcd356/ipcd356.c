@@ -37,12 +37,12 @@
 #include <librnd/core/safe_fs.h>
 
 #include "conf_core.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/poly/rtree.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 

@@ -42,8 +42,8 @@
 #include <librnd/core/safe_fs.h>
 
 #include <librnd/core/actions.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
 

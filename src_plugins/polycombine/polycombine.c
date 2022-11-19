@@ -17,7 +17,7 @@
 #include "board.h"
 #include "data.h"
 #include "remove.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/error.h>
 #include <librnd/poly/rtree.h>
 #include "polygon.h"

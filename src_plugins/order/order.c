@@ -34,9 +34,9 @@
 #include "funchash_core.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/core/hid_cfg.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include "layer.h"
 #include <librnd/core/event.h>
 #include "order_conf.h"

@@ -46,7 +46,7 @@
 #include <librnd/core/error.h>
 #include "file.h"
 #include "plug_io.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "layer.h"
 #include "layer_grp.h"
 #include "move.h"

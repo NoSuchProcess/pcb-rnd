@@ -27,11 +27,11 @@
 #include "operation.h"
 #include "xy_conf.h"
 
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_nogui.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_nogui.h>
+#include <librnd/hid/hid_attrib.h>
 #include "hid_cam.h"
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 #include "../src_plugins/export_xy/conf_internal.c"

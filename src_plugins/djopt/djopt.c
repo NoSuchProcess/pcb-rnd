@@ -57,7 +57,7 @@
 #include <librnd/core/event.h>
 #include "obj_pstk_inlines.h"
 
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include "menu_internal.c"
 
 conf_djopt_t conf_djopt;

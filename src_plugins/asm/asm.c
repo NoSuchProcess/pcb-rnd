@@ -39,9 +39,9 @@
 #include <librnd/core/compat_misc.h>
 #include "obj_subc.h"
 #include <librnd/core/rnd_printf.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
+#include <librnd/hid/hid_menu.h>
 #include "search.h"
 #include "draw.h"
 #include "select.h"

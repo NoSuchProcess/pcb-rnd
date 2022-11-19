@@ -40,9 +40,9 @@
 #include <librnd/core/error.h>
 #include <librnd/core/event.h>
 #include "integrity.h"
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/hid_dad.h>
 #include "search.h"
 #include "plug_footprint.h"
 #include "plug_io.h"

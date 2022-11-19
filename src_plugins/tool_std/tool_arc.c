@@ -43,7 +43,7 @@
 #include "draw.h"
 #include "draw_wireframe.h"
 #include "search.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "undo.h"
 
 #include "obj_arc_draw.h"

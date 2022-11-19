@@ -32,7 +32,7 @@
 #include <librnd/core/global_typedefs.h>
 #include <genht/htpp.h>
 
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 
 typedef struct pcb_pixmap_hash_s {
 	htpp_t meta;      /* all pixmaps, hashed and compared only by metadata (including natural_oid) - used to look up a specific transformed version */

@@ -45,7 +45,7 @@
 #include <librnd/core/error.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/base64.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 #include <libulzw/libulzw.h>
 #include "layer.h"
 #include <genvector/vtp0.h>

@@ -18,7 +18,7 @@
 #include "board.h"
 #include <librnd/core/actions.h>
 #include "data.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/poly/rtree.h>
 #include "undo.h"
 #include <librnd/core/error.h>

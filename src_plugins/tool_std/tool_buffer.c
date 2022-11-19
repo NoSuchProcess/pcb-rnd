@@ -42,7 +42,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/poly/rtree.h>
 #include "search.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "undo.h"
 
 void pcb_tool_buffer_init(void)

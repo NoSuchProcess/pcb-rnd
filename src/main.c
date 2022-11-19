@@ -66,15 +66,15 @@ static const char *EXPERIMENTAL = NULL;
 #include "layer_ui.h"
 #include "obj_text.h"
 #include "pcb_minuid.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include <librnd/core/color.h>
 #include "netlist.h"
 #include "extobj.h"
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 
 #include <librnd/core/actions.h>
 #include "actions_pcb.h"
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include <librnd/core/compat_misc.h>
 #include "tool_logic.h"
 #include "pixmap_pcb.h"

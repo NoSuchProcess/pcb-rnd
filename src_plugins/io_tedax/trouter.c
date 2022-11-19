@@ -47,7 +47,7 @@
 #include "tlayer.h"
 #include "obj_pstk.h"
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/actions.h>
 #include "plug_io.h"
 #include "conf_core.h"

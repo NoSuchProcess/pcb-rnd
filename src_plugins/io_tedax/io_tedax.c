@@ -38,11 +38,11 @@
 #include "conf_core.h"
 #include "buffer.h"
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include "plug_io.h"
 #include "stackup.h"
 #include "tlayer.h"

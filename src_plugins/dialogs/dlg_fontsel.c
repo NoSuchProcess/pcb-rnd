@@ -30,7 +30,7 @@
 #include "change.h"
 #include "conf_core.h"
 #include "event.h"
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include "stub_draw.h"
 #include "idpath.h"
 #include "search.h"

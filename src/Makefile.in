@@ -299,7 +299,7 @@ all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD) $(LIBRND_L)/librnd-hid$(SO) $(LIBRND_L)/librnd-poly$(SO) $(LIBRND_L)/librnd-3rd$(SO)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) \
-		-lrnd-font -lrnd-hid -lrnd-poly -lrnd-3rd \
+		-lrnd-hid -lrnd-font -lrnd-poly -lrnd-core -lrnd-3rd \
 		$(LDFLAGS) $(LIBS)
 
 ### pcb-rnd infra ###

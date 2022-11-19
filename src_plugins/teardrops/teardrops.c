@@ -21,7 +21,7 @@
 #include <librnd/core/math_helper.h>
 #include "board.h"
 #include "data.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/poly/rtree.h>
 #include "undo.h"
 #include <librnd/core/plugins.h>

@@ -41,7 +41,7 @@
 #include "undo.h"
 #include <librnd/core/actions.h>
 #include "search.h"
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "tool_logic.h"
 #include "tool_lock.h"
 

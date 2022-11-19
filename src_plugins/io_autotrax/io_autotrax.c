@@ -41,7 +41,7 @@
 #include "board.h"
 #include "conf_core.h"
 #include "buffer.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/compat_misc.h>
 
 static pcb_plug_io_t io_autotrax;

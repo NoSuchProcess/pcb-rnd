@@ -40,10 +40,10 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <gensexpr/gsxl.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "mentor_sch_conf.h"
 #include <librnd/core/paths.h>
 #include <librnd/core/safe_fs.h>

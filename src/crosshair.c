@@ -42,14 +42,14 @@
 #include "search.h"
 #include "polygon.h"
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/poly/offset.h>
 #include "find.h"
 #include "undo.h"
 #include "event.h"
 #include "thermal.h"
-#include <librnd/core/grid.h>
+#include <librnd/hid/grid.h>
 
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
@@ -60,7 +60,7 @@
 #include "obj_arc_ui.h"
 #include "obj_subc_parent.h"
 
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 typedef struct {
 	int x, y;

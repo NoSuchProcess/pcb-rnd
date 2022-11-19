@@ -31,10 +31,10 @@
 #include "conf_core.h"
 #include "route_style.h"
 #include "event.h"
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/hid_cfg.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_menu.h>
 
 #include "routest.h"
 

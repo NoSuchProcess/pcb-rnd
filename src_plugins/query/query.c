@@ -35,7 +35,7 @@
 #include <librnd/core/error.h>
 #include "undo.h"
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include "query.h"

@@ -35,10 +35,10 @@
 #include "data.h"
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include "conf_core.h"
 #include "obj_pstk_inlines.h"
 #include "src_plugins/lib_netmap/netmap.h"

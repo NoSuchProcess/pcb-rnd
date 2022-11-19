@@ -32,7 +32,7 @@
 #include "funchash_core.h"
 #include "route_style.h"
 #include <librnd/core/error.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 #define PCB do_not_use_PCB
 

@@ -26,7 +26,7 @@
 
 #include "../lib_polyhelp/topoly.h"
 #include "plug_io.h"
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 
 
 #define TRX_(x) (x)

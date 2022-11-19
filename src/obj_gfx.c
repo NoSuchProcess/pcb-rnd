@@ -31,7 +31,7 @@
 #include "config.h"
 
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include <librnd/core/actions.h>
 
 
