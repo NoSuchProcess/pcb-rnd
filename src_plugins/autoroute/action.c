@@ -49,7 +49,7 @@ static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, AutoRoute, op = fgw_keyword(&argv[1]));
 
-	rnd_hid_busy(PCB, 1);
+	rnd_hid_busy(&PCB->hidlib, 1);
 	switch(op) {
 		case F_AllRats:
 		case F_All:
@@ -65,7 +65,7 @@ static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_ACT_FAIL(AutoRoute);
 			return 1;
 	}
-	rnd_hid_busy(PCB, 0);
+	rnd_hid_busy(&PCB->hidlib, 0);
 	RND_ACT_IRES(0);
 	return 0;
 }
