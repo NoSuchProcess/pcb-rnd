@@ -124,7 +124,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* redraw layout */
 		case F_ClearAndRedraw:
 		case F_Redraw:
-			rnd_hid_redraw(PCB);
+			rnd_hid_redraw(&PCB->hidlib);
 			break;
 
 			/* toggle line-adjust flag */
@@ -190,12 +190,12 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleThindraw:
 			rnd_conf_toggle_editor(thin_draw);
-			rnd_hid_redraw(PCB);
+			rnd_hid_redraw(&PCB->hidlib);
 			break;
 
 		case F_ToggleThindrawPoly:
 			rnd_conf_toggle_editor(thin_draw_poly);
-			rnd_hid_redraw(PCB);
+			rnd_hid_redraw(&PCB->hidlib);
 			break;
 
 		case F_ToggleLockNames:
@@ -210,7 +210,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleHideNames:
 			rnd_conf_toggle_editor(hide_names);
-			rnd_hid_redraw(PCB);
+			rnd_hid_redraw(&PCB->hidlib);
 			break;
 
 		case F_ToggleStroke:
@@ -248,7 +248,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleCheckPlanes:
 			rnd_conf_toggle_editor(check_planes);
-			rnd_hid_redraw(PCB);
+			rnd_hid_redraw(&PCB->hidlib);
 			break;
 
 		case F_ToggleOrthoMove:
@@ -257,7 +257,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleName:
 			rnd_conf_toggle_editor(show_number);
-			rnd_hid_redraw(PCB);
+			rnd_hid_redraw(&PCB->hidlib);
 			break;
 
 		case F_ToggleClearLine:
@@ -291,7 +291,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* toggle displaying of the grid */
 		case F_Grid:
 			rnd_conf_toggle_heditor(draw_grid);
-			rnd_hid_redraw(PCB);
+			rnd_hid_redraw(&PCB->hidlib);
 			break;
 
 			/* display the pinout of a subcircuit */
@@ -357,7 +357,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_ACT_DESIGN->grid_ox = rnd_get_value(argv[2].val.str, NULL, NULL, NULL);
 				RND_ACT_DESIGN->grid_oy = rnd_get_value(argv[3].val.str, NULL, NULL, NULL);
 				if (rnd_conf.editor.draw_grid)
-					rnd_hid_redraw(PCB);
+					rnd_hid_redraw(&PCB->hidlib);
 			}
 			break;
 
@@ -744,7 +744,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	if (layer != PCB_CURRLAYER(PCB_ACT_BOARD)) {
 		pcb_layervis_change_group_vis(RND_ACT_DESIGN, pcb_layer_id(PCB_ACT_BOARD->Data, layer), rnd_true, rnd_true);
-		rnd_hid_redraw(PCB);
+		rnd_hid_redraw(&PCB->hidlib);
 	}
 	RND_ACT_IRES(0);
 	return 0;

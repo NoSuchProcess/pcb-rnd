@@ -446,7 +446,7 @@ static void apply_vendor_map(void)
 		   file, redraw things, and make sure we can undo. */
 		if (changed) {
 			pcb_board_set_changed_flag(PCB, rnd_true);
-			rnd_hid_redraw(PCB);
+			rnd_hid_redraw(&PCB->hidlib);
 			pcb_undo_inc_serial();
 		}
 	}

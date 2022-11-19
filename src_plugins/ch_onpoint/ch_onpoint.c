@@ -189,7 +189,7 @@ static void onpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_t 
 	}
 
 	if (redraw)
-		rnd_hid_redraw(PCB);
+		rnd_hid_redraw(&PCB->hidlib);
 }
 
 static void pcb_ch_onpoint(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])

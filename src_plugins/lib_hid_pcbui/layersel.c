@@ -286,7 +286,7 @@ static void layer_select(ls_layer_t *lys)
 	else
 		return;
 
-	rnd_hid_redraw(PCB);
+	rnd_hid_redraw(&PCB->hidlib);
 
 	if (vis != NULL) {
 		lys_update_vis(lys, *vis);
@@ -434,7 +434,7 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	ensure_visible_current(PCB, lys->ls);
 
-	rnd_hid_redraw(PCB);
+	rnd_hid_redraw(&PCB->hidlib);
 }
 
 static void layer_right_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

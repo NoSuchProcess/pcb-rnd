@@ -802,7 +802,7 @@ done:
 	if (changed) {
 		pcb_rats_destroy(rnd_false);
 		pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE);
-		rnd_hid_redraw(PCB);
+		rnd_hid_redraw(&PCB->hidlib);
 	}
 	vtp0_uninit(&Selected);
 	return changed;

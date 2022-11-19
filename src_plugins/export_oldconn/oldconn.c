@@ -231,7 +231,7 @@ static void pcb_lookup_conns_to_all_subcs(FILE *f)
 
 	if (conf_core.editor.beep_when_finished)
 		rnd_gui->beep(rnd_gui);
-	rnd_hid_redraw(PCB);
+	rnd_hid_redraw(&PCB->hidlib);
 }
 
 static FILE *pcb_check_and_open_file(const char *Filename)

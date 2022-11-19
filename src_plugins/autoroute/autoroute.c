@@ -4804,7 +4804,7 @@ donerouting:
 
 		pcb_undo_inc_serial();
 
-		rnd_hid_redraw(PCB);
+		rnd_hid_redraw(&PCB->hidlib);
 	}
 #if defined (ROUTE_DEBUG)
 	aabort = 0;

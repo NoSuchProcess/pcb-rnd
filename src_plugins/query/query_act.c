@@ -372,7 +372,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 			if (RND_HAVE_GUI_ATTR_DLG)
-				rnd_hid_redraw(PCB);
+				rnd_hid_redraw(&PCB->hidlib);
 		}
 		RND_ACT_IRES(0);
 		return 0;
@@ -400,7 +400,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 			if (RND_HAVE_GUI_ATTR_DLG)
-				rnd_hid_redraw(PCB);
+				rnd_hid_redraw(&PCB->hidlib);
 		}
 		RND_ACT_IRES(0);
 		return 0;

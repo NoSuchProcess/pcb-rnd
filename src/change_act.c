@@ -511,7 +511,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (type != PCB_OBJ_VOID) {
 					pcb_undo_save_serial();
 					if (pcb_chg_obj_name_query(ptr2)) {
-						rnd_hid_redraw(PCB);
+						rnd_hid_redraw(&PCB->hidlib);
 						pcb_board_set_changed_flag(pcb, rnd_true);
 						rnd_actionva(RND_ACT_DESIGN, "DeleteRats", "AllRats", NULL);
 					}
