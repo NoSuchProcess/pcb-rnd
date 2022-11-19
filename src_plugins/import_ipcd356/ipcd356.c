@@ -411,15 +411,15 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_undo_freeze_serial();
 
 	if (want_net) {
-		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Freeze", NULL);
-		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Clear", NULL);
+		rnd_actionva(RND_ACT_DESIGN, "Netlist", "Freeze", NULL);
+		rnd_actionva(RND_ACT_DESIGN, "Netlist", "Clear", NULL);
 	}
 
 	rs = ipc356_parse(PCB, f, fname, scs, want_net, want_pads);
 
 	if (want_net) {
-		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Sort", NULL);
-		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Thaw", NULL);
+		rnd_actionva(RND_ACT_DESIGN, "Netlist", "Sort", NULL);
+		rnd_actionva(RND_ACT_DESIGN, "Netlist", "Thaw", NULL);
 	}
 
 	fclose(f);

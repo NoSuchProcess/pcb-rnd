@@ -302,7 +302,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (strcmp(opt, "inplace") == 0)
 		inplace = 1;
 
-	if (pcb->Changed && (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Switching to fontedit", "OK to lose unsaved edits on this board?", "cancel", 0, "yes", 1, NULL) != 1)) {
+	if (pcb->Changed && (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "Switching to fontedit", "OK to lose unsaved edits on this board?", "cancel", 0, "yes", 1, NULL) != 1)) {
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -317,7 +317,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* don't ask for losing changes twice */
 		pcb->Changed = 0;
 
-		if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
+		if (rnd_actionva(RND_ACT_DESIGN, "New", "Font", 0))
 			return 1;
 
 		pcb = PCB; /* our new board created above */
@@ -381,7 +381,7 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(1, FGW_STR, FontSave, fn = argv[1].val.str);
 
 	editor2font(pcb, font);
-	rnd_actionva(RND_ACT_HIDLIB, "SaveFontTo", fn, NULL);
+	rnd_actionva(RND_ACT_DESIGN, "SaveFontTo", fn, NULL);
 
 	RND_ACT_IRES(0);
 	return 0;

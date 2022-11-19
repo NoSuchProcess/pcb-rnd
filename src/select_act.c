@@ -103,13 +103,13 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+				rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 				pcb_tool_notify_block();
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, rnd_true, rnd_true, rnd_false)) {
 					pcb_board_set_changed_flag(pcb, rnd_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+				rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 				rnd_gui->invalidate_all(rnd_gui);
 				break;
 			}
@@ -162,8 +162,8 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 				rnd_hid_get_coords("Select the Subcircuit's Origin (mark) Location", &x, &y, 0);
-				x = rnd_grid_fit(x, RND_ACT_HIDLIB->grid, RND_ACT_HIDLIB->grid_ox);
-				y = rnd_grid_fit(y, RND_ACT_HIDLIB->grid, RND_ACT_HIDLIB->grid_oy);
+				x = rnd_grid_fit(x, RND_ACT_DESIGN->grid, RND_ACT_DESIGN->grid_ox);
+				y = rnd_grid_fit(y, RND_ACT_DESIGN->grid, RND_ACT_DESIGN->grid_oy);
 				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, rnd_true, rnd_false);
 				pcb_undo_save_serial();
 				pcb_remove_selected(0);
@@ -205,13 +205,13 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+				rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 				pcb_tool_notify_block();
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, rnd_false, rnd_true, rnd_false)) {
 					pcb_board_set_changed_flag(pcb, rnd_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+				rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 				break;
 			}
 

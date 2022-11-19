@@ -293,7 +293,7 @@ static const char pcb_acth_ImportGUI[] = "Asks user which schematics to import i
 static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_message(RND_MSG_ERROR, "The ImportGUI() action is deprecated. Using ImportSch() instead.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
-	RND_ACT_IRES(rnd_actionva(RND_ACT_HIDLIB, "ImportSch", NULL));
+	RND_ACT_IRES(rnd_actionva(RND_ACT_DESIGN, "ImportSch", NULL));
 	return 0;
 }
 

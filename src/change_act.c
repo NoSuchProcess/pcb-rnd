@@ -513,7 +513,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					if (pcb_chg_obj_name_query(ptr2)) {
 						rnd_hid_redraw(PCB);
 						pcb_board_set_changed_flag(pcb, rnd_true);
-						rnd_actionva(RND_ACT_HIDLIB, "DeleteRats", "AllRats", NULL);
+						rnd_actionva(RND_ACT_DESIGN, "DeleteRats", "AllRats", NULL);
 					}
 					if (op == F_Object) {
 						pcb_subc_t *subc = pcb_obj_parent_subc(ptr2);
@@ -531,7 +531,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", RND_EMPTY(RND_ACT_HIDLIB->name), "Layout name");
+			name = rnd_hid_prompt_for(RND_ACT_DESIGN, "Enter the layout name:", RND_EMPTY(RND_ACT_DESIGN->name), "Layout name");
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				pcb_board_set_changed_flag(pcb, rnd_true);
@@ -539,7 +539,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the name of the active layer */
 		case F_Layer:
-			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layer name:", RND_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
+			name = rnd_hid_prompt_for(RND_ACT_DESIGN, "Enter the layer name:", RND_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
 			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
 			if (name && (pcb_layer_rename_(PCB_CURRLAYER(PCB_ACT_BOARD), name, 1) == 0))
 				pcb_board_set_changed_flag(pcb, rnd_true);
@@ -788,7 +788,7 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(1, FGW_KEYWORD, SetValue, fnc_id = fgw_keyword(&argv[1]));
 
 	if (fnc_id == F_Grid)
-		return rnd_actionv_bin(RND_ACT_HIDLIB, "setgrid", res, argc-1, argv+1);
+		return rnd_actionv_bin(RND_ACT_DESIGN, "setgrid", res, argc-1, argv+1);
 
 	RND_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
 	RND_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
@@ -803,7 +803,7 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_conf_set_design("design/line_thickness", "%$mS", Size);
 				if (conf_core.editor.auto_drc)
 					pcb_crosshair_grid_fit(pcb, pcb_crosshair.X, pcb_crosshair.Y);
-				rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+				rnd_event(RND_ACT_DESIGN, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 			}
 			break;
 		case F_Text:

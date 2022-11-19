@@ -431,7 +431,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			args[1].type = FGW_STR; args[1].val.str = "advanced search results";
 			args[2].type = FGW_STR; args[2].val.str = "search_res";
 			fgw_ptr_reg(&rnd_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);
-			rnd_actionv_bin(RND_ACT_HIDLIB, "viewlist", &ares, 4, args);
+			rnd_actionv_bin(RND_ACT_DESIGN, "viewlist", &ares, 4, args);
 			RND_ACT_IRES(0);
 		}
 		else {

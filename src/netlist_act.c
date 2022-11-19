@@ -415,7 +415,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (a1 == NULL)
 				RND_ACT_FAIL(Netlist);
 			if (a2 == NULL) {
-				a2 = a2free = rnd_hid_prompt_for(RND_ACT_HIDLIB, "New name of the network", NULL, "net rename");
+				a2 = a2free = rnd_hid_prompt_for(RND_ACT_DESIGN, "New name of the network", NULL, "net rename");
 				if (a2 == NULL) {
 					RND_ACT_IRES(1);
 					return 0;
@@ -428,7 +428,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (a1 == NULL)
 				RND_ACT_FAIL(Netlist);
 			if (a2 == NULL) {
-				a2 = a2free = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Network name to merge into", NULL, "net merge");
+				a2 = a2free = rnd_hid_prompt_for(RND_ACT_DESIGN, "Network name to merge into", NULL, "net merge");
 				if (a2 == NULL) {
 					RND_ACT_IRES(1);
 					return 0;
@@ -631,7 +631,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (netname == NULL) {
-		free_netname = netname = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Name of the new network", NULL, "net name");
+		free_netname = netname = rnd_hid_prompt_for(RND_ACT_DESIGN, "Name of the new network", NULL, "net name");
 		if (netname == NULL) {
 			vtp0_uninit(&termlist);
 			RND_ACT_IRES(1);

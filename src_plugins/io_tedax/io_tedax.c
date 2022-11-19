@@ -227,7 +227,7 @@ static fgw_error_t pcb_act_TedaxTestParse(fgw_arg_t *res, int argc, fgw_arg_t *a
 	if (argc < 2)
 		return -1;
 	if ((argv[1].type & FGW_STR) == FGW_STR) {
-		FILE *f = rnd_fopen(RND_ACT_HIDLIB, argv[1].val.str, "r");
+		FILE *f = rnd_fopen(RND_ACT_DESIGN, argv[1].val.str, "r");
 		if (f == NULL) {
 			RND_ACT_IRES(0);
 			return 0;

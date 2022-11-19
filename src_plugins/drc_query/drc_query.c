@@ -711,7 +711,7 @@ static const char pcb_acth_DrcQueryRuleMod[] = "Automated DRC rule editing (for 
 static fgw_error_t pcb_act_DrcQueryRuleMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *target, *key = NULL, *val=NULL;
-	rnd_design_t *hl = RND_ACT_HIDLIB;
+	rnd_design_t *hl = RND_ACT_DESIGN;
 	int resi = -1;
 
 	RND_ACT_CONVARG(1, FGW_STR, DrcQueryRuleMod, cmd = argv[1].val.str);
@@ -745,7 +745,7 @@ static const char pcb_acth_DrcQueryDefMod[] = "Automated DRC rule editing (for s
 static fgw_error_t pcb_act_DrcQueryDefMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *target, *key = NULL, *val=NULL;
-	rnd_design_t *hl = RND_ACT_HIDLIB;
+	rnd_design_t *hl = RND_ACT_DESIGN;
 	int resi = -1;
 
 	RND_ACT_CONVARG(1, FGW_STR, DrcQueryDefMod, cmd = argv[1].val.str);
@@ -787,7 +787,7 @@ static fgw_error_t pcb_act_DrcQueryExport(fgw_arg_t *res, int argc, fgw_arg_t *a
 	int ires = 0;
 	const char *id, *fn = NULL, *fmt;
 	char *autofree = NULL;
-	rnd_design_t *hl = RND_ACT_HIDLIB;
+	rnd_design_t *hl = RND_ACT_DESIGN;
 	const rnd_hid_fsd_filter_t *flt = init_flt(&fmt);
 
 	RND_ACT_CONVARG(1, FGW_STR, DrcQueryExport, id = argv[1].val.str);
@@ -832,7 +832,7 @@ static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *a
 	int ires = 0;
 	const char *fn = NULL, *fmt;
 	char *autofree = NULL;
-	rnd_design_t *hl = RND_ACT_HIDLIB;
+	rnd_design_t *hl = RND_ACT_DESIGN;
 	FILE *f;
 	fgw_arg_t args[2], tpres;
 	const rnd_hid_fsd_filter_t *flt = init_flt(&fmt);

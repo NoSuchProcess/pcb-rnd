@@ -176,7 +176,7 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (rnd_strcasecmp(cmd, "gui") == 0) {
-		rs = cam_gui(RND_ACT_HIDLIB, arg);
+		rs = cam_gui(RND_ACT_DESIGN, arg);
 	}
 	else {
 		if (arg == NULL) {

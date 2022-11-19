@@ -47,7 +47,7 @@ static const char pcb_acth_mill[] = "Calculate toolpath for milling away copper"
 fgw_error_t pcb_act_mill(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *script = NULL;
-	pcb_board_t *pcb = (pcb_board_t *)RND_ACT_HIDLIB;
+	pcb_board_t *pcb = (pcb_board_t *)RND_ACT_DESIGN;
 	ctx.edge_clearance = RND_MM_TO_COORD(0.05);
 	ctx.tools = &tools;
 

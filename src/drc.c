@@ -75,7 +75,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (rnd_strcasecmp(dlg_type, "list") == 0) {
 		if (RND_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "list";
-			return rnd_actionv_bin(RND_ACT_HIDLIB, dlgact, res, 2, args);
+			return rnd_actionv_bin(RND_ACT_DESIGN, dlgact, res, 2, args);
 		}
 		dlg_type = "print";
 	}
@@ -83,7 +83,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (rnd_strcasecmp(dlg_type, "simple") == 0) {
 		if (RND_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "simple";
-			return rnd_actionv_bin(RND_ACT_HIDLIB, dlgact, res, 2, args);
+			return rnd_actionv_bin(RND_ACT_DESIGN, dlgact, res, 2, args);
 		}
 		dlg_type = "print";
 	}

@@ -300,7 +300,7 @@ fgw_error_t pcb_act_LayerHotkey(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	args[1].type = FGW_STR; args[1].val.cstr = msg;
 	args[2].type = FGW_STR; args[2].val.cstr = val;
 	args[3].type = FGW_STR; args[3].val.cstr = title;
-	er = rnd_actionv_bin(RND_ACT_HIDLIB, "promptfor", &r, 4, args);
+	er = rnd_actionv_bin(RND_ACT_DESIGN, "promptfor", &r, 4, args);
 
 	if ((er != 0) || ((r.type & FGW_STR) != FGW_STR)) {
 		fgw_arg_free(&rnd_fgw, &r);

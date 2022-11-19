@@ -179,7 +179,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_freeze_serial();
-				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - RND_ACT_HIDLIB->dwg.Y2);
+				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - RND_ACT_DESIGN->dwg.Y2);
 				pcb_undo_unfreeze_serial();
 				pcb_undo_inc_serial();
 				pcb_draw();
@@ -230,11 +230,11 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (ny->absolute[0])
 		ny->c[0] -= pcb_crosshair.Y;
 
-	rnd_event(RND_ACT_HIDLIB, PCB_EVENT_RUBBER_RESET, NULL);
+	rnd_event(RND_ACT_DESIGN, PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
-		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
+		rnd_event(RND_ACT_DESIGN, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 	if (type == PCB_OBJ_SUBC)
-		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
+		rnd_event(RND_ACT_DESIGN, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx->c[0], ny->c[0]);
 	pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 
@@ -577,7 +577,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	args[0].type = FGW_FUNC;
 	args[0].val.argv0.func = NULL;
-	args[0].val.argv0.user_call_ctx = RND_ACT_HIDLIB;
+	args[0].val.argv0.user_call_ctx = RND_ACT_DESIGN;
 	args[1] = argv[3];
 	args[2] = argv[2];
 	args[3] = argv[4];
@@ -606,7 +606,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		printf("  ... Footprint not on board, need to add it.\n");
 #endif
 		/* Not on board, need to add it. */
-		if (RND_ACT_CALL_C(RND_ACT_HIDLIB, pcb_act_LoadFootprint, &rs, argc, args) != 0) {
+		if (RND_ACT_CALL_C(RND_ACT_DESIGN, pcb_act_LoadFootprint, &rs, argc, args) != 0) {
 			number_of_footprints_not_found++;
 			RND_ACT_IRES(1);
 			return 0;
@@ -628,7 +628,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
-		if (RND_ACT_CALL_C(RND_ACT_HIDLIB, pcb_act_LoadFootprint, &rs, argc, args) != 0) {
+		if (RND_ACT_CALL_C(RND_ACT_DESIGN, pcb_act_LoadFootprint, &rs, argc, args) != 0) {
 			number_of_footprints_not_found++;
 			RND_ACT_IRES(1);
 			return 0;
@@ -653,7 +653,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				rnd_coord_t pcx = 0, pcy = 0;
 				pcb_subc_get_origin(psc, &pcx, &pcy);
 				if (!orig_on_top)
-					pcb_subc_change_side(psc, pcy * 2 - RND_ACT_HIDLIB->dwg.Y2);
+					pcb_subc_change_side(psc, pcy * 2 - RND_ACT_DESIGN->dwg.Y2);
 				if (orig_rot != 0) {
 					double cosa, sina;
 					cosa = cos(orig_rot / RND_RAD_TO_DEG);
@@ -1129,7 +1129,7 @@ static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				return 0;
 			}
 			else
-				gfx_set_resize_gui(RND_ACT_HIDLIB, gfx, 1, 1);
+				gfx_set_resize_gui(RND_ACT_DESIGN, gfx, 1, 1);
 			break;
 		default:
 			RND_ACT_FAIL(GfxMod);

@@ -276,13 +276,13 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
 	RND_ACT_IRES(0);
 
-	rnd_setenv("PCB_RND_BOARD_FILE_NAME", RND_ACT_HIDLIB->filename == NULL ? "" : RND_ACT_HIDLIB->filename, 1);
+	rnd_setenv("PCB_RND_BOARD_FILE_NAME", RND_ACT_DESIGN->filename == NULL ? "" : RND_ACT_DESIGN->filename, 1);
 	rnd_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.X);
 	rnd_setenv("PCB_RND_CROSSHAIR_X_MM", tmp, 1);
 	rnd_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);
 	rnd_setenv("PCB_RND_CROSSHAIR_Y_MM", tmp, 1);
 	rnd_setenv("PCB_RND_CURRENT_LAYER_NAME", PCB_CURRLAYER(PCB_ACT_BOARD)->name, 1);
-	RND_ACT_IRES(rnd_system(RND_ACT_HIDLIB, cmd));
+	RND_ACT_IRES(rnd_system(RND_ACT_DESIGN, cmd));
 	return 0;
 }
 
@@ -298,7 +298,7 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *fname;
 
 	RND_ACT_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
-	RND_ACT_IRES(pcb_act_execute_file(RND_ACT_HIDLIB, fname));
+	RND_ACT_IRES(pcb_act_execute_file(RND_ACT_DESIGN, fname));
 	return 0;
 }
 

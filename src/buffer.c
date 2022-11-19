@@ -312,7 +312,7 @@ fgw_error_t pcb_act_LoadPixmap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		fn = default_file = nfn;
 	}
 
-	pxm = rnd_pixmap_load(RND_ACT_HIDLIB, fn);
+	pxm = rnd_pixmap_load(RND_ACT_DESIGN, fn);
 	if (pxm == NULL) {
 		rnd_message(RND_MSG_ERROR, "Failed to load pixmap from '%s' - is that file a pixmap in any of the supported formats?\n", fn);
 		RND_ACT_IRES(-1);
@@ -506,7 +506,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	if (angle_s == NULL)
-		angle_s = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter Rotation (degrees, CCW):", "0", "Rotation angle");
+		angle_s = rnd_hid_prompt_for(RND_ACT_DESIGN, "Enter Rotation (degrees, CCW):", "0", "Rotation angle");
 
 	if ((angle_s == NULL) || (*angle_s == '\0')) {
 		free(angle_s);
@@ -528,9 +528,9 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 	pcb_buffer_rotate(PCB_PASTEBUFFER, ang);
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 	return 0;
 }
 
@@ -637,7 +637,7 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		y = th = x;
 	}
 	else {
-		if (pcb_actgui_ScaleBuffer(RND_ACT_HIDLIB, &x, &y, &th, &recurse) != 0) {
+		if (pcb_actgui_ScaleBuffer(RND_ACT_DESIGN, &x, &y, &th, &recurse) != 0) {
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -654,9 +654,9 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_IRES(0);
 
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 	pcb_buffer_scale(PCB_PASTEBUFFER, x, y, th, recurse);
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 	return 0;
 }
 
@@ -1017,7 +1017,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 	switch (op) {
 			/* clear contents of paste buffer */
 		case F_Clear:
@@ -1103,9 +1103,9 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			{
 				FILE *exist;
 
-				if ((!force) && ((exist = rnd_fopen(RND_ACT_HIDLIB, name, "r")))) {
+				if ((!force) && ((exist = rnd_fopen(RND_ACT_DESIGN, name, "r")))) {
 					fclose(exist);
-					if (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Buffer: overwrite file", "File exists!  Ok to overwrite?", "cancel", 0, "yes", 1, NULL) == 1)
+					if (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "Buffer: overwrite file", "File exists!  Ok to overwrite?", "cancel", 0, "yes", 1, NULL) == 1)
 						pcb_save_buffer(name, fmt);
 				}
 				else
@@ -1134,18 +1134,18 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			else
 				name = sbufnum;
 
-			if (pcb_load_buffer(RND_ACT_HIDLIB, PCB_PASTEBUFFER, name, NULL) != 0) {
+			if (pcb_load_buffer(RND_ACT_DESIGN, PCB_PASTEBUFFER, name, NULL) != 0) {
 				rnd_message(RND_MSG_ERROR, "Failed to load buffer from %s\n", name);
 				RND_ACT_IRES(-1);
 			}
 			else
-				rnd_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
+				rnd_tool_select_by_name(RND_ACT_DESIGN, "buffer");
 			break;
 
 		case F_Save:
 			name = sbufnum;
-			rv = rnd_actionva(RND_ACT_HIDLIB, "SaveTo", "PasteBuffer", name, fmt, NULL);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+			rv = rnd_actionva(RND_ACT_DESIGN, "SaveTo", "PasteBuffer", name, fmt, NULL);
+			rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 			return rv;
 
 		case F_ToLayout:
@@ -1170,7 +1170,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				}
 
 				else {
-					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+					rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 					RND_ACT_FAIL(PasteBuffer);
 				}
 
@@ -1193,13 +1193,13 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				number = strtol(sbufnum, &end, 10);
 				if (*end != 0) {
 					rnd_message(RND_MSG_ERROR, "invalid buffer number '%s': should be an integer\n", sbufnum);
-					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+					rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 					return FGW_ERR_ARG_CONV;
 				}
 				number--;
 				if ((number < 0) || (number >= PCB_MAX_BUFFER)) {
 					rnd_message(RND_MSG_ERROR, "invalid buffer number '%d': out of range 1..%d\n", number+1, PCB_MAX_BUFFER);
-					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+					rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 					return FGW_ERR_ARG_CONV;
 				}
 			}
@@ -1207,7 +1207,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				number = conf_core.editor.buffer_number;
 			res->type = FGW_STR;
 			res->val.str = pcb_buffers[number].source_path;
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 			return 0;
 
 			/* set number */
@@ -1221,12 +1221,12 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			}
 	}
 
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 	RND_ACT_IRES(0);
 	return 0;
 
 	error:;
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 	RND_ACT_IRES(-1);
 	return 0;
 }

@@ -79,21 +79,21 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_SubcToBuffer:
 		case F_Subcircuit:
 		case F_Footprint:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
-				rnd_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+				rnd_tool_select_by_name(RND_ACT_DESIGN, "buffer");
+			rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 			break;
 
 		case F_LayoutToBuffer:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 			if (pcb_buffer_load_layout(pcb, PCB_PASTEBUFFER, name, format))
-				rnd_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+				rnd_tool_select_by_name(RND_ACT_DESIGN, "buffer");
+			rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 			break;
 
 		case F_Layout:
-			if (!pcb->Changed ||  rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
+			if (!pcb->Changed ||  rnd_hid_message_box(RND_ACT_DESIGN, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
 				pcb_load_pcb(name, format, rnd_true, 0);
 			break;
 
@@ -108,14 +108,14 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_netlist_init(&(pcb->netlist[i]));
 				}
 			}
-			if (!pcb_import_netlist(RND_ACT_HIDLIB, pcb->Netlistname))
+			if (!pcb_import_netlist(RND_ACT_DESIGN, pcb->Netlistname))
 				pcb_netlist_changed(1);
 			else
 				rnd_message(RND_MSG_ERROR, "None of the netlist import plugins could handle that file:\nunknown/broken file format or partial load due to errors in the file\n");
 			break;
 
 		case F_Revert:
-			if (RND_ACT_HIDLIB->filename && (!pcb->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
+			if (RND_ACT_DESIGN->filename && (!pcb->Changed || (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
 
@@ -140,11 +140,11 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
 
-	if (!pcb->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
+	if (!pcb->Changed || (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
 		if (argument_name)
 			name = rnd_strdup(argument_name);
 		else
-			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", "", "Layout name");
+			name = rnd_hid_prompt_for(RND_ACT_DESIGN, "Enter the layout name:", "", "Layout name");
 
 		if (!name)
 			return 1;
@@ -152,7 +152,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* pcb usage: at the moment, while having only one global pcb, this function
    legitimately uses that */
 
-		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
@@ -184,7 +184,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_center_display(pcb, (pcb->hidlib.dwg.X1+pcb->hidlib.dwg.X2) / 2, (pcb->hidlib.dwg.Y1+pcb->hidlib.dwg.Y2) / 2);
 		pcb_board_replaced(0);
 		rnd_hid_redraw(pcb);
-		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+		rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 		RND_ACT_IRES(0);
 		return 0;
 	}
@@ -263,17 +263,17 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_message(RND_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
 				return FGW_ERR_ARGC;
 			}
-			if (pcb_save_pcb(RND_ACT_HIDLIB->filename, NULL) == 0)
+			if (pcb_save_pcb(RND_ACT_DESIGN->filename, NULL) == 0)
 				pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_false);
-			rnd_event(RND_ACT_HIDLIB, RND_EVENT_DESIGN_FN_CHANGED, NULL);
+			rnd_event(RND_ACT_DESIGN, RND_EVENT_DESIGN_FN_CHANGED, NULL);
 			return 0;
 
 		case F_LayoutAs:
 			if (pcb_save_pcb(name, fmt) == 0) {
 				pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_false);
-				free(RND_ACT_HIDLIB->filename);
-				RND_ACT_HIDLIB->filename = rnd_strdup(name);
-				rnd_event(RND_ACT_HIDLIB, RND_EVENT_DESIGN_FN_CHANGED, NULL);
+				free(RND_ACT_DESIGN->filename);
+				RND_ACT_DESIGN->filename = rnd_strdup(name);
+				rnd_event(RND_ACT_DESIGN, RND_EVENT_DESIGN_FN_CHANGED, NULL);
 			}
 			return 0;
 
@@ -294,14 +294,14 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* shorthand kept only for compatibility reasons - do not use */
 		case F_AllConnections:
 			rnd_message(RND_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "AllConnections", name, NULL);
+			return rnd_actionva(RND_ACT_DESIGN, "ExportOldConn", "AllConnections", name, NULL);
 		case F_AllUnusedPins:
 			rnd_message(RND_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "AllUnusedPins", name, NULL);
+			return rnd_actionva(RND_ACT_DESIGN, "ExportOldConn", "AllUnusedPins", name, NULL);
 		case F_ElementConnections:
 		case F_SubcConnections:
 			rnd_message(RND_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "SubcConnections", name, NULL);
+			return rnd_actionva(RND_ACT_DESIGN, "ExportOldConn", "SubcConnections", name, NULL);
 	}
 
 	RND_ACT_FAIL(SaveTo);
@@ -392,7 +392,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			name = rnd_strdup(fn);
 
-		f = rnd_fopen(RND_ACT_HIDLIB, name, "w");
+		f = rnd_fopen(RND_ACT_DESIGN, name, "w");
 		if (f == NULL) {
 			rnd_message(RND_MSG_ERROR, "Failed to open %s for write\n", name);
 			free(name);
@@ -450,7 +450,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			FILE *f;
 			char *fullname = rnd_strdup_printf("%s.%ld%s%s", name, (long)sit.count, sep, ending);
 
-			f = rnd_fopen(RND_ACT_HIDLIB, fullname, "w");
+			f = rnd_fopen(RND_ACT_DESIGN, fullname, "w");
 			free(fullname);
 			if (f != NULL) {
 				if (p->write_subcs_head(p, &udata, f, 0, 1) == 0) {
@@ -521,7 +521,7 @@ fgw_error_t pcb_act_PadstackSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		name = rnd_strdup(fn);
 
-	f = rnd_fopen(RND_ACT_HIDLIB, name, "w");
+	f = rnd_fopen(RND_ACT_DESIGN, name, "w");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Failed to open %s for write\n", name);
 		free(name);
@@ -548,7 +548,7 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((force != NULL) && (rnd_strcasecmp(force, "force") == 0))
 		exit(0);
-	if (!pcb->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!pcb->Changed || (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
 	RND_ACT_IRES(-1);
 	return 0;
@@ -587,12 +587,12 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	argc-=2;
 
 	/* call the exporter */
-	rnd_event(RND_ACT_HIDLIB, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
+	rnd_event(RND_ACT_DESIGN, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 	a = args;
 	a++;
 	rnd_exporter->parse_arguments(rnd_exporter, &argc, &a);
 	rnd_exporter->do_export(rnd_exporter, NULL);
-	rnd_event(RND_ACT_HIDLIB, RND_EVENT_EXPORT_SESSION_END, NULL);
+	rnd_event(RND_ACT_DESIGN, RND_EVENT_EXPORT_SESSION_END, NULL);
 
 	rnd_exporter = NULL;
 	RND_ACT_IRES(0);

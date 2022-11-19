@@ -66,7 +66,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* Called with both function and file name -> no gui */
 	if (argc > 2)
-		return RND_ACT_CALL_C(RND_ACT_HIDLIB, pcb_act_LoadFrom, res, argc, argv);
+		return RND_ACT_CALL_C(RND_ACT_DESIGN, pcb_act_LoadFrom, res, argc, argv);
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
@@ -87,7 +87,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (name != NULL) {
 		if (rnd_conf.rc.verbose)
 			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
-		rnd_actionva(RND_ACT_HIDLIB, "LoadFrom", function, name, NULL);
+		rnd_actionva(RND_ACT_DESIGN, "LoadFrom", function, name, NULL);
 		free(name);
 	}
 
@@ -416,13 +416,13 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	is_dialog = (function != NULL) && (rnd_strncasecmp(function, "Dialog", 6) == 0);
 
 	if ((!is_dialog) && (argc > 2))
-		return RND_ACT_CALL_C(RND_ACT_HIDLIB, pcb_act_SaveTo, res, argc, argv);
+		return RND_ACT_CALL_C(RND_ACT_DESIGN, pcb_act_SaveTo, res, argc, argv);
 
 	memset(&save, 0, sizeof(save));
 
 	if (rnd_strcasecmp(function, "Layout") == 0)
 		if (PCB->hidlib.filename != NULL)
-			return rnd_actionva(RND_ACT_HIDLIB, "SaveTo", "Layout", NULL);
+			return rnd_actionva(RND_ACT_DESIGN, "SaveTo", "Layout", NULL);
 
 	if (is_dialog) {
 		const char *siot, *sext;
@@ -605,7 +605,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *sfmt = avail.plug[fmt]->description;
 		if (fmt_param != NULL)
 			sfmt = avail.plug[save.pick]->description;
-		rnd_actionva(RND_ACT_HIDLIB, "PasteBuffer", "Save", final_name, sfmt, NULL);
+		rnd_actionva(RND_ACT_DESIGN, "PasteBuffer", "Save", final_name, sfmt, NULL);
 	}
 	else {
 		const char *sfmt = NULL;
@@ -618,9 +618,9 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		 * just obtained.
 		 */
 		if (rnd_strcasecmp(function, "Layout") == 0)
-			rnd_actionva(RND_ACT_HIDLIB, "SaveTo", "LayoutAs", final_name, sfmt, NULL);
+			rnd_actionva(RND_ACT_DESIGN, "SaveTo", "LayoutAs", final_name, sfmt, NULL);
 		else
-			rnd_actionva(RND_ACT_HIDLIB, "SaveTo", function, final_name, sfmt, NULL);
+			rnd_actionva(RND_ACT_DESIGN, "SaveTo", function, final_name, sfmt, NULL);
 	}
 
 	free(final_name);

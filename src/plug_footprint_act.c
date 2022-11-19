@@ -43,7 +43,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	if (name == NULL) {
-		pcb_fp_rehash(RND_ACT_HIDLIB, NULL);
+		pcb_fp_rehash(RND_ACT_DESIGN, NULL);
 		return 0;
 	}
 
@@ -66,7 +66,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (pcb_fp_rehash(RND_ACT_HIDLIB, l) != 0) {
+	if (pcb_fp_rehash(RND_ACT_DESIGN, l) != 0) {
 		rnd_message(RND_MSG_ERROR, "Failed to rehash %s\n", name);
 		RND_ACT_IRES(1);
 		return 0;

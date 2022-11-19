@@ -79,12 +79,12 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_remove_object(obj->type, obj->parent.any, obj, obj);
 		}
 		else { /* interactive remove */
-			rnd_design_t *hidlib = RND_ACT_HIDLIB;
+			rnd_design_t *hidlib = RND_ACT_DESIGN;
 			rnd_hid_get_coords("Click on object to delete", &hidlib->tool_x, &hidlib->tool_y, 0);
-			rnd_tool_save(RND_ACT_HIDLIB);
-			rnd_tool_select_by_name(RND_ACT_HIDLIB, "remove");
-			rnd_tool_do_press(RND_ACT_HIDLIB);
-			rnd_tool_restore(RND_ACT_HIDLIB);
+			rnd_tool_save(RND_ACT_DESIGN);
+			rnd_tool_select_by_name(RND_ACT_DESIGN, "remove");
+			rnd_tool_do_press(RND_ACT_DESIGN);
+			rnd_tool_restore(RND_ACT_DESIGN);
 		}
 		break;
 	case F_Selected:

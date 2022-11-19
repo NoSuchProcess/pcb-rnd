@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(1, FGW_STR, LoadLayout, filename = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, LoadLayout, format = argv[2].val.str);
 
-	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Load data lose", "OK to override layout data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "Load data lose", "OK to override layout data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_load_pcb(filename, format, rnd_true, 0);
 
 	RND_ACT_IRES(0);
@@ -122,7 +122,7 @@ static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 /* DOC: q.html */
 static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
 	RND_ACT_IRES(0);
 	return 0;
@@ -190,7 +190,7 @@ static const char pcb_acth_SaveLayoutAndQuit[] = "Saves the layout data and quit
 /* DOC: wq.html */
 static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (RND_ACT_CALL_C(RND_ACT_HIDLIB, pcb_act_SaveLayout, res, argc, argv) == 0)
+	if (RND_ACT_CALL_C(RND_ACT_DESIGN, pcb_act_SaveLayout, res, argc, argv) == 0)
 		return pcb_act_Quit(res, argc, argv);
 
 	RND_ACT_IRES(1);
