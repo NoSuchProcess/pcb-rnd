@@ -251,7 +251,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 			memset(&p, 0, sizeof(p));
 			p.params['p' - 'a'] = Path;
 			p.params['f' - 'a'] = Filename;
-			p.hidlib = &PCB->hidlib;
+			p.design = &PCB->hidlib;
 			command = rnd_build_argfn(Executable, &p);
 			/* open pipe to stdout of command */
 			if (*command == '\0' || (yyin = rnd_popen(NULL, command, "r")) == NULL) {

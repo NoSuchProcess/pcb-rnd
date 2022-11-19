@@ -114,7 +114,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 	memset(&subs, 0, sizeof(subs));
 	subs.params['f' - 'a'] = fn;
 	subs.params['c' - 'a'] = fn_cfg;
-	subs.hidlib = &PCB->hidlib;
+	subs.design = &PCB->hidlib;
 	cmd = rnd_build_argfn(mth->command, &subs);
 
 	/* Don't use rnd_system() because that blocks the current process and the
