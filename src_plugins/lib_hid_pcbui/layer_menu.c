@@ -38,6 +38,7 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/hid/hid.h>
+#include <librnd/hid/hid_menu.h>
 
 #include "layer_menu.h"
 
