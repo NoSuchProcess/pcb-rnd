@@ -426,7 +426,7 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
-static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void png_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	int save_ons[PCB_MAX_LAYER];
 	rnd_box_t tmp, *bbox;

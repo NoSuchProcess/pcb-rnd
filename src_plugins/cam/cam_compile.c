@@ -118,7 +118,7 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 			{ /* call the exporter */
 				void *old_vars, *tmp;
 				old_vars = pcb_cam_vars_use(ctx->vars);
-				ctx->exporter->do_export(ctx->exporter, 0);
+				ctx->exporter->do_export(ctx->exporter, ctx->hidlib, 0, NULL);
 				tmp = pcb_cam_vars_use(old_vars);
 				assert(tmp == ctx->vars); /* we must be restoring from our own context else the recursion is broken */
 			}

@@ -551,7 +551,7 @@ int main(int argc, char *argv[])
 		rnd_parse_actions(&PCB->hidlib, conf_core.rc.action_string);
 	}
 
-	if (rnd_main_exported(&ga, &PCB->hidlib, pcb_data_is_empty(PCB->Data))) {
+	if (rnd_main_exported(&ga, &PCB->hidlib, pcb_data_is_empty(PCB->Data), NULL)) {
 		pcb_main_uninit();
 		rnd_main_args_uninit(&ga);
 		exit(0);

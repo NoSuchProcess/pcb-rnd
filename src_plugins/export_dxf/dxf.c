@@ -261,7 +261,7 @@ int insert_ftr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 }
 
 extern const char dxf_templ_default_arr[];
-static void dxf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void dxf_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];

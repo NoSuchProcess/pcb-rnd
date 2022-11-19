@@ -264,7 +264,7 @@ static int export_cam_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return 1;
 }
 
-static void export_cam_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void export_cam_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	if (!cam_export_has_outfile)
 		cam_init_inst_fn(&cam_export_ctx);

@@ -102,7 +102,7 @@ static void mc_copyin(const char *path)
 	}
 }
 
-static void export_vfs_mc_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void export_vfs_mc_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *cmd;
 

@@ -309,7 +309,7 @@ static void append_file_suffix(gds_t *dst, rnd_layergrp_id_t gid, rnd_layer_id_t
 	filesuff = fn_gds.array + fn_baselen;
 }
 
-static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void gerber_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *fnbase;
 	int i;

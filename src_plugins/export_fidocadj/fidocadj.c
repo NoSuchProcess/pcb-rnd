@@ -160,7 +160,7 @@ static void write_custom_subc(FILE *f, pcb_subc_t *sc)
 	free(msg);
 }
 
-static void fidocadj_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void fidocadj_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	FILE *f;
 	const char *filename, *libfile;

@@ -296,7 +296,7 @@ static void scad_new_layer_group(const char *group_name, int level, const char *
 }
 
 
-static void openscad_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];

@@ -563,17 +563,17 @@ static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, const st
 	pcb_cam_end(&cam);
 }
 
-static void stl_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void stl_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	stl_do_export_(hid, options, &fmt_stl);
 }
 
-static void amf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void amf_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	stl_do_export_(hid, options, &fmt_amf);
 }
 
-static void proj_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void proj_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	stl_do_export_(hid, options, &fmt_proj);
 }

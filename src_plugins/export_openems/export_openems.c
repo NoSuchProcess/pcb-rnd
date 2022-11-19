@@ -664,7 +664,7 @@ static void openems_hid_export_to_file(const char *filename, FILE *the_file, FIL
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
-static void openems_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void openems_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *filename;
 	char *runfn = NULL, *end;

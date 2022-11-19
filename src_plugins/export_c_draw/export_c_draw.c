@@ -118,7 +118,7 @@ void c_draw_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rn
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
-static void c_draw_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void c_draw_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];

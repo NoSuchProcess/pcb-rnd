@@ -213,7 +213,7 @@ static const rnd_export_opt_t *excellon_get_export_options(rnd_hid_t *hid, int *
 	return excellon_options;
 }
 
-static void excellon_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void excellon_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *fnbase, *fn;
 	char *filesuff;

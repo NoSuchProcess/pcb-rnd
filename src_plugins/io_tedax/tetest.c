@@ -198,7 +198,7 @@ static const rnd_export_opt_t *tedax_etest_get_export_options(rnd_hid_t *hid, in
 	return tedax_etest_options;
 }
 
-static void tedax_etest_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void tedax_etest_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	int i;
 	const char *name;

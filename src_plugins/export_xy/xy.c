@@ -933,7 +933,7 @@ static const char *get_templ(const char *tid, const char *type)
 	return NULL;
 }
 
-static void xy_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void xy_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	template_t templ;
 	char **tid;

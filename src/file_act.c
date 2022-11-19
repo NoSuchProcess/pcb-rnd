@@ -559,6 +559,7 @@ static const char pcb_acts_Export[] = "Export(exporter, [exporter-args])";
 static const char pcb_acth_Export[] = "Export the current layout, e.g. Export(png, --dpi, 600)";
 static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	rnd_design_t *dsg = RND_ACT_DESIGN;
 	char *args[128];
 	char **a;
 	int n;
@@ -591,7 +592,7 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	a = args;
 	a++;
 	rnd_exporter->parse_arguments(rnd_exporter, &argc, &a);
-	rnd_exporter->do_export(rnd_exporter, NULL);
+	rnd_exporter->do_export(rnd_exporter, dsg, NULL, NULL);
 	rnd_event(RND_ACT_DESIGN, RND_EVENT_EXPORT_SESSION_END, NULL);
 
 	rnd_exporter = NULL;

@@ -222,7 +222,7 @@ static int bom_print(void)
 	return 0;
 }
 
-static void bom_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void bom_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	pcb_cam_t cam;
 

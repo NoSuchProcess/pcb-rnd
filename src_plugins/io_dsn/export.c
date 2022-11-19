@@ -81,7 +81,7 @@ static const rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n)
 #define rnd_conf_force_set_int(var, val) *((RND_CFT_INTEGER *)(&var)) = val
 
 
-static void dsn_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void dsn_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	FILE *f;
 	int restore_conf = 0;

@@ -129,7 +129,7 @@ typedef struct layer_stat_s {
 	unsigned long int lines, arcs, polys, elements;
 } layer_stat_t;
 
-static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void stat_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	FILE *f;
 	const char *filename;

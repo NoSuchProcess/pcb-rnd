@@ -440,7 +440,7 @@ static int ipcd356_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return rnd_hid_parse_command_line(argc, argv);
 }
 
-static void ipcd356_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void ipcd356_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *fn;
 	FILE *f;

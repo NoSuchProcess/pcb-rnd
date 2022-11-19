@@ -324,7 +324,7 @@ static int gcode_export_layer_group(rnd_layergrp_id_t group, const char *purpose
 	return 0;
 }
 
-static void gcode_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void gcode_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	rnd_layergrp_id_t gid;
 	rnd_xform_t xform;
