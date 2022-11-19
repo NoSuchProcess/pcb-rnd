@@ -274,7 +274,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			{
 				rnd_coord_t old_grid = rnd_conf.editor.grid, x, y;
 
-				rnd_hidlib_set_grid(RND_ACT_DESIGN, 1, rnd_false, 0, 0);
+				rnd_hid_set_grid(RND_ACT_DESIGN, 1, rnd_false, 0, 0);
 				/* ask for coordinates, but then use the crosshair: with grid 0;0, this
 				   means the user can go anywhere, but snapping will apply; if the
 				   crosshair is snapped, we are aligning to an object(point), else
@@ -282,7 +282,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_hid_get_coords("Click to set the grid origin", &x, &y, 0);
 				if (pcb_crosshair_move_absolute(PCB_ACT_BOARD, pcb_crosshair.X, pcb_crosshair.Y))
 					rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true); /* first notify was in MoveCrosshairAbs */
-				rnd_hidlib_set_grid(RND_ACT_DESIGN, old_grid, rnd_true, pcb_crosshair.X, pcb_crosshair.Y);
+				rnd_hid_set_grid(RND_ACT_DESIGN, old_grid, rnd_true, pcb_crosshair.X, pcb_crosshair.Y);
 
 				rnd_grid_inval();
 			}
