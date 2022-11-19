@@ -40,7 +40,7 @@
 #include "obj_pstk_inlines.h"
 #include <librnd/core/rnd_printf.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "netlist.h"
 
 #include "obj_line_op.h"

@@ -33,7 +33,7 @@
  */
 #include "config.h"
 
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #include "board.h"
 #include "data.h"

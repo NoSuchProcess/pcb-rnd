@@ -27,7 +27,7 @@
 #include "config.h"
 #include <librnd/core/actions.h>
 #include <librnd/hid/hid_dad.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "funchash_core.h"
 #include "obj_pstk.h"
 #include "obj_pstk_op.h"

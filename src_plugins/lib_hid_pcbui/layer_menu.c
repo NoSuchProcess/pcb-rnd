@@ -30,7 +30,7 @@
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/event.h>
 #include "layer.h"
 #include "layer_ui.h"

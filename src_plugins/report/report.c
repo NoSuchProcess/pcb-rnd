@@ -33,7 +33,7 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "src_plugins/query/net_len.h"
 
 #include <math.h>

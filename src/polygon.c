@@ -39,7 +39,7 @@
 
 #include "board.h"
 #include <librnd/core/box.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "data.h"
 #include "draw.h"
 #include <librnd/core/error.h>

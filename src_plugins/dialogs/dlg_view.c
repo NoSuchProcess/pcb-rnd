@@ -33,7 +33,7 @@
 #include <librnd/core/actions.h>
 #include "board.h"
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "view.h"
 #include "draw.h"
 #include "drc.h"

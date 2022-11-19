@@ -60,7 +60,7 @@ static const char *EXPERIMENTAL = NULL;
 #include <librnd/core/funchash.h>
 #include <librnd/core/conf.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <genvector/vtp0.h>
 #include "layer_vis.h"
 #include "layer_ui.h"

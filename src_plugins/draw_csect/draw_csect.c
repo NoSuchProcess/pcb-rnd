@@ -35,7 +35,7 @@
 #include "stub_draw.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "event.h"
 #include "undo.h"
 #include "layer_vis.h"

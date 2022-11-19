@@ -29,7 +29,7 @@
 #include <librnd/hid/hid_inlines.h>
 #include <librnd/core/compat_misc.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #define CLI_MAX_INS_LEN 128
 

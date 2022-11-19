@@ -36,7 +36,7 @@
 #include "board.h"
 #include "build_run.h"
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "data.h"
 #include <librnd/hid/tool.h>
 #include <librnd/hid/grid.h>

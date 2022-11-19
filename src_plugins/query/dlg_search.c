@@ -30,7 +30,7 @@
 
 #include <librnd/core/actions.h>
 #include <librnd/core/conf_hid.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/hid/hid_dad.h>
 #include <librnd/core/event.h>
 #include <librnd/core/error.h>

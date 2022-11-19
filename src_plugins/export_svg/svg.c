@@ -41,7 +41,7 @@
 #include <genvector/gds_char.h>
 
 #include <librnd/core/math_helper.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "board.h"
 #include "data.h"
 #include "draw.h"

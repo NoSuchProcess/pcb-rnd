@@ -55,7 +55,7 @@
 #include "route_draw.h"
 #include <librnd/core/plugins.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "layer_grp.h"
 #include "fgeometry.h"
 #include "search.h"

@@ -36,7 +36,7 @@
 #include "../src/plug_footprint.h"
 #include <librnd/core/conf.h>
 #include "../src/conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "../src_3rd/qparse/qparse.h"
 #include "../config.h"
 #include <librnd/core/error.h>

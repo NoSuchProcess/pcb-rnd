@@ -30,7 +30,7 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/math_helper.h>
 #include "board.h"
 #include "data.h"

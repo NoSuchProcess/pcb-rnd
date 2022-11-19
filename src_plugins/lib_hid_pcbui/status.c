@@ -33,7 +33,7 @@
 #include <librnd/hid/hid_cfg_input.h>
 #include <librnd/hid/hid_dad.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/plugins/lib_hid_common/xpm.h>
 #include "crosshair.h"
 #include "layer.h"

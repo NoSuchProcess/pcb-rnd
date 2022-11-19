@@ -41,7 +41,7 @@
 #include "stub_draw.h"
 #include "draw_fab_conf.h"
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "obj_pstk_inlines.h"
 #include <librnd/hid/hid_inlines.h>
 #include "funchash_core.h"

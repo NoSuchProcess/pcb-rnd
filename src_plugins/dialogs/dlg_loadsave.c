@@ -34,7 +34,7 @@
 #include <librnd/hid/hid_dad.h>
 #include <librnd/core/compat_fs.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "plug_io.h"
 #include <librnd/plugins/lib_hid_common/dialogs_conf.h>
 

@@ -42,7 +42,7 @@
 #include "layer_grp.h"
 #include "layer_ui.h"
 #include "layer_vis.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #include "layersel.h"
 

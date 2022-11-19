@@ -51,7 +51,7 @@
 #include "data_it.h"
 #include <librnd/hid/grid.h>
 #include "route_style.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "obj_subc_parent.h"
 
 #define PCB (do not use PCB directly)

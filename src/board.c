@@ -29,7 +29,7 @@
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "plug_io.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>

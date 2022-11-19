@@ -28,7 +28,7 @@
 #include "board.h"
 #include <librnd/core/actions.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "funchash_core.h"
 #include "route_style.h"
 #include <librnd/core/error.h>

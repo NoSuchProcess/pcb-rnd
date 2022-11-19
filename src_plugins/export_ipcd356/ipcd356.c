@@ -34,7 +34,7 @@
 #include "data.h"
 #include <librnd/core/safe_fs.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/compat_misc.h>
 #include "netlist.h"
 #include <librnd/core/math_helper.h>

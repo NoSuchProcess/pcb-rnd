@@ -38,7 +38,7 @@
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/rtree2_compat.h>
 #include <librnd/hid/hid_menu.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"

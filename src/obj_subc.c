@@ -59,7 +59,7 @@
 #include <librnd/core/math_helper.h>
 #include "pcb_minuid.h"
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/hid/hid_inlines.h>
 #include "extobj.h"
 

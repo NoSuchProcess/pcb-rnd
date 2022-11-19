@@ -34,7 +34,7 @@
 #include <genvector/vti0.h>
 #include <genvector/vtp0.h>
 #include <librnd/core/unit.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/compat_misc.h>
 
 #include "../src_plugins/lib_netmap/map_2nets.h"
