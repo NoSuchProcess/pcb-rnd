@@ -761,7 +761,7 @@ rnd_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 	   subnets. done[subnet] is 1 if a subnet is already in the snowball.
 	   Use a greedy algorithm: mark the first subnet as dine, then always
 	   add the shortest from any 'undone' subnet to any 'done' */
-	done = calloc(vtp0_len(subnets), 1);
+	done = calloc(vtp0_len(subnets)+1, 1);
 	done[0] = 1;
 	for(left = vtp0_len(subnets)-1; left > 0; left--) {
 		double best_dist = HUGE_VAL;
