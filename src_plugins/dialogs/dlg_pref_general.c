@@ -41,7 +41,7 @@ static pref_confitem_t perf_backup[] = {
 };
 
 static pref_confitem_t perf_cli[] = {
-	{"Number of commands to\nremember in the\nhistory list", "plugins/hid_gtk/history_size", 0, NULL},
+	{"Number of commands to\nremember in the\nhistory list", "plugins/lib_hid_common/cli_history/slots", 0, NULL},
 	{NULL, NULL, 0}
 };
 
