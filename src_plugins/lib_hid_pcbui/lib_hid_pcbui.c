@@ -93,7 +93,7 @@ void pplg_uninit_lib_hid_pcbui(void)
 	rnd_toolbar_uninit();
 }
 
-static rnd_conf_hid_id_t install_events(const char *cookie, const char *paths[], rnd_conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int))
+static rnd_conf_hid_id_t install_events(const char *cookie, const char *paths[], rnd_conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int,void*))
 {
 	const char **rp;
 	rnd_conf_native_t *nat;

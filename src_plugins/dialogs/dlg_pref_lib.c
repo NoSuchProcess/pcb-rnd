@@ -86,7 +86,7 @@ static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hi
 
 /* Current libraries from config to dialog box: remove everything from
    the widget first */
-static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx)
+static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	pref_ctx_t *ctx = PREFCTX;
 	DEF_TABDATA;
@@ -121,7 +121,7 @@ static const char *pref_node_src(lht_node_t *nd)
 
 /* Current libraries from config to dialog box: after the change, fill
    in all widget rows from the conf */
-static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
+static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	pref_ctx_t *ctx = PREFCTX;
 	rnd_design_t *hl;
@@ -507,7 +507,7 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 {
 	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
-	pref_lib_conf2dlg_post(cn, -1);
+	pref_lib_conf2dlg_post(cn, -1, NULL);
 }
 
 static const rnd_pref_tab_hook_t pref_lib = {

@@ -298,7 +298,7 @@ static void pcb_drc_query(rnd_design_t *hidlib, void *user_data, int argc, rnd_e
 }
 
 static void drc_query_refresh_def(void);
-static void drc_query_defchg(rnd_conf_native_t *cfg, int v)
+static void drc_query_defchg(rnd_conf_native_t *cfg, int v, void *user_data)
 {
 	drc_query_refresh_def();
 }
@@ -306,7 +306,7 @@ static void drc_query_defchg(rnd_conf_native_t *cfg, int v)
 static vtp0_t free_drc_conf_nodes;
 static rnd_conf_native_t *nat_defs = NULL;
 static rnd_conf_native_t *nat_rules = NULL;
-static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
+static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i, void *user_data)
 {
 	if (nat_rules == NULL) {
 		if (strncmp(cfg->hash_path, DRC_CONF_PATH_RULES, strlen(DRC_CONF_PATH_RULES)-1) == 0) {
@@ -629,7 +629,7 @@ static int pcb_drc_query_set(rnd_design_t *hidlib, int is_rule, const char *rule
 		if ((nat == NULL) || (nat->used == 0)) {
 			rnd_conf_listitem_t i = {0};
 			i.prop.src = nd;
-			drc_query_newconf(nat_defs, &i);
+			drc_query_newconf(nat_defs, &i, NULL);
 		}
 		free(path);
 	}

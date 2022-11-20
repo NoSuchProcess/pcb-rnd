@@ -62,7 +62,7 @@ static void tool_logic_chg_tool(rnd_design_t *hidlib, void *user_data, int argc,
 	}
 }
 
-static void tool_logic_chg_mode(rnd_conf_native_t *cfg, int arr_idx)
+static void tool_logic_chg_mode(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	rnd_tool_chg_mode(&PCB->hidlib);
 }

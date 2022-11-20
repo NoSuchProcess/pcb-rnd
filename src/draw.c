@@ -1149,7 +1149,7 @@ void pcb_term_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_b
 
 static const char draw_cookie[] = "core/draw";
 
-static void draw_chg_render_script(rnd_conf_native_t *cfg, int arr_idx)
+static void draw_chg_render_script(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	draw_everything_recompile = conf_core.appearance.render_script;
 }

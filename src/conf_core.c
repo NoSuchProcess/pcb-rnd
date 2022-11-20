@@ -79,7 +79,7 @@ void pcb_conf_core_postproc(void)
 	}
 }
 
-static void conf_legacy_chg(rnd_conf_native_t *ndst, int arr_idx)
+static void conf_legacy_chg(rnd_conf_native_t *ndst, int arr_idx, void *user_data)
 {
  /* check if a legacy nde changes so we need to update a new node */
 	rnd_conf_native_t *nlegacy;

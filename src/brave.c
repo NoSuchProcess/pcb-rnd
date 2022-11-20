@@ -89,7 +89,7 @@ static void set_conf(pcb_brave_t br)
 }
 
 /* Upon a change in the config, parse the new config string and set the brave bits */
-static void brave_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
+static void brave_conf_chg(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	char *curr, *next, old;
 	desc_t *d;

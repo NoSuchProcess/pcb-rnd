@@ -330,12 +330,12 @@ void pcb_status_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd
 	}
 }
 
-void pcb_status_st_update_conf(rnd_conf_native_t *cfg, int arr_idx)
+void pcb_status_st_update_conf(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	status_st_pcb2dlg();
 }
 
-void pcb_status_rd_update_conf(rnd_conf_native_t *cfg, int arr_idx)
+void pcb_status_rd_update_conf(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	status_rd_pcb2dlg();
 }

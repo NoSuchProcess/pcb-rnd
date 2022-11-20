@@ -516,7 +516,7 @@ static rnd_tool_t tool_ddraft = {
 };
 
 
-static void mode_confchg(rnd_conf_native_t *cfg, int arr_idx)
+static void mode_confchg(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	static int ddraft_tool_selected = 0;
 

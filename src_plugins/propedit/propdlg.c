@@ -834,7 +834,7 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void propdlg_unit_change(rnd_conf_native_t *cfg, int arr_idx)
+static void propdlg_unit_change(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	propdlg_t *ctx;
 	gdl_iterator_t it;

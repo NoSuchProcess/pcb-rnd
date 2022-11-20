@@ -212,7 +212,7 @@ void pcb_layervis_restore_stack(void)
 
 static rnd_conf_hid_id_t layer_vis_conf_id;
 
-void layer_vis_chg_mask(rnd_conf_native_t *cfg, int arr_idx)
+void layer_vis_chg_mask(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	rnd_layer_id_t n;
 	int chg = 0;

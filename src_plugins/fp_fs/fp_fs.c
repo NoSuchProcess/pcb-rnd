@@ -563,7 +563,7 @@ static void fp_fs_free_remove_regex(void)
 	vtp0_uninit(&remove_regex);
 }
 
-static void fp_fs_cfg_cb(rnd_conf_native_t *cfg, int arr_idx)
+static void fp_fs_cfg_cb(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	int n;
 	rnd_conf_listitem_t *ci;

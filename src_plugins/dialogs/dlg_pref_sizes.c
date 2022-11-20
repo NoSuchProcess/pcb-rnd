@@ -92,7 +92,7 @@ static void pref_sizes_limit_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_
 	rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
 }
 
-static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)
+static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	pref_ctx_t *ctx = rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
