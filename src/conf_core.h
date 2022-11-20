@@ -81,7 +81,7 @@ typedef struct {
 		RND_CFT_BOOLEAN live_routing;          /* autorouter shows tracks in progress */
 
 		/* Keep it here instead of the router plugin: more than one router plugin may share these */
-		RND_CFT_BOOLEAN beep_when_finished;    /* flag if a signal should be produced when searching of  connections is done */
+		RND_CFT_BOOLEAN beep_when_finished;    /* onsolete: not used */
 
 		RND_CFT_INTEGER undo_warning_size;     /* warn the user when undo list exceeds this amount of kilobytes in memory */
 

@@ -108,10 +108,8 @@ static void notify_line(rnd_design_t *hl)
 			if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3)) == PCB_OBJ_VOID)
 				type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 			/* but make sure it is a terminal, not a via or plain object */
-			if ((type == PCB_OBJ_VOID) || (((pcb_any_obj_t *)ptr2)->term == NULL)) {
-				rnd_gui->beep(rnd_gui);
+			if ((type == PCB_OBJ_VOID) || (((pcb_any_obj_t *)ptr2)->term == NULL))
 				break;
-			}
 		}
 		if (conf_core.editor.auto_drc) {
 			pcb_find_t fctx;

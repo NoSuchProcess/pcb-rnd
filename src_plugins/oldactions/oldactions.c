@@ -121,15 +121,13 @@ static fgw_error_t pcb_act_DumpLibrary(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 /* ---------------------------------------------------------------------------
  * no operation, just for testing purposes
- * syntax: Bell(volume)
+ * syntax: Bell()
  */
 static const char pcb_acts_Bell[] = "Bell()";
-
 static const char pcb_acth_Bell[] = "Attempt to produce audible notification (e.g. beep the speaker).";
-
 static fgw_error_t pcb_act_Bell(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_gui->beep(rnd_gui);
+	rnd_message(RND_MSG_ERROR, "Bell(): beep not implemented any more. Please do not use the Bell() action.\n");
 	RND_ACT_IRES(0);
 	return 0;
 }
