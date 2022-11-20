@@ -382,7 +382,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 		}
 	}
 	pcb_view_save_list_end(&tmp, NULL);
-	rnd_gui->clip_set(rnd_gui, RND_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
+	rnd_gui->clip_set(rnd_gui, tmp.array);
 	gds_uninit(&tmp);
 	if (cut)
 		view2dlg_list(ctx);
@@ -391,8 +391,8 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
-	rnd_hid_clipfmt_t cformat;
-	void *cdata, *load_ctx;
+	char *cdata;
+	void *load_ctx;
 	size_t clen;
 	pcb_view_t *v, *vt = NULL;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
@@ -408,16 +408,12 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		vt = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
 	}
 
-	if (rnd_gui->clip_get(rnd_gui, &cformat, &cdata, &clen) != 0)
+	cdata = rnd_gui->clip_get(rnd_gui);
+	if (cdata == NULL)
 		return;
-
-	if (cformat != RND_HID_CLIPFMT_TEXT) {
-		rnd_gui->clip_free(rnd_gui, cformat, cdata, clen);
-		return;
-	}
 
 	load_ctx = pcb_view_load_start_str(cdata);
-	rnd_gui->clip_free(rnd_gui, cformat, cdata, clen);
+	free(cdata);
 	if (load_ctx == NULL)
 		return;
 

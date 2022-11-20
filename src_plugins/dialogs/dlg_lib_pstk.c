@@ -509,12 +509,13 @@ static void pstklib_ccopy(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	fclose(f);
 	if (res == 0) {
 		long size = rnd_file_size(&ctx->pcb->hidlib, tmp_fn);
-		void *buf;
-		if ((size > 0) && ((buf = malloc(size)) != NULL)) {
+		char *buf;
+		if ((size > 0) && ((buf = malloc(size+1)) != NULL)) {
 			f = rnd_fopen(&ctx->pcb->hidlib, tmp_fn, "r");
 			if (f != NULL) {
 				if (fread(buf, size, 1, f) == 1) {
-					if (rnd_gui->clip_set(rnd_gui, RND_HID_CLIPFMT_TEXT, buf, size) != 0)
+					buf[size] = '\0';
+					if (rnd_gui->clip_set(rnd_gui, buf) != 0)
 						rnd_message(RND_MSG_ERROR, "Failed to write the clipboard\n");
 				}
 				else
@@ -539,13 +540,10 @@ static void pstklib_cpaste(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
 	pcb_pstk_proto_t *proto;
-	char *tmp_fn;
-	void *buf;
+	char *tmp_fn, *buf;
 	FILE *f;
 	rnd_hid_attr_val_t hv;
-	size_t size;
-	int res, res2;
-	rnd_hid_clipfmt_t fmt;
+	int res2;
 
 	if (data == NULL)
 		return;
@@ -571,25 +569,15 @@ static void pstklib_cpaste(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 		return;
 	}
 
-	res = rnd_gui->clip_get(rnd_gui, &fmt, &buf, &size);
-	if (res == 0) {
-		res2 = fwrite(buf, size, 1, f);
-		rnd_gui->clip_free(rnd_gui, fmt, buf, size);
+	buf = rnd_gui->clip_get(rnd_gui);
+	if (buf != NULL) {
+		res2 = fwrite(buf, strlen(buf), 1, f);
+		free(buf);
 	}
 	fclose(f);
 
-	if (res != 0) {
-		rnd_message(RND_MSG_ERROR, "Failed to get data from the clipboard\n");
-		rnd_tempfile_unlink(tmp_fn);
-		return;
-	}
 	if (res2 != 1) {
 		rnd_message(RND_MSG_ERROR, "Failed to write data in temporary file %s\n", tmp_fn);
-		rnd_tempfile_unlink(tmp_fn);
-		return;
-	}
-	if (fmt != RND_HID_CLIPFMT_TEXT) {
-		rnd_message(RND_MSG_ERROR, "Invalid clipboard format\n");
 		rnd_tempfile_unlink(tmp_fn);
 		return;
 	}
