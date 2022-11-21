@@ -38,58 +38,7 @@ echo '
 	<th> comments
 '
 
-$trunk/util/devhelpers/list_dialogs.sh | awk -F "[\t]" '
-function orna(s)
-{
-	if ((s == "") || (s == "<dyn>")) return "n/a"
-	return s
-}
+. $trunk/util/devhelpers/list_dialogs.sh
 
-'"$dlgtbl"'
-'"`cat dialog_extra.awk`"'
+list_dlgs $trunk/src/*.c $trunk/src_plugins/*/*.c | gen_html
 
-function out(id, name, src, action, comment     ,acturl1,acturl2,fn,tmp) {
-	if (action == "") {
-		if (id in ACTION) action = ACTION[id]
-		else if (src in ACTION) action = ACTION[src]
-	}
-
-	if (action != "") {
-		acturl1 = action
-		sub("[(].*", "", acturl1)
-		fn = "../action_src/" acturl1 ".html"
-		if ((getline tmp < fn) == 1) {
-			acturl1 = "<a href=\"action_details.html#" tolower(acturl1) "\">"
-			acturl2 = "</a>"
-		}
-		else {
-			acturl1 = ""
-			acturl2 = ""
-		}
-		close(fn)
-	}
-
-	if (comment == "") {
-		if (id in COMMENT) comment = COMMENT[id]
-		else if (src in COMMENT) comment = COMMENT[src]
-		else comment = "&nbsp;"
-	}
-
-	print "<tr><td>" orna(id) "<td>" orna(name) "<td>" acturl1 orna(action) acturl2 "<td>" src "<td>" comment
-}
-
-{
-	id=$1
-	name=$2
-	src=$3
-	if ((src in IGNORE) && ((name ~ IGNORE[src]) || (id ~ IGNORE[src])))
-		next
-	out(id, name, src)
-}
-'
-
-echo '
-</table>
-</body>
-</html>
-'
