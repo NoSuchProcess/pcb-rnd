@@ -32,7 +32,7 @@
 - BUG: assertion recipe. { w l }, launch connector() dialogue. nx 1, ny 5, pin spacing 150mil, pin_drill 70mil, then type the number 1 in pin_ringdia diameter, and wait, assert/segfault ensues [repoort: Erich]
 - BUG: multiple coils in intnoconn-bug.rp using intnoconn-bug-actual.net reflecting partion of circuit intnoconn-bug.rs should behave like intnoconn-net-desired.net. shorts being declared with no connections apparent. Coils use different intonoconn groups, and different UIDs to no avail [report: Erich]
 	-> the bug is that the rat line end falling at the endpoint of the line at the boundary of two intnoconn sections shorts the two sections
-- BUG: load bug_files/TODO/intnoconn-segfault.rp, {c r} , delete rat line connected to green highlighted section, use {c f} with cursor somewhere over the pixmap, and not on the subcs, segfault ensues [report: Erich]
+- BUG: load bug_files/TODO/intnoconn-segfault.rp, {c r} , delete rat line connected to green highlighted section, use {c f} with cursor somewhere over the pixmap, and not on the subcs; assert ensuespcb-rnd: find_any_isect.c:145: pcb_intersect_obj_obj: Assertion `!"Don't know how to check intersection of these objet types"' failed.  [report: Erich]
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
