@@ -15,14 +15,9 @@ end
 # static librd link: need to get all librnd ldlibs
 if /local/pcb/want_static_librnd
 then
-	put /local/pcb/librnd_extra_mak [@
-# static librd link: need to get all librnd ldlibs
-include $(LIBRND_PREFIX)/share/librnd4/librnd.mak
-@]
 	put /local/pcb/librnd_extra_ldlibs {$(LDFLAGS_LIBRND)}
 else
 	put /local/pcb/librnd_extra_ldlibs {}
-	put /local/pcb/librnd_extra_mak {}
 end
 
 if /local/pcb/want_static_librnd then
@@ -243,9 +238,8 @@ ROOT=..
 
 # librnd installation
 LIBRND_PREFIX=@/local/pcb/librnd_prefix@
-@/local/pcb/librnd_extra_mak@
-LIBRND_LIBDIR=$(LIBRND_PREFIX)/@/local/libarchdir@/librnd4
-LIBRND_L=$(LIBRND_PREFIX)/@/local/libarchdir@
+include $(LIBRND_PREFIX)/share/librnd4/librnd.mak
+LIBRND_L=$(LIBRND_SODIR)
 LIBRND_PLUGDIR=$(LIBRND_LIBDIR)/plugins
 
 

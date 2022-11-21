@@ -1,6 +1,6 @@
 include ../../../Makefile.conf
 include $(LIBRND_MAK)
-SPHASH=$(LIBRND_LIBDIR)/librnd3/sphash
+SPHASH=$(LIBRND_LIBDIR)/sphash
 CFLAGS = -Wall -g -I.. -I. $(CFLAGS_LIBRND)
 
 main: main.o pcbdoc_ascii.o ../altium_kw_sphash.o
