@@ -1,6 +1,5 @@
 MENU_RES=../src/menu-default.lht
 KEYLIST=../util/keylist.sh
-DEBLIST=../util/devhelpers/deblist.sh
 ROOT=..
 
 all: keys.html user/05_ui/04_common/keytree.svg user/05_ui/04_common/keytree.txt
