@@ -32,6 +32,7 @@ RNDVER=`librnd_min_ver`
 if test -f $ROOT/Makefile.conf
 then
 	LIBRND_ROOT=`make -f librnd_root.mk`
+	LIBRND_LIBDIR=`make -f librnd_root.mk libdir`
 fi
 
 if test -z "$LIBRND_ROOT"
@@ -42,6 +43,7 @@ then
 	else
 		LIBRND_ROOT=/usr
 	fi
+	LIBRND_LIBDIR=$LIBRND_ROOT/lib/librnd${RNDV}
 fi
 
 if test -f $LIBRND_ROOT/share/librnd${RNDV}/librnd_packages.sh
@@ -56,7 +58,7 @@ fi
 
 echo "$RNDV" > auto/ver_librnd_major
 
-. $ROOT/util/devhelpers/awk_on_formats.sh
+. $LIBRND_LIBDIR/devhelpers/awk_on_formats.sh
 
 awk_on_formats  '
 { print $0 }

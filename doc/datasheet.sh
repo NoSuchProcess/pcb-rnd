@@ -1,7 +1,11 @@
 #!/bin/sh
 
 ROOT=..
-. $ROOT/util/devhelpers/awk_on_formats.sh
+
+LIBRND_LIBDIR=`cd developer/packaging && make -f librnd_root.mk libdir`
+
+proot=$ROOT/src_plugins
+. $LIBRND_LIBDIR/devhelpers/awk_on_formats.sh
 
 awk_on_formats  '
 ($1 == "<!--") && ($2 == "begin") && ($3 == "fmt") { ignore = 1; print $0; next }
