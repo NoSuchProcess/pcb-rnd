@@ -9,7 +9,6 @@ print [@
 ROOT=../..
 PLUGDIR=../../src_plugins
 LIBRND_SHAREDIR=@/local/pcb/librnd_prefix@/share/librnd4
-GENCONF=$(LIBRND_LIBDIR)/scconfig/gen_conf.sh
 
 include $(LIBRND_SHAREDIR)/librnd.mak
 
