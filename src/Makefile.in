@@ -270,7 +270,6 @@ CLEANRULES=@/local/pcb/CLEANRULES@
 CC=@/target/cc/cc@
 AR=@/target/fstools/ar@
 HOSTCC=@/host/cc/cc@
-GENCONF=$(LIBRND_LIBDIR)/scconfig/gen_conf.sh
 LIBMINUID_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 LIBMINUID_LDFLAGS=@cc/ldflags@
 GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
