@@ -72,7 +72,8 @@ $(FP_OBJS) $(QPARSE):
 @]
 
 # generate explicit rules for .c -> .o
-put /local/comp/OBJS /local/pcb/OBJS
+put /local/comp/OBJS_C89 /local/pcb/OBJS
+put /local/comp/C89FLAGS {$(CFLAGS)}
 include [@@/local/pcb/librnd_template@/compile.tmpasm@]
 
 print [@
