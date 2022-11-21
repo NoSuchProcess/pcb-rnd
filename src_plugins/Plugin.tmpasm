@@ -12,9 +12,10 @@ uniq /local/pcb/mod/LDFLAGS
 uniq /local/pcb/mod/LIBS
 
 # generate .c -> .o rules in /local/comp/output
-put /local/comp/OBJS ?/local/pcb/mod/OBJS
+put /local/comp/OBJS_C89 ?/local/pcb/mod/OBJS
 put /local/comp/OBJS_C99 ?/local/pcb/mod/OBJS_C99
-put /local/comp/CFLAGS /local/pcb/mod/CFLAGS
+put /local/comp/C89FLAGS [@ $(C89FLAGS) @/local/pcb/mod/CFLAGS@ @]
+put /local/comp/C99FLAGS [@ $(CFLAGS) @/local/pcb/mod/CFLAGS@ @]
 include [@@/local/pcb/librnd_template@/comp_var.tmpasm@]
 
 append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
