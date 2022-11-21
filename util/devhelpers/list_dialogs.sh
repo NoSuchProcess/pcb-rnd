@@ -46,7 +46,7 @@ function orna(s)
 }
 
 '"$dlgtbl"'
-'"`cat dialog_extra.awk`"'
+'"$dlgextra"'
 
 function out(id, name, src, action, comment     ,acturl1,acturl2,fn,tmp) {
 	if (action == "") {

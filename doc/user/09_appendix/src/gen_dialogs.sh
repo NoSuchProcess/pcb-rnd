@@ -38,6 +38,8 @@ echo '
 	<th> comments
 '
 
+dlgextra="`cat dialog_extra.awk`"
+
 . $trunk/util/devhelpers/list_dialogs.sh
 
 list_dlgs $trunk/src/*.c $trunk/src_plugins/*/*.c | gen_html
