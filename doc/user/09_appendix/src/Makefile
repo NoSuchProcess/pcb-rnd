@@ -3,6 +3,9 @@
 PCBRND = ../../../../src/pcb-rnd
 CLEANFILES=../action_details.html ../action_reference.html ../formats.html ../bridges.svg ../dialogs.html
 
+include ../../../../Makefile.conf
+include $(LIBRND_MAK)
+
 all: $(CLEANFILES)
 
 ../action_details.html: ./action_compiler.sh ../action_src/*.html librnd_acts
@@ -21,7 +24,7 @@ librnd_acts: FORCE
 	./gen_formats.sh > ../formats.html
 
 ../dialogs.html: $(PCBRND) ./gen_dialogs.sh ./dialog_extra.awk
-	./gen_dialogs.sh > ../dialogs.html
+	LIBRND_LIBDIR="$(LIBRND_LIBDIR)" ./gen_dialogs.sh > ../dialogs.html
 
 FORCE:
 

@@ -2,6 +2,12 @@
 
 trunk=../../../..
 
+if test -z "$LIBRND_LIBDIR"
+then
+# when not run from the Makefile
+	LIBRND_LIBDIR=`cd $trunk/doc/developer/packaging && make -f librnd_root.mk libdir`
+fi
+
 # exceptions
 dlgtbl='
 BEGIN {
@@ -40,7 +46,7 @@ echo '
 
 dlgextra="`cat dialog_extra.awk`"
 
-. $trunk/util/devhelpers/list_dialogs.sh
+. $LIBRND_LIBDIR/devhelpers/list_dialogs.sh
 
 list_dlgs $trunk/src/*.c $trunk/src_plugins/*/*.c | gen_html
 
