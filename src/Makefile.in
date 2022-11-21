@@ -240,7 +240,6 @@ ROOT=..
 LIBRND_PREFIX=@/local/pcb/librnd_prefix@
 include $(LIBRND_PREFIX)/share/librnd4/librnd.mak
 LIBRND_L=$(LIBRND_SODIR)
-LIBRND_PLUGDIR=$(LIBRND_LIBDIR)/plugins
 
 
 # plugin source
