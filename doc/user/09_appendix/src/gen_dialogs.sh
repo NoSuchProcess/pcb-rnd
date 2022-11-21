@@ -35,18 +35,17 @@ echo '
 <h1> pcb-rnd User Manual: Appendix </h1>
 <p>
 <h2> List of GUI dialog boxes </h2>
-<table border=1 cellspacing=0>
-<tr>
-	<th> ID
-	<th> dialog box name
-	<th> action
-	<th> source
-	<th> comments
 '
 
 dlgextra="`cat dialog_extra.awk`"
 
 . $LIBRND_LIBDIR/devhelpers/list_dialogs.sh
 
+print_hdr
 list_dlgs $trunk/src/*.c $trunk/src_plugins/*/*.c | gen_html
 
+echo '
+</table>
+</body>
+</html>
+'
