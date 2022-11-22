@@ -1,5 +1,4 @@
 MENU_RES=../src/menu-default.lht
-KEYLIST=../util/keylist.sh
 ROOT=..
 
 all: keys.html user/05_ui/04_common/keytree.svg user/05_ui/04_common/keytree.txt
@@ -7,6 +6,7 @@ all: keys.html user/05_ui/04_common/keytree.svg user/05_ui/04_common/keytree.txt
 	./datasheet.sh
 
 include ../Makefile.conf
+include $(LIBRND_MAK)
 
 user/05_ui/04_common/keytree.svg: $(MENU_RES) $(KEYLIST)
 	$(KEYLIST) --dot user/05_ui/04_common/src/node_names.txt $(MENU_RES) > user/05_ui/04_common/keytree.dot
