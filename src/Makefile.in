@@ -342,7 +342,7 @@ defpcb_internal.c: default4.lht
 
 # do not make this automatic, most users won't need to regenerate font_internal.c
 gen_font:
-	$(ROOT)/util/devhelpers/font2c.sh < default_font > font_internal.c
+	$(FONT2C) < default_font > font_internal.c
 
 util_deps: $(OBJS) $(OBJS_UTIL)
 
