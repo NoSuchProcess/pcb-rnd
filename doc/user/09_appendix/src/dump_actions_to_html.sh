@@ -5,6 +5,8 @@
 asrc="../action_src"
 lsrc="librnd_acts"
 
+. $LIBRND_LIBDIR/dump_actions_to_html.sh
+
 cd ../../../../src
 pcb_rnd_ver=`./pcb-rnd --version`
 pcb_rnd_rev=`svn info ^/ | awk '/Revision:/ {
@@ -19,103 +21,9 @@ pcb_rnd_rev=`svn info ^/ | awk '/Revision:/ {
 	'`
 cd ../doc/user/09_appendix/src
 
-echo 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
-<html>
-<head>
-<title> pcb-rnd user manual </title>
-<meta http-equiv=\"Content-Type\" content=\"text/html;charset=us-ascii\">
-<link rel=\"stylesheet\" type=\"text/css\" href=\" ../default.css\">
-</head>
-<body>
-<p>
-<h1> pcb-rnd User Manual: Appendix </h1>
-<p>
-<h2> Action Reference</h2>
-<table border=1>"
-echo "<caption>\n" "<b>"
-echo $pcb_rnd_ver ", " $pcb_rnd_rev
-echo "</b>"
-echo  "<th> Action <th> Description <th> Syntax <th> Plugin"
+print_hdr "pcb-rnd"
+
 (
 	cd ../../../../src
 	./pcb-rnd --dump-actions 2>/dev/null
-) | awk '
-
-function flush_sd()
-{
-		if ( a != "" ||  s != "" || d != "" ) {
-			sub("^<br>", "", a)
-			sub("^<br>", "", d)
-			sub("^<br>", "", s)
-			sub("^<br>", "", c)
-			print  "<tr><act>" a "</act>" "<td>" d "</td>" "<td>" s "</td>" "<td>" c "</td>"
-			}
-		
-	a=""
-	s=""
-	d=""
-	c=""
-}
-
-
-/^A/ {
-	flush_sd()
-	sub("^A", "", $0)
-	a = a "<br>" $0
-	next
-}
-
-/^D/ {
-	sub("^D", "", $0)
-	d = d "<br>" $0
-	next
-}
-
-/^S/ {
-	sub("^S", "", $0)
-	s = s "<br>" $0
-	next
-}
-
-/^C/ {
-	sub("^C", "", $0)
-	c = c "<br>" $0
-	next
-}
-
-' | sort -fu | awk -v "asrc=$asrc" -v "lsrc=$lsrc" '
-# insert links around actions where applicable
-	BEGIN {
-		q = "\""
-	}
-	/<act>/ {
-		pre = $0
-		sub("<act>.*", "", pre)
-		post = $0
-		sub(".*</act>", "", post)
-		act = $0
-		sub(".*<act>", "", act)
-		sub("</act>.*", "", act)
-		loact = tolower(act)
-		fn = asrc "/" loact ".html"
-		lfn = lsrc "/" loact ".html"
-		if ((getline < fn) == 1)
-			print pre "<td><a href=" q "action_details.html#" loact q ">" act "</a></td>" post
-		else if ((getline < lfn) == 1)
-			print pre "<td><a href=" q "action_details.html#" loact q ">" act "</a> <sup><a href=\"#ringdove\">(RND)</a></sup></td>" post
-		else
-			print pre "<td>" act "</td>" post
-		close(fn)
-		close(lfn)
-		next
-	}
-
-	{ print $0 }
-	
-	END {
-		print "</table>"
-		print "<p id=\"ringdove\">RND: this action comes from librnd and is common to all ringdove applications."
-		print "</body>"
-		print "</html>"
-	}
-'
+) | gen

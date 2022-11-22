@@ -12,7 +12,7 @@ all: $(CLEANFILES)
 	LIBRND_LIBDIR=$(LIBRND_LIBDIR) ./action_compiler.sh ../action_src/*.html LIBRND librnd_acts/*.html > ../action_details.html
 
 ../action_reference.html : ./dump_actions_to_html.sh $(PCBRND) ../action_details.html librnd_acts
-	./dump_actions_to_html.sh > ../action_reference.html
+	LIBRND_LIBDIR=$(LIBRND_LIBDIR) ./dump_actions_to_html.sh > ../action_reference.html
 
 librnd_acts: FORCE
 	svn checkout svn://svn.repo.hu/librnd/trunk/doc/action librnd_acts
