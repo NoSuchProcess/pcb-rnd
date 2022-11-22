@@ -9,7 +9,7 @@ include $(LIBRND_MAK)
 all: $(CLEANFILES)
 
 ../action_details.html: ./action_compiler.sh ../action_src/*.html librnd_acts
-	./action_compiler.sh ../action_src/*.html LIBRND librnd_acts/*.html > ../action_details.html
+	LIBRND_LIBDIR=$(LIBRND_LIBDIR) ./action_compiler.sh ../action_src/*.html LIBRND librnd_acts/*.html > ../action_details.html
 
 ../action_reference.html : ./dump_actions_to_html.sh $(PCBRND) ../action_details.html librnd_acts
 	./dump_actions_to_html.sh > ../action_reference.html
