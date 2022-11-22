@@ -20,8 +20,8 @@ librnd_acts: FORCE
 ../bridges.svg: bridges.txt
 	aagraph -Tsvg bridges.txt > ../bridges.svg
 
-../formats.html: gen_formats.sh ../../../../src_plugins/io_*/*.pup ../../../../src_plugins/import_*/*.pup ../../../../src_plugins/export_*/*.pup
-	./gen_formats.sh > ../formats.html
+../formats.html: ../../../../src_plugins/io_*/*.pup ../../../../src_plugins/import_*/*.pup ../../../../src_plugins/export_*/*.pup
+	APP="pcb-rnd" PLUGINS="../../../../src_plugins" $(LIBRND_LIBDIR)/gen_formats.sh > ../formats.html
 
 ../dialogs.html: $(PCBRND) ./gen_dialogs.sh ./dialog_extra.awk
 	LIBRND_LIBDIR="$(LIBRND_LIBDIR)" ./gen_dialogs.sh > ../dialogs.html
