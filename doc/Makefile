@@ -1,4 +1,4 @@
-MENU_RES=../src/menu-default.lht
+MENU_RES=../src/menu-default.lht ../src_plugins/*/*-menu.lht
 ROOT=..
 
 all: keys.html user/05_ui/04_common/keytree.svg user/05_ui/04_common/keytree.txt
