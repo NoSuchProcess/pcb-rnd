@@ -3,7 +3,7 @@ ROOT=..
 
 all: keys.html user/05_ui/04_common/keytree.svg user/05_ui/04_common/keytree.txt
 	ROOT="" ./Autostyle.sh *.html
-	./datasheet.sh
+	LIBRND_LIBDIR="$(LIBRND_LIBDIR)" ./datasheet.sh
 
 include ../Makefile.conf
 include $(LIBRND_MAK)

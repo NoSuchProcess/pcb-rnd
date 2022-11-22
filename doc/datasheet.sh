@@ -2,7 +2,11 @@
 
 ROOT=..
 
-LIBRND_LIBDIR=`cd developer/packaging && make -f librnd_root.mk libdir`
+if test -z "$LIBRND_LIBDIR"
+then
+	# when not run from the Makefile
+	LIBRND_LIBDIR=`cd developer/packaging && make -f librnd_root.mk libdir`
+fi
 
 proot=$ROOT/src_plugins
 . $LIBRND_LIBDIR/devhelpers/awk_on_formats.sh
