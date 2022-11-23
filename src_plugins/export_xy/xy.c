@@ -958,7 +958,7 @@ static void xy_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_
 	if ((options[HA_unit].lng < 0) || (options[HA_unit].lng >= rnd_get_n_units(1)))
 		xy_unit = rnd_get_unit_struct("mil");
 	else
-		xy_unit = &rnd_units[options[HA_unit].lng];
+		xy_unit = rnd_unit_get_idx(options[HA_unit].lng);
 
 	tid = vts0_get(&fmt_ids, options[HA_format].lng, 0);
 	if ((tid == NULL) || (*tid == NULL)) {
