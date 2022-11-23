@@ -111,7 +111,7 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* do nothing */
 	}
 	else {
-		unit = get_unit_by_suffix(sunit);
+		unit = rnd_unit_get_suffix(sunit);
 		if (unit == NULL) {
 			rnd_message(RND_MSG_ERROR, "formula_bisect: invalid unit spec: '%s'\n", spec);
 			return FGW_ERR_ARG_CONV;
