@@ -73,6 +73,12 @@ rnd_mark_t pcb_marked;
 pcb_crosshair_note_t pcb_crosshair_note;
 
 
+static void pcb_point_cursor(rnd_bool enable)
+{
+	if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL))
+		rnd_gui->point_cursor(rnd_gui, enable);
+}
+
 static void thindraw_moved_ps(pcb_pstk_t *ps, rnd_coord_t x, rnd_coord_t y)
 {
 	/* Make a copy of the pin structure, moved to the correct position */
@@ -1035,14 +1041,10 @@ void pcb_crosshair_grid_fit(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 
 	if (rnd_conf.editor.mode == pcb_crosshair.tool_arrow) {
 		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
-		if (ans == PCB_OBJ_VOID) {
-			if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL))
-				rnd_gui->point_cursor(rnd_gui, rnd_false);
-		}
-		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2)) {
-			if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL))
-				rnd_gui->point_cursor(rnd_gui, rnd_true);
-		}
+		if (ans == PCB_OBJ_VOID)
+			pcb_point_cursor(rnd_false);
+		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *)ptr2))
+			pcb_point_cursor(rnd_true);
 	}
 
 	enfmode  = (rnd_conf.editor.mode == pcb_crosshair.tool_line) && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST;
