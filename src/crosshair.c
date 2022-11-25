@@ -106,7 +106,7 @@ static int pcb_tool_point_id = -1;
 
 static void pcb_point_cursor(rnd_bool enable)
 {
-	if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL)) {
+	if (rnd_gui != NULL) {
 		/* register the tool when first needed */
 		if (pcb_tool_point_id < 0)
 			pcb_tool_point_id = rnd_tool_reg(&pcb_tool_point, "core");
