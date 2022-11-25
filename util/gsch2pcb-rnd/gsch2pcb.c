@@ -385,6 +385,7 @@ void gsch2pcb_conf_core_init(void) {}
 int main(int argc, char ** argv)
 {
 	const char *want_method;
+	char *exec_prefix;
 
 	method_import_register();
 
@@ -397,7 +398,9 @@ int main(int argc, char ** argv)
 	rnd_app.conf_sysdir_path = PCBCONFDIR;
 	rnd_app.conf_sys_path = rnd_concat(PCBCONFDIR, "/conf_core.lht", NULL);
 
-	rnd_hidlib_init1(gsch2pcb_conf_core_init);
+	exec_prefix = rnd_exec_prefix(argv[0], BINDIR, BINDIR_TO_EXECPREFIX);
+	rnd_hidlib_init1(gsch2pcb_conf_core_init, exec_prefix);
+	free(exec_prefix);
 
 	rnd_file_loaded_init();
 	rnd_conf_init();
