@@ -440,10 +440,9 @@ int main(int argc, char *argv[])
 	pcb_minuid_init();
 	pcb_extobj_init();
 
-	rnd_hidlib_init1(conf_core_init);
+	rnd_hidlib_init1(conf_core_init, exec_prefix);
 
 	pcb_event_init_app();
-	rnd_conf_set(RND_CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, RND_POL_OVERWRITE);
 	free(exec_prefix);
 
 	pcb_uilayer_init();
