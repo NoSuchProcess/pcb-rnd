@@ -72,11 +72,46 @@ pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
 rnd_mark_t pcb_marked;
 pcb_crosshair_note_t pcb_crosshair_note;
 
+/* point cursor is shown when the mouse cursor is over the endpoint of a line */
+#define pointIcon_width  16
+#define pointIcon_height 16
+static unsigned char pointIcon_bits[] = {
+	0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x00, 0x00, 0x00, 
+	0x00, 0x00, 0x1e, 0x3c, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 
+	0x80, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00};
+#define pointMask_width  16
+#define pointMask_height 16
+static unsigned char pointMask_bits[] = {
+	0xc0, 0x01, 0xc0, 0x01, 0xc0, 0x01, 0xc0, 0x01, 0xc0, 0x01, 0x80, 0x00, 
+	0x1f, 0x7c, 0x3f, 0x7e, 0x1f, 0x7c, 0x80, 0x00, 0xc0, 0x01, 0xc0, 0x01, 
+	0xc0, 0x01, 0xc0, 0x01, 0xc0, 0x01, 0x00, 0x00};
+
+/* need to register a dummy tool for the point cursor because mouse cursors
+   are managed by the tool code */
+static rnd_tool_t pcb_tool_point = {
+	"crosshair-point", NULL, NULL, 0, NULL, RND_TOOL_CURSOR_XBM(pointIcon_bits, pointMask_bits), 0,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	0
+};
+
+static int pcb_tool_point_id = -1;
 
 static void pcb_point_cursor(rnd_bool enable)
 {
-	if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL))
-		rnd_gui->point_cursor(rnd_gui, enable);
+	if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL)) {
+		/* register the tool when first needed */
+		if (pcb_tool_point_id < 0)
+			pcb_tool_point_id = rnd_tool_reg(&pcb_tool_point, "core");
+		rnd_hid_override_mouse_cursor(enable ? pcb_tool_point_id : -1);
+	}
 }
 
 static void thindraw_moved_ps(pcb_pstk_t *ps, rnd_coord_t x, rnd_coord_t y)
