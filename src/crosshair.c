@@ -109,7 +109,7 @@ static void pcb_point_cursor(rnd_bool enable)
 	if (rnd_gui != NULL) {
 		/* register the tool when first needed */
 		if (pcb_tool_point_id < 0)
-			pcb_tool_point_id = rnd_tool_reg(&pcb_tool_point, "core");
+			pcb_tool_point_id = rnd_tool_reg(&pcb_tool_point, crosshair_cookie);
 		rnd_hid_override_mouse_cursor(enable ? pcb_tool_point_id : -1);
 	}
 }
@@ -1190,6 +1190,7 @@ void pcb_crosshair_uninit(void)
 	if (rnd_render != NULL)
 		rnd_hid_destroy_gc(pcb_crosshair.GC);
 	rnd_event_unbind_allcookie(crosshair_cookie);
+	rnd_tool_unreg_by_cookie(crosshair_cookie);
 }
 
 void pcb_crosshair_set_local_ref(rnd_coord_t X, rnd_coord_t Y, rnd_bool Showing)
