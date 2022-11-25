@@ -402,6 +402,8 @@ int main(int argc, char ** argv)
 	rnd_hidlib_init1(gsch2pcb_conf_core_init, exec_prefix);
 	free(exec_prefix);
 
+	rnd_units_init();
+
 	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
@@ -503,5 +505,6 @@ int main(int argc, char ** argv)
 	free_strlist(&extra_gnetlist_arg_list);
 	free_strlist(&extra_gnetlist_list);
 
+	rnd_units_uninit();
 	return 0;
 }
