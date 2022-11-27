@@ -86,7 +86,7 @@ static const rnd_export_opt_t *fidocadj_get_export_options(rnd_hid_t *hid, int *
 	const char *suffix = ".fcd";
 	const char *val = fidocadj_values[HA_fidocadjfile].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &fidocadj_values[HA_fidocadjfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.loadname, &fidocadj_values[HA_fidocadjfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

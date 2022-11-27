@@ -95,7 +95,7 @@ static const rnd_export_opt_t *exp_hpgl_get_export_options(rnd_hid_t *hid, int *
 	const char *val = exp_hpgl_values[HA_exp_hpglfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &exp_hpgl_values[HA_exp_hpglfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.loadname, &exp_hpgl_values[HA_exp_hpglfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

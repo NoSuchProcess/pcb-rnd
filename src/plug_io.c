@@ -372,9 +372,9 @@ pcb_plug_io_t *pcb_io_find_writer(pcb_plug_iot_t typ, const char *fmt)
 	int len;
 
 	if (fmt == NULL) {
-		if (PCB->hidlib.filename != NULL) { /* have a file name, guess from extension */
-			int fn_len = strlen(PCB->hidlib.filename);
-			const char *end = PCB->hidlib.filename + fn_len;
+		if (PCB->hidlib.loadname != NULL) { /* have a file name, guess from extension */
+			int fn_len = strlen(PCB->hidlib.loadname);
+			const char *end = PCB->hidlib.loadname + fn_len;
 			pcb_plug_io_t *n, *best = NULL;
 			int best_score = 0;
 
@@ -410,7 +410,7 @@ pcb_plug_io_t *pcb_io_find_writer(pcb_plug_iot_t typ, const char *fmt)
 			return NULL;
 		}
 		else {
-			if (PCB->hidlib.filename != NULL)
+			if (PCB->hidlib.loadname != NULL)
 				rnd_message(RND_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, falling back to %s as configured in rc/save_final_fallback_fmt\n", fmt);
 		}
 	}
@@ -666,7 +666,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 
 		/* clear 'changed flag' */
 		pcb_board_set_changed_flag(PCB, rnd_false);
-		PCB->hidlib.filename = new_filename;
+		PCB->hidlib.loadname = new_filename;
 		/* just in case a bad file saved file is loaded */
 
 		/* geda/pcb compatibility: use attribute PCB::grid::unit as unit, if present */
@@ -842,7 +842,7 @@ int pcb_load_pcb(const char *file, const char *fmt, rnd_bool require_font, int h
 
 int pcb_revert_pcb(void)
 {
-	return real_load_pcb(PCB->hidlib.filename, NULL, rnd_true, rnd_true, 0);
+	return real_load_pcb(PCB->hidlib.loadname, NULL, rnd_true, rnd_true, 0);
 }
 
 int pcb_load_buffer(rnd_design_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt)

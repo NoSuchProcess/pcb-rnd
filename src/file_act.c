@@ -115,7 +115,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_Revert:
-			if (RND_ACT_DESIGN->filename && (!pcb->Changed || (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
+			if (RND_ACT_DESIGN->loadname && (!pcb->Changed || (rnd_hid_message_box(RND_ACT_DESIGN, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
 
@@ -263,7 +263,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_message(RND_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
 				return FGW_ERR_ARGC;
 			}
-			if (pcb_save_pcb(RND_ACT_DESIGN->filename, NULL) == 0)
+			if (pcb_save_pcb(RND_ACT_DESIGN->loadname, NULL) == 0)
 				pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_false);
 			rnd_event(RND_ACT_DESIGN, RND_EVENT_DESIGN_FN_CHANGED, NULL);
 			return 0;
@@ -271,8 +271,8 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_LayoutAs:
 			if (pcb_save_pcb(name, fmt) == 0) {
 				pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_false);
-				free(RND_ACT_DESIGN->filename);
-				RND_ACT_DESIGN->filename = rnd_strdup(name);
+				free(RND_ACT_DESIGN->loadname);
+				RND_ACT_DESIGN->loadname = rnd_strdup(name);
 				rnd_event(RND_ACT_DESIGN, RND_EVENT_DESIGN_FN_CHANGED, NULL);
 			}
 			return 0;

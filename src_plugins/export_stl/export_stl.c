@@ -369,7 +369,7 @@ static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, c
 	const char *val = stl_values[HA_stlfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &stl_values[HA_stlfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.loadname, &stl_values[HA_stlfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

@@ -2444,7 +2444,7 @@ static void parse_conf(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *sub)
 	if (rctx->cfg_dest == RND_CFR_invalid)
 		return;
 	if (rnd_conf_insert_tree_as(rctx->cfg_dest, sub) != 0)
-		rnd_message(RND_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
+		rnd_message(RND_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.loadname);
 	else
 		rnd_conf_update(NULL, -1);
 }

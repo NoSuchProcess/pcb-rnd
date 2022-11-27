@@ -75,8 +75,8 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	if (verbose)
 		rnd_message(RND_MSG_DEBUG, "import_net_cmd:  running cmd: '%s' outfn='%s'\n", cmdline, outfn);
 
-	if (PCB->hidlib.filename != NULL)
-		rnd_setenv("IMPORT_NET_CMD_PCB", PCB->hidlib.filename, 1);
+	if (PCB->hidlib.loadname != NULL)
+		rnd_setenv("IMPORT_NET_CMD_PCB", PCB->hidlib.loadname, 1);
 	rnd_setenv("IMPORT_NET_CMD_OUT", outfn, 1);
 	res = rnd_system(&PCB->hidlib, cmdline);
 	if (res == 0) {

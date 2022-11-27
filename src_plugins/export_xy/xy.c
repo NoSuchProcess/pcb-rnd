@@ -153,7 +153,7 @@ static const rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 	}
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &xy_values[HA_xyfile], ".xy");
+		pcb_derive_default_filename(PCB->hidlib.loadname, &xy_values[HA_xyfile], ".xy");
 
 	if (n)
 		*n = NUM_OPTIONS;

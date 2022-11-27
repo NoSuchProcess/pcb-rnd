@@ -57,7 +57,7 @@ void pcb_board_free(pcb_board_t * pcb)
 
 	free(pcb->line_mod_merge);
 	free(pcb->hidlib.name);
-	free(pcb->hidlib.filename);
+	free(pcb->hidlib.loadname);
 	free(pcb->PrintFilename);
 	pcb_ratspatch_destroy(pcb);
 	pcb_data_free(pcb->Data);
@@ -147,10 +147,10 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 
 	if (dpcb == 0) {
 		nw = PCB;
-		if (nw->hidlib.filename != NULL) {
+		if (nw->hidlib.loadname != NULL) {
 			/* make sure the new PCB doesn't inherit the name and loader of the default pcb */
-			free(nw->hidlib.filename);
-			nw->hidlib.filename = NULL;
+			free(nw->hidlib.loadname);
+			nw->hidlib.loadname = NULL;
 			nw->Data->loader = NULL;
 		}
 	}
@@ -251,7 +251,7 @@ void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const r
 
 const char *pcb_board_get_filename(void)
 {
-	return PCB->hidlib.filename;
+	return PCB->hidlib.loadname;
 }
 
 const char *pcb_board_get_name(void)

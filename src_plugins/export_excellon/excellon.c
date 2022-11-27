@@ -206,7 +206,7 @@ static const rnd_export_opt_t *excellon_get_export_options(rnd_hid_t *hid, int *
 {
 	const char *val = excellon_values[HA_excellonfile].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &excellon_values[HA_excellonfile], "");
+		pcb_derive_default_filename(PCB->hidlib.loadname, &excellon_values[HA_excellonfile], "");
 
 	if (n)
 		*n = NUM_OPTIONS;

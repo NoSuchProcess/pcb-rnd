@@ -260,7 +260,7 @@ static const rnd_export_opt_t *gerber_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *val = gerber_values[HA_gerberfile].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &gerber_values[HA_gerberfile], "");
+		pcb_derive_default_filename(PCB->hidlib.loadname, &gerber_values[HA_gerberfile], "");
 
 	if (n)
 		*n = NUM_OPTIONS;

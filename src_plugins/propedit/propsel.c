@@ -127,7 +127,7 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 static void map_board(pcb_propedit_t *ctx, pcb_board_t *pcb)
 {
 	map_add_prop(ctx, "p/board/name",   String, pcb->hidlib.name);
-	map_add_prop(ctx, "p/board/filename",   String, pcb->hidlib.filename);
+	map_add_prop(ctx, "p/board/filename",   String, pcb->hidlib.loadname);
 	map_add_prop(ctx, "p/board/width", rnd_coord_t, rnd_dwg_get_size_x(&pcb->hidlib));
 	map_add_prop(ctx, "p/board/height", rnd_coord_t, rnd_dwg_get_size_y(&pcb->hidlib));
 	map_attr(ctx, &pcb->Attributes);
@@ -541,8 +541,8 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 		    (pcb_board_change_name(rnd_strdup(st->s)))) DONE;
 
 		if ((strcmp(pn, "filename") == 0)) {
-			free(pcb->hidlib.filename);
-			pcb->hidlib.filename = rnd_strdup(st->s);
+			free(pcb->hidlib.loadname);
+			pcb->hidlib.loadname = rnd_strdup(st->s);
 			DONE;
 		}
 

@@ -277,7 +277,7 @@ static int gcode_export_layer_group(rnd_layergrp_id_t group, const char *purpose
 		const char *base = gcode_values[HA_outfile].str;
 		gds_t fn;
 
-		if (base == NULL) base = gctx.pcb->hidlib.filename;
+		if (base == NULL) base = gctx.pcb->hidlib.loadname;
 		if (base == NULL) base = "unknown";
 
 		gds_init(&fn);

@@ -800,11 +800,11 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int i, j;
-	if (!PCB || !PCB->Data || !PCB->hidlib.filename) {
+	if (!PCB || !PCB->Data || !PCB->hidlib.loadname) {
 		printf("No PCB loaded.\n");
 		return 0;
 	}
-	printf("Filename: %s\n", PCB->hidlib.filename);
+	printf("Filename: %s\n", PCB->hidlib.loadname);
 	rnd_printf("Size: %ml x %ml mils, %mm x %mm mm\n", rnd_dwg_get_size_x(&PCB->hidlib), rnd_dwg_get_size_y(&PCB->hidlib), rnd_dwg_get_size_x(&PCB->hidlib), rnd_dwg_get_size_y(&PCB->hidlib));
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		rnd_layergrp_id_t lg = pcb_layer_get_group(PCB, i);

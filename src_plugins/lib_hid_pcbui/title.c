@@ -48,10 +48,10 @@ static void update_title(rnd_design_t *hl, int changed, int is_footprint)
 	else
 		name = hl->name;
 
-	if ((hl->filename == NULL) || (*hl->filename == '\0'))
+	if ((hl->loadname == NULL) || (*hl->loadname == '\0'))
 		filename = "<board with no file name or format>";
 	else
-		filename = hl->filename;
+		filename = hl->loadname;
 
 	title_buf.used = 0;
 	rnd_append_printf(&title_buf, "%s%s (%s) - %s - pcb-rnd", changed ? "*" : "", name, filename, is_footprint ? "footprint" : "board");

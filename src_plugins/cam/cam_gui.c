@@ -341,7 +341,7 @@ static int cam_gui(rnd_design_t *hidlib, const char *arg)
 
 	{ /* set default outfile */
 		rnd_hid_attr_val_t hv;
-		hv.str = pcb_derive_default_filename_(PCB->hidlib.filename, "");
+		hv.str = pcb_derive_default_filename_(PCB->hidlib.loadname, "");
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->woutfile, &hv);
 		free((char *)hv.str);
 		cam_gui_opts2dlg(ctx);

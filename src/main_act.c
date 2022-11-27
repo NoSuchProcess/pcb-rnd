@@ -276,7 +276,7 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
 	RND_ACT_IRES(0);
 
-	rnd_setenv("PCB_RND_BOARD_FILE_NAME", RND_ACT_DESIGN->filename == NULL ? "" : RND_ACT_DESIGN->filename, 1);
+	rnd_setenv("PCB_RND_BOARD_FILE_NAME", RND_ACT_DESIGN->loadname == NULL ? "" : RND_ACT_DESIGN->loadname, 1);
 	rnd_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.X);
 	rnd_setenv("PCB_RND_CROSSHAIR_X_MM", tmp, 1);
 	rnd_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);

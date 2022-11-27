@@ -1850,8 +1850,8 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 			char *orig_fn, *end;
 			char *pcb_fn = rnd_strdup_subst(fnpat, rnd_build_fn_cb, &PCB->hidlib, RND_SUBST_ALL);
 			
-			orig_fn = PCB->hidlib.filename;
-			PCB->hidlib.filename = NULL;
+			orig_fn = PCB->hidlib.loadname;
+			PCB->hidlib.loadname = NULL;
 
 			/* avoid .lht.lht.pcb */
 			end = pcb_fn + strlen(pcb_fn) - 1;
@@ -1862,8 +1862,8 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 			free(pcb_fn);
 			
 			/* restore these because SaveTo() has changed them */
-			free(PCB->hidlib.filename);
-			PCB->hidlib.filename = orig_fn;
+			free(PCB->hidlib.loadname);
+			PCB->hidlib.loadname = orig_fn;
 			PCB->Data->loader = ctx;
 		}
 	}

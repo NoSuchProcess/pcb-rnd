@@ -421,7 +421,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	memset(&save, 0, sizeof(save));
 
 	if (rnd_strcasecmp(function, "Layout") == 0)
-		if (PCB->hidlib.filename != NULL)
+		if (PCB->hidlib.loadname != NULL)
 			return rnd_actionva(RND_ACT_DESIGN, "SaveTo", "Layout", NULL);
 
 	if (is_dialog) {
@@ -548,10 +548,10 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* construct the input file name and run a file selection dialog to get the final file name */
 	if (name_in == NULL) {
-		if (PCB->hidlib.filename == NULL)
+		if (PCB->hidlib.loadname == NULL)
 			name_in = rnd_concat("unnamed", extensions_param[fmt], NULL);
 		else
-			name_in = rnd_strdup(PCB->hidlib.filename);
+			name_in = rnd_strdup(PCB->hidlib.loadname);
 	}
 
 

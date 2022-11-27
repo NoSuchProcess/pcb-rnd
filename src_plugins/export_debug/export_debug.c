@@ -100,7 +100,7 @@ static const rnd_export_opt_t *debug_get_export_options(rnd_hid_t *hid, int *n)
 	const char *val = debug_values[HA_debugfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &debug_values[HA_debugfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.loadname, &debug_values[HA_debugfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

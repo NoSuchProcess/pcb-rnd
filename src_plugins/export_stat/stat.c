@@ -116,7 +116,7 @@ static const rnd_export_opt_t *stat_get_export_options(rnd_hid_t *hid, int *n)
 	const char *val = stat_values[HA_statfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &stat_values[HA_statfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.loadname, &stat_values[HA_statfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

@@ -117,7 +117,7 @@ static const rnd_export_opt_t *eps_get_export_options(rnd_hid_t *hid, int *n)
 	const char *val = eps_values[HA_psfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &eps_values[HA_psfile], ".eps");
+		pcb_derive_default_filename(PCB->hidlib.loadname, &eps_values[HA_psfile], ".eps");
 
 	if (n)
 		*n = NUM_OPTIONS;

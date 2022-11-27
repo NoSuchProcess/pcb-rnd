@@ -52,8 +52,8 @@ conf_cam_t conf_cam;
 
 static void cam_init_inst_fn(cam_ctx_t *ctx)
 {
-	if ((PCB != NULL) && (PCB->hidlib.filename != NULL)) {
-		char *fn = pcb_derive_default_filename_(PCB->hidlib.filename, "");
+	if ((PCB != NULL) && (PCB->hidlib.loadname != NULL)) {
+		char *fn = pcb_derive_default_filename_(PCB->hidlib.loadname, "");
 		char *val, *end = strrchr(fn, RND_DIR_SEPARATOR_C);
 		if (end != NULL)
 			val = rnd_strdup(end+1);

@@ -302,7 +302,7 @@ static const rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
 	const char *val = png_values[HA_pngfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &png_values[HA_pngfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.loadname, &png_values[HA_pngfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
