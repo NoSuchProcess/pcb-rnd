@@ -68,6 +68,8 @@ typedef struct {
 
 static char crosshair_cookie[] = "crosshair";
 
+static int crosshair_gui_inited = 0;
+
 pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
 rnd_mark_t pcb_marked;
 pcb_crosshair_note_t pcb_crosshair_note;
@@ -106,7 +108,7 @@ static int pcb_tool_point_id = -1;
 
 static void pcb_point_cursor(rnd_bool enable)
 {
-	if (rnd_gui != NULL) {
+	if ((rnd_gui != NULL) && crosshair_gui_inited) {
 		/* register the tool when first needed */
 		if (pcb_tool_point_id < 0)
 			pcb_tool_point_id = rnd_tool_reg(&pcb_tool_point, crosshair_cookie);
@@ -1158,6 +1160,8 @@ static void pcb_crosshair_gui_init(rnd_design_t *hidlib, void *user_data, int ar
 	rnd_hid_set_draw_xor(pcb_crosshair.GC, 1);
 	rnd_hid_set_line_cap(pcb_crosshair.GC, rnd_cap_round);
 	rnd_hid_set_line_width(pcb_crosshair.GC, 1);
+
+	crosshair_gui_inited = 1;
 }
 
 /* ---------------------------------------------------------------------------
