@@ -402,6 +402,7 @@ int main(int argc, char *argv[])
 	rnd_app.version = PCB_VERSION;
 	rnd_app.revision = PCB_REVISION;
 	rnd_app.url = "http://repo.hu/projects/pcb-rnd";
+	rnd_app.multi_design = 0;
 
 	rnd_app.crosshair_suspend = pcb_crosshair_suspend;
 	rnd_app.crosshair_restore = pcb_crosshair_restore;
