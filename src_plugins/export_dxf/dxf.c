@@ -210,15 +210,16 @@ static const rnd_export_opt_t *dxf_get_export_options(rnd_hid_t *hid, int *n)
 	return dxf_attribute_list;
 }
 
-void dxf_hid_export_to_file(dxf_ctx_t *ctx, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
+void dxf_hid_export_to_file(rnd_design_t *dsg, dxf_ctx_t *ctx, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t hectx;
 
-	hectx.view.X1 = PCB->hidlib.dwg.X1;
-	hectx.view.Y1 = PCB->hidlib.dwg.Y1;
-	hectx.view.X2 = PCB->hidlib.dwg.X2;
-	hectx.view.Y2 = PCB->hidlib.dwg.Y2;
+	hectx.design = dsg;
+	hectx.view.X1 = dsg->dwg.X1;
+	hectx.view.Y1 = dsg->dwg.Y1;
+	hectx.view.X2 = dsg->dwg.X2;
+	hectx.view.Y2 = dsg->dwg.Y2;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
@@ -321,7 +322,7 @@ static void dxf_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	if (!dxf_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	dxf_hid_export_to_file(&dxf_ctx, options, &xform);
+	dxf_hid_export_to_file(design, &dxf_ctx, options, &xform);
 
 	if (!dxf_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
