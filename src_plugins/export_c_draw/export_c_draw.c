@@ -104,6 +104,7 @@ void c_draw_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t ctx;
 
+	ctx.design = dsg;
 	ctx.view.X1 = dsg->dwg.X1;
 	ctx.view.Y1 = dsg->dwg.Y1;
 	ctx.view.X2 = dsg->dwg.X2;
