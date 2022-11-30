@@ -167,10 +167,10 @@ void eps_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val
 
 	options_ = options;
 
-	region.X1 = PCB->hidlib.dwg.X1;
-	region.Y1 = PCB->hidlib.dwg.Y1;
-	region.X2 = PCB->hidlib.dwg.X2;
-	region.Y2 = PCB->hidlib.dwg.Y2;
+	region.X1 = dsg->dwg.X1;
+	region.Y1 = dsg->dwg.Y1;
+	region.X2 = dsg->dwg.X2;
+	region.Y2 = dsg->dwg.Y2;
 
 	if (options[HA_only_visible].lng)
 		bnds = pcb_data_bbox(&tmp, PCB->Data, rnd_false);
@@ -239,6 +239,7 @@ void eps_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val
 		xform->enable_silk_invis_clr = 1;
 	}
 
+	ctx.design = dsg;
 	ctx.view = *bnds;
 	rnd_app.expose_main(&eps_hid, &ctx, xform);
 

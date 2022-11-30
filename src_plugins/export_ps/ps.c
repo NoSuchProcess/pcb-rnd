@@ -409,10 +409,11 @@ void ps_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_
 	/* reset static vars */
 	rnd_ps_use_gc(&global.ps, NULL);
 
-	global.exps.view.X1 = PCB->hidlib.dwg.X1;
-	global.exps.view.Y1 = PCB->hidlib.dwg.Y1;
-	global.exps.view.X2 = PCB->hidlib.dwg.X2;
-	global.exps.view.Y2 = PCB->hidlib.dwg.Y2;
+	global.exps.design = dsg;
+	global.exps.view.X1 = dsg->dwg.X1;
+	global.exps.view.Y1 = dsg->dwg.Y1;
+	global.exps.view.X2 = dsg->dwg.X2;
+	global.exps.view.Y2 = dsg->dwg.Y2;
 
 	global.had_page = 0;
 
