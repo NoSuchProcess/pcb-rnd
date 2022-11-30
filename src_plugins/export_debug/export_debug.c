@@ -107,15 +107,16 @@ static const rnd_export_opt_t *debug_get_export_options(rnd_hid_t *hid, int *n)
 	return debug_attribute_list;
 }
 
-void debug_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
+static void debug_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t ctx;
 
-	ctx.view.X1 = PCB->hidlib.dwg.X1;
-	ctx.view.Y1 = PCB->hidlib.dwg.X1;
-	ctx.view.X2 = PCB->hidlib.dwg.X2;
-	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
+	ctx.design = dsg;
+	ctx.view.X1 = dsg->dwg.X1;
+	ctx.view.Y1 = dsg->dwg.X1;
+	ctx.view.X2 = dsg->dwg.X2;
+	ctx.view.Y2 = dsg->dwg.Y2;
 
 	f = the_file;
 
@@ -144,7 +145,7 @@ static void debug_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_v
 		if (!filename)
 			filename = "export.dump";
 
-		f = rnd_fopen_askovr(&PCB->hidlib, debug_cam.active ? debug_cam.fn : filename, "wb", NULL);
+		f = rnd_fopen_askovr(design, debug_cam.active ? debug_cam.fn : filename, "wb", NULL);
 		if (!f) {
 			perror(filename);
 			return;
@@ -156,7 +157,7 @@ static void debug_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_v
 	if (!debug_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	debug_hid_export_to_file(f, options, &xform);
+	debug_hid_export_to_file(design, f, options, &xform);
 
 	if (!debug_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
