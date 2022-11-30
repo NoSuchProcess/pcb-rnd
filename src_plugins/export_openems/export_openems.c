@@ -617,7 +617,7 @@ static void openems_wr_m_sim(wctx_t *wctx)
 
 #include "openems_xml.c"
 
-static void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim, rnd_hid_attr_val_t *options, int fmt_matlab)
+static void openems_hid_export_to_file(rnd_design_t *dsg, const char *filename, FILE *the_file, FILE *fsim, rnd_hid_attr_val_t *options, int fmt_matlab)
 {
 	rnd_hid_expose_ctx_t ctx;
 	wctx_t wctx;
@@ -626,15 +626,16 @@ static void openems_hid_export_to_file(const char *filename, FILE *the_file, FIL
 	wctx.filename = filename;
 	wctx.f = the_file;
 	wctx.fsim = fsim;
-	wctx.pcb = PCB;
+	wctx.pcb = (pcb_board_t *)dsg;
 	wctx.options = options;
 	wctx.fmt_matlab = fmt_matlab;
 	ems_ctx = &wctx;
 
-	ctx.view.X1 = PCB->hidlib.dwg.X1;
-	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
-	ctx.view.X2 = PCB->hidlib.dwg.X2;
-	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
+	ctx.design = dsg;
+	ctx.view.X1 = dsg->dwg.X1;
+	ctx.view.Y1 = dsg->dwg.Y1;
+	ctx.view.X2 = dsg->dwg.X2;
+	ctx.view.Y2 = dsg->dwg.Y2;
 
 	f = the_file;
 
@@ -702,7 +703,7 @@ static void openems_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr
 			end = runfn + len;
 		strcpy(end, ".sim.m");
 
-		fsim = rnd_fopen_askovr(&PCB->hidlib, runfn, "wb", &openems_ovr);
+		fsim = rnd_fopen_askovr(design, runfn, "wb", &openems_ovr);
 		if (fsim == NULL) {
 			perror(runfn);
 			return;
@@ -714,7 +715,7 @@ static void openems_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
-	openems_hid_export_to_file(filename, f, fsim, options, fmt_matlab);
+	openems_hid_export_to_file(design, filename, f, fsim, options, fmt_matlab);
 
 	pcb_hid_restore_layer_ons(save_ons);
 

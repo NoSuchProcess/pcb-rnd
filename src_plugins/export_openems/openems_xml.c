@@ -146,7 +146,7 @@ static int openems_wr_xml_layers(wctx_t *ctx)
 	rnd_cardinal_t gid;
 	int err = 0;
 
-
+	ectx.design = &ctx->pcb->hidlib;
 	ectx.view.X1 = ctx->pcb->hidlib.dwg.X1;
 	ectx.view.Y1 = ctx->pcb->hidlib.dwg.Y2;
 	ectx.view.X2 = ctx->pcb->hidlib.dwg.X2;
