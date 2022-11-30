@@ -155,15 +155,16 @@ static const rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
 	return svg_attribute_list;
 }
 
-void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
+static void svg_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t ctx;
 
-	ctx.view.X1 = PCB->hidlib.dwg.X1;
-	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
-	ctx.view.X2 = PCB->hidlib.dwg.X2;
-	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
+	ctx.design = dsg;
+	ctx.view.X1 = dsg->dwg.X1;
+	ctx.view.Y1 = dsg->dwg.Y1;
+	ctx.view.X2 = dsg->dwg.X2;
+	ctx.view.Y2 = dsg->dwg.Y2;
 
 	pctx->outf = the_file;
 
@@ -251,14 +252,14 @@ static void svg_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	else
 		f = NULL;
 
-	rnd_svg_init(pctx, &PCB->hidlib, f, options[HA_opacity].lng, options[HA_flip].lng, options[HA_true_size].lng);
+	rnd_svg_init(pctx, design, f, options[HA_opacity].lng, options[HA_flip].lng, options[HA_true_size].lng);
 	if (f != NULL)
 		rnd_svg_header(pctx);
 
 	if (!svg_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	svg_hid_export_to_file(pctx->outf, options, &xform);
+	svg_hid_export_to_file(design, pctx->outf, options, &xform);
 
 
 	if (!svg_cam.active)
