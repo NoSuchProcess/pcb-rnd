@@ -365,7 +365,7 @@ static void png_finish(FILE *f)
 }
 
 
-void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xform_t *xform)
+void png_hid_export_to_file(rnd_design_t *dsg, FILE *the_file, rnd_hid_attr_val_t *options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_box_t tmp, region;
@@ -373,10 +373,10 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 
 	png_f = the_file;
 
-	region.X1 = PCB->hidlib.dwg.X1;
-	region.Y1 = PCB->hidlib.dwg.Y1;
-	region.X2 = PCB->hidlib.dwg.X2;
-	region.Y2 = PCB->hidlib.dwg.Y2;
+	region.X1 = dsg->dwg.X1;
+	region.Y1 = dsg->dwg.Y1;
+	region.X2 = dsg->dwg.X2;
+	region.Y2 = dsg->dwg.Y2;
 
 	png_options = options;
 	if (options[HA_only_visible].lng)
@@ -419,6 +419,7 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 		xform->add_gui_xform = 1;
 	}
 
+	ctx.design = dsg;
 	ctx.view = *bounds;
 	rnd_app.expose_main(&png_hid, &ctx, xform);
 
@@ -487,7 +488,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	png_hid_export_to_file(png_f, options, &xform);
+	png_hid_export_to_file(design, png_f, options, &xform);
 
 	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_restore_layer_ons(save_ons);
