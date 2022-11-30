@@ -99,15 +99,15 @@ static const rnd_export_opt_t *c_draw_get_export_options(rnd_hid_t *hid, int *n)
 	return c_draw_attribute_list;
 }
 
-void c_draw_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
+void c_draw_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t ctx;
 
-	ctx.view.X1 = PCB->hidlib.dwg.X1;
-	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
-	ctx.view.X2 = PCB->hidlib.dwg.X2;
-	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
+	ctx.view.X1 = dsg->dwg.X1;
+	ctx.view.Y1 = dsg->dwg.Y1;
+	ctx.view.X2 = dsg->dwg.X2;
+	ctx.view.Y2 = dsg->dwg.Y2;
 
 	f = the_file;
 
@@ -120,6 +120,7 @@ void c_draw_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rn
 
 static void c_draw_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
+	pcb_board_t *pcb = (pcb_board_t *)design;
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
 	rnd_xform_t xform;
@@ -129,14 +130,14 @@ static void c_draw_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_
 		options = c_draw_values;
 	}
 
-	pcb_cam_begin(PCB, &c_draw_cam, &xform, options[HA_cam].str, c_draw_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(pcb, &c_draw_cam, &xform, options[HA_cam].str, c_draw_attribute_list, NUM_OPTIONS, options);
 
 	if (c_draw_cam.fn_template == NULL) {
 		filename = options[HA_c_drawfile].str;
 		if (!filename)
 			filename = "pcb.c";
 
-		f = rnd_fopen_askovr(&PCB->hidlib, c_draw_cam.active ? c_draw_cam.fn : filename, "wb", NULL);
+		f = rnd_fopen_askovr(design, c_draw_cam.active ? c_draw_cam.fn : filename, "wb", NULL);
 		if (!f) {
 			perror(filename);
 			return;
@@ -152,7 +153,7 @@ static void c_draw_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_
 	fprintf(f, "{\n");
 	fprintf(f, "	rnd_color_t clr;\n");
 
-	c_draw_hid_export_to_file(f, options, &xform);
+	c_draw_hid_export_to_file(design, f, options, &xform);
 
 	fprintf(f, "}\n");
 
