@@ -144,15 +144,16 @@ static const rnd_export_opt_t *openscad_get_export_options(rnd_hid_t *hid, int *
 	return openscad_attribute_list;
 }
 
-void openscad_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options)
+void openscad_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_t * options)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t ctx;
 
-	ctx.view.X1 = PCB->hidlib.dwg.X1;
-	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
-	ctx.view.X2 = PCB->hidlib.dwg.X2;
-	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
+	ctx.design = dsg;
+	ctx.view.X1 = dsg->dwg.X1;
+	ctx.view.Y1 = dsg->dwg.Y1;
+	ctx.view.X2 = dsg->dwg.X2;
+	ctx.view.Y2 = dsg->dwg.Y2;
 
 	f = the_file;
 
@@ -334,7 +335,7 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	if (options[HA_models].lng)
 		scad_insert_models();
 
-	openscad_hid_export_to_file(f, options);
+	openscad_hid_export_to_file(design, f, options);
 	scad_close_layer_group();
 
 	if (options[HA_drill].lng)
