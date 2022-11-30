@@ -158,7 +158,7 @@ static const char *filename;
 
 static rnd_hid_attr_val_t *options_;
 
-void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xform_t *xform)
+void eps_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_t *options, rnd_xform_t *xform)
 {
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
@@ -277,7 +277,7 @@ static void eps_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 
 	if ((!eps_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_save_and_show_layer_ons(save_ons);
-	eps_hid_export_to_file(pctx->outf, options, &xform);
+	eps_hid_export_to_file(design, pctx->outf, options, &xform);
 	if ((!eps_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_restore_layer_ons(save_ons);
 

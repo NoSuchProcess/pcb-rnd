@@ -374,7 +374,7 @@ static FILE *psopen(const char *base, const char *which)
 
 
 /* This is used by other HIDs that use a postscript format, like lpr or eps.  */
-void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
+void ps_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 
@@ -475,7 +475,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_
 
 	if (!ps_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
-	ps_hid_export_to_file(fh, options, &xform);
+	ps_hid_export_to_file(design, fh, options, &xform);
 	if (!ps_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
 
