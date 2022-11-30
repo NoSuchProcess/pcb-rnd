@@ -371,10 +371,11 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_
 	lastgroup = -1;
 	lastcolor = -1;
 
-	ctx.view.X1 = PCB->hidlib.dwg.X1;
-	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
-	ctx.view.X2 = PCB->hidlib.dwg.X2;
-	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
+	ctx.design = design;
+	ctx.view.X1 = design->dwg.X1;
+	ctx.view.Y1 = design->dwg.Y1;
+	ctx.view.X2 = design->dwg.X2;
+	ctx.view.Y2 = design->dwg.Y2;
 
 	pagecount = 1;
 	reset_apertures();
