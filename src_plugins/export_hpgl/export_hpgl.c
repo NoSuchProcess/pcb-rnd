@@ -102,15 +102,16 @@ static const rnd_export_opt_t *exp_hpgl_get_export_options(rnd_hid_t *hid, int *
 	return exp_hpgl_attribute_list;
 }
 
-void exp_hpgl_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
+static void exp_hpgl_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_hid_expose_ctx_t ctx;
 
-	ctx.view.X1 = PCB->hidlib.dwg.X1;
-	ctx.view.Y1 = PCB->hidlib.dwg.Y1;
-	ctx.view.X2 = PCB->hidlib.dwg.X2;
-	ctx.view.Y2 = PCB->hidlib.dwg.Y2;
+	ctx.design = dsg;
+	ctx.view.X1 = dsg->dwg.X1;
+	ctx.view.Y1 = dsg->dwg.Y1;
+	ctx.view.X2 = dsg->dwg.X2;
+	ctx.view.Y2 = dsg->dwg.Y2;
 
 	f = the_file;
 
@@ -151,7 +152,7 @@ static void exp_hpgl_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	if (!exp_hpgl_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	exp_hpgl_hid_export_to_file(f, options, &xform);
+	exp_hpgl_hid_export_to_file(design, f, options, &xform);
 
 	if (!exp_hpgl_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
