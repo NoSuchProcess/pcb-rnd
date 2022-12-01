@@ -315,12 +315,12 @@ static struct {
 	int had_page; /* 1 if we ever wrote a page */
 } global;
 
-static const rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val = global.ps_values[HA_psfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &global.ps_values[HA_psfile], ".ps");
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &global.ps_values[HA_psfile], ".ps");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -442,7 +442,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_
 	global.ovr_all = 0;
 
 	if (!options) {
-		ps_get_export_options(hid, 0);
+		ps_get_export_options(hid, 0, design, appspec);
 		options = global.ps_values;
 	}
 

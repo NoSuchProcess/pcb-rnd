@@ -94,13 +94,13 @@ static const rnd_export_opt_t debug_attribute_list[] = {
 
 static rnd_hid_attr_val_t debug_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *debug_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *debug_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = ".dump";
 	const char *val = debug_values[HA_debugfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &debug_values[HA_debugfile], suffix);
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &debug_values[HA_debugfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -134,7 +134,7 @@ static void debug_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_v
 	rnd_xform_t xform;
 
 	if (!options) {
-		debug_get_export_options(hid, 0);
+		debug_get_export_options(hid, 0, design, appspec);
 		options = debug_values;
 	}
 

@@ -102,7 +102,7 @@ static const rnd_export_opt_t gcode_attribute_list[] = {
 
 static rnd_hid_attr_val_t gcode_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *gcode_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *gcode_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	if (n)
 		*n = NUM_OPTIONS;
@@ -331,7 +331,7 @@ static void gcode_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_v
 	pcb_board_t *pcb = PCB;
 
 	if (!options) {
-		gcode_get_export_options(hid, 0);
+		gcode_get_export_options(hid, 0, design, appspec);
 		options = gcode_values;
 	}
 

@@ -61,11 +61,11 @@ typedef struct pcb_bom_list_s {
 	struct pcb_bom_list_s *next;
 } pcb_bom_list_t;
 
-static const rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val = bom_values[HA_bomfile].str;
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &bom_values[HA_bomfile], ".bom");
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &bom_values[HA_bomfile], ".bom");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -227,7 +227,7 @@ static void bom_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	pcb_cam_t cam;
 
 	if (!options) {
-		bom_get_export_options(hid, 0);
+		bom_get_export_options(hid, 0, design, appspec);
 		options = bom_values;
 	}
 

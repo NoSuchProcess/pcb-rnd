@@ -102,7 +102,7 @@ static void free_fmts(void)
 	}
 }
 
-static const rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	static int last_unit_value = -1;
 	rnd_conf_listitem_t *li;
@@ -152,8 +152,8 @@ static const rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 		last_unit_value = xy_values[HA_unit].lng;
 	}
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &xy_values[HA_xyfile], ".xy");
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &xy_values[HA_xyfile], ".xy");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -945,7 +945,7 @@ static void xy_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_
 	gather_templates();
 
 	if (!options) {
-		xy_get_export_options(hid, 0);
+		xy_get_export_options(hid, 0, design, appspec);
 		options = xy_values;
 	}
 

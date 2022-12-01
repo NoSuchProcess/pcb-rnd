@@ -142,13 +142,13 @@ Flip board, look at it from the bottom side
 
 static rnd_hid_attr_val_t svg_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = ".svg";
 	const char *val = svg_values[HA_svgfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &svg_values[HA_svgfile], suffix);
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &svg_values[HA_svgfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -226,7 +226,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	pctx->comp_cnt = 0;
 
 	if (!options) {
-		svg_get_export_options(hid, 0);
+		svg_get_export_options(hid, 0, design, appspec);
 		options = svg_values;
 	}
 

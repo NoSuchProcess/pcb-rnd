@@ -423,11 +423,11 @@ Name of the IPC-D-356 Netlist output file.
 
 static rnd_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *ipcd356_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *ipcd356_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val = ipcd356_values[HA_ipcd356_filename].str;
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &ipcd356_values[HA_ipcd356_filename], ".net");
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &ipcd356_values[HA_ipcd356_filename], ".net");
 
 	if (n != NULL)
 		*n = NUM_OPTIONS;
@@ -447,7 +447,7 @@ static void ipcd356_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr
 	pcb_cam_t cam;
 
 	if (!options) {
-		ipcd356_get_export_options(hid, 0);
+		ipcd356_get_export_options(hid, 0, design, appspec);
 		options = ipcd356_values;
 	}
 

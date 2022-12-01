@@ -202,11 +202,11 @@ excellon output file prefix. Can include a path.
 
 static rnd_hid_attr_val_t excellon_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *excellon_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *excellon_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val = excellon_values[HA_excellonfile].str;
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &excellon_values[HA_excellonfile], "");
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &excellon_values[HA_excellonfile], "");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -223,7 +223,7 @@ static void excellon_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	rnd_xform_t xform;
 
 	if (!options) {
-		excellon_get_export_options(hid, NULL);
+		excellon_get_export_options(hid, NULL, design, appspec);
 		options = excellon_values;
 	}
 	pcb_drill_init(&pdrills, options[HA_apeture_per_file].lng ? NULL : &exc_aperture_cnt);

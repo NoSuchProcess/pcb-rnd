@@ -89,13 +89,13 @@ static const rnd_export_opt_t exp_hpgl_attribute_list[] = {
 
 static rnd_hid_attr_val_t exp_hpgl_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *exp_hpgl_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *exp_hpgl_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = ".hpgl";
 	const char *val = exp_hpgl_values[HA_exp_hpglfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &exp_hpgl_values[HA_exp_hpglfile], suffix);
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &exp_hpgl_values[HA_exp_hpglfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -129,7 +129,7 @@ static void exp_hpgl_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	rnd_xform_t xform;
 
 	if (!options) {
-		exp_hpgl_get_export_options(hid, 0);
+		exp_hpgl_get_export_options(hid, 0, design, appspec);
 		options = exp_hpgl_values;
 	}
 

@@ -86,13 +86,13 @@ static const rnd_export_opt_t c_draw_attribute_list[] = {
 
 static rnd_hid_attr_val_t c_draw_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *c_draw_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *c_draw_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = ".c";
 	const char *val = c_draw_values[HA_c_drawfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &c_draw_values[HA_c_drawfile], suffix);
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &c_draw_values[HA_c_drawfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -127,7 +127,7 @@ static void c_draw_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_
 	rnd_xform_t xform;
 
 	if (!options) {
-		c_draw_get_export_options(hid, 0);
+		c_draw_get_export_options(hid, 0, design, appspec);
 		options = c_draw_values;
 	}
 

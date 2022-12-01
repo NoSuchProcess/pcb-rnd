@@ -166,14 +166,14 @@ static const rnd_export_opt_t openems_attribute_list[] = {
 
 static rnd_hid_attr_val_t openems_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *openems_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *openems_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 	const char *val = openems_values[HA_openemsfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &openems_values[HA_openemsfile], suffix);
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &openems_values[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
 		openems_values[HA_def_substrate_thick].crd = mesh->def_subs_thick;
@@ -676,7 +676,7 @@ static void openems_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr
 	openems_ovr = 0;
 
 	if (!options) {
-		openems_get_export_options(hid, 0);
+		openems_get_export_options(hid, 0, design, appspec);
 		options = openems_values;
 	}
 

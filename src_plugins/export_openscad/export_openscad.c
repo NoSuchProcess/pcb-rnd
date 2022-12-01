@@ -131,13 +131,13 @@ Name of the file to be exported to. Can contain a path.
 
 static rnd_hid_attr_val_t openscad_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *openscad_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *openscad_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = ".scad";
 	const char *val = openscad_values[HA_openscadfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &openscad_values[HA_openscadfile], suffix);
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &openscad_values[HA_openscadfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -304,7 +304,7 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	pcb_cam_t cam;
 
 	if (!options) {
-		openscad_get_export_options(hid, 0);
+		openscad_get_export_options(hid, 0, design, appspec);
 		options = openscad_values;
 	}
 

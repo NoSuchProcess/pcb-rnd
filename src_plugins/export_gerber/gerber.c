@@ -256,11 +256,11 @@ Print file names and aperture counts on stdout.
 
 static rnd_hid_attr_val_t gerber_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *gerber_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *gerber_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val = gerber_values[HA_gerberfile].str;
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &gerber_values[HA_gerberfile], "");
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &gerber_values[HA_gerberfile], "");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -323,7 +323,7 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_
 	drawing_mode_issued = RND_HID_COMP_POSITIVE;
 
 	if (!options) {
-		gerber_get_export_options(hid, NULL);
+		gerber_get_export_options(hid, NULL, design, appspec);
 		options = gerber_values;
 	}
 

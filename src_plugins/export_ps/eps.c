@@ -112,12 +112,12 @@ Limit the bounds of the EPS file to the visible items.
 
 static rnd_hid_attr_val_t eps_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *eps_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *eps_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val = eps_values[HA_psfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &eps_values[HA_psfile], ".eps");
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &eps_values[HA_psfile], ".eps");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -255,7 +255,7 @@ static void eps_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	rnd_xform_t xform;
 
 	if (!options) {
-		eps_get_export_options(hid, 0);
+		eps_get_export_options(hid, 0, design, appspec);
 		options = eps_values;
 	}
 

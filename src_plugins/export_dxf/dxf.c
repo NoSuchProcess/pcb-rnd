@@ -198,12 +198,12 @@ Draw drill contour with thin line
 
 static rnd_hid_attr_val_t dxf_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *dxf_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *dxf_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = ".dxf";
 	const char *val = dxf_values[HA_dxffile].str;
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &dxf_values[HA_dxffile], suffix);
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &dxf_values[HA_dxffile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -272,7 +272,7 @@ static void dxf_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	rnd_xform_t xform;
 
 	if (!options) {
-		dxf_get_export_options(hid, 0);
+		dxf_get_export_options(hid, 0, design, appspec);
 		options = dxf_values;
 	}
 

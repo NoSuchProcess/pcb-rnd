@@ -67,11 +67,11 @@ static rnd_hid_attr_val_t dsn_values[NUM_OPTIONS];
 
 static const char *dsn_filename;
 
-static const rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val = dsn_values[HA_dsnfile].str;
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &dsn_values[HA_dsnfile], ".dsn");
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &dsn_values[HA_dsnfile], ".dsn");
 	if (n)
 		*n = NUM_OPTIONS;
 	return dsn_options;
@@ -87,7 +87,7 @@ static void dsn_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	int restore_conf = 0;
 
 	if (!options) {
-		dsn_get_export_options(hid, 0);
+		dsn_get_export_options(hid, 0, design, appspec);
 		options = dsn_values;
 	}
 	dsn_filename = options[HA_dsnfile].str;

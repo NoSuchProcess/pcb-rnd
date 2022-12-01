@@ -296,13 +296,13 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 
 static rnd_hid_attr_val_t png_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = rnd_drwpx_get_file_suffix(png_values[HA_filetype].lng);
 	const char *val = png_values[HA_pngfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.loadname, &png_values[HA_pngfile], suffix);
+	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(dsg->loadname, &png_values[HA_pngfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -436,7 +436,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	rnd_drwpx_init(pctx, &PCB->hidlib);
 
 	if (!options) {
-		png_get_export_options(hid, 0);
+		png_get_export_options(hid, 0, design, appspec);
 		options = png_values;
 	}
 
