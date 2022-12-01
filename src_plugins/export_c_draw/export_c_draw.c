@@ -368,10 +368,6 @@ static void c_draw_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, r
 	poly_post();
 }
 
-static void c_draw_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
-{
-}
-
 static int c_draw_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nc_draw exporter command line arguments:\n\n");
@@ -419,7 +415,6 @@ int pplg_init_export_c_draw(void)
 	c_draw_hid.fill_polygon = c_draw_fill_polygon;
 	c_draw_hid.fill_polygon_offs = c_draw_fill_polygon_offs;
 	c_draw_hid.fill_rect = c_draw_fill_rect;
-	c_draw_hid.set_crosshair = c_draw_set_crosshair;
 	c_draw_hid.argument_array = c_draw_values;
 
 	c_draw_hid.usage = c_draw_usage;

@@ -291,10 +291,6 @@ static void exp_hpgl_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 {
 }
 
-static void exp_hpgl_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
-{
-}
-
 static int exp_hpgl_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexp_hpgl exporter command line arguments:\n\n");
@@ -342,7 +338,6 @@ int pplg_init_export_hpgl(void)
 	exp_hpgl_hid.fill_polygon = exp_hpgl_fill_polygon;
 	exp_hpgl_hid.fill_polygon_offs = exp_hpgl_fill_polygon_offs;
 	exp_hpgl_hid.fill_rect = exp_hpgl_fill_rect;
-	exp_hpgl_hid.set_crosshair = exp_hpgl_set_crosshair;
 	exp_hpgl_hid.argument_array = exp_hpgl_values;
 
 	exp_hpgl_hid.usage = exp_hpgl_usage;

@@ -466,10 +466,6 @@ static int excellon_usage(rnd_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static void excellon_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
-{
-}
-
 static void exc_session_begin(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	exc_aperture_cnt = 0;
@@ -521,7 +517,6 @@ int pplg_init_export_excellon(void)
 	excellon_hid.fill_polygon = excellon_fill_polygon;
 	excellon_hid.fill_polygon_offs = excellon_fill_polygon_offs;
 	excellon_hid.fill_rect = excellon_fill_rect;
-	excellon_hid.set_crosshair = excellon_set_crosshair;
 	excellon_hid.usage = excellon_usage;
 	excellon_hid.argument_array = excellon_values;
 

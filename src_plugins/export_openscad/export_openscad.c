@@ -584,10 +584,6 @@ static void openscad_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 	openscad_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
-static void openscad_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
-{
-}
-
 static int openscad_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nopenscad exporter command line arguments:\n\n");
@@ -692,7 +688,6 @@ int pplg_init_export_openscad(void)
 	openscad_hid.fill_polygon = openscad_fill_polygon;
 	openscad_hid.fill_polygon_offs = openscad_fill_polygon_offs;
 	openscad_hid.fill_rect = openscad_fill_rect;
-	openscad_hid.set_crosshair = openscad_set_crosshair;
 	openscad_hid.argument_array = openscad_values;
 
 	openscad_hid.usage = openscad_usage;

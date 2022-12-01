@@ -368,10 +368,6 @@ static void debug_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rn
 	debug_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
-static void debug_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
-{
-}
-
 static int debug_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ndebug exporter command line arguments:\n\n");
@@ -419,7 +415,6 @@ int pplg_init_export_debug(void)
 	debug_hid.fill_polygon = debug_fill_polygon;
 	debug_hid.fill_polygon_offs = debug_fill_polygon_offs;
 	debug_hid.fill_rect = debug_fill_rect;
-	debug_hid.set_crosshair = debug_set_crosshair;
 	debug_hid.argument_array = debug_values;
 
 	debug_hid.usage = debug_usage;

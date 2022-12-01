@@ -1060,11 +1060,6 @@ static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx,
 	}
 }
 
-
-static void gerber_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
-{
-}
-
 static void gerber_session_begin(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	gerber_global_aperture_cnt = 0;
@@ -1117,7 +1112,6 @@ int pplg_init_export_gerber(void)
 	gerber_hid.fill_polygon = gerber_fill_polygon;
 	gerber_hid.fill_polygon_offs = gerber_fill_polygon_offs;
 	gerber_hid.fill_rect = gerber_fill_rect;
-	gerber_hid.set_crosshair = gerber_set_crosshair;
 	gerber_hid.usage = gerber_usage;
 	gerber_hid.argument_array = gerber_values;
 
