@@ -63,7 +63,7 @@ static void cb_text_edit(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 static void cb_text_offs(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 static void cb_text_ro(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
-static void prv_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
+static void prv_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e);
 static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 
 static const char * test_xpm[] = {
@@ -508,7 +508,7 @@ static void cb_text_ro(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	txt->hid_set_readonly(atxt, hid_ctx, ctx->txtro);
 }
 
-static void prv_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void prv_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	rnd_render->set_color(gc, rnd_color_red);
 	pcb_text_draw_string_simple(NULL, "foo", RND_MM_TO_COORD(1), RND_MM_TO_COORD(20), 5.0, 5.0, 10.0, 0, 0, 0, 0, 0);

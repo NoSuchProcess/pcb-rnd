@@ -363,7 +363,7 @@ static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_r
 
 }
 
-static void library_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void library_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	library_ctx_t *ctx = prv->user_ctx;
 	int orig_po = pcb_draw_force_termlab;

@@ -152,7 +152,7 @@ static void pstklib_setps(pcb_pstk_t *ps, pcb_data_t *data, rnd_cardinal_t proto
 	ps->ID = -1; /* disable undo and clipping */
 }
 
-static void pstklib_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void pstklib_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	pstk_lib_ctx_t *ctx = prv->user_ctx;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);

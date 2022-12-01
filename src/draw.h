@@ -189,6 +189,6 @@ void pcb_draw_delay_label_add(pcb_any_obj_t *obj);
 #define PCB_DRAW_TERM_GFX_WIDTH (-3)
 
 void pcb_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller);
-void pcb_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
+void pcb_expose_preview(rnd_hid_t *hid, rnd_hid_expose_ctx_t *e);
 
 #endif

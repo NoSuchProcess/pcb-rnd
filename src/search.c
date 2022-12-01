@@ -1768,6 +1768,7 @@ int pcb_search_grid_slop(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1,
 }
 
 vtp0_t pcb_obj_list_vect;
+pcb_board_t *pcb_obj_list_board;
 int pcb_search_screen_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
 {
 	rnd_box_t box;
@@ -1784,6 +1785,7 @@ int pcb_search_screen_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Re
 	box.Y1 = Y + radius;
 
 	vtp0_init(&pcb_obj_list_vect);
+	pcb_obj_list_board = PCB;
 	pcb_list_block_cb(PCB, &box, (void *(*)(void *, pcb_any_obj_t *))vtp0_append, &pcb_obj_list_vect);
 
 	if (pcb_obj_list_vect.used == 1) {
@@ -1800,10 +1802,12 @@ int pcb_search_screen_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Re
 	}
 
 	vtp0_uninit(&pcb_obj_list_vect);
+	pcb_obj_list_board = NULL;
 	return PCB_OBJ_VOID;
 
 	found:;
 	vtp0_uninit(&pcb_obj_list_vect);
+	pcb_obj_list_board = NULL;
 	*Result1 = obj->parent.any;
 	*Result2 = *Result3 = obj;
 	return obj->type;
