@@ -203,7 +203,7 @@ static void view_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_
 
 static vtp0_t view_color_save;
 
-static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	view_ctx_t *ctx = prv->user_ctx;
 	rnd_xform_t xform;
@@ -243,6 +243,7 @@ static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	pcb_draw_force_termlab = 1;
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
+	e->design = &ctx->pcb->hidlib;
 	rnd_app.expose_main(rnd_gui, e, &xform);
 	pcb_draw_force_termlab = old_termlab;
 

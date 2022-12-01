@@ -353,7 +353,7 @@ static void netlist_len_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_att
 
 static vtp0_t netlist_color_save;
 
-static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	netlist_ctx_t *ctx = prv->user_ctx;
 	rnd_xform_t xform;
@@ -388,6 +388,7 @@ static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	/* draw the board */
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
+	e->design = &ctx->pcb->hidlib;
 	rnd_app.expose_main(rnd_gui, e, &xform);
 
 	if (net != NULL) {/* restore object color */

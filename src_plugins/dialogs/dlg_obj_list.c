@@ -25,12 +25,13 @@
  */
 
 extern vtp0_t pcb_obj_list_vect;
+extern pcb_board_t *pcb_obj_list_board;
 
 static long result_idx;
 RND_DAD_DECL_NOINIT(dlg)
 
 
-static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	rnd_xform_t xform;
 	rnd_color_t *saved_color;
@@ -46,6 +47,7 @@ static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	/* draw the board */
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
+	e->design = &pcb_obj_list_board->hidlib;
 	rnd_app.expose_main(rnd_gui, e, &xform);
 
 	/* restore object color */
