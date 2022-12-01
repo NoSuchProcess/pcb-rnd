@@ -394,7 +394,6 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	view_ctx_t *ctx = caller_data;
 	char *cdata;
 	void *load_ctx;
-	size_t clen;
 	pcb_view_t *v, *vt = NULL;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
