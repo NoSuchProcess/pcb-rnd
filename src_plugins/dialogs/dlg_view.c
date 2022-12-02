@@ -821,7 +821,7 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		ctx->lst = calloc(sizeof(pcb_view_list_t), 1);
 	ctx->list_alloced = 1;
 	ctx->refresh = NULL;
-	pcb_dlg_view_full(winid, ctx, name, NULL, 0);
+	pcb_dlg_view_full(winid, ctx, name, NULL, RND_HATF_PRV_GFLIP);
 	view2dlg(ctx);
 	return 0;
 }
