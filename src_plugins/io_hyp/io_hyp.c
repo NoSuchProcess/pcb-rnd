@@ -111,10 +111,6 @@ TODO("rewrite this: should be a config node so that it works through the io API 
 	retval = hyp_parse(PCB->Data, fname, debug);
 	rnd_hid_busy(&PCB->hidlib, 0);
 
-	/* notify GUI */
-	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
-	rnd_event(&PCB->hidlib, RND_EVENT_DESIGN_REPLACED, NULL);
-
 	RND_ACT_IRES(retval);
 	return 0;
 }
