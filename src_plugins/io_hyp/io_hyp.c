@@ -69,10 +69,8 @@ int io_hyp_fmt(pcb_plug_io_t * ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 
 
 
-static const char pcb_acts_LoadhypFrom[] = "LoadhypFrom(filename[, \"debug\"]...)";
-
+static const char pcb_acts_LoadhypFrom[] = "LoadhypFrom(filename)";
 static const char pcb_acth_LoadhypFrom[] = "Loads the specified Hyperlynx file.";
-
 fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
@@ -92,9 +90,8 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-TODO(": rewrite this - this is very unpcb-rnd")
+TODO("rewrite this: should be a config node so that it works through the io API as well")
 #if 0
-	int i = 0;
 	/* 
 	 * debug level.
 	 * one "debug" argument: hyperlynx logging.
@@ -104,6 +101,7 @@ TODO(": rewrite this - this is very unpcb-rnd")
 
 	for (i = 0; i < argc; i++)
 		debug += (strcmp(argv[i], "debug") == 0);
+
 #endif
 
 	if (debug > 0)
