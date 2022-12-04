@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 - CLEANUP: remove rc/have_regex from conf: we always have regex from librnd
 - BUG: make sure tests compile with -DNDEBUG in production, else it fails in alpine packaging (-fomit-frame-pointer brings in fortify headers for some reason which fail with use-librnd #defines in config.h) [report: aron]
+- BUG: export_gcode crashes if there's text on top copper
 
 2. For later releases ===============================================================================
 - FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
