@@ -325,7 +325,7 @@ void pcb_dlg_fontsel_uninit(void)
 
 void pcb_dlg_fontsel_init(void)
 {
-	rnd_event_bind(RND_EVENT_DESIGN_REPLACED, fontsel_bchanged_ev, NULL, fontsel_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_SET_CURRENT, fontsel_bchanged_ev, NULL, fontsel_cookie);
 	rnd_event_bind(RND_EVENT_DESIGN_META_CHANGED, fontsel_mchanged_ev, NULL, fontsel_cookie);
 	rnd_event_bind(PCB_EVENT_FONT_CHANGED, fontsel_mchanged_ev, NULL, fontsel_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, fontsel_gui_init_ev, NULL, fontsel_cookie);
