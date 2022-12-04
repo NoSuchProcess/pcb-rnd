@@ -68,54 +68,54 @@ typedef struct outline_s {
 	rnd_coord_t xc;
 	rnd_coord_t yc;
 	rnd_coord_t r;
-	rnd_bool_t is_arc;						/* arc or line */
-	rnd_bool_t used;							/* already included in outline */
+	rnd_bool_t is_arc;       /* arc or line */
+	rnd_bool_t used;         /* already included in outline */
 	struct outline_s *next;
 } outline_t;
 
 outline_t *outline_head;
 outline_t *outline_tail;
 
-void hyp_set_origin();					/* set origin so all coordinates are positive */
-void hyp_perimeter();						/* add board outline to pcb */
-void hyp_draw_polygons();				/* add all hyperlynx polygons to pcb */
+void hyp_set_origin();    /* set origin so all coordinates are positive */
+void hyp_perimeter();     /* add board outline to pcb */
+void hyp_draw_polygons(); /* add all hyperlynx polygons to pcb */
 static void hyp_subcs_fin(void);
-void hyp_resize_board();				/* resize board to fit outline */
+void hyp_resize_board();  /* resize board to fit outline */
 rnd_bool_t hyp_is_bottom_layer(char *);	/* true if bottom layer */
 
 /* layer creation */
 int layer_count;
 rnd_layer_id_t top_layer_id, bottom_layer_id;
-void hyp_reset_layers();				/* reset layer stack to minimun */
-rnd_layer_id_t hyp_create_layer(char *lname);	/* create new copper layer at bottom of stack */
+void hyp_reset_layers(); /* reset layer stack to minimun */
+rnd_layer_id_t hyp_create_layer(char *lname); /* create new copper layer at bottom of stack */
 
-int hyp_debug;									/* logging on/off switch */
+int hyp_debug;  /* logging on/off switch */
 
 /* Physical constants */
-double inches;									/* inches to m */
-double copper_imperial_weight;	/* metal thickness in ounces/ft2 */
-double copper_metric_weight;		/* metal thickness in grams/cm2 */
-double copper_bulk_resistivity;	/* metal resistivity in ohm meter */
-double copper_temperature_coefficient;	/* temperature coefficient of bulk resistivity */
-double fr4_epsilon_r;						/* dielectric constant of substrate */
-double fr4_loss_tangent;				/* loss tangent of substrate */
-double conformal_epsilon_r;			/* dielectric constant of conformal coating */
+double inches;                  /* inches to m */
+double copper_imperial_weight;  /* metal thickness in ounces/ft2 */
+double copper_metric_weight;    /* metal thickness in grams/cm2 */
+double copper_bulk_resistivity; /* metal resistivity in ohm meter */
+double copper_temperature_coefficient; /* temperature coefficient of bulk resistivity */
+double fr4_epsilon_r;           /* dielectric constant of substrate */
+double fr4_loss_tangent;        /* loss tangent of substrate */
+double conformal_epsilon_r;     /* dielectric constant of conformal coating */
 
 /* Hyperlynx UNIT and OPTIONS */
-double unit;										/* conversion factor: pcb length units to meters */
-double metal_thickness_unit;		/* conversion factor: metal thickness to meters */
+double unit;                    /* conversion factor: pcb length units to meters */
+double metal_thickness_unit;    /* conversion factor: metal thickness to meters */
 
-rnd_bool use_die_for_metal;			/* use dielectric constant and loss tangent of dielectric for metal layers */
+rnd_bool use_die_for_metal;     /* use dielectric constant and loss tangent of dielectric for metal layers */
 
-rnd_coord_t board_clearance;		/* distance between PLANE polygon and copper of different nets; -1 if not set */
+rnd_coord_t board_clearance;    /* distance between PLANE polygon and copper of different nets; -1 if not set */
 
 /* stackup */
-rnd_bool layer_is_plane[PCB_MAX_LAYER];	/* whether layer is signal or plane layer */
-rnd_coord_t layer_clearance[PCB_MAX_LAYER];	/* separation between fill copper and signals on layer */
+rnd_bool layer_is_plane[PCB_MAX_LAYER];     /* whether layer is signal or plane layer */
+rnd_coord_t layer_clearance[PCB_MAX_LAYER]; /* separation between fill copper and signals on layer */
 
 /* net */
-char *net_name;									/* name of current copper */
-rnd_coord_t net_clearance;			/* distance between PLANE polygon and net copper */
+char *net_name;                /* name of current copper */
+rnd_coord_t net_clearance;     /* distance between PLANE polygon and net copper */
 
 /* netlist */
 void hyp_netlist_begin();
@@ -126,8 +126,8 @@ void hyp_netlist_end();
 
 typedef struct device_s {
 	char *ref;
-	char *name;										/* optional */
-	char *value;									/* optional */
+	char *name;          /* optional */
+	char *value;         /* optional */
 	char *layer_name;
 	pcb_subc_t *subc;
 	struct device_s *next;
@@ -184,25 +184,25 @@ typedef struct hyp_vertex_s {
 	rnd_coord_t xc;
 	rnd_coord_t yc;
 	rnd_coord_t r;
-	rnd_bool_t is_first;					/* true if first vertex of contour */
-	rnd_bool_t is_arc;						/* true if arc */
+	rnd_bool_t is_first;  /* true if first vertex of contour */
+	rnd_bool_t is_arc;    /* true if arc */
 	struct hyp_vertex_s *next;
 } hyp_vertex_t;
 
-	/* linked list to store correspondence between hyperlynx polygon id's and pcb polygons. */
+/* linked list to store correspondence between hyperlynx polygon id's and pcb polygons. */
 typedef struct hyp_polygon_s {
-	int hyp_poly_id;							/* hyperlynx polygon/polyline id */
-	polygon_type_enum hyp_poly_type;	/* pour, copper, ... */
-	rnd_bool_t is_polygon;				/* true if polygon, false if polyline */
-	char *layer_name;							/* layer of polygon */
-	rnd_coord_t line_width;				/* line width of edge */
-	rnd_coord_t clearance;				/* clearance with other copper */
-	hyp_vertex_t *vertex;					/* polygon contours as linked list of vertices */
+	int hyp_poly_id;                 /* hyperlynx polygon/polyline id */
+	polygon_type_enum hyp_poly_type; /* pour, copper, ... */
+	rnd_bool_t is_polygon;           /* true if polygon, false if polyline */
+	char *layer_name;                /* layer of polygon */
+	rnd_coord_t line_width;          /* line width of edge */
+	rnd_coord_t clearance;           /* clearance with other copper */
+	hyp_vertex_t *vertex;            /* polygon contours as linked list of vertices */
 	struct hyp_polygon_s *next;
 } hyp_polygon_t;
 
-hyp_polygon_t *polygon_head = NULL;	/* linked list of all polygons */
-hyp_vertex_t *current_vertex = NULL;	/* keeps track where to add next polygon segment when parsing polygons */
+hyp_polygon_t *polygon_head = NULL;  /* linked list of all polygons */
+hyp_vertex_t *current_vertex = NULL; /* keeps track where to add next polygon segment when parsing polygons */
 
 /* origin. Chosen so all coordinates are positive. */
 rnd_coord_t origin_x;
@@ -260,15 +260,15 @@ void hyp_init(void)
 	metal_thickness_unit = 1;
 	use_die_for_metal = rnd_false;
 
-	inches = 0.0254;							/* inches to m */
-	copper_imperial_weight = 1.341;	/* metal thickness in ounces/ft2. 1 oz/ft2 copper = 1.341 mil */
-	copper_metric_weight = 0.1116;	/* metal thickness in grams/cm2. 1 gr/cm2 copper = 0.1116 cm */
+	inches = 0.0254;                /* inches to m */
+	copper_imperial_weight = 1.341; /* metal thickness in ounces/ft2. 1 oz/ft2 copper = 1.341 mil */
+	copper_metric_weight = 0.1116;  /* metal thickness in grams/cm2. 1 gr/cm2 copper = 0.1116 cm */
 	copper_bulk_resistivity = 1.724e-8;
 	copper_temperature_coefficient = 0.00393;
 	fr4_epsilon_r = 4.3;
 	fr4_loss_tangent = 0.020;
-	conformal_epsilon_r = 3.3;		/* dielectric constant of conformal layer */
-	board_clearance = -1;					/* distance between PLANE polygon and copper of different nets; -1 if not set */
+	conformal_epsilon_r = 3.3;  /* dielectric constant of conformal layer */
+	board_clearance = -1;       /* distance between PLANE polygon and copper of different nets; -1 if not set */
 
 	/* empty board outline */
 	outline_head = NULL;
@@ -276,8 +276,8 @@ void hyp_init(void)
 
 	/* clear layer info */
 	for (n = 1; n < PCB_MAX_LAYER; n++) {
-		layer_is_plane[n] = rnd_false;	/* signal layer */
-		layer_clearance[n] = -1;		/* no separation between fill copper and signals on layer */
+		layer_is_plane[n] = rnd_false; /* signal layer */
+		layer_clearance[n] = -1;       /* no separation between fill copper and signals on layer */
 	}
 	layer_count = 0;
 	top_layer_id = -1;
@@ -313,9 +313,9 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	int retval;
 
 	/* set debug levels */
-	hyyset_debug(debug > 2);			/* switch flex logging on */
-	hyydebug = (debug > 1);				/* switch bison logging on */
-	hyp_debug = (debug > 0);			/* switch hyperlynx logging on */
+	hyyset_debug(debug > 2); /* switch flex logging on */
+	hyydebug = (debug > 1);  /* switch bison logging on */
+	hyp_debug = (debug > 0); /* switch hyperlynx logging on */
 
 	hyp_init();
 
@@ -610,10 +610,9 @@ void hyp_set_origin()
 	}
 }
 
-/* 
+/*
  * resize board to fit pcb outline.
  */
-
 void hyp_resize_board()
 {
 	rnd_coord_t x_max, x_min, y_max, y_min;
@@ -661,7 +660,7 @@ void hyp_resize_board()
 
 }
 
-/* 
+/*
  * Draw board perimeter.
  * The first segment is part of the first polygon.
  * The first polygon of the board perimeter is positive, the rest are holes.
