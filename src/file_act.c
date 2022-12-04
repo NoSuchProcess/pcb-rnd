@@ -160,18 +160,12 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_save_in_tmp();
 
 		pcb_crosshair_move_absolute(pcb, RND_COORD_MAX, RND_COORD_MAX); /* make sure the crosshair is not above any object so ch* plugins release their highlights */
-		if (rnd_gui->set_design != NULL)
-			rnd_gui->set_design(rnd_gui, NULL);
-
 		pcb_draw_inhibit_inc();
 		pcb_board_remove(pcb);
 #undef PCB
 		PCB = pcb = pcb_board_new(1);
 #define PCB do_not_use
 		pcb_board_new_postproc(pcb, 1);
-		if (rnd_gui->set_design != NULL)
-			rnd_gui->set_design(rnd_gui, &pcb->hidlib);
-		pcb_draw_inhibit_dec();
 
 		pcb_set_design_dir(NULL);
 		rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
@@ -179,6 +173,9 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* setup the new name and reset some values to default */
 		free(pcb->hidlib.name);
 		pcb->hidlib.name = name;
+
+		rnd_single_switch_to(&pcb->hidlib);
+		pcb_draw_inhibit_dec();
 
 		pcb_layervis_reset_stack(&pcb->hidlib);
 		pcb_center_display(pcb, (pcb->hidlib.dwg.X1+pcb->hidlib.dwg.X2) / 2, (pcb->hidlib.dwg.Y1+pcb->hidlib.dwg.Y2) / 2);
