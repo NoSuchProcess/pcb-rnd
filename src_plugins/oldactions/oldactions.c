@@ -248,15 +248,12 @@ fgw_error_t pcb_act_ListRotations(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_PCBChanged[] = "PCBChanged([revert])";
 static const char pcb_acth_PCBChanged[] =
-	"Tells the GUI that the whole PCB has changed. The optional \"revert\""
-	"parameter can be used as a hint to the GUI that the same design is being"
-	"reloaded, and that it might keep some viewport settings";
+	"Tells the GUI that the whole PCB has changed. The \"revert\""
+	"parameter is deprecated but kept for compatibility and is ignored.";
 static fgw_error_t pcb_act_PCBChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *rv = NULL;
 	RND_ACT_IRES(0);
-	RND_ACT_MAY_CONVARG(1, FGW_STR, PCBChanged, rv = argv[1].val.str);
-	pcb_board_replaced((rv != NULL) && (rnd_strcasecmp(rv, "revert") == 0));
+	pcb_board_replaced();
 	return 0;
 }
 

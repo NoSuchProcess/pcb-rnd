@@ -263,7 +263,7 @@ rnd_bool pcb_board_change_name(char *Name)
 {
 	free(PCB->hidlib.name);
 	PCB->hidlib.name = Name;
-	pcb_board_replaced(0);
+	pcb_board_replaced();
 	return rnd_true;
 }
 
@@ -275,7 +275,7 @@ static void pcb_board_resize_(pcb_board_t *pcb, rnd_coord_t x1, rnd_coord_t y1, 
 	pcb->hidlib.dwg.Y2 = y2;
 
 	if (pcb == PCB)
-		pcb_board_replaced(0);
+		pcb_board_replaced();
 }
 
 /*** undoable board resize ***/
@@ -388,7 +388,7 @@ void pcb_board_set_changed_flag(pcb_board_t *pcb, rnd_bool New)
 }
 
 
-void pcb_board_replaced(int reverted)
+void pcb_board_replaced(void)
 {
 	rnd_single_switch_to(&PCB->hidlib);
 }
@@ -472,7 +472,7 @@ rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 
 void pcb_board_changed_lib_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	pcb_board_replaced(1);
+	pcb_board_replaced();
 }
 
 void pcb_board_init(void)

@@ -163,7 +163,7 @@ int pcb_board_normalize(pcb_board_t *pcb);
 void pcb_board_set_changed_flag(pcb_board_t *pcb, rnd_bool New);
 
 /* Shorthand for emitting a board replaced event (RND_EVENT_DESIGN_REPLACED) */
-void pcb_board_replaced(int reverted);
+void pcb_board_replaced(void);
 
 
 /* pcb_board_t field accessors - do not use; required for path.[ch] to not depend on board.h */
