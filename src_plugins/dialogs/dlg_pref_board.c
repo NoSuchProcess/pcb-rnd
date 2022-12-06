@@ -122,7 +122,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 		RND_DAD_END(ctx->dlg);
 }
 
-static void pref_board_open(pref_ctx_t *ctx, rnd_design_t *dsg)
+static void pref_board_open(pref_ctx_t *ctx, rnd_design_t *dsg, const char *tabdatareq)
 {
 	pref_board_brd2dlg(ctx, dsg);
 }

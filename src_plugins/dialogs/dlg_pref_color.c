@@ -60,7 +60,7 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx, rnd_design_t *dsg)
 }
 
 
-void pcb_dlg_pref_color_open(pref_ctx_t *ctx, rnd_design_t *dsg)
+void pcb_dlg_pref_color_open(pref_ctx_t *ctx, rnd_design_t *dsg, const char *tabdatareq)
 {
 	pref_color_brd2dlg(ctx, dsg);
 }

@@ -499,7 +499,7 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 
 }
 
-void pcb_dlg_pref_lib_open(pref_ctx_t *ctx, rnd_design_t *dsg)
+void pcb_dlg_pref_lib_open(pref_ctx_t *ctx, rnd_design_t *dsg, const char *tabdatareq)
 {
 	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
 	pref_lib_conf2dlg_post(cn, -1, ctx);
