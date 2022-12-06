@@ -48,8 +48,8 @@ static void pref_sizes_brd2dlg(pref_ctx_t *ctx, rnd_design_t *dsg)
 
 	if (tabdata->lock)
 		return;
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wwidth, crd, rnd_dwg_get_size_x(&PCB->hidlib));
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wheight, crd, rnd_dwg_get_size_y(&PCB->hidlib));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wwidth, crd, rnd_dwg_get_size_x(dsg));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wheight, crd, rnd_dwg_get_size_y(dsg));
 }
 
 /* Dialog box to actual board size */
