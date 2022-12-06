@@ -45,11 +45,6 @@ typedef struct {
 	pref_libhelp_ctx_t help;
 } pref_lib_t;
 
-TODO("get this from arg once the API is fixed up")
-extern pref_ctx_t pref_ctx;
-#define PREFCTX &pref_ctx
-
-
 #undef DEF_TABDATA
 #define DEF_TABDATA pref_lib_t *tabdata = PREF_TABDATA(ctx)
 
@@ -88,7 +83,7 @@ static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hi
    the widget first */
 static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
-	pref_ctx_t *ctx = PREFCTX;
+	pref_ctx_t *ctx = user_data;
 	DEF_TABDATA;
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
@@ -123,7 +118,7 @@ static const char *pref_node_src(lht_node_t *nd)
    in all widget rows from the conf */
 static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
-	pref_ctx_t *ctx = PREFCTX;
+	pref_ctx_t *ctx = user_data;
 	rnd_design_t *hl;
 	DEF_TABDATA;
 	rnd_conf_listitem_t *i;
@@ -507,7 +502,7 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 void pcb_dlg_pref_lib_open(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
-	pref_lib_conf2dlg_post(cn, -1, NULL);
+	pref_lib_conf2dlg_post(cn, -1, ctx);
 }
 
 static const rnd_pref_tab_hook_t pref_lib = {
@@ -529,6 +524,7 @@ void pcb_dlg_pref_lib_init(pref_ctx_t *ctx, int tab)
 		memset(&cbs_spth, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs_spth.val_change_pre = pref_lib_conf2dlg_pre;
 		cbs_spth.val_change_post = pref_lib_conf2dlg_post;
+		cbs_spth.user_data = ctx;
 		rnd_conf_hid_set_cb(cn, pref_hid, &cbs_spth);
 	}
 }
