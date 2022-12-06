@@ -42,7 +42,7 @@ typedef struct {
 #define DEF_TABDATA pref_sizes_t *tabdata = PREF_TABDATA(ctx)
 
 /* Actual board size to dialog box */
-static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
+static void pref_sizes_brd2dlg(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	DEF_TABDATA;
 
@@ -113,12 +113,12 @@ static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	tabdata->lock--;
 }
 
-void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx)
+void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	rnd_pref_conflist_remove(ctx, limit_sizes);
 }
 
-void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
+void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	DEF_TABDATA;
 	pcb_drc_impl_t *di;

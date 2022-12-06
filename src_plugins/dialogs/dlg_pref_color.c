@@ -38,7 +38,7 @@ typedef struct {
 #undef DEF_TABDATA
 #define DEF_TABDATA pref_color_t *tabdata = PREF_TABDATA(ctx)
 
-static void pref_color_brd2dlg(pref_ctx_t *ctx)
+static void pref_color_brd2dlg(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	DEF_TABDATA;
 	rnd_conf_native_t *nat;
@@ -60,12 +60,12 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx)
 }
 
 
-void pcb_dlg_pref_color_open(pref_ctx_t *ctx)
+void pcb_dlg_pref_color_open(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
-	pref_color_brd2dlg(ctx);
+	pref_color_brd2dlg(ctx, dsg);
 }
 
-void pcb_dlg_pref_color_close(pref_ctx_t *ctx)
+void pcb_dlg_pref_color_close(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	DEF_TABDATA;
 	int n;
@@ -111,7 +111,7 @@ static void pref_color_layer_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 }
 
 
-void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
+void pcb_dlg_pref_color_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	static const char *tabs[] = { "Generic colors", "Default layer colors", NULL };
 	rnd_conf_native_t *nat;

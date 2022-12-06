@@ -60,14 +60,14 @@ static void pref_general_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attr
 	rnd_pref_dlg2conf_post(hl, ctx);
 }
 
-void pcb_dlg_pref_general_close(pref_ctx_t *ctx)
+void pcb_dlg_pref_general_close(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	rnd_pref_conflist_remove(ctx, perf_topwin);
 	rnd_pref_conflist_remove(ctx, perf_backup);
 	rnd_pref_conflist_remove(ctx, perf_cli);
 }
 
-void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
+void pcb_dlg_pref_general_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);

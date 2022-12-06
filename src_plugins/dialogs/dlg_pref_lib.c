@@ -409,7 +409,7 @@ static void lib_btn_edit(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	lib_btn_insert(hid_ctx, caller_data, btn_attr, 0);
 }
 
-void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
+void pcb_dlg_pref_lib_close(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	DEF_TABDATA;
 	if (tabdata->help.active)
@@ -460,7 +460,7 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	pref_libhelp_open(&tabdata->help);
 }
 
-void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
+void pcb_dlg_pref_lib_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	DEF_TABDATA;
 	static const char *hdr[] = {"configured path", "actual path on the filesystem", "config source", NULL};
@@ -504,7 +504,7 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 
 }
 
-void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
+void pcb_dlg_pref_lib_open(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
 	pref_lib_conf2dlg_post(cn, -1, NULL);

@@ -44,7 +44,7 @@ typedef struct {
 #define DEF_TABDATA pref_board_t *tabdata = PREF_TABDATA(ctx)
 
 /* Actual board meta to dialog box */
-static void pref_board_brd2dlg(pref_ctx_t *ctx)
+static void pref_board_brd2dlg(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	TODO("should be coming from arg")
 	rnd_design_t *hl = &PCB->hidlib;
@@ -96,7 +96,7 @@ static void pref_board_edit_attr(void *hid_ctx, void *caller_data, rnd_hid_attri
 	rnd_actionva(hl, "Propedit", "board", NULL);
 }
 
-void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
+void pcb_dlg_pref_board_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
 	TODO("should be coming from arg")
 	rnd_design_t *hl = &PCB->hidlib;
@@ -126,9 +126,9 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		RND_DAD_END(ctx->dlg);
 }
 
-static void pref_board_open(pref_ctx_t *ctx)
+static void pref_board_open(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
-	pref_board_brd2dlg(ctx);
+	pref_board_brd2dlg(ctx, dsg);
 }
 
 static const rnd_pref_tab_hook_t pref_board = {
