@@ -336,6 +336,7 @@ static void pcb_draw_rats(pcb_draw_info_t *info, const rnd_box_t *drawn_area)
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 }
 
+extern int rnd_ps_faded;
 static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side)
 {
 	rnd_layergrp_id_t side_group;
@@ -344,9 +345,9 @@ static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side)
 		return;
 
 	pcb_draw_doing_assy = rnd_true;
-	rnd_hid_set_draw_faded(pcb_draw_out.fgGC, 1);
+	rnd_ps_faded = 1;
 	pcb_draw_layer_grp(info, side_group, 0);
-	rnd_hid_set_draw_faded(pcb_draw_out.fgGC, 0);
+	rnd_ps_faded = 0;
 
 	/* draw package */
 	pcb_draw_silk_doc(info, lyt_side, PCB_LYT_SILK, 0, 0);
