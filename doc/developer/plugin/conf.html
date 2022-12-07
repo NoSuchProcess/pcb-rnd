@@ -52,6 +52,7 @@ to change the value.
 <p>
 Copy these lines in the plugin init callback:
 <pre>
+rnd_conf_plug_reg(conf_<i>pluginname</i>, <i>pluginname</i>_conf_internal, <i>pluginname</i>_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_<i>pluginname</i>, field,isarray,type_name,cpath,cname,desc,flags);
 #include "<i>pluginname</i>_conf_fields.h"
@@ -63,7 +64,7 @@ On uninit all local config nodes need to be removed from the config system.
 This is easy, since all our nodes are under a single subtree. Copy this line
 in the plugin uninit callback:
 <pre>
-	conf_unreg_fields("plugins/<i>pluginname</i>/");
+	rnd_conf_plug_unreg("plugins/<i>pluginname</i>/", <i>pluginname</i>_conf_internal, <i>pluginname</i>_cookie);
 </pre>
 
 <h2> make dep </h2>

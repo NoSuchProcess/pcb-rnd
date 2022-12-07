@@ -24,24 +24,11 @@ Insert the following lines in the main plugin c source:
 </pre>
 
 <h2> Register the custom intern conf</h2>
-<p>
-Call librnd to register and unregister the intern:
-<pre>
-int pplg_init_<i>pluginname</i>(void)
-{
-	PCB_API_CHK_VER;
-	conf_reg_intern(<i>pluginname</i>_conf_internal);
-	...
-</pre>
-<p>
-The conf_reg_intern() call should be before the conf fields initialization.
+Done as part of the normal plugin conf initialization.
 
 <h2> Unregister the custom conf intern </h2>
 <p>
-In the uninit callback of the plugin, insert the following line:
-<pre>
-	conf_unreg_intern(<i>pluginname</i>_conf_internal);
-</pre>
+Done as part of the normal plugin conf uninitialization.
 
 <h2> make dep </h2>
 <p>
