@@ -716,7 +716,6 @@ void ps_ps_init(rnd_hid_t * hid)
 	hid->set_line_cap = rnd_ps_set_line_cap;
 	hid->set_line_width = rnd_ps_set_line_width;
 	hid->set_draw_xor = rnd_ps_set_draw_xor;
-	hid->set_draw_faded = rnd_ps_set_draw_faded;
 	hid->draw_line = ps_draw_line;
 	hid->draw_arc = ps_draw_arc;
 	hid->draw_rect = ps_draw_rect;
