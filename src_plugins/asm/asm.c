@@ -42,6 +42,8 @@
 #include <librnd/hid/hid_dad.h>
 #include <librnd/hid/hid_dad_tree.h>
 #include <librnd/hid/hid_menu.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 #include "search.h"
 #include "draw.h"
 #include "select.h"
@@ -698,14 +700,14 @@ void pplg_uninit_asm(void)
 {
 	rnd_hid_menu_unload(rnd_gui, asm_cookie);
 	rnd_remove_actions_by_cookie(asm_cookie);
-	rnd_conf_unreg_intern(asm_conf_internal);
-	rnd_conf_unreg_fields("plugins/asm1/");
+	rnd_conf_plug_unreg("plugins/asm1/", asm_conf_internal, asm_cookie);
 }
 
 int pplg_init_asm(void)
 {
 	RND_API_CHK_VER;
-	rnd_conf_reg_intern(asm_conf_internal);
+
+	rnd_conf_plug_reg(conf_asm, asm_conf_internal, asm_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_asm, field,isarray,type_name,cpath,cname,desc,flags);
 #include "asm_conf_fields.h"

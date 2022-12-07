@@ -33,6 +33,8 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 
 /* for win32 paths: */
 #include <librnd/hid/hid_init.h>
@@ -48,6 +50,7 @@
 conf_import_sch_rnd_t conf_import_sch_rnd;
 
 static pcb_plug_import_t import_sch_rnd;
+static char import_sch_rnd_cookie[] = "import_sch_rnd";
 
 int sch_rnd_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
@@ -119,8 +122,7 @@ int pplg_check_ver_import_sch_rnd(int ver_needed) { return 0; }
 void pplg_uninit_import_sch_rnd(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_sch_rnd);
-	rnd_conf_unreg_intern(import_sch_rnd_conf_internal);
-	rnd_conf_unreg_fields("plugins/import_sch_rnd/");
+	rnd_conf_plug_unreg("plugins/import_sch_rnd/", import_sch_rnd_conf_internal, import_sch_rnd_cookie);
 }
 
 int pplg_init_import_sch_rnd(void)
@@ -139,8 +141,7 @@ int pplg_init_import_sch_rnd(void)
 	import_sch_rnd.ext_exec         = 0;
 	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_sch_rnd);
 
-	rnd_conf_reg_intern(import_sch_rnd_conf_internal);
-
+	rnd_conf_plug_reg(conf_import_sch_rnd, import_sch_rnd_conf_internal, import_sch_rnd_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_import_sch_rnd, field,isarray,type_name,cpath,cname,desc,flags);
 #include "import_sch_rnd_conf_fields.h"

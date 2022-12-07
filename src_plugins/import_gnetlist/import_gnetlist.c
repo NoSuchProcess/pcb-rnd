@@ -34,6 +34,8 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 
 /* for win32 paths: */
 #include <librnd/hid/hid_init.h>
@@ -48,7 +50,7 @@
 conf_import_gnetlist_t conf_import_gnetlist;
 
 static pcb_plug_import_t import_gnetlist, import_lepton;
-
+static const char import_gnetlist_cookie[] = "import_gnetlist";
 
 int gnetlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
@@ -168,8 +170,7 @@ void pplg_uninit_import_gnetlist(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_lepton);
-	rnd_conf_unreg_intern(import_gnetlist_conf_internal);
-	rnd_conf_unreg_fields("plugins/import_gnetlist/");
+	rnd_conf_plug_unreg("plugins/import_gnetlist/", import_gnetlist_conf_internal, import_gnetlist_cookie);
 }
 
 int pplg_init_import_gnetlist(void)
@@ -200,8 +201,7 @@ int pplg_init_import_gnetlist(void)
 
 	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_lepton);
 
-	rnd_conf_reg_intern(import_gnetlist_conf_internal);
-
+	rnd_conf_plug_reg(conf_import_gnetlist, import_gnetlist_conf_internal, import_gnetlist_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_import_gnetlist, field,isarray,type_name,cpath,cname,desc,flags);
 #include "import_gnetlist_conf_fields.h"

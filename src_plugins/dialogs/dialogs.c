@@ -31,6 +31,8 @@
 #include <librnd/hid/hid.h>
 #include <librnd/hid/hid_attrib.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 #include <librnd/hid/hid_dad.h>
 #include <librnd/core/plugins.h>
 #include "funchash_core.h"
@@ -111,8 +113,7 @@ void pplg_uninit_dialogs(void)
 	pcb_view_dlg_uninit();
 	pcb_dlg_fontsel_uninit();
 
-	rnd_conf_unreg_intern(adialogs_conf_internal);
-	rnd_conf_unreg_fields("plugins/dialogs/");
+	rnd_conf_plug_unreg("plugins/dialogs/", adialogs_conf_internal, dialogs_cookie);
 }
 
 extern int pcb_dlg_pref_tab;
@@ -122,11 +123,10 @@ int pplg_init_dialogs(void)
 {
 	RND_API_CHK_VER;
 
+rnd_conf_plug_reg(dialogs_conf, adialogs_conf_internal, dialogs_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(adialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
 #include "adialogs_conf_fields.h"
-
-	rnd_conf_reg_intern(adialogs_conf_internal);
 
 	RND_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	rnd_dlg_pref_init(pcb_dlg_pref_tab, pcb_dlg_pref_first_init);

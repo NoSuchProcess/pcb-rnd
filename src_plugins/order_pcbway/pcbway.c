@@ -40,6 +40,8 @@
 #include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/compat_fs.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 #include <librnd/plugins/lib_wget/lib_wget.h>
 #include "../src_plugins/order/order.h"
 #include "../src_plugins/order/constraint.h"
@@ -48,6 +50,7 @@
 #include "conf_core.h"
 
 conf_order_pcbway_t conf_order_pcbway;
+static const char order_pcbway_cookie[] = "order_pcbway";
 
 #define CFG conf_order_pcbway.plugins.order_pcbway
 #define SERVER "http://api-partner.pcbway.com"
@@ -883,15 +886,14 @@ int pplg_check_ver_order_pcbway(int ver_needed) { return 0; }
 
 void pplg_uninit_order_pcbway(void)
 {
-	rnd_conf_unreg_intern(order_pcbway_conf_internal);
-	rnd_conf_unreg_fields("plugins/order_pcbway/");
+	rnd_conf_plug_unreg("plugins/order_pcbway/", order_pcbway_conf_internal, order_pcbway_cookie);
 }
 
 int pplg_init_order_pcbway(void)
 {
 	RND_API_CHK_VER;
 
-	rnd_conf_reg_intern(order_pcbway_conf_internal);
+	rnd_conf_plug_reg(conf_order_pcbway, order_pcbway_conf_internal, order_pcbway_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_order_pcbway, field,isarray,type_name,cpath,cname,desc,flags);
 #include "order_pcbway_conf_fields.h"
