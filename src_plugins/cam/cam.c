@@ -39,6 +39,8 @@
 #include <librnd/hid/hid_nogui.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 #include "cam_conf.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
@@ -285,8 +287,7 @@ int pplg_check_ver_cam(int ver_needed) { return 0; }
 
 void pplg_uninit_cam(void)
 {
-	rnd_conf_unreg_intern(cam_conf_internal);
-	rnd_conf_unreg_fields("plugins/cam/");
+	rnd_conf_plug_unreg("plugins/cam/", cam_conf_internal, cam_cookie);
 	rnd_remove_actions_by_cookie(cam_cookie);
 	rnd_export_remove_opts_by_cookie(cam_cookie);
 	rnd_hid_remove_hid(&export_cam_hid);
@@ -295,7 +296,8 @@ void pplg_uninit_cam(void)
 int pplg_init_cam(void)
 {
 	RND_API_CHK_VER;
-	rnd_conf_reg_intern(cam_conf_internal);
+
+	rnd_conf_plug_reg(conf_cam, cam_conf_internal, cam_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_cam, field,isarray,type_name,cpath,cname,desc,flags);
 #include "cam_conf_fields.h"

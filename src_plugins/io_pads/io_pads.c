@@ -32,6 +32,8 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/hid/hid.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 #include <librnd/core/compat_misc.h>
 #include "plug_io.h"
 #include "io_pads_conf.h"
@@ -69,8 +71,7 @@ void pplg_uninit_io_pads(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_2005);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_9_4);
-	rnd_conf_unreg_intern(io_pads_conf_internal);
-	rnd_conf_unreg_fields("plugins/io_pads/");
+	rnd_conf_plug_unreg("plugins/io_pads/", io_pads_conf_internal, pads_cookie);
 }
 
 int pplg_init_io_pads(void)
@@ -102,7 +103,7 @@ int pplg_init_io_pads(void)
 	io_pads_9_4.write_pcb = io_pads_write_pcb_9_4;
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_9_4);
 
-	rnd_conf_reg_intern(io_pads_conf_internal);
+rnd_conf_plug_reg(conf_io_pads, io_pads_conf_internal, pads_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_io_pads, field,isarray,type_name,cpath,cname,desc,flags);
 #include "io_pads_conf_fields.h"
