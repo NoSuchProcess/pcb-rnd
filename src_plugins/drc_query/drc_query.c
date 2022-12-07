@@ -44,6 +44,8 @@
 #include <librnd/core/list_conf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 
 #include "board.h"
 #include "drc.h"
@@ -914,8 +916,8 @@ void pplg_uninit_drc_query(void)
 	rnd_anyload_unreg_by_cookie(drc_query_cookie);
 	pcb_drc_impl_unreg(&drc_query_impl);
 	rnd_event_unbind_allcookie(drc_query_cookie);
-	rnd_conf_unreg_intern(drc_query_conf_internal);
-	rnd_conf_unreg_fields(DRC_CONF_PATH_PLUGIN);
+	rnd_conf_plug_unreg(DRC_CONF_PATH_PLUGIN, drc_query_conf_internal, drc_query_cookie);
+
 	rnd_conf_hid_unreg(drc_query_cookie);
 
 	for(n = 0; n < free_drc_conf_nodes.used; n++)
@@ -943,7 +945,7 @@ int pplg_init_drc_query(void)
 	cbs.new_hlist_item_post = drc_query_newconf;
 	cfgid = rnd_conf_hid_reg(drc_query_cookie, &cbs);
 
-	rnd_conf_reg_intern(drc_query_conf_internal);
+	rnd_conf_plug_reg(conf_drc_query, drc_query_conf_internal, drc_query_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_drc_query, field,isarray,type_name,cpath,cname,desc,flags);
 #include "drc_query_conf_fields.h"

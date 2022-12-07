@@ -39,6 +39,8 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/hid/hid_menu.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 #include "conf_core.h"
 #include "obj_pstk_inlines.h"
 #include "src_plugins/lib_netmap/netmap.h"
@@ -241,8 +243,7 @@ int pplg_check_ver_ar_extern(int ver_needed) { return 0; }
 void pplg_uninit_ar_extern(void)
 {
 	extroute_free_conf();
-	rnd_conf_unreg_intern(ar_extern_conf_internal);
-	rnd_conf_unreg_fields("plugins/ar_extern/");
+	rnd_conf_plug_unreg("plugins/ar_extern/", ar_extern_conf_internal, extern_cookie);
 	rnd_remove_actions_by_cookie(extern_cookie);
 	rnd_hid_menu_unload(rnd_gui, extern_cookie);
 }
@@ -254,8 +255,7 @@ int pplg_init_ar_extern(void)
 
 	RND_REGISTER_ACTIONS(extern_action_list, extern_cookie)
 
-	rnd_conf_reg_intern(ar_extern_conf_internal);
-
+	rnd_conf_plug_reg(conf_ar_extern, ar_extern_conf_internal, extern_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_ar_extern, field,isarray,type_name,cpath,cname,desc,flags);
 #include "ar_extern_conf_fields.h"

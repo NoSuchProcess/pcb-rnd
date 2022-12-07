@@ -29,6 +29,8 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/hid/hid_menu.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/conf_multi.h>
 #include <genht/htpp.h>
 #include <genht/hash.h>
 
@@ -278,11 +280,10 @@ void pplg_uninit_show_netnames(void)
 {
 	show_netnames_invalidate();
 
-	rnd_conf_unreg_intern(show_netnames_conf_internal);
 	rnd_hid_menu_unload(rnd_gui, pcb_show_netnames_cookie);
 	rnd_event_unbind_allcookie(pcb_show_netnames_cookie);
 	rnd_remove_actions_by_cookie(pcb_show_netnames_cookie);
-	rnd_conf_unreg_fields("plugins/show_netnames/");
+	rnd_conf_plug_unreg("plugins/show_netnames/", show_netnames_conf_internal, pcb_show_netnames_cookie);
 
 	if (shn_cache_inited)
 		htshn_uninit(&shn_cache);
@@ -292,8 +293,7 @@ int pplg_init_show_netnames(void)
 {
 	RND_API_CHK_VER;
 
-	rnd_conf_reg_intern(show_netnames_conf_internal);
-
+	rnd_conf_plug_reg(conf_show_netnames, show_netnames_conf_internal, pcb_show_netnames_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_show_netnames, field,isarray,type_name,cpath,cname,desc,flags);
 #include "show_netnames_conf_fields.h"
