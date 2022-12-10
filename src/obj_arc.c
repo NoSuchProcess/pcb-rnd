@@ -111,8 +111,7 @@ static rnd_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 	rnd_coord_t width;
 	rnd_box_t res;
 
-	/* first put angles into standard form:
-	 *  ang1 < ang2, both angles between 0 and 720 */
+	/* first normalize angles: ang1 < ang2, both angles between 0 and 720 */
 	delta = RND_CLAMP(Arc->Delta, -360, 360);
 
 	if (delta > 0) {
