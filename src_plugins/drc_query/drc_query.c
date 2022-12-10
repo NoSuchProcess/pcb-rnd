@@ -313,7 +313,7 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i, vo
 	if (nat_rules == NULL) {
 		if (strncmp(cfg->hash_path, DRC_CONF_PATH_RULES, strlen(DRC_CONF_PATH_RULES)-1) == 0) {
 			nat_rules = cfg;
-			nat_rules->gui_edit_act = "DrcQueryEditRule";
+			nat_rules->shared->gui_edit_act = "DrcQueryEditRule";
 		}
 	}
 
