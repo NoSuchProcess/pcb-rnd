@@ -26,7 +26,7 @@ put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
 put /local/pcb/tmpasm/plugin   {../src_plugins/Plugin.tmpasm}
 put /local/pcb/tmpasm/disable  {../src_plugins/Disable.tmpasm}
 
-put /local/pcb/RULES {}
+put /local/rnd/RULES {}
 put /local/pcb/OBJS {}
 put /local/rnd/LDFLAGS {}
 put /local/rnd/CFLAGS {}
@@ -67,7 +67,7 @@ $(FP_OBJS) $(QPARSE):
 	cd ../../src && $(MAKE) util_deps
 
 ##### module rules begin #####
-@/local/pcb/RULES@
+@/local/rnd/RULES@
 ##### module rules end #####
 @]
 

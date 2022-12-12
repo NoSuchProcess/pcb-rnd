@@ -14,7 +14,7 @@ end
 # always generate the template lht rule so make dep can be run
 append /local/rnd/CLEANFILES { $(PLUGDIR)/export_dxf/dxf_templ_lht.c }
 append /local/rnd/DEPDEPS { $(PLUGDIR)/export_dxf/dxf_templ_lht.c }
-append /local/pcb/RULES [@
+append /local/rnd/RULES [@
 ### export_dxf: dxf template embed
 $(PLUGDIR)/export_dxf/dxf_templ_lht.c: $(PLUGDIR)/export_dxf/dxf_templ.lht $(CQUOTE)
 	$(CQUOTE) -n dxf_templ_default <$(PLUGDIR)/export_dxf/dxf_templ.lht >$(PLUGDIR)/export_dxf/dxf_templ_lht.c

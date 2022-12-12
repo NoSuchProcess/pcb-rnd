@@ -17,7 +17,7 @@ append /local/pcb/OBJS            ?/local/pcb/mod/OBJS
 append /local/pcb/OBJS_C99        ?/local/pcb/mod/OBJS_C99
 append /local/rnd/LDFLAGS         /local/pcb/mod/LDFLAGS
 append /local/rnd/CFLAGS          /local/pcb/mod/CFLAGS
-append /local/pcb/RULES [@
+append /local/rnd/RULES [@
 
 mod_@/local/pcb/mod@: all
 

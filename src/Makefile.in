@@ -158,16 +158,16 @@ put /local/pcb/OBJS_UTIL [@
 
 #---- modules ----#
 # extra rules for modules
-put /local/pcb/RULES {}
+put /local/rnd/RULES {}
 put /local/rnd/CLEANFILES {}
 put /local/pcb/CLEANRULES {}
 put /local/pcb/EXEDEPS {}
 put /local/pcb/all {}
 put /local/pcb/buildin_init {}
-put /local/pcb/rules/install_ {}
-put /local/pcb/rules/install {}
-put /local/pcb/rules/linstall {}
-put /local/pcb/rules/uninstall {}
+put /local/rnd/rules/install_ {}
+put /local/rnd/rules/install {}
+put /local/rnd/rules/linstall {}
+put /local/rnd/rules/uninstall {}
 put /local/pcb/mod/OBJS {}
 put /local/pcb/mod/OBJS_C99 {}
 put /local/pcb/mod/CONF {}
@@ -306,7 +306,7 @@ buildin.h: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 print [@
 ##### module rules begin #####
 
-@/local/pcb/RULES@
+@/local/rnd/RULES@
 
 ##### module rules end #####
 
@@ -364,7 +364,7 @@ install_pcbrnd:
 	$(SCCBOX) $(HOW) "menu-default.lht" "$(CONFDIR)/menu-default.lht"
 	$(SCCBOX) $(HOW) "default2.lht" "$(DATADIR)/default2.lht"
 	$(SCCBOX) $(HOW) "default4.lht" "$(DATADIR)/default4.lht"
-	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@
+	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/rnd/rules/install_@
 @]
 
 print [@

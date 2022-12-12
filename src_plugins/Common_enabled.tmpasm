@@ -12,13 +12,13 @@ switch /local/pcb/mod/YACC
 
 			if /local/pcb/want_parsgen
 			then
-				append /local/pcb/RULES [@
+				append /local/rnd/RULES [@
 # yacc for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.y
 	cd @/local/dn@ && bison --defines=@/local/bn@.h --output=@/local/bn@.c --report-file=@/local/bn@.output -d @/local/bn@.y
 @]
 			else
-				append /local/pcb/RULES [@
+				append /local/rnd/RULES [@
 # dummy yacc for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h:
 	echo "skipping yacc..."
@@ -42,13 +42,13 @@ switch /local/pcb/mod/LEX
 				put /local/dn /local/n
 				sub {/local/dn} {/[^/]*$} {}
 
-				append /local/pcb/RULES [@
+				append /local/rnd/RULES [@
 # lex for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.l
 	cd @/local/dn@ && flex --outfile=@/local/bn@.c --header-file=@/local/bn@.h @/local/bn@.l
 @]
 			else
-				append /local/pcb/RULES [@
+				append /local/rnd/RULES [@
 # dummy lex for @/local/pcb/mod@
 @/local/n@.c:
 	echo "skipping flex..."
@@ -72,13 +72,13 @@ switch /local/pcb/mod/BYACCIC
 
 			if /local/pcb/want_parsgen_byaccic
 			then
-				append /local/pcb/RULES [@
+				append /local/rnd/RULES [@
 # byaccic for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.y
 	byaccic -o ../src_plugins/@/local/pcb/mod@/@/local/bn@.c -H ../src_plugins/@/local/pcb/mod@/@/local/bn@.h -v ../src_plugins/@/local/pcb/mod@/@/local/bn@.desc ../src_plugins/@/local/pcb/mod@/@/local/bn@.y
 @]
 			else
-				append /local/pcb/RULES [@
+				append /local/rnd/RULES [@
 # dummy byaccic for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h:
 	echo "skipping byaccic..."
@@ -100,13 +100,13 @@ switch /local/pcb/mod/UREGLEX
 				put /local/dn /local/n
 				sub {/local/dn} {/[^/]*$} {}
 
-				append /local/pcb/RULES [@
+				append /local/rnd/RULES [@
 # lex for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.ul
 	cd @/local/dn@ && ureglex -C -c @/local/bn@.c -h @/local/bn@.h -l @/local/bn@.ul
 @]
 			else
-				append /local/pcb/RULES [@
+				append /local/rnd/RULES [@
 # dummy ureglex for @/local/pcb/mod@
 @/local/n@.c:
 	echo "skipping ureglex..."
