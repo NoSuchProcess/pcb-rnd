@@ -159,7 +159,7 @@ put /local/pcb/OBJS_UTIL [@
 #---- modules ----#
 # extra rules for modules
 put /local/pcb/RULES {}
-put /local/pcb/CLEANFILES {}
+put /local/rnd/CLEANFILES {}
 put /local/pcb/CLEANRULES {}
 put /local/pcb/EXEDEPS {}
 put /local/pcb/all {}
@@ -206,8 +206,8 @@ uniq /local/pcb/LIBS
 uniq /local/pcb/LIBS_PRE
 uniq /local/pcb/LIBS_3RD
 uniq /local/pcb/EXEDEPS
-uniq /local/pcb/CLEANFILES
-uniq /local/pcb/DISTCLEANFILES
+uniq /local/rnd/CLEANFILES
+uniq /local/rnd/DISTCLEANFILES
 uniq /local/pcb/CLEANRULES
 uniq /local/pcb/all
 put /local/pcb/SRCS /local/pcb/OBJS 
@@ -264,7 +264,7 @@ LIBS_PRE=@/local/pcb/LIBS_PRE@
 LIBS=@/local/pcb/LIBS@ @libs/socket/socket/ldflags@ @/local/pcb/librnd_extra_ldlibs@ -lm @?/target/libs/ldl@
 LIBS_3RD=@/local/pcb/LIBS_3RD@
 EXEDEPS=@/local/pcb/EXEDEPS@
-CLEANFILES=@/local/pcb/CLEANFILES@
+CLEANFILES=@/local/rnd/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
 CC=@/target/cc/cc@
 AR=@/target/fstools/ar@
@@ -349,7 +349,7 @@ util_deps: $(OBJS) $(OBJS_UTIL)
 FORCE:
 
 
-DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h conf_core_fields.h conf_internal.c defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h conf_core_fields.h conf_internal.c defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups @/local/rnd/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(OBJS) $(OBJS_C99) $(CLEANFILES)
