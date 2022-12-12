@@ -1,15 +1,15 @@
-append /local/pcb/CFLAGS [@-I. -I.. -I@/local/pcb/librnd_prefix@/include/librnd4 -I@/local/pcb/librnd_prefix@/include/librnd4/librnd/src_3rd @?/local/pcb/librnd_extra_inc@ -I../src_3rd -I../src -I../src_3rd/liblihata @]
-append /local/pcb/LDFLAGS [@@?/local/pcb/librnd_extra_ldf@@]
-append /local/pcb/LDFLAGS cc/ldflags
-append /local/pcb/LDFLAGS cc/rdynamic
-append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
-append /local/pcb/LDFLAGS ?libs/script/fungw/ldflags
-append /local/pcb/LDFLAGS ?/local/librnd/fungw/ldflags
+append /local/rnd/CFLAGS [@-I. -I.. -I@/local/pcb/librnd_prefix@/include/librnd4 -I@/local/pcb/librnd_prefix@/include/librnd4/librnd/src_3rd @?/local/pcb/librnd_extra_inc@ -I../src_3rd -I../src -I../src_3rd/liblihata @]
+append /local/rnd/LDFLAGS [@@?/local/pcb/librnd_extra_ldf@@]
+append /local/rnd/LDFLAGS cc/ldflags
+append /local/rnd/LDFLAGS cc/rdynamic
+append /local/rnd/LDFLAGS ?/local/pcb/cflags_profile
+append /local/rnd/LDFLAGS ?libs/script/fungw/ldflags
+append /local/rnd/LDFLAGS ?/local/librnd/fungw/ldflags
 put /local/pcb/DEPCFLAGS {}
 put /local/pcb/OBJS_3RDLIB {}
 
 if /local/pcb/want_static then
-	append /local/pcb/LDFLAGS { -static}
+	append /local/rnd/LDFLAGS { -static}
 end
 
 # static librd link: need to get all librnd ldlibs
@@ -190,7 +190,7 @@ put /local/pcb/tmpasm/plugin_intmenu  [@@/local/pcb/librnd_template@/plugin_intm
 include {../src_plugins/plugins_ALL.tmpasm}
 
 # Lesstif requires that -lXm is before -lXt or else there is a runtime BadWindow error
-order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
+order /local/rnd/LDFLAGS {-lXm} {before} {-lXt}
 
 # ---- logic ----
 
@@ -200,7 +200,7 @@ uniq /local/pcb/OBJS
 uniq /local/pcb/OBJS_C99
 uniq /local/pcb/OBJS_3RDLIB
 uniq /local/pcb/OBJS_UTIL
-uniq /local/pcb/CFLAGS
+uniq /local/rnd/CFLAGS
 uniq /local/pcb/CFLAGS_GENERIC
 uniq /local/pcb/LIBS
 uniq /local/pcb/LIBS_PRE
@@ -218,14 +218,14 @@ gsub /local/pcb/SRCS {.o } {.c }
 # apple requires multiple "-framework something" instead of -lsomething
 # we need to keep all -frameworks but uniq would keep only the first if it
 # is a word on its own
-gsub /local/pcb/LDFLAGS {-framework } {-framework-}
-uniq /local/pcb/LDFLAGS
-gsub /local/pcb/LDFLAGS {-framework-} {-framework }
+gsub /local/rnd/LDFLAGS {-framework } {-framework-}
+uniq /local/rnd/LDFLAGS
+gsub /local/rnd/LDFLAGS {-framework-} {-framework }
 
 
 # workaround: lately gcc doesn't like -ansi and the ((unused)) attribute
 # together, which happens in --debug for C99
-put /local/pcb/C99CFLAGS /local/pcb/CFLAGS
+put /local/pcb/C99CFLAGS /local/rnd/CFLAGS
 sub /local/pcb/C99CFLAGS {-ansi } {}
 
 # Makefile, static
@@ -258,8 +258,8 @@ OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/libminuid/*.o
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/C99CFLAGS@
-C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
-LDFLAGS=@/local/pcb/LDFLAGS@
+C89FLAGS=@/local/pcb/c89flags@ @/local/rnd/CFLAGS@
+LDFLAGS=@/local/rnd/LDFLAGS@
 LIBS_PRE=@/local/pcb/LIBS_PRE@
 LIBS=@/local/pcb/LIBS@ @libs/socket/socket/ldflags@ @/local/pcb/librnd_extra_ldlibs@ -lm @?/target/libs/ldl@
 LIBS_3RD=@/local/pcb/LIBS_3RD@
@@ -397,7 +397,7 @@ put /local/comp/C89FLAGS {$(C89FLAGS)}
 include [@@/local/pcb/librnd_template@/compile.tmpasm@]
 
 # generate deps
-put /local/dep/CFLAGS /local/pcb/CFLAGS
+put /local/dep/CFLAGS /local/rnd/CFLAGS
 put /local/dep/SRCS /local/pcb/SRCS
 
 gsub /local/pcb/DEPSRCS {.o } {.c }

@@ -1,8 +1,8 @@
-put /local/pcb/CFLAGS cc/cflags
-append /local/pcb/CFLAGS [@-I../.. -I@/local/pcb/librnd_prefix@/include/librnd4 -I@/local/pcb/librnd_prefix@/include/librnd4/librnd/src_3rd -I../../src_3rd -I../../src -I../../src_3rd/liblihata @]
-append /local/pcb/CFLAGS {-DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
-append /local/pcb/LDFLAGS cc/ldflags
-append /local/pcb/LDFLAGS ?/target/libs/ldl
+put /local/rnd/CFLAGS cc/cflags
+append /local/rnd/CFLAGS [@-I../.. -I@/local/pcb/librnd_prefix@/include/librnd4 -I@/local/pcb/librnd_prefix@/include/librnd4/librnd/src_3rd -I../../src_3rd -I../../src -I../../src_3rd/liblihata @]
+append /local/rnd/CFLAGS {-DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
+append /local/rnd/LDFLAGS cc/ldflags
+append /local/rnd/LDFLAGS ?/target/libs/ldl
 include [@@/local/pcb/librnd_template@/debug.tmpasm@]
 
 print [@
@@ -12,8 +12,8 @@ LIBRND_SHAREDIR=@/local/pcb/librnd_prefix@/share/librnd4
 
 include $(LIBRND_SHAREDIR)/librnd.mak
 
-CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@ @?/local/pcb/librnd_extra_inc@ $(CFLAGS_LIBRND_FUNGW)
-LDFLAGS=-lm @?/local/pcb/librnd_extra_ldf@ @/local/pcb/LDFLAGS@ $(LDFLAGS_LIBRND_FUNGW)
+CFLAGS=@/local/pcb/c89flags@ @/local/rnd/CFLAGS@ @?/local/pcb/librnd_extra_inc@ $(CFLAGS_LIBRND_FUNGW)
+LDFLAGS=-lm @?/local/pcb/librnd_extra_ldf@ @/local/rnd/LDFLAGS@ $(LDFLAGS_LIBRND_FUNGW)
 LDF_LIBRND=-lrnd-hid -lrnd-core -lrnd-3rd
 CC=@cc/cc@
 @]
@@ -28,8 +28,8 @@ put /local/pcb/tmpasm/disable  {../src_plugins/Disable.tmpasm}
 
 put /local/pcb/RULES {}
 put /local/pcb/OBJS {}
-put /local/pcb/LDFLAGS {}
-put /local/pcb/CFLAGS {}
+put /local/rnd/LDFLAGS {}
+put /local/rnd/CFLAGS {}
 put /local/pcb/buildin_init_code {}
 put /local/pcb/buildin_init_extern {}
 
@@ -39,8 +39,8 @@ print [@
 
 
 FP_OBJS    = @/local/pcb/OBJS@ ../../src/conf_core.o
-FP_LDFLAGS = @/local/pcb/LDFLAGS@
-FP_CFLAGS  = @/local/pcb/CFLAGS@
+FP_LDFLAGS = @/local/rnd/LDFLAGS@
+FP_CFLAGS  = @/local/rnd/CFLAGS@
 OBJS = \
  gsch2pcb.o \
  help.o \
