@@ -5,7 +5,7 @@ append /local/rnd/LDFLAGS cc/rdynamic
 append /local/rnd/LDFLAGS ?/local/pcb/cflags_profile
 append /local/rnd/LDFLAGS ?libs/script/fungw/ldflags
 append /local/rnd/LDFLAGS ?/local/librnd/fungw/ldflags
-put /local/pcb/DEPCFLAGS {}
+put /local/rnd/DEPCFLAGS {}
 put /local/pcb/OBJS_3RDLIB {}
 
 if /local/pcb/want_static then
@@ -27,7 +27,7 @@ else
 end
 
 # These files are to be generated before make dep is run
-put /local/pcb/DEPDEPS { conf_core_fields.h conf_internal.c defpcb_internal.c buildin.c pcb_menu_default.c }
+put /local/rnd/DEPDEPS { conf_core_fields.h conf_internal.c defpcb_internal.c buildin.c pcb_menu_default.c }
 
 include [@@/local/pcb/librnd_template@/debug.tmpasm@]
 
