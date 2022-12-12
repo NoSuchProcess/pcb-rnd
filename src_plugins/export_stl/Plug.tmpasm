@@ -1,11 +1,11 @@
-put /local/pcb/mod {export_stl}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_stl/export_stl.o @]
+put /local/rnd/mod {export_stl}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_stl/export_stl.o @]
 
 switch /local/pcb/export_stl/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CFLAGS   ?/target/libs/sul/libxml2/cflags
-		put /local/pcb/mod/LDFLAGS  ?/target/libs/sul/libxml2/ldflags
+		put /local/rnd/mod/CFLAGS   ?/target/libs/sul/libxml2/cflags
+		put /local/rnd/mod/LDFLAGS  ?/target/libs/sul/libxml2/ldflags
 	end
 end
 

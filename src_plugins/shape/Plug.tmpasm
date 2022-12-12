@@ -1,7 +1,7 @@
-put /local/pcb/mod {shape}
-put /local/pcb/mod/MENUFILE {shape-menu.lht}
-put /local/pcb/mod/MENUVAR {shape_menu}
-append /local/pcb/mod/OBJS [@
+put /local/rnd/mod {shape}
+put /local/rnd/mod/MENUFILE {shape-menu.lht}
+put /local/rnd/mod/MENUVAR {shape_menu}
+append /local/rnd/mod/OBJS [@
  $(PLUGDIR)/shape/shape.o
 @]
 

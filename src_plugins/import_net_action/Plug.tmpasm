@@ -1,5 +1,5 @@
-put /local/pcb/mod {import_net_action}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_net_action/import_net_action.o @]
+put /local/rnd/mod {import_net_action}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_net_action/import_net_action.o @]
 
 switch /local/pcb/import_net_action/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

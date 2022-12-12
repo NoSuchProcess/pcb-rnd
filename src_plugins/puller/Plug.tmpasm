@@ -1,7 +1,7 @@
-put /local/pcb/mod {puller}
-put /local/pcb/mod/MENUFILE {puller-menu.lht}
-put /local/pcb/mod/MENUVAR {puller_menu}
-append /local/pcb/mod/OBJS_C99 [@ $(PLUGDIR)/puller/puller.o @]
+put /local/rnd/mod {puller}
+put /local/rnd/mod/MENUFILE {puller-menu.lht}
+put /local/rnd/mod/MENUVAR {puller_menu}
+append /local/rnd/mod/OBJS_C99 [@ $(PLUGDIR)/puller/puller.o @]
 
 switch /local/pcb/puller/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

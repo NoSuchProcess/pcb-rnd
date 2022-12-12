@@ -1,7 +1,7 @@
-put /local/pcb/mod {io_dsn}
-put /local/pcb/mod/MENUFILE {dsn-menu.lht}
-put /local/pcb/mod/MENUVAR {dsn_menu}
-put /local/pcb/mod/OBJS [@
+put /local/rnd/mod {io_dsn}
+put /local/rnd/mod/MENUFILE {dsn-menu.lht}
+put /local/rnd/mod/MENUVAR {dsn_menu}
+put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/io_dsn/io_dsn.o
 	$(PLUGDIR)/io_dsn/read.o
 	$(PLUGDIR)/io_dsn/write.o

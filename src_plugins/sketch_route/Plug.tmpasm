@@ -1,5 +1,5 @@
-put /local/pcb/mod {sketch_route}
-append /local/pcb/mod/OBJS [@
+put /local/rnd/mod {sketch_route}
+append /local/rnd/mod/OBJS [@
  $(PLUGDIR)/sketch_route/sketch_route.o
  $(PLUGDIR)/sketch_route/wire.o
  $(PLUGDIR)/sketch_route/ewire.o

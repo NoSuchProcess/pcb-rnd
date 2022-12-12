@@ -1,5 +1,5 @@
-put /local/pcb/mod {export_bom}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_bom/bom.o @]
+put /local/rnd/mod {export_bom}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_bom/bom.o @]
 
 switch /local/pcb/export_bom/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

@@ -1,5 +1,5 @@
-put /local/pcb/mod {export_c_draw}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_c_draw/export_c_draw.o @]
+put /local/rnd/mod {export_c_draw}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_c_draw/export_c_draw.o @]
 
 switch /local/pcb/export_c_draw/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

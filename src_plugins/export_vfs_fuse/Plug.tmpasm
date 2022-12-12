@@ -1,12 +1,12 @@
-put /local/pcb/mod {export_vfs_fuse}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_vfs_fuse/export_vfs_fuse.o @]
+put /local/rnd/mod {export_vfs_fuse}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_vfs_fuse/export_vfs_fuse.o @]
 
 switch /local/pcb/export_vfs_fuse/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CFLAGS   [@@/target/libs/sul/fuse/cflags@@]
-		put /local/pcb/mod/LDFLAGS  [@@/target/libs/sul/fuse/ldflags@@]
-		append /local/pcb/mod/DISTCLEANFILES { $(PLUGDIR)/export_vfs_fuse/fuse_includes.h }
+		put /local/rnd/mod/CFLAGS   [@@/target/libs/sul/fuse/cflags@@]
+		put /local/rnd/mod/LDFLAGS  [@@/target/libs/sul/fuse/ldflags@@]
+		append /local/rnd/mod/DISTCLEANFILES { $(PLUGDIR)/export_vfs_fuse/fuse_includes.h }
 	end
 end
 

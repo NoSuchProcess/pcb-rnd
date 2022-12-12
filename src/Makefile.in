@@ -168,15 +168,15 @@ put /local/rnd/rules/install_ {}
 put /local/rnd/rules/install {}
 put /local/rnd/rules/linstall {}
 put /local/rnd/rules/uninstall {}
-put /local/pcb/mod/OBJS {}
-put /local/pcb/mod/OBJS_C99 {}
-put /local/pcb/mod/CONF {}
-put /local/pcb/mod/LDFLAGS {}
-put /local/pcb/mod/CFLAGS {}
-put /local/pcb/mod/YACC {}
-put /local/pcb/mod/LEX {}
-put /local/pcb/mod/BYACCIC {}
-put /local/pcb/mod/UREGLEX {}
+put /local/rnd/mod/OBJS {}
+put /local/rnd/mod/OBJS_C99 {}
+put /local/rnd/mod/CONF {}
+put /local/rnd/mod/LDFLAGS {}
+put /local/rnd/mod/CFLAGS {}
+put /local/rnd/mod/YACC {}
+put /local/rnd/mod/LEX {}
+put /local/rnd/mod/BYACCIC {}
+put /local/rnd/mod/UREGLEX {}
 
 put /local/pcb/tmpasm/buildin         {../src_plugins/Buildin.tmpasm}
 put /local/pcb/tmpasm/plugin          {../src_plugins/Plugin.tmpasm}

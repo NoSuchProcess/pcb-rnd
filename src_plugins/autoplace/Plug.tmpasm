@@ -1,5 +1,5 @@
-put /local/pcb/mod {autoplace}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/autoplace/autoplace.o $(PLUGDIR)/autoplace/action.o @]
+put /local/rnd/mod {autoplace}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/autoplace/autoplace.o $(PLUGDIR)/autoplace/action.o @]
 
 switch /local/pcb/autoplace/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

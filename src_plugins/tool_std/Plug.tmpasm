@@ -1,5 +1,5 @@
-put /local/pcb/mod {tool_std}
-put /local/pcb/mod/OBJS [@
+put /local/rnd/mod {tool_std}
+put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/tool_std/tool_std.o
 	$(PLUGDIR)/tool_std/tool_arc.o
 	$(PLUGDIR)/tool_std/tool_arrow.o

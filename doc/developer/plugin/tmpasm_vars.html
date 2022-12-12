@@ -15,54 +15,54 @@ needs deep understanding of the build system.
 <p>
 For the features that are most commonly needed, the system offers
 prewritten, turn key solutions. It is strongly recommended to use these
-features only. These features are accessible through setting /local/pcb/mod/*
+features only. These features are accessible through setting /local/rnd/mod/*
 tmpasm variables (typically with the put and append instructions). The
 rest of this document lists and explains these variables.
 
 <table border=1 cellspacing=0>
 	<tr><th> variable <th> description
 	<tr>
-		<td>/local/pcb/mod
+		<td>/local/rnd/mod
 		<td>the name of the plugin
 	<tr>
-		<td>/local/pcb/mod/OBJS
+		<td>/local/rnd/mod/OBJS
 		<td> a whitespace separated list of local object files to compile,
 		     e.g. foo.o
 	<tr>
-		<td>/local/pcb/mod/OBJS_C99
+		<td>/local/rnd/mod/OBJS_C99
 		<td>same as OBJS, but for sources that can be compiled only with a C99
 		    compiler; plugins <b>must not use this variable</b> unless the source
 		    depends on 3rd party library which comes with a header that absolutely
 		    can not compiled with C89
 	<tr>
-		<td>/local/pcb/mod/CFLAGS
+		<td>/local/rnd/mod/CFLAGS
 		<td>
 	<tr>
-		<td>/local/pcb/mod/LDFLAGS
+		<td>/local/rnd/mod/LDFLAGS
 		<td>
 	<tr>
-		<td>/local/pcb/mod/CONF
+		<td>/local/rnd/mod/CONF
 		<td>optional: the name of the <a href="plugin_conf.h"> conf struct
 		    header </a> - if the plugin doesn't have runtime configuration
 		    settings, remove this line
 	<tr>
-		<td>/local/pcb/mod/CONFFILE
+		<td>/local/rnd/mod/CONFFILE
 		<td>optional: conf file's internal version: the file name of the conf
 		    file (without path) that should be encoded in conf_internal.c
 	<tr>
-		<td>/local/pcb/mod/CONFVAR
+		<td>/local/rnd/mod/CONFVAR
 		<td>optional: conf file's internal version: the variable name to use
 		    in conf_internal.c
 	<tr>
-		<td>/local/pcb/mod/YACC
+		<td>/local/rnd/mod/YACC
 		<td>optional: if you have files for yacc-processing, list them without
 		    the .y suffix here (whitespace separated list)
 	<tr>
-		<td>/local/pcb/mod/LEX
+		<td>/local/rnd/mod/LEX
 		<td>optional: if you have files for lex-processing, list them without
 		    the .l suffix here (whitespace separated list)
 	<tr>
-		<td>/local/pcb/mod/SPHASH
+		<td>/local/rnd/mod/SPHASH
 		<td>optional: if the plugin uses an sphash (compile time perfect hash),
 		    the sphash source file name should be specified in this field
 

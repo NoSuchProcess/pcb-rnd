@@ -1,5 +1,5 @@
-put /local/pcb/mod {autoroute}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/autoroute/autoroute.o $(PLUGDIR)/autoroute/mtspace.o $(PLUGDIR)/autoroute/action.o $(PLUGDIR)/autoroute/vector.o @]
+put /local/rnd/mod {autoroute}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/autoroute/autoroute.o $(PLUGDIR)/autoroute/mtspace.o $(PLUGDIR)/autoroute/action.o $(PLUGDIR)/autoroute/vector.o @]
 
 switch /local/pcb/autoroute/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

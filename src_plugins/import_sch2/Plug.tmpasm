@@ -1,6 +1,6 @@
-put /local/pcb/mod {import_sch2}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_sch2/import_sch.o @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/import_sch2/import_sch_conf.h}
+put /local/rnd/mod {import_sch2}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_sch2/import_sch.o @]
+put /local/rnd/mod/CONF {$(PLUGDIR)/import_sch2/import_sch_conf.h}
 
 switch /local/pcb/import_sch2/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

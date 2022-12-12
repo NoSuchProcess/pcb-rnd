@@ -1,8 +1,8 @@
-put /local/pcb/mod {import_sch_rnd}
-append /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_sch_rnd/import_sch_rnd.o @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/import_sch_rnd/import_sch_rnd_conf.h}
-put /local/pcb/mod/CONFFILE {import_sch_rnd.conf}
-put /local/pcb/mod/CONFVAR {import_sch_rnd_conf_internal}
+put /local/rnd/mod {import_sch_rnd}
+append /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_sch_rnd/import_sch_rnd.o @]
+put /local/rnd/mod/CONF {$(PLUGDIR)/import_sch_rnd/import_sch_rnd_conf.h}
+put /local/rnd/mod/CONFFILE {import_sch_rnd.conf}
+put /local/rnd/mod/CONFVAR {import_sch_rnd_conf_internal}
 
 
 switch /local/pcb/import_sch_rnd/controls

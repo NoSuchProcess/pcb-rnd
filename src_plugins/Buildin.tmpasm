@@ -1,43 +1,43 @@
 # tmpasm script for compiling a plugin_src/ module as a buildin
 # Requires variables before the include:
-#  /local/pcb/mod       basename of the module (e.g. autoplace)
-#  /local/pcb/mod/OBJS  full path of all object files
-#  /local/pcb/mod/OBJS_C99  full path of all object files for non-c89
-#  /local/pcb/mod/CONF  config file name
+#  /local/rnd/mod       basename of the module (e.g. autoplace)
+#  /local/rnd/mod/OBJS  full path of all object files
+#  /local/rnd/mod/OBJS_C99  full path of all object files for non-c89
+#  /local/rnd/mod/CONF  config file name
 
-append /local/pcb/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/pcb/mod@_init();@] {\n}
+append /local/pcb/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/rnd/mod@_init();@] {\n}
 
 
 append /local/pcb/buildin_init_code    [@
-	uninit_func = hid_@/local/pcb/mod@_init();
-	pcb_plugin_register("@/local/pcb/mod@", "<@/local/pcb/mod@>", NULL, 0, uninit_func);
+	uninit_func = hid_@/local/rnd/mod@_init();
+	pcb_plugin_register("@/local/rnd/mod@", "<@/local/rnd/mod@>", NULL, 0, uninit_func);
 @]  {\n}
 
-append /local/pcb/OBJS            ?/local/pcb/mod/OBJS
-append /local/pcb/OBJS_C99        ?/local/pcb/mod/OBJS_C99
-append /local/rnd/LDFLAGS         /local/pcb/mod/LDFLAGS
-append /local/rnd/CFLAGS          /local/pcb/mod/CFLAGS
+append /local/pcb/OBJS            ?/local/rnd/mod/OBJS
+append /local/pcb/OBJS_C99        ?/local/rnd/mod/OBJS_C99
+append /local/rnd/LDFLAGS         /local/rnd/mod/LDFLAGS
+append /local/rnd/CFLAGS          /local/rnd/mod/CFLAGS
 append /local/rnd/RULES [@
 
-mod_@/local/pcb/mod@: all
+mod_@/local/rnd/mod@: all
 
 @]
 
 # if plugin is part of the hidlib system, also append the objects
 # to the hidlib object lists
-put /local/pcb/mod/is_hidlib  [@/local/pcb/@/local/pcb/mod@/hidlib@]
-resolve /local/pcb/mod/is_hidlib ?/local/pcb/mod/is_hidlib
-if ?/local/pcb/mod/is_hidlib
+put /local/rnd/mod/is_hidlib  [@/local/pcb/@/local/rnd/mod@/hidlib@]
+resolve /local/rnd/mod/is_hidlib ?/local/rnd/mod/is_hidlib
+if ?/local/rnd/mod/is_hidlib
 then
-	append /local/pcb/HIDLIB_PLG              /local/pcb/mod
-	append /local/pcb/OBJS_HIDLIB_PLG         ?/local/pcb/mod/OBJS
-	append /local/pcb/OBJS_C99_HIDLIB_PLG     ?/local/pcb/mod/OBJS_C99
-	append /local/pcb/buildin_hidlib_pups     [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
+	append /local/pcb/HIDLIB_PLG              /local/rnd/mod
+	append /local/pcb/OBJS_HIDLIB_PLG         ?/local/rnd/mod/OBJS
+	append /local/pcb/OBJS_C99_HIDLIB_PLG     ?/local/rnd/mod/OBJS_C99
+	append /local/pcb/buildin_hidlib_pups     [@@/local/rnd/mod@=@/local/rnd/mod@/@/local/rnd/mod@.pup@] {\n}
 
-	append /local/pcb/LDFLAGS_HIDLIB_STATIC   /local/pcb/mod/LDFLAGS
-	append /local/pcb/CFLAGS_HIDLIB_STATIC    /local/pcb/mod/CFLAGS
+	append /local/pcb/LDFLAGS_HIDLIB_STATIC   /local/rnd/mod/LDFLAGS
+	append /local/pcb/CFLAGS_HIDLIB_STATIC    /local/rnd/mod/CFLAGS
 else
-	append /local/pcb/buildin_pups [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
+	append /local/pcb/buildin_pups [@@/local/rnd/mod@=@/local/rnd/mod@/@/local/rnd/mod@.pup@] {\n}
 end
 
 include /local/pcb/tmpasm/common_enabled

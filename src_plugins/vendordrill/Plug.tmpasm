@@ -1,8 +1,8 @@
-put /local/pcb/mod {vendordrill}
-append /local/pcb/mod/OBJS [@ $(PLUGDIR)/vendordrill/vendor.o @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/vendordrill/vendor_conf.h}
-put /local/pcb/mod/MENUFILE {vendor-menu.lht}
-put /local/pcb/mod/MENUVAR {vendor_menu}
+put /local/rnd/mod {vendordrill}
+append /local/rnd/mod/OBJS [@ $(PLUGDIR)/vendordrill/vendor.o @]
+put /local/rnd/mod/CONF {$(PLUGDIR)/vendordrill/vendor_conf.h}
+put /local/rnd/mod/MENUFILE {vendor-menu.lht}
+put /local/rnd/mod/MENUVAR {vendor_menu}
 
 switch /local/pcb/vendordrill/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

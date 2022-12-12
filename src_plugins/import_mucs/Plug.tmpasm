@@ -1,7 +1,7 @@
-put /local/pcb/mod {import_mucs}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_mucs/mucs.o @]
-put /local/pcb/mod/MENUFILE {mucs-menu.lht}
-put /local/pcb/mod/MENUVAR {mucs_menu}
+put /local/rnd/mod {import_mucs}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_mucs/mucs.o @]
+put /local/rnd/mod/MENUFILE {mucs-menu.lht}
+put /local/rnd/mod/MENUVAR {mucs_menu}
 
 switch /local/pcb/import_mucs/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

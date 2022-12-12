@@ -1,8 +1,8 @@
-put /local/pcb/mod {drc_query}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/drc_query/drc_query.o @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/drc_query/drc_query_conf.h}
-put /local/pcb/mod/CONFFILE {drc_query.conf}
-put /local/pcb/mod/CONFVAR {drc_query_conf_internal}
+put /local/rnd/mod {drc_query}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/drc_query/drc_query.o @]
+put /local/rnd/mod/CONF {$(PLUGDIR)/drc_query/drc_query_conf.h}
+put /local/rnd/mod/CONFFILE {drc_query.conf}
+put /local/rnd/mod/CONFVAR {drc_query_conf_internal}
 
 switch /local/pcb/drc_query/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

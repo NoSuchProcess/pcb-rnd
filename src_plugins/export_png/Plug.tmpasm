@@ -1,13 +1,13 @@
-put /local/pcb/mod {export_png}
-put /local/pcb/mod/OBJS [@
+put /local/rnd/mod {export_png}
+put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/export_png/png.o
 @]
 
 switch /local/pcb/export_png/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/LDFLAGS         libs/gui/gd/ldflags
-		put /local/pcb/mod/CFLAGS          libs/gui/gd/cflags
+		put /local/rnd/mod/LDFLAGS         libs/gui/gd/ldflags
+		put /local/rnd/mod/CFLAGS          libs/gui/gd/cflags
 		end
 end
 

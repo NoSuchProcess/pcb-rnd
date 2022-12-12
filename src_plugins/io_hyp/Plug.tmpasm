@@ -1,8 +1,8 @@
-put /local/pcb/mod {io_hyp}
-put /local/pcb/mod/MENUFILE {hyp-menu.lht}
-put /local/pcb/mod/MENUVAR {hyp_menu}
+put /local/rnd/mod {io_hyp}
+put /local/rnd/mod/MENUFILE {hyp-menu.lht}
+put /local/rnd/mod/MENUVAR {hyp_menu}
 
-append /local/pcb/mod/OBJS [@
+append /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/io_hyp/io_hyp.o
 	$(PLUGDIR)/io_hyp/hyp_l.o
 	$(PLUGDIR)/io_hyp/hyp_y.o
@@ -10,8 +10,8 @@ append /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_hyp/write.o
 @]
 
-put /local/pcb/mod/YACC {$(PLUGDIR)/io_hyp/hyp_y}
-put /local/pcb/mod/LEX  {$(PLUGDIR)/io_hyp/hyp_l}
+put /local/rnd/mod/YACC {$(PLUGDIR)/io_hyp/hyp_y}
+put /local/rnd/mod/LEX  {$(PLUGDIR)/io_hyp/hyp_l}
 
 
 switch /local/pcb/io_hyp/controls

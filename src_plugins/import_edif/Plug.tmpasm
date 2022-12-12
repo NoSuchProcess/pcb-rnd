@@ -1,6 +1,6 @@
-put /local/pcb/mod {import_edif}
-append /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_edif/edif.o $(PLUGDIR)/import_edif/import_edif.o @]
-append /local/pcb/mod/YACC {$(PLUGDIR)/import_edif/edif}
+put /local/rnd/mod {import_edif}
+append /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_edif/edif.o $(PLUGDIR)/import_edif/import_edif.o @]
+append /local/rnd/mod/YACC {$(PLUGDIR)/import_edif/edif}
 
 switch /local/pcb/import_edif/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

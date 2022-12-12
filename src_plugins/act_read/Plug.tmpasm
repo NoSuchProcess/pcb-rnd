@@ -1,9 +1,9 @@
-put /local/pcb/mod {act_read}
-put /local/pcb/mod/OBJS [@
+put /local/rnd/mod {act_read}
+put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/act_read/act_read.o
 	$(PLUGDIR)/act_read/keywords_sphash.o
 @]
-put /local/pcb/mod/SPHASH  {$(PLUGDIR)/act_read/keywords.sphash}
+put /local/rnd/mod/SPHASH  {$(PLUGDIR)/act_read/keywords.sphash}
 
 
 switch /local/pcb/act_read/controls
