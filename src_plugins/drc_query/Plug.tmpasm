@@ -4,7 +4,7 @@ put /local/rnd/mod/CONF {$(PLUGDIR)/drc_query/drc_query_conf.h}
 put /local/rnd/mod/CONFFILE {drc_query.conf}
 put /local/rnd/mod/CONFVAR {drc_query_conf_internal}
 
-switch /local/pcb/drc_query/controls
+switch /local/module/drc_query/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

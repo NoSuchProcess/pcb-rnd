@@ -19,7 +19,7 @@ put /local/rnd/mod/MENUVAR {tedax_menu}
 put /local/rnd/mod/SPHASH  {$(PLUGDIR)/io_tedax/tdrc_keys.sphash}
 put /local/rnd/mod/SPHASH_ARGS {--multi}
 
-switch /local/pcb/io_tedax/controls
+switch /local/module/io_tedax/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

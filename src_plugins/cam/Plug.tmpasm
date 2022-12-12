@@ -4,7 +4,7 @@ put /local/rnd/mod/CONF {$(PLUGDIR)/cam/cam_conf.h}
 put /local/rnd/mod/CONFFILE {cam.conf}
 put /local/rnd/mod/CONFVAR {cam_conf_internal}
 
-switch /local/pcb/cam/controls
+switch /local/module/cam/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

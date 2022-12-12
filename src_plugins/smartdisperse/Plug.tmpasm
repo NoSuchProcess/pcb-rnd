@@ -1,7 +1,7 @@
 put /local/rnd/mod {smartdisperse}
 put /local/rnd/mod/OBJS [@ $(PLUGDIR)/smartdisperse/smartdisperse.o @]
 
-switch /local/pcb/smartdisperse/controls
+switch /local/module/smartdisperse/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

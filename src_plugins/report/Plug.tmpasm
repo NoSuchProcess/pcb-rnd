@@ -5,7 +5,7 @@ put /local/rnd/mod/OBJS [@
 @]
 put /local/rnd/mod/CONF {$(PLUGDIR)/report/report_conf.h}
 
-switch /local/pcb/report/controls
+switch /local/module/report/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

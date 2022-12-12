@@ -16,7 +16,7 @@ put /local/rnd/mod/YACC {$(PLUGDIR)/query/query_y}
 put /local/rnd/mod/LEX  {$(PLUGDIR)/query/query_l}
 put /local/rnd/mod/SPHASH  {$(PLUGDIR)/query/fields.sphash}
 
-switch /local/pcb/query/controls
+switch /local/module/query/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

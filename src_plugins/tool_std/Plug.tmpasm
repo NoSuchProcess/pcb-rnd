@@ -19,7 +19,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/tool_std/tool_via.o
 @]
 
-switch /local/pcb/tool_std/controls
+switch /local/module/tool_std/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

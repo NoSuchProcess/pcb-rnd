@@ -4,7 +4,7 @@ append /local/rnd/mod/OBJS [@
 @]
 put /local/rnd/mod/CONF {$(PLUGDIR)/draw_fab/draw_fab_conf.h}
 
-switch /local/pcb/draw_fab/controls
+switch /local/module/draw_fab/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

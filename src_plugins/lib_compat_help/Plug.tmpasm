@@ -4,7 +4,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/lib_compat_help/media.o
 @]
 
-switch /local/pcb/lib_compat_help/controls
+switch /local/module/lib_compat_help/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

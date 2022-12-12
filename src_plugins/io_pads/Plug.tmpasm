@@ -13,7 +13,7 @@ put /local/rnd/mod/OBJS [@
 
 #	$(PLUGDIR)/io_pads/write.o
 
-switch /local/pcb/io_pads/controls
+switch /local/module/io_pads/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

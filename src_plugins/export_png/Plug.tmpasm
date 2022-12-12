@@ -3,7 +3,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/export_png/png.o
 @]
 
-switch /local/pcb/export_png/controls
+switch /local/module/export_png/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/LDFLAGS         libs/gui/gd/ldflags
@@ -11,7 +11,7 @@ switch /local/pcb/export_png/controls
 		end
 end
 
-switch /local/pcb/export_png/controls
+switch /local/module/export_png/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

@@ -147,9 +147,9 @@ static void calc_dialog_deps(void)
 	int buildin, plugin;
 
 	/* TODO: get this from librnd */
-	control = get("/local/pcb/lib_hid_common/controls");
+	control = get("/local/module/lib_hid_common/controls");
 	if (control == NULL) {
-		fprintf(stderr, "librnd configuration error: can't figure how lib_hid_common is configured\n(should be coming from plugin.state as /local/pcb/lib_hid_common/controls)\n");
+		fprintf(stderr, "librnd configuration error: can't figure how lib_hid_common is configured\n(should be coming from plugin.state as /local/module/lib_hid_common/controls)\n");
 		exit(1);
 	}
 	buildin = strcmp(control, "buildin") == 0;

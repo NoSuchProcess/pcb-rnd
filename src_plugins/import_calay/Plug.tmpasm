@@ -3,7 +3,7 @@ put /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_calay/calay.o @]
 put /local/rnd/mod/MENUFILE {calay-menu.lht}
 put /local/rnd/mod/MENUVAR {calay_menu}
 
-switch /local/pcb/import_calay/controls
+switch /local/module/import_calay/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

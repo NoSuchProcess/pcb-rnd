@@ -6,7 +6,7 @@ put /local/rnd/mod/OBJS [@
 put /local/rnd/mod/MENUFILE {hpgl-menu.lht}
 put /local/rnd/mod/MENUVAR {hpgl_menu}
 
-switch /local/pcb/import_hpgl/controls
+switch /local/module/import_hpgl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

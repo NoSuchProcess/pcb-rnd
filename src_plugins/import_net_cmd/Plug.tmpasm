@@ -1,7 +1,7 @@
 put /local/rnd/mod {import_net_cmd}
 append /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_net_cmd/import_net_cmd.o @]
 
-switch /local/pcb/import_net_cmd/controls
+switch /local/module/import_net_cmd/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

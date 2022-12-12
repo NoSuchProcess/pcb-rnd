@@ -3,7 +3,7 @@ append /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/draw_csect/draw_csect.o
 @]
 
-switch /local/pcb/draw_csect/controls
+switch /local/module/draw_csect/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

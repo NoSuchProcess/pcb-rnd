@@ -1,7 +1,7 @@
 put /local/rnd/mod {export_c_draw}
 put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_c_draw/export_c_draw.o @]
 
-switch /local/pcb/export_c_draw/controls
+switch /local/module/export_c_draw/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

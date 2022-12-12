@@ -4,7 +4,7 @@ put /local/rnd/mod/CONF {$(PLUGDIR)/export_xy/xy_conf.h}
 put /local/rnd/mod/CONFFILE {export_xy.conf}
 put /local/rnd/mod/CONFVAR {export_xy_conf_internal}
 
-switch /local/pcb/export_xy/controls
+switch /local/module/export_xy/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

@@ -9,7 +9,7 @@ put /local/rnd/mod/OBJS [@
 @]
 
 
-switch /local/pcb/asm/controls
+switch /local/module/asm/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

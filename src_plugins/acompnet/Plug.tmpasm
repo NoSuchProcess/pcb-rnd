@@ -4,7 +4,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/acompnet/meshgraph.o
 @]
 
-switch /local/pcb/acompnet/controls
+switch /local/module/acompnet/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

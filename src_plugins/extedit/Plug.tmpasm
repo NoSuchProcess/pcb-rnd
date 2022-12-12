@@ -3,7 +3,7 @@ put /local/rnd/mod/OBJS [@
  $(PLUGDIR)/extedit/extedit.o
 @]
 
-switch /local/pcb/extedit/controls
+switch /local/module/extedit/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

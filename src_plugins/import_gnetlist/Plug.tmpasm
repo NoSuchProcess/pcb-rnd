@@ -5,7 +5,7 @@ put /local/rnd/mod/CONFFILE {import_gnetlist.conf}
 put /local/rnd/mod/CONFVAR {import_gnetlist_conf_internal}
 
 
-switch /local/pcb/import_gnetlist/controls
+switch /local/module/import_gnetlist/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

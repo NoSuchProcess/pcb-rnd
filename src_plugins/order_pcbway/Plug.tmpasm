@@ -6,7 +6,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/order_pcbway/pcbway.o
 @]
 
-switch /local/pcb/order_pcbway/controls
+switch /local/module/order_pcbway/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/CFLAGS   /target/libs/sul/libxml2/cflags
@@ -15,7 +15,7 @@ switch /local/pcb/order_pcbway/controls
 end
 
 
-switch /local/pcb/order_pcbway/controls
+switch /local/module/order_pcbway/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

@@ -5,7 +5,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/lib_formula/bisect.o
 @]
 
-switch /local/pcb/lib_formula/controls
+switch /local/module/lib_formula/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

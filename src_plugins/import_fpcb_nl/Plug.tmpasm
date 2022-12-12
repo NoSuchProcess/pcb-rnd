@@ -3,7 +3,7 @@ put /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_fpcb_nl/fpcb_nl.o @]
 put /local/rnd/mod/MENUFILE {fpcb_nl-menu.lht}
 put /local/rnd/mod/MENUVAR {fpcb_nl_menu}
 
-switch /local/pcb/import_fpcb_nl/controls
+switch /local/module/import_fpcb_nl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

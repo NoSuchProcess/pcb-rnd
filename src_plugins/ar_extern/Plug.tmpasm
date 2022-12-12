@@ -8,7 +8,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/ar_extern/ar_extern.o
 @]
 
-switch /local/pcb/ar_extern/controls
+switch /local/module/ar_extern/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

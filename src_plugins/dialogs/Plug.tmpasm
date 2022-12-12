@@ -20,7 +20,7 @@ put /local/rnd/mod/CONFFILE {adialogs.conf}
 put /local/rnd/mod/CONF {$(PLUGDIR)/dialogs/adialogs_conf.h}
 put /local/rnd/mod/CONFVAR {adialogs_conf_internal}
 
-switch /local/pcb/dialogs/controls
+switch /local/module/dialogs/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

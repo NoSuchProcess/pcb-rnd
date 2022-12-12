@@ -1,7 +1,7 @@
 put /local/rnd/mod {export_debug}
 put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_debug/export_debug.o @]
 
-switch /local/pcb/export_debug/controls
+switch /local/module/export_debug/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

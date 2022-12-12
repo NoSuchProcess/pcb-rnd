@@ -12,7 +12,7 @@ put /local/rnd/mod/OBJS [@
 put /local/rnd/mod/MENUFILE {kicad-menu.lht}
 put /local/rnd/mod/MENUVAR {kicad_menu}
 
-switch /local/pcb/io_kicad/controls
+switch /local/module/io_kicad/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

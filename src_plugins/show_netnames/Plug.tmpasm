@@ -8,7 +8,7 @@ append /local/rnd/mod/OBJS [@
  $(PLUGDIR)/show_netnames/show_netnames.o
 @]
 
-switch /local/pcb/show_netnames/controls
+switch /local/module/show_netnames/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

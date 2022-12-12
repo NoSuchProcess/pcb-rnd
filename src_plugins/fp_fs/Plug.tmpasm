@@ -4,7 +4,7 @@ put /local/rnd/mod/CONF {$(PLUGDIR)/fp_fs/fp_fs_conf.h}
 put /local/rnd/mod/CONFFILE {fp_fs.conf}
 put /local/rnd/mod/CONFVAR {fp_fs_conf_internal}
 
-switch /local/pcb/fp_fs/controls
+switch /local/module/fp_fs/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

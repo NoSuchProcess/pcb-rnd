@@ -7,7 +7,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/import_ttf/str_approx.o
 @]
 
-switch /local/pcb/import_ttf/controls
+switch /local/module/import_ttf/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/LDFLAGS         libs/sul/freetype2/ldflags
@@ -15,7 +15,7 @@ switch /local/pcb/import_ttf/controls
 		end
 end
 
-switch /local/pcb/import_ttf/controls
+switch /local/module/import_ttf/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

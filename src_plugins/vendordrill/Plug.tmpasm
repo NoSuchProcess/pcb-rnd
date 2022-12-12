@@ -4,7 +4,7 @@ put /local/rnd/mod/CONF {$(PLUGDIR)/vendordrill/vendor_conf.h}
 put /local/rnd/mod/MENUFILE {vendor-menu.lht}
 put /local/rnd/mod/MENUVAR {vendor_menu}
 
-switch /local/pcb/vendordrill/controls
+switch /local/module/vendordrill/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

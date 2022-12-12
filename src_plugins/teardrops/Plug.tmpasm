@@ -1,7 +1,7 @@
 put /local/rnd/mod {teardrops}
 put /local/rnd/mod/OBJS [@ $(PLUGDIR)/teardrops/teardrops.o @]
 
-switch /local/pcb/teardrops/controls
+switch /local/module/teardrops/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

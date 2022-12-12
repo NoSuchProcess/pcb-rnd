@@ -5,7 +5,7 @@ put /local/rnd/mod/CONFFILE {import_sch_rnd.conf}
 put /local/rnd/mod/CONFVAR {import_sch_rnd_conf_internal}
 
 
-switch /local/pcb/import_sch_rnd/controls
+switch /local/module/import_sch_rnd/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

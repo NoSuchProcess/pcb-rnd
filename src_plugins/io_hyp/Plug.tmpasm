@@ -14,7 +14,7 @@ put /local/rnd/mod/YACC {$(PLUGDIR)/io_hyp/hyp_y}
 put /local/rnd/mod/LEX  {$(PLUGDIR)/io_hyp/hyp_l}
 
 
-switch /local/pcb/io_hyp/controls
+switch /local/module/io_hyp/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

@@ -2,7 +2,7 @@ put /local/rnd/mod {mincut}
 append /local/rnd/mod/OBJS [@ $(PLUGDIR)/mincut/rats_mincut.o $(PLUGDIR)/mincut/pcb-mincut/graph.o $(PLUGDIR)/mincut/pcb-mincut/solve.o @]
 put /local/rnd/mod/CONF {$(PLUGDIR)/mincut/rats_mincut_conf.h}
 
-switch /local/pcb/mincut/controls
+switch /local/module/mincut/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

@@ -1,7 +1,7 @@
 put /local/rnd/mod {autoplace}
 put /local/rnd/mod/OBJS [@ $(PLUGDIR)/autoplace/autoplace.o $(PLUGDIR)/autoplace/action.o @]
 
-switch /local/pcb/autoplace/controls
+switch /local/module/autoplace/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

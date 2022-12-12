@@ -14,7 +14,7 @@ put /local/rnd/mod/OBJS [@
 put /local/rnd/mod/BYACCIC  {$(PLUGDIR)/order/const_gram}
 put /local/rnd/mod/UREGLEX  {$(PLUGDIR)/order/const_lex}
 
-switch /local/pcb/order/controls
+switch /local/module/order/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

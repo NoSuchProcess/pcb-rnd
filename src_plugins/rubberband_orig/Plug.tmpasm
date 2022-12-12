@@ -5,7 +5,7 @@ put /local/rnd/mod/OBJS [@
 @]
 put /local/rnd/mod/CONF {$(PLUGDIR)/rubberband_orig/rubberband_conf.h}
 
-switch /local/pcb/rubberband_orig/controls
+switch /local/module/rubberband_orig/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

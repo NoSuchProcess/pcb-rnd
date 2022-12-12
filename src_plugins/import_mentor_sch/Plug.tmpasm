@@ -8,7 +8,7 @@ put /local/rnd/mod/MENUFILE {mentor-menu.lht}
 put /local/rnd/mod/MENUVAR {mentor_menu}
 
 
-switch /local/pcb/import_mentor_sch/controls
+switch /local/module/import_mentor_sch/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

@@ -9,7 +9,7 @@ put /local/rnd/mod/OBJS [@
  $(PLUGDIR)/io_eagle/trparse_bin.o
 @]
 
-switch /local/pcb/io_eagle/controls
+switch /local/module/io_eagle/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/CFLAGS   /target/libs/sul/libxml2/cflags
@@ -18,7 +18,7 @@ switch /local/pcb/io_eagle/controls
 end
 
 
-switch /local/pcb/io_eagle/controls
+switch /local/module/io_eagle/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

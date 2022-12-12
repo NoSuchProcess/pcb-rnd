@@ -5,7 +5,7 @@ append /local/rnd/mod/OBJS [@
  $(PLUGDIR)/shape/shape.o
 @]
 
-switch /local/pcb/shape/controls
+switch /local/module/shape/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

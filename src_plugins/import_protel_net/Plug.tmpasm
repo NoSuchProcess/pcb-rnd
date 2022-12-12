@@ -3,7 +3,7 @@ put /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_protel_net/protel_net.o @]
 put /local/rnd/mod/MENUFILE {protel_net-menu.lht}
 put /local/rnd/mod/MENUVAR {protel_net_menu}
 
-switch /local/pcb/import_protel_net/controls
+switch /local/module/import_protel_net/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

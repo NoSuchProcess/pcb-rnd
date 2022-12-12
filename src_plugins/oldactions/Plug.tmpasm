@@ -1,7 +1,7 @@
 put /local/rnd/mod {oldactions}
 put /local/rnd/mod/OBJS [@ $(PLUGDIR)/oldactions/oldactions.o @]
 
-switch /local/pcb/oldactions/controls
+switch /local/module/oldactions/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

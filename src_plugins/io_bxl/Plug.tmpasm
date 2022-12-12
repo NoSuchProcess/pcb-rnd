@@ -10,7 +10,7 @@ put /local/rnd/mod/OBJS [@
 put /local/rnd/mod/BYACCIC  {$(PLUGDIR)/io_bxl/bxl_gram}
 put /local/rnd/mod/UREGLEX  {$(PLUGDIR)/io_bxl/bxl_lex}
 
-switch /local/pcb/io_bxl/controls
+switch /local/module/io_bxl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

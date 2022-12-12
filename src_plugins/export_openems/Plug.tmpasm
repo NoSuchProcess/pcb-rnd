@@ -4,7 +4,7 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/export_openems/mesh.o
 @]
 
-switch /local/pcb/export_openems/controls
+switch /local/module/export_openems/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

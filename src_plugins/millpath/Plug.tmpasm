@@ -4,7 +4,7 @@ append /local/rnd/mod/OBJS [@
  $(PLUGDIR)/millpath/toolpath.o
 @]
 
-switch /local/pcb/millpath/controls
+switch /local/module/millpath/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;
