@@ -12,7 +12,7 @@ if /local/pcb/want_static then
 	append /local/rnd/LDFLAGS { -static}
 end
 
-# static librd link: need to get all librnd ldlibs
+# static librnd link: need to get all librnd ldlibs
 if /local/pcb/want_static_librnd
 then
 	put /local/pcb/librnd_extra_ldlibs {$(LDFLAGS_LIBRND)}
