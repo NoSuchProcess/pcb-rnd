@@ -105,7 +105,7 @@ static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 			case PCB_CAM_WRITE:
 				strncpy(tmp, c->op.write.arg, sizeof(tmp));
 
-				cell[0] = tmp;
+				cell[0] = rnd_strdup(tmp);
 				cell[2] = strchr(tmp, '=');
 				if (cell[2] != NULL) {
 					*cell[2] = '\0';
@@ -113,13 +113,15 @@ static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 				}
 				else
 					cell[2] = "<none>";
+				cell[2] = rnd_strdup(cell[2]);
 
 				if (plugin != NULL)
 					cell[1] = rnd_strdup(plugin->op.plugin.exporter->name);
 				else
-					cell[1] = "<NO PLUGIN>";
+					cell[1] = rnd_strdup("<NO PLUGIN>");
 
 				cell[3] = NULL;
+
 				rnd_dad_tree_append(attr, NULL, cell);
 				break;
 		}

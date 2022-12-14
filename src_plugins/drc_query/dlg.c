@@ -477,9 +477,9 @@ static void drc_rlist_pcb2dlg(void)
 
 		role = rnd_conf_lookup_role(rule);
 		src = textval_empty(rule, "source");
-		cell[0] = rule->name;
+		cell[0] = rnd_strdup(rule->name);
 		cell[1] = rnd_strdup(rnd_conf_role_name(role));
-		cell[2] = *dis ? "YES" : "no";
+		cell[2] = rnd_strdup(*dis ? "YES" : "no");
 		if (st->run_cnt > 0)
 			cell[3] = rnd_strdup_printf("%.3fs", st->last_run_time);
 		else
@@ -491,10 +491,10 @@ static void drc_rlist_pcb2dlg(void)
 			char *pcell[5];
 
 			if (parent == NULL) {
-				pcell[0] = (char *)src;
-				pcell[1] = "";
-				pcell[2] = "";
-				pcell[3] = "";
+				pcell[0] = rnd_strdup(src);
+				pcell[1] = rnd_strdup("");
+				pcell[2] = rnd_strdup("");
+				pcell[3] = rnd_strdup("");
 				pcell[4] = NULL;
 				parent = rnd_dad_tree_append(tree->attrib, NULL, pcell);
 			}
@@ -775,7 +775,7 @@ static void drc_dlist_pcb2dlg(void)
 
 		role = rnd_conf_lookup_role(rule);
 		src = textval_empty(rule, "source");
-		cell[0] = rule->name;
+		cell[0] = rnd_strdup(rule->name);
 		cell[1] = rnd_strdup(rnd_conf_role_name(role));
 
 		if (*src != '\0') {
@@ -784,8 +784,8 @@ static void drc_dlist_pcb2dlg(void)
 			char *pcell[3];
 
 			if (parent == NULL) {
-				pcell[0] = (char *)src;
-				pcell[1] = "";
+				pcell[0] = rnd_strdup(src);
+				pcell[1] = rnd_strdup("");
 				pcell[2] = NULL;
 				parent = rnd_dad_tree_append(tree->attrib, NULL, pcell);
 			}
