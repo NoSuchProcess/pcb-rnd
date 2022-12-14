@@ -92,6 +92,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *row2[] = {"two", "bar", "BAR", NULL};
 	char *row2b[] = {"under_two", "ut", "uuut", NULL};
 	char *row3[] = {"three", "baz", "BAZ", NULL};
+	char **cell;
 	const char *hdr[] = {"num", "data1", "data2", NULL};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	rnd_hid_row_t *row;
@@ -99,6 +100,12 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	test_t ctx;
 	memset(&ctx, 0, sizeof(ctx));
+
+	/* tree cells must be allocated strings */
+	for(cell = row1; *cell != NULL; cell++) *cell = rnd_strdup(*cell);
+	for(cell = row2; *cell != NULL; cell++) *cell = rnd_strdup(*cell);
+	for(cell = row2b; *cell != NULL; cell++) *cell = rnd_strdup(*cell);
+	for(cell = row3; *cell != NULL; cell++) *cell = rnd_strdup(*cell);
 
 	RND_DAD_BEGIN_VBOX(ctx.dlg);
 		RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
@@ -349,12 +356,15 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
-	char *rowdata[] = {NULL, "ins", "dummy", NULL};
+	char *cell[4];
 	rnd_hid_row_t *new_row, *row = rnd_dad_tree_get_selected(treea);
 	rnd_hid_attr_val_t val;
 
-	rowdata[0] = rnd_strdup_printf("dyn_%d", ctx->ttctr++);
-	new_row = rnd_dad_tree_insert(treea, row, rowdata);
+	cell[0] = rnd_strdup_printf("dyn_%d", ctx->ttctr++);
+	cell[1] = rnd_strdup("ins");
+	cell[2] = rnd_strdup("dummy");
+	cell[3] = NULL;
+	new_row = rnd_dad_tree_insert(treea, row, cell);
 	new_row->user_data2.lng = 1;
 
 	val.dbl = (double)ctx->ttctr / 20.0;
@@ -365,12 +375,15 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
-	char *rowdata[] = {NULL, "app", "dummy", NULL};
+	char *cell[4];
 	rnd_hid_row_t *new_row, *row = rnd_dad_tree_get_selected(treea);
 	rnd_hid_attr_val_t val;
 
-	rowdata[0] = rnd_strdup_printf("dyn_%d", ctx->ttctr++);
-	new_row = rnd_dad_tree_append(treea, row, rowdata);
+	cell[0] = rnd_strdup_printf("dyn_%d", ctx->ttctr++);
+	cell[1] = rnd_strdup("app");
+	cell[2] = rnd_strdup("dummy");
+	cell[3] = NULL;
+	new_row = rnd_dad_tree_append(treea, row, cell);
 	new_row->user_data2.lng = 1;
 
 	val.dbl = (double)ctx->ttctr / 20.0;
@@ -427,8 +440,6 @@ static void cb_ttbl_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd
 
 static void cb_ttbl_free_row(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	if (row->user_data2.lng)
-		free(row->cell[0]);
 }
 
 static void cb_pane_set(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
