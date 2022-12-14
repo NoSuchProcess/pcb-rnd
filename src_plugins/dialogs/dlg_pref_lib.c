@@ -295,7 +295,7 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 				RND_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
 
 			RND_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
-			RND_DAD_LABEL(ctx.dlg, rnd_strdup(cell[1]));
+			RND_DAD_LABEL(ctx.dlg, cell[1]);
 				ctx.wexp = RND_DAD_CURRENT(ctx.dlg);
 				ctx.dlg[ctx.wexp].val.str = rnd_strdup(cell[1]);
 
