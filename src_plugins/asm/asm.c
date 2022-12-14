@@ -582,7 +582,7 @@ static const char pcb_acth_asm[] = "Interactive assembly assistant";
 fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *hdr[] = { "name", "refdes", "footprint", "value", "comments", "done", NULL };
-	char *row[7];
+	char *cell[7];
 	group_t **g;
 	part_t **p;
 	long n, i;
@@ -606,14 +606,14 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_SCROLL);
 			for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
 				rnd_hid_row_t *parent, *child;
-				row[0] = (*g)->name;
-				row[1] = "";
-				row[2] = "";
-				row[3] = "";
-				row[4] = "";
-				row[5] = "";
-				row[6] = NULL;
-				parent = RND_DAD_TREE_APPEND(asm_ctx.dlg, NULL, row);
+				cell[0] = (*g)->name;
+				cell[1] = "";
+				cell[2] = "";
+				cell[3] = "";
+				cell[4] = "";
+				cell[5] = "";
+				cell[6] = NULL;
+				parent = RND_DAD_TREE_APPEND(asm_ctx.dlg, NULL, cell);
 				parent->user_data = *g;
 				(*g)->row = parent;
 				for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
@@ -624,27 +624,27 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, (*p)->id, PCB_OBJ_SUBC);
 					sc = r2;
 
-					row[0] = (*p)->name;
+					cell[0] = (*p)->name;
 					if (type == PCB_OBJ_SUBC) {
 						int m;
-						row[1] = (char *)sc->refdes;
-						row[2] = pcb_attribute_get(&sc->Attributes, "footprint");
-						row[3] = pcb_attribute_get(&sc->Attributes, "value");
-						row[4] = pcb_attribute_get(&sc->Attributes, "asm::comment");
-						row[5] = "";
+						cell[1] = (char *)sc->refdes;
+						cell[2] = pcb_attribute_get(&sc->Attributes, "footprint");
+						cell[3] = pcb_attribute_get(&sc->Attributes, "value");
+						cell[4] = pcb_attribute_get(&sc->Attributes, "asm::comment");
+						cell[5] = "";
 						for(m = 1; m < 6; m++)
-							if (row[m] == NULL)
-								row[m] = "";
+							if (cell[m] == NULL)
+								cell[m] = "";
 					}
 					else {
-						row[1] = "";
-						row[2] = "";
-						row[3] = "";
-						row[4] = "";
-						row[5] = "";
+						cell[1] = "";
+						cell[2] = "";
+						cell[3] = "";
+						cell[4] = "";
+						cell[5] = "";
 					}
-					row[6] = NULL;
-					child = RND_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
+					cell[6] = NULL;
+					child = RND_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, cell);
 					child->user_data = *p;
 					(*p)->row = child;
 				}
