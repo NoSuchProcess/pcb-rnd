@@ -508,9 +508,9 @@ static void done(void *hid_ctx, part_t *part, int done)
 {
 	part->done = done;
 	if (done)
-		rnd_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "yes");
+		rnd_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, rnd_strdup("yes"));
 	else
-		rnd_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "-");
+		rnd_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, rnd_strdup("-"));
 	group_progress_update(hid_ctx, part->parent);
 }
 
@@ -606,12 +606,12 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_SCROLL);
 			for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
 				rnd_hid_row_t *parent, *child;
-				cell[0] = (*g)->name;
-				cell[1] = "";
-				cell[2] = "";
-				cell[3] = "";
-				cell[4] = "";
-				cell[5] = "";
+				cell[0] = rnd_strdup((*g)->name);
+				cell[1] = rnd_strdup("");
+				cell[2] = rnd_strdup("");
+				cell[3] = rnd_strdup("");
+				cell[4] = rnd_strdup("");
+				cell[5] = rnd_strdup("");
 				cell[6] = NULL;
 				parent = RND_DAD_TREE_APPEND(asm_ctx.dlg, NULL, cell);
 				parent->user_data = *g;
@@ -624,7 +624,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, (*p)->id, PCB_OBJ_SUBC);
 					sc = r2;
 
-					cell[0] = (*p)->name;
+					cell[0] = rnd_strdup((*p)->name);
 					if (type == PCB_OBJ_SUBC) {
 						int m;
 						cell[1] = (char *)sc->refdes;
@@ -632,16 +632,18 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						cell[3] = pcb_attribute_get(&sc->Attributes, "value");
 						cell[4] = pcb_attribute_get(&sc->Attributes, "asm::comment");
 						cell[5] = "";
-						for(m = 1; m < 6; m++)
+						for(m = 1; m < 6; m++) {
 							if (cell[m] == NULL)
 								cell[m] = "";
+							cell[m] = rnd_strdup(cell[m]);
+						}
 					}
 					else {
-						cell[1] = "";
-						cell[2] = "";
-						cell[3] = "";
-						cell[4] = "";
-						cell[5] = "";
+						cell[1] = rnd_strdup("");
+						cell[2] = rnd_strdup("");
+						cell[3] = rnd_strdup("");
+						cell[4] = rnd_strdup("");
+						cell[5] = rnd_strdup("");
 					}
 					cell[6] = NULL;
 					child = RND_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, cell);
