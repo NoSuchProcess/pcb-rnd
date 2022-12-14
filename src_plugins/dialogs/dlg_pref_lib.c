@@ -71,14 +71,6 @@ static void pref_lib_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_h
 	pref_lib_update_buttons(rnd_gui->get_dad_design(hid_ctx));
 }
 
-static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
-{
-	free(row->cell[0]);
-	free(row->cell[1]);
-	free(row->cell[2]);
-	row->cell[0] = row->cell[1] = row->cell[2] = NULL;
-}
-
 /* Current libraries from config to dialog box: remove everything from
    the widget first */
 static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
@@ -471,7 +463,6 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			tabdata->wlist = RND_DAD_CURRENT(ctx->dlg);
 			tree = ctx->dlg[tabdata->wlist].wdata;
-			tree->user_free_cb = pref_lib_row_free;
 			RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pref_lib_select_cb);
 	RND_DAD_END(ctx->dlg);
 
