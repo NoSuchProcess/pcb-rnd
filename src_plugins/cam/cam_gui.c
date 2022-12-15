@@ -76,6 +76,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wjobs, &hv);
+		free(cursor_path);
 	}
 }
 
@@ -167,6 +168,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wopts, &hv);
+		free(cursor_path);
 	}
 }
 

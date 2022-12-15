@@ -214,6 +214,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 
 		hv.str = scope.array;
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wscope, &hv);
+		gds_uninit(&scope);
 	}
 }
 
@@ -298,7 +299,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 
 	memset(&hv, 0, sizeof(hv));
 	switch(p->type) {
-		case PCB_PROPT_STRING: hv.str = rnd_strdup(pv->string == NULL ? "" : pv->string); break;
+		case PCB_PROPT_STRING: hv.str = (pv->string == NULL ? "" : pv->string); break;
 		case PCB_PROPT_COORD:  hv.crd = pv->coord; break;
 		case PCB_PROPT_ANGLE:  hv.dbl = pv->angle; break;
 		case PCB_PROPT_DOUBLE: hv.dbl = pv->d; break;

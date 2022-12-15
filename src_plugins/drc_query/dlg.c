@@ -145,7 +145,7 @@ static int drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
 
 	if (prog->qctx != NULL) {
 		sprintf(tmp, "%ld", prog->qctx->hit_cnt);
-		hv.str = rnd_strdup(tmp);
+		hv.str = tmp;
 		rnd_gui->attr_dlg_set_value(pb->dlg_hid_ctx, pb->wcnt, &hv);
 	}
 
