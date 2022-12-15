@@ -50,7 +50,7 @@ typedef struct {
 
 static const char *SRC_BRD = "<board file>";
 
-static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
+static void libhelp_btn2(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
 static void pref_lib_update_buttons(rnd_design_t *hl)
 {
@@ -301,7 +301,7 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 
 			RND_DAD_LABEL(ctx.dlg, "");
 			RND_DAD_BUTTON(ctx.dlg, "Help...");
-				RND_DAD_CHANGE_CB(ctx.dlg, libhelp_btn);
+				RND_DAD_CHANGE_CB(ctx.dlg, libhelp_btn2);
 		RND_DAD_END(ctx.dlg);
 		RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	RND_DAD_END(ctx.dlg);
@@ -446,6 +446,14 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	DEF_TABDATA;
 	pref_libhelp_open(&tabdata->help);
 }
+
+static void libhelp_btn2(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	cell_edit_ctx_t *cctx = caller_data;
+	pref_ctx_t *ctx = cctx->pctx;
+	libhelp_btn(hid_ctx, ctx, attr);
+}
+
 
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 {
