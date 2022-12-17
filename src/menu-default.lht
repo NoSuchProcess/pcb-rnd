@@ -193,7 +193,7 @@ ha:rnd-menu-v1 {
 			ha:Grid {
 				li:submenu {
 					ha:Enable visible grid        = { a={<key>g; <key>v}; checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
-					ha:Enable local grid          = { a={<key>g; <key>l}; checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
+					ha:Enable local grid          = { a={<key>g; <key>l}; checked=editor/local_grid/enable; action=conf(toggle, editor/local_grid/enable, design) }
 					ha:Grid units {
 						li:submenu {
 							ha:mil                    = { a={<key>g; <key>i}; checked=ChkGridUnits(mil); action=SetUnits(mil); update_on={editor/grid_unit} }
@@ -220,17 +220,17 @@ ha:rnd-menu-v1 {
 					}
 					ha:Grid properties = {
 						li:submenu {
-							ha:Enable local grid      = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
+							ha:Enable local grid      = { checked=editor/local_grid/enable; action=conf(toggle, editor/local_grid/enable, design) }
 							-
-							ha:local grid radius 4    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } update_on={} }
-							ha:local grid radius 8    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 8)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } update_on={} }
-							ha:local grid radius 16   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 16)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } update_on={} }
-							ha:local grid radius 32   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 32)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 32, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } update_on={} }
+							ha:local grid radius 4    = { checked={conf(iseq, editor/local_grid/radius, 4)}; li:action={conf(set, editor/local_grid/radius, 4, design); conf(set, editor/local_grid/enable, 1, design) } update_on={} }
+							ha:local grid radius 8    = { checked={conf(iseq, editor/local_grid/radius, 8)}; li:action={conf(set, editor/local_grid/radius, 8, design); conf(set, editor/local_grid/enable, 1, design) } update_on={} }
+							ha:local grid radius 16   = { checked={conf(iseq, editor/local_grid/radius, 16)}; li:action={conf(set, editor/local_grid/radius, 16, design); conf(set, editor/local_grid/enable, 1, design) } update_on={} }
+							ha:local grid radius 32   = { checked={conf(iseq, editor/local_grid/radius, 32)}; li:action={conf(set, editor/local_grid/radius, 32, design); conf(set, editor/local_grid/enable, 1, design) } update_on={} }
 							-
-							ha:sparse global grid     = { checked=plugins/hid_gtk/global_grid/sparse; action=conf(toggle, plugins/hid_gtk/global_grid/sparse, design) }
-							ha:global grid density 4  = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 4)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } update_on={} }
-							ha:global grid density 8  = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 8)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } update_on={} }
-							ha:global grid density 16 = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 16)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } update_on={} }
+							ha:sparse global grid     = { checked=editor/global_grid/sparse; action=conf(toggle, editor/global_grid/sparse, design) }
+							ha:global grid density 4  = { checked={conf(iseq, editor/global_grid/min_dist_px, 4)}; li:action={conf(set, editor/global_grid/min_dist_px, 4, design); conf(set, editor/local_grid/enable, 0, design) } update_on={} }
+							ha:global grid density 8  = { checked={conf(iseq, editor/global_grid/min_dist_px, 8)}; li:action={conf(set, editor/global_grid/min_dist_px, 8, design); conf(set, editor/local_grid/enable, 0, design) } update_on={} }
+							ha:global grid density 16 = { checked={conf(iseq, editor/global_grid/min_dist_px, 16)}; li:action={conf(set, editor/global_grid/min_dist_px, 16, design); conf(set, editor/local_grid/enable, 0, design) } update_on={} }
 						}
 					}
 					ha:Realign grid               = { a={<key>g; <key>r}; action={ Display(RealignGrid) } }
@@ -986,7 +986,7 @@ ha:rnd-menu-v1 {
 			sy:vr = {/scripts/view_reset}
 			fullscreen(off);
 			conf(set, editor/draw_grid, 1, design);
-			conf(set, plugins/hid_gtk/local_grid/enable, 0, design);
+			conf(set, editor/local_grid/enable, 0, design);
 			Display(SubcID, "%a.refdes%");
 			Display(TermID, "%a.term%");
 			conf(set, editor/all_direction_lines, 0, design);
