@@ -91,27 +91,27 @@ static const char *menu_name_fmt = "menu-%s.lht";
 
 /* for security reasons ignore these nodes when coming from a board or project file */
 static rnd_conf_ignore_t conf_prj_dsg_ignores[] = {
-	{"rc/action_string", 16, 0},
-	{"rc/library_shell", 16, 0},
-	{"rc/file_command", 15, 0},
-	{"rc/font_command", 15, 0},
-	{"rc/save_command", 15, 0},
-	{"rc/rat_command", 14, 0},
+	{"rc/action_string", 16, 0, NULL},
+	{"rc/library_shell", 16, 0, NULL},
+	{"rc/file_command", 15, 0, NULL},
+	{"rc/font_command", 15, 0, NULL},
+	{"rc/save_command", 15, 0, NULL},
+	{"rc/rat_command", 14, 0, NULL},
 	{NULL, 0, 0}
 };
 
 static rnd_conf_ignore_t conf_ignores[] = {
 	/* old config paths - safe to ignore */
-	{"editor/show_mask", 16, 0},
-	{"editor/show_paste", 17, 0},
-	{"editor/increments", 17, 0},
-	{"design/max_width", 16, 0},
-	{"design/max_height", 17, 0},
-	{"design/groups", 13, 1},
-	{"design/default_layer_name", 25, 1},
+	{"editor/show_mask", 16, 0, NULL},
+	{"editor/show_paste", 17, 0, NULL},
+	{"editor/increments", 17, 0, NULL},
+	{"design/max_width", 16, 0, NULL},
+	{"design/max_height", 17, 0, NULL},
+	{"design/groups", 13, 1, NULL},
+	{"design/default_layer_name", 25, 1, NULL},
 
 	/* Do not war for this special case: drc rules create the nodes later */
-	{"design/drc/", 11, 1},
+	{"design/drc/", 11, 1, NULL},
 
 	{NULL, 0, 0}
 };
