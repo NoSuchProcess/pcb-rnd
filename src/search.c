@@ -49,6 +49,9 @@
 #include "obj_subc_parent.h"
 #include "obj_pstk_inlines.h"
 
+#define PCB_MAX_POLYGON_POINT_DISTANCE  0   /* maximum distance when searching polygon points */
+#define PCB_MAX_LINE_POINT_DISTANCE     0   /* maximum distance when searching line points; same for arc point */
+
 static double PosX, PosY;				/* search position for subroutines */
 static rnd_coord_t SearchRadius;
 static rnd_box_t SearchBox;
@@ -437,7 +440,7 @@ static rnd_bool SearchLinePointByLocation(unsigned long objst, unsigned long req
 	info.Line = Line;
 	info.Point = Point;
 	*Point = NULL;
-	info.least = RND_MAX_LINE_POINT_DISTANCE + SearchRadius;
+	info.least = PCB_MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.objst = objst;
 	info.req_flag = req_flag;
 
@@ -456,7 +459,7 @@ static rnd_bool SearchArcPointByLocation(unsigned long objst, unsigned long req_
 	info.Arc = Arc;
 	info.arc_pt = Point;
 	*Point = NULL;
-	info.least = RND_MAX_LINE_POINT_DISTANCE + SearchRadius;
+	info.least = PCB_MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.objst = objst;
 	info.req_flag = req_flag;
 
@@ -521,7 +524,7 @@ static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	ctx.Polygon = Polygon;
 	ctx.Point = Point;
 	ctx.found = rnd_false;;
-	ctx.least = SearchRadius + RND_MAX_POLYGON_POINT_DISTANCE;
+	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
 	rnd_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
 
@@ -585,7 +588,7 @@ static rnd_bool SearchGfxPointByLocation(unsigned long Type, unsigned long objst
 	ctx.gfx = gfx;
 	ctx.Point = Point;
 	ctx.found = rnd_false;;
-	ctx.least = SearchRadius + RND_MAX_POLYGON_POINT_DISTANCE;
+	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
 	rnd_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfxpoint_callback, &ctx, NULL);
 
