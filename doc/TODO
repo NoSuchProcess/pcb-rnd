@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: remove rc/have_regex from conf: we always have regex from librnd
 - BUG: export_gcode crashes if there's text on top copper
 
 2. For later releases ===============================================================================

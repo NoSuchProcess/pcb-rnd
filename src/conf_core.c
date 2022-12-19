@@ -64,8 +64,6 @@ void pcb_conf_core_postproc(void)
 	htpp_entry_t *e;
 
 	conf_clamp_to(RND_CFT_COORD, conf_core.design.line_thickness, PCB_MIN_THICKNESS, PCB_MAX_THICKNESS, RND_MIL_TO_COORD(10));
-	rnd_conf_force_set_bool(conf_core.rc.have_regex, 1);
-	rnd_conf_ro("rc/have_regex");
 
 	rnd_conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);   rnd_conf_ro("rc/path/prefix");
 	rnd_conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       rnd_conf_ro("rc/path/lib");

@@ -138,7 +138,6 @@ typedef struct {
 		RND_CFT_STRING web_browser;            /* command line to a web browser (useful for accessing external resources, e.g. order pcb web services) */
 
 		/***** automatically set (in postproc) *****/
-		RND_CFT_BOOLEAN have_regex;            /* whether we have regex compiled in */
 		struct {
 			RND_CFT_STRING prefix;               /* e.g. /usr/local */
 			RND_CFT_STRING lib;                  /* e.g. /usr/lib/pcb-rnd */
