@@ -6,7 +6,7 @@ CFLAGS = $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND) -I$(ROOT) -I$(ROOT)/src_3rd -I$(LI
 LDFLAGS = $(LDFLAGS_LIBRND)
 ORDLIB = $(ORD)/constraint.o $(ORD)/const_gram.o $(ORD)/const_lex.o
 
-LDLIBS = -lrnd-hid -lrnd-3rd $(LDFLAGS_LIBRND) -lm
+LDLIBS = -lrnd-core -lrnd-3rd $(LDFLAGS_LIBRND) -lm
 
 
 all: tester
