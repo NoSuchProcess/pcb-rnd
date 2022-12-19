@@ -30,6 +30,7 @@
 - BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 - BUG: rotate does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 - BUG?: pixmap attached to internal layer, if set to render "under", renders on top of copper on top layer when internal layer active. Feature vs bug. [report: Erich]
+- BUG: schematic import segfault recipe. start pcb-rnd. create new layout {f n}. Leave layout name empty. Start importation of a schematic from file menu. in importation dialogue set to default sch-rnd format import, click one more, select a sch-rnd schematic in the file selection window, and hit OK. Segfault ensues. Does not happen if {f n} not done between pcb-rnd start and schematic importation. [report: Erich]  
 - BUG: assertion recipe. { w l }, launch connector() dialogue. nx 1, ny 5, pin spacing 150mil, pin_drill 70mil, then type the number 1 in pin_ringdia diameter, and wait, assert/segfault ensues [repoort: Erich]
 - BUG: multiple coils in intnoconn-bug.rp using intnoconn-bug-actual.net reflecting partion of circuit intnoconn-bug.rs should behave like intnoconn-net-desired.net. shorts being declared with no connections apparent. Coils use different intonoconn groups, and different UIDs to no avail [report: Erich]
 	-> the bug is that the rat line end falling at the endpoint of the line at the boundary of two intnoconn sections shorts the two sections
