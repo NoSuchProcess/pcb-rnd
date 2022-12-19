@@ -5,8 +5,8 @@ include $(ROOT)/Makefile.conf
 
 include $(LIBRND_MAK)
 
-CFLAGS = $(PCB_RND_C89FLAGS) -I$(ROOT) -I$(ROOT)/src_3rd -I$(ROOT)/src -I$(PLG) $(CFLAGS_LIBRND_FUNGW) -I$(LIBRND_INCDIR)/librnd/src_3rd
-LDLIBS = -lm -lrnd-hid -lrnd-3rd $(LDFLAGS_LIBRND_FUNGW)
+CFLAGS = $(PCB_RND_C89FLAGS) -I$(ROOT) -I$(ROOT)/src_3rd -I$(ROOT)/src -I$(PLG) $(CFLAGS_LIBRND_FUNGW) -I$(LIBRND_INCDIR) -I$(LIBRND_INCDIR)/librnd/src_3rd
+LDLIBS = -lm -lrnd-core -lrnd-3rd $(LDFLAGS_LIBRND_FUNGW)
 
 test_parse: test_parse.o glue.o $(PLG)/bxl_lex.o $(PLG)/bxl_gram.o
 
