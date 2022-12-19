@@ -1,6 +1,11 @@
+#include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 #include "props.h"
+
+#define ASSERT(expr) \
+do { \
+	if (!(expr)) { fprintf(stderr, "ASSERT(" #expr ") in %d\n", __LINE__); abort(); } \
+} while(0)
 
 void *rnd_gui = NULL;
 
@@ -87,55 +92,55 @@ int main()
 	/* --- add a few items properly - should work --- */
 	
 	/* coord */
-	v.coord = 42; assert(pcb_props_add(&ctx, "crd", PCB_PROPT_COORD, v) != NULL);
-	v.coord = 10; assert(pcb_props_add(&ctx, "crd", PCB_PROPT_COORD, v) != NULL);
-	v.coord = 42; assert(pcb_props_add(&ctx, "crd", PCB_PROPT_COORD, v) != NULL);
-	v.coord = 42; assert(pcb_props_add(&ctx, "crd", PCB_PROPT_COORD, v) != NULL);
+	v.coord = 42; ASSERT(pcb_props_add(&ctx, "crd", PCB_PROPT_COORD, v) != NULL);
+	v.coord = 10; ASSERT(pcb_props_add(&ctx, "crd", PCB_PROPT_COORD, v) != NULL);
+	v.coord = 42; ASSERT(pcb_props_add(&ctx, "crd", PCB_PROPT_COORD, v) != NULL);
+	v.coord = 42; ASSERT(pcb_props_add(&ctx, "crd", PCB_PROPT_COORD, v) != NULL);
 
 	/* int */
-	v.i = 42; assert(pcb_props_add(&ctx, "num", PCB_PROPT_INT, v) != NULL);
-	v.i = 10; assert(pcb_props_add(&ctx, "num", PCB_PROPT_INT, v) != NULL);
-	v.i = 42; assert(pcb_props_add(&ctx, "num", PCB_PROPT_INT, v) != NULL);
-	v.i = 42; assert(pcb_props_add(&ctx, "num", PCB_PROPT_INT, v) != NULL);
+	v.i = 42; ASSERT(pcb_props_add(&ctx, "num", PCB_PROPT_INT, v) != NULL);
+	v.i = 10; ASSERT(pcb_props_add(&ctx, "num", PCB_PROPT_INT, v) != NULL);
+	v.i = 42; ASSERT(pcb_props_add(&ctx, "num", PCB_PROPT_INT, v) != NULL);
+	v.i = 42; ASSERT(pcb_props_add(&ctx, "num", PCB_PROPT_INT, v) != NULL);
 
 	/* angle */
-	v.angle = 42.0; assert(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
-	v.angle = 10.5; assert(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
-	v.angle = 42.0; assert(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
-	v.angle = 42.0; assert(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
+	v.angle = 42.0; ASSERT(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
+	v.angle = 10.5; ASSERT(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
+	v.angle = 42.0; ASSERT(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
+	v.angle = 42.0; ASSERT(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
 
 	/* double */
-	v.d = 42.0; assert(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
-	v.d = 10.5; assert(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
-	v.d = 42.0; assert(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
-	v.d = 42.0; assert(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
+	v.d = 42.0; ASSERT(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
+	v.d = 10.5; ASSERT(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
+	v.d = 42.0; ASSERT(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
+	v.d = 42.0; ASSERT(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
 
 	/* string */
-	v.string = "foo"; assert(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
-	v.string = "bar"; assert(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
-	v.string = "BAZ"; assert(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
-	v.string = "foo"; assert(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
-	v.string = "foo"; assert(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
+	v.string = "foo"; ASSERT(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
+	v.string = "bar"; ASSERT(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
+	v.string = "BAZ"; ASSERT(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
+	v.string = "foo"; ASSERT(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
+	v.string = "foo"; ASSERT(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
 
 	/* --- add a items with the wrong type - should fail --- */
-	v.i = 42; assert(pcb_props_add(&ctx, "crd", PCB_PROPT_INT, v) == NULL);
-	v.i = 42; assert(pcb_props_add(&ctx, "crd", 1234, v) == NULL);
-	v.i = 42; assert(pcb_props_add(&ctx, "ang", 1234, v) == NULL);
+	v.i = 42; ASSERT(pcb_props_add(&ctx, "crd", PCB_PROPT_INT, v) == NULL);
+	v.i = 42; ASSERT(pcb_props_add(&ctx, "crd", 1234, v) == NULL);
+	v.i = 42; ASSERT(pcb_props_add(&ctx, "ang", 1234, v) == NULL);
 
 	print_all(&ctx.props);
 
 	/* --- get some stats --- */
 
 	/* these should work */
-	assert(print_stat(&ctx, "crd", 1) != NULL);
-	assert(print_stat(&ctx, "num", 1) != NULL);
-	assert(print_stat(&ctx, "ang", 1) != NULL);
-	assert(print_stat(&ctx, "dbl", 1) != NULL);
-	assert(print_stat(&ctx, "str", 0) != NULL);
+	ASSERT(print_stat(&ctx, "crd", 1) != NULL);
+	ASSERT(print_stat(&ctx, "num", 1) != NULL);
+	ASSERT(print_stat(&ctx, "ang", 1) != NULL);
+	ASSERT(print_stat(&ctx, "dbl", 1) != NULL);
+	ASSERT(print_stat(&ctx, "str", 0) != NULL);
 
 	/* these should fail */
-	assert(print_stat(&ctx, "str", 1) == NULL);
-	assert(print_stat(&ctx, "HAH", 1) == NULL);
+	ASSERT(print_stat(&ctx, "str", 1) == NULL);
+	ASSERT(print_stat(&ctx, "HAH", 1) == NULL);
 
 	return 0;
 }
