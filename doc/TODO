@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: cursor click selection logic for pixmaps always selects pixmap, even if pixmap set to render:under, making it hard to move subc, lines, etc.. about once on top of the pixmap [report: Erich]
 + BUG?: pixmap attached to internal layer, if set to render "under", renders on top of copper on top layer when internal layer active. Feature vs bug. [report: Erich]
 	-> not a bug, feautre: under/above is only within the same layer, relations between layers are controlled by the layer stack, which is modified when you change layer selection
 + BUG: propedit: exportsel flag is in the flag editor but not in propedit [report: aron]
