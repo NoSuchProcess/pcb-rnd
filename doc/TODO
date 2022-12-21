@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: load bug_files/TODO/intnoconn-segfault-2.rp, {c r} , delete rat line connected to green highlighted section, use {c f} with cursor somewhere over the pixmap, and not on the subcs; assert ensuespcb-rnd: find_any_isect.c:145: pcb_intersect_obj_obj: Assertion `!"Don't know how to check intersection of these objet types"' failed.  [report: Erich]
 + BUG: lock tool does not work on imported pixmap. start pcb-rnd, import pixmap using doc/resources/header_600.png, and note inability to lock pixmap with lock tool. {e p} has to be used to lock it. [report: Erich]
 + BUG: cursor click selection logic for pixmaps always selects pixmap, even if pixmap set to render:under, making it hard to move subc, lines, etc.. about once on top of the pixmap [report: Erich]
 + BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
