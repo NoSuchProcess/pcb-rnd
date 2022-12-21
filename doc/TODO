@@ -10,7 +10,7 @@
 + BUG: rotate does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 + BUG?: pixmap attached to internal layer, if set to render "under", renders on top of copper on top layer when internal layer active. Feature vs bug. [report: Erich]
 	-> not a bug, feautre: under/above is only within the same layer, relations between layers are controlled by the layer stack, which is modified when you change layer selection
-- BUG: propedit: exportsel flag is in the flag editor but not in propedit [report: aron]
++ BUG: propedit: exportsel flag is in the flag editor but not in propedit [report: aron]
 
 2. For later releases ===============================================================================
 - FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
