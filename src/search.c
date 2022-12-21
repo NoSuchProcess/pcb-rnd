@@ -64,7 +64,7 @@ static pcb_layer_t *SearchLayer;
  */
 static rnd_bool SearchLineByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_line_t **, pcb_line_t **);
 static rnd_bool SearchArcByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_arc_t **, pcb_arc_t **);
-static rnd_bool SearchGfxByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_gfx_t **, pcb_gfx_t **);
+static rnd_bool SearchGfxByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_gfx_t **, pcb_gfx_t **, int);
 static rnd_bool SearchRatLineByLocation(unsigned long, unsigned long, pcb_rat_t **, pcb_rat_t **, pcb_rat_t **);
 static rnd_bool SearchTextByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_text_t **, pcb_text_t **);
 static rnd_bool SearchPolygonByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_poly_t **, pcb_poly_t **);
@@ -271,6 +271,7 @@ struct gfx_info {
 	pcb_gfx_t **Gfx, **Dummy;
 	unsigned long objst, req_flag;
 	double least;
+	int level;
 };
 
 static rnd_r_dir_t gfx_callback(const rnd_box_t *box, void *cl)
@@ -280,6 +281,10 @@ static rnd_r_dir_t gfx_callback(const rnd_box_t *box, void *cl)
 
 	TEST_OBJST(i->objst, i->req_flag, l, g, g);
 
+	/* cheap: ignore gfx if it doesn't match requested rendering level */
+	if ((i->level < 0) && !g->render_under) return 0;
+	if ((i->level > 0) && g->render_under) return 0;
+
 	if (!pcb_is_point_in_gfx(PosX, PosY, SearchRadius, g))
 		return 0;
 	*i->Gfx = g;
@@ -287,7 +292,9 @@ static rnd_r_dir_t gfx_callback(const rnd_box_t *box, void *cl)
 	return RND_R_DIR_CANCEL; /* found */
 }
 
-static rnd_bool SearchGfxByLocation(unsigned long objst, unsigned long req_flag, pcb_layer_t **Layer, pcb_gfx_t **gfx, pcb_gfx_t **Dummy)
+/* level: -1 returns only "render_under", +1 returns only render-above, 0
+   returns anything */
+static rnd_bool SearchGfxByLocation(unsigned long objst, unsigned long req_flag, pcb_layer_t **Layer, pcb_gfx_t **gfx, pcb_gfx_t **Dummy, int level)
 {
 	struct gfx_info info;
 
@@ -295,6 +302,7 @@ static rnd_bool SearchGfxByLocation(unsigned long objst, unsigned long req_flag,
 	info.Dummy = Dummy;
 	info.objst = objst;
 	info.req_flag = req_flag;
+	info.level = level;
 
 	*Layer = SearchLayer;
 	if (rnd_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfx_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
@@ -1303,9 +1311,16 @@ pcb_layer_type_t pstk_vis_layers(pcb_board_t *pcb, pcb_layer_type_t material)
 	return res | material;
 }
 
+/* Ignores render-below gfx objects */
 static int pcb_search_obj_by_loc_layer(unsigned long Type, void **Result1, void **Result2, void **Result3, unsigned long req_flag, pcb_layer_t *SearchLayer, int HigherAvail, double HigherBound, int objst)
 {
 	if (SearchLayer->meta.real.vis) {
+		/* GFX searched first because if it is rendered above, it is visible over
+		   the others */
+		if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_GFX &&
+				SearchGfxByLocation(objst, req_flag, (pcb_layer_t **)Result1, (pcb_gfx_t **)Result2, (pcb_gfx_t **)Result3, +1))
+			return PCB_OBJ_GFX;
+
 		if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
 				Type & PCB_OBJ_GFX_POINT &&
 				SearchGfxPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_gfx_t **) Result2, (rnd_point_t **) Result3))
@@ -1352,10 +1367,18 @@ static int pcb_search_obj_by_loc_layer(unsigned long Type, void **Result1, void 
 				return PCB_OBJ_POLY;
 		}
 
-		if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_GFX &&
-				SearchGfxByLocation(objst, req_flag, (pcb_layer_t **)Result1, (pcb_gfx_t **)Result2, (pcb_gfx_t **)Result3))
-			return PCB_OBJ_GFX;
 
+	}
+	return 0;
+}
+
+/* Searches only for render_below gfx objects on the given layer */
+static int pcb_search_by_loc_below_gfx(unsigned long Type, void **Result1, void **Result2, void **Result3, unsigned long req_flag, pcb_layer_t *SearchLayer, int HigherAvail, double HigherBound, int objst)
+{
+	if (SearchLayer->meta.real.vis) {
+		if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_GFX &&
+				SearchGfxByLocation(objst, req_flag, (pcb_layer_t **)Result1, (pcb_gfx_t **)Result2, (pcb_gfx_t **)Result3, -1))
+			return PCB_OBJ_GFX;
 	}
 	return 0;
 }
@@ -1532,6 +1555,17 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	if (Type & PCB_OBJ_SUBC && PCB->SubcOn &&
 			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) Result1, (pcb_subc_t **) Result2, (pcb_subc_t **) Result3, rnd_true))
 		return PCB_OBJ_SUBC;
+
+	/* render-below gfx objects last, as they are surely under anything else */
+	for(i = 0; i < pcb_max_layer(PCB); i++) {
+		int found;
+		SearchLayer = PCB_STACKLAYER(PCB, i);
+		found = pcb_search_by_loc_below_gfx(Type, Result1, Result2, Result3, req_flag, SearchLayer, HigherAvail, HigherBound, objst);
+		if (found < 0)
+			break;
+		if (found != 0)
+			return found;
+	}
 
 	return PCB_OBJ_VOID;
 }
