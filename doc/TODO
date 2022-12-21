@@ -10,13 +10,13 @@
 - BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 - BUG: rotate does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 - BUG?: pixmap attached to internal layer, if set to render "under", renders on top of copper on top layer when internal layer active. Feature vs bug. [report: Erich]
+- BUG: propedit: exportsel flag is in the flag editor but not in propedit [report: aron]
 
 2. For later releases ===============================================================================
 - FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
 - FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
 - FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
 	- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
-- BUG: propedit: exportsel flag is in the flag editor but not in propedit [report: aron]
 - BUG: cam export: doc_png bottom side is drawn looking from the top -> copper is over silk; figure how to flip in cam [report: aron]
 - BUG: bug_files/TODO/emptyfab.rp, -x cam gerber:JLC_PCB emptyfab.rp -> no .fab file; layer is considered empty because draw_fab is a side effect [report: Bdale]
 - BUG: bug_files/TODO/derive.rp, edit pstk proto, add mask shape, derive -> derived polygon is broken (invalid coords) [report: Scott]
