@@ -411,6 +411,10 @@ function subc_pstk_add_shape_circ(proto, layer, x, y, dia    ,s)
 
 function subc_pstk_add_shape_square(proto, layer, x, y, sx, sy    ,s)
 {
+# clamp at minimum to avoid broken polygons (can't do squares smaller than 4 nanometer)
+	if (sx < 4) sx = 4;
+	if (sy < 4) sy = 4;
+
 	sx = sx / 2
 	sy = sy / 2
 	s = s "      ha:ps_shape_v4 {" NL
