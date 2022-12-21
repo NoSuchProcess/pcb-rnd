@@ -566,6 +566,8 @@ function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
 
 	thick = either(thick, DEFAULT["pad_thickness"])
 
+	if (thick < 0.01) thick = 0.01;
+
 	subc_pstk_no_hole(proto)
 
 	PROTO_COMMENT[proto] = "# Square smd pad " x2-x1 " * " thick
@@ -589,6 +591,8 @@ function subc_proto_create_pad_line(x1, x2, thick, mask, paste   ,proto,m,p)
 	proto = subc_proto_alloc()
 
 	thick = either(thick, parse_dim(DEFAULT["pad_thickness"]))
+
+	if (thick < 0.01) thick = 0.01;
 
 	subc_pstk_no_hole(proto)
 
