@@ -136,6 +136,10 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 	pcb_poly_t *poly;
 	pcb_text_t *text;
 	sub_layer_text_t slt;
+	pcb_draw_info_t info = {0};
+	rnd_xform_t xform = {0};
+
+	info.xform = &xform;
 
 	for(line = (pcb_line_t *)rnd_r_first(layer->line_tree, &it); line != NULL; line = (pcb_line_t *)rnd_r_next(&it))
 		sub_layer_line(pcb, result, layer, line, centerline);
@@ -151,7 +155,7 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 	slt.centerline = centerline;
 	slt.result = result;
 	for(text = (pcb_text_t *)rnd_r_first(layer->text_tree, &it); text != NULL; text = (pcb_text_t *)rnd_r_next(&it))
-		pcb_text_decompose_text(NULL, text, sub_layer_text, &slt);
+		pcb_text_decompose_text(&info, text, sub_layer_text, &slt);
 }
 
 
