@@ -489,7 +489,7 @@ void *pcb_gfx_destroy(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 void pcb_gfx_rotate90(pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	gfx->rot = rnd_normalize_angle(gfx->rot + Number * 90);
-	TODO("rotate content")
+	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->xmirror, gfx->ymirror);
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 }
@@ -500,7 +500,7 @@ void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord
 		rnd_r_delete_entry(layer->gfx_tree, (rnd_box_t *) gfx);
 
 	gfx->rot = rnd_normalize_angle(gfx->rot + angle);
-	TODO("rotate content")
+	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->xmirror, gfx->ymirror);
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 
