@@ -196,9 +196,17 @@ static char *path_to_design_relative(char *path)
 {
 	gds_t tmp = {0};
 	char *s, *d, *sch = rnd_lrealpath(path), *des = rnd_lrealpath(conf_core.rc.path.design);
+	int warned = 0;
+
+	if (des == NULL) {
+		rnd_message(RND_MSG_ERROR, "path_to_design_relative: design is not saved, there is no design path available\nThis will lead to hardwiring non-portable schematics path in the file\n");
+		des = rnd_strdup("");
+		warned = 1;
+	}
 
 	if ((*sch != '/') || (*des != '/')) {
-		rnd_message(RND_MSG_ERROR, "path_to_design_relative: failed to resolve to absolue\n");
+		if (!warned)
+			rnd_message(RND_MSG_ERROR, "path_to_design_relative: failed to resolve to absolue\n");
 		free(sch);
 		free(des);
 		return path;
