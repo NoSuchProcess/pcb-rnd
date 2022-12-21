@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: cursor click selection logic for pixmaps always selects pixmap, even if pixmap set to render:under, making it hard to move subc, lines, etc.. about once on top of the pixmap [report: Erich]
-+ BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 + BUG: rotate does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 + BUG?: pixmap attached to internal layer, if set to render "under", renders on top of copper on top layer when internal layer active. Feature vs bug. [report: Erich]
 	-> not a bug, feautre: under/above is only within the same layer, relations between layers are controlled by the layer stack, which is modified when you change layer selection
