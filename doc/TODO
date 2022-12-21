@@ -7,8 +7,8 @@
 + BUG: load bug_files/TODO/intnoconn-segfault-2.rp, {c r} , delete rat line connected to green highlighted section, use {c f} with cursor somewhere over the pixmap, and not on the subcs; assert ensuespcb-rnd: find_any_isect.c:145: pcb_intersect_obj_obj: Assertion `!"Don't know how to check intersection of these objet types"' failed.  [report: Erich]
 + BUG: lock tool does not work on imported pixmap. start pcb-rnd, import pixmap using doc/resources/header_600.png, and note inability to lock pixmap with lock tool. {e p} has to be used to lock it. [report: Erich]
 + BUG: cursor click selection logic for pixmaps always selects pixmap, even if pixmap set to render:under, making it hard to move subc, lines, etc.. about once on top of the pixmap [report: Erich]
-- BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
-- BUG: rotate does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
++ BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
++ BUG: rotate does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 - BUG?: pixmap attached to internal layer, if set to render "under", renders on top of copper on top layer when internal layer active. Feature vs bug. [report: Erich]
 - BUG: propedit: exportsel flag is in the flag editor but not in propedit [report: aron]
 
@@ -17,6 +17,7 @@
 - FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
 - FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
 	- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
+- BUG: pcb_pixmap_alloc_insert_transformed() breaks above 90 and below 0 deg; use propedit to rotate a long narrow pixmap like doc/resources/header_600.png [report: Igor2]
 - BUG: cam export: doc_png bottom side is drawn looking from the top -> copper is over silk; figure how to flip in cam [report: aron]
 - BUG: bug_files/TODO/emptyfab.rp, -x cam gerber:JLC_PCB emptyfab.rp -> no .fab file; layer is considered empty because draw_fab is a side effect [report: Bdale]
 - BUG: bug_files/TODO/derive.rp, edit pstk proto, add mask shape, derive -> derived polygon is broken (invalid coords) [report: Scott]
