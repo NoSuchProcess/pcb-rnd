@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: lock tool does not work on imported pixmap. start pcb-rnd, import pixmap using doc/resources/header_600.png, and note inability to lock pixmap with lock tool. {e p} has to be used to lock it. [report: Erich]
 + BUG: cursor click selection logic for pixmaps always selects pixmap, even if pixmap set to render:under, making it hard to move subc, lines, etc.. about once on top of the pixmap [report: Erich]
 + BUG: delete does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
 + BUG: rotate does not work when cursor hovers over a subc which is above a locked pixmap [report: Erich]
