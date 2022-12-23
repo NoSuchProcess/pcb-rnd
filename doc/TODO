@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: start pcb-rnd. {w l}. select tssop, launch tssop parameter window, select text entry box for pad thickness, type a number, i.e. 1, and wait. assertion ensues. [report: Erich]
 + BUG: start pcb-rnd, {w l}, type acy, select default acy(), close {w l} dialogue. click once to place acy() on layout, then, while subc remains in paste buffer, {f n}, click yes to clearing layout daya, segfault ensues. same behaviour with other paramateric and non parametric footprints. [report: Erich]
 
 2. For later releases ===============================================================================
