@@ -50,6 +50,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid_menu.h>
 #include "layer_vis.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/hid/tool.h>
@@ -161,6 +162,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		pcb_crosshair_move_absolute(pcb, RND_COORD_MAX, RND_COORD_MAX); /* make sure the crosshair is not above any object so ch* plugins release their highlights */
 		pcb_draw_inhibit_inc();
+		rnd_hid_menu_merge_inhibit_inc();
 		pcb_board_remove(pcb);
 #undef PCB
 		PCB = pcb = pcb_board_new(1);
@@ -176,6 +178,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		rnd_single_switch_to(&pcb->hidlib);
 		pcb_draw_inhibit_dec();
+		rnd_hid_menu_merge_inhibit_dec();
 
 		pcb_layervis_reset_stack(&pcb->hidlib);
 		pcb_center_display(pcb, (pcb->hidlib.dwg.X1+pcb->hidlib.dwg.X2) / 2, (pcb->hidlib.dwg.Y1+pcb->hidlib.dwg.Y2) / 2);
