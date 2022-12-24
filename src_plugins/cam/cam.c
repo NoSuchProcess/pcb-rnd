@@ -167,6 +167,8 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(2, FGW_STR, cam, arg = argv[2].val.str);
 
 	cam_init_inst(&ctx);
+	ctx.hidlib = RND_ACT_DESIGN;
+
 	for(n = 3; n < argc; n++) {
 		RND_ACT_CONVARG(n, FGW_STR, cam, opt = argv[n].val.str);
 		if (cam_parse_opt(&ctx, opt) != 0) {
