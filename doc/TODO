@@ -1,7 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: bug_files/TODO/gerb-export.rp fails to export gerbers via CAM export. [report: Erich]
++ BUG: bug_files/TODO/gerb-export.rp fails to export gerbers via CAM export. [report: Erich]
 
 2. For later releases ===============================================================================
 - FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
