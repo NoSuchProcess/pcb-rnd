@@ -2,6 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 
+- BUG: autosave (presumed cause) in 64 bit coord librnd linked build segfaults after opening pvb-rnd and waiting. [report: Erich]
+
 2. For later releases ===============================================================================
 - FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
 - FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
