@@ -7,6 +7,7 @@
 - FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
 - FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
 	- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
+- BUG: draw a line, arrow tool, hover -> editopoint marks; swtich tools using hotkey while hovering over the line -> editopoint marks are not removed [report: Igor2]
 - BUG: pcb_pixmap_alloc_insert_transformed() breaks above 90 and below 0 deg; use propedit to rotate a long narrow pixmap like doc/resources/header_600.png [report: Igor2]
 - BUG: cam export: doc_png bottom side is drawn looking from the top -> copper is over silk; figure how to flip in cam [report: aron]
 - BUG: bug_files/TODO/emptyfab.rp, -x cam gerber:JLC_PCB emptyfab.rp -> no .fab file; layer is considered empty because draw_fab is a side effect [report: Bdale]
