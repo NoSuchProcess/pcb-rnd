@@ -521,7 +521,7 @@ function paste_or_mask_abs(copper, absval, offsval, ratio, prefix)
 		return absval
 	if (offsval != 0)
 		return copper+offsval
-	if (ratio != 0)
+	if ((ratio != 0) && (ratio != ""))
 		return copper*ratio
 	if ((DEFAULT[prefix] != "") && (DEFAULT[prefix] != "-"))
 		return DEFAULT[prefix]
