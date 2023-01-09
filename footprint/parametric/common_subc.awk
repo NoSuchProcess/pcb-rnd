@@ -623,7 +623,7 @@ function subc_proto_create_pad_rect(w, h, mask_offs, paste_offs   ,proto,m,p)
 	subc_pstk_add_shape_square_corners(proto, "top-copper", -w, -h, +w, +h)
 
 	if (mask_offs != "none") {
-		m = pad_paste_offs(mask_offs) / 2
+		m = pad_mask_offs(mask_offs) / 2
 		subc_pstk_add_shape_square_corners(proto, "top-mask", -w-m, -h-m, +w+m, +h+m)
 	}
 
