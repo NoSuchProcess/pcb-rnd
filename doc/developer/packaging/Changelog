@@ -1,9 +1,25 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.0.6
+  ver=3.1.0
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
+
+Packaging changes between 3.1.0 and 3.0.6
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A. changes that probably don't need action
+
+(none)
+
+B. changes that probably DO need action
+
+1. Dependency: minimum required librnd version is 4.0.0 now. This affects
+   both the main librnd4 dependency and when pcb-rnd plugin packages depend
+   on librnd4 plugin packages, e.g. pcb-rnd-export used to depend on
+   librnd3-pixmap but now depends on librnd4-pixmap. Doing a
+   "s/librnd3/librnd4/g" in the packaging script should be safe.
+
 
 Packaging changes between 3.0.6 and 3.0.5
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
