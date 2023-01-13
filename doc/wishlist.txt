@@ -1,6 +1,15 @@
 Active user wishes:
 	W4: user doc [Miloh]
 	W9: push & shove [Erich, Evan]
+	W10: pcb-rnd + sch-rnd: back annotation upgrades; from pcb-rnd back: [Erich]
+		- remove net
+		- remove connections (terminals from a net)
+		- change or remove subcircuit attribute
+		- change or remove network attribute
+		- add new subcircuit
+		- add new net
+	W11: sch-rnd: build options in netlist export (maybe different views with a filter plugin?) [Erich]
+
 
 Being done:
 
