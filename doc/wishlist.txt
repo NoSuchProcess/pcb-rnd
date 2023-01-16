@@ -9,6 +9,7 @@ Active user wishes:
 		- add new subcircuit
 		- add new net
 	W11: sch-rnd: build options in netlist export (maybe different views with a filter plugin?) [Erich]
+	W12: FSD should allow multiple files to be selected; upgrade import schematics to allow multiple files [Evan]
 
 
 Being done:
