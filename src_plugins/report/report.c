@@ -930,6 +930,8 @@ static fgw_error_t pcb_act_NetLength(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_get_coords("Click on an object for net length measurement", &x, &y, 0);
 
 		type = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_PSTK, &p1, &p2, &p3);
+		if (type == PCB_OBJ_VOID) /* fall back to subc parts */
+			type = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &p1, &p2, &p3);
 		if (type == PCB_OBJ_VOID)
 			goto error;
 
