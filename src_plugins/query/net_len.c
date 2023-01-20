@@ -645,9 +645,11 @@ RND_INLINE int pcb_qry_parent_net_lenseg_init(pcb_qry_exec_t *ec)
 	fctx.user_data = ec;
 	b.x1 = b.y1 = -RND_COORD_MAX;
 	b.x2 = b.y2 = +RND_COORD_MAX;
-	for(ps = rnd_rtree_first(&it, ec->pcb->Data->padstack_tree, &b); ps != NULL; ps = rnd_rtree_next(&it)) {
-		pcb_find_from_obj(&fctx, ec->pcb->Data, ps);
-		pcb_find_free(&fctx);
+	if (ec->pcb->Data->padstack_tree != 0) {
+		for(ps = rnd_rtree_first(&it, ec->pcb->Data->padstack_tree, &b); ps != NULL; ps = rnd_rtree_next(&it)) {
+			pcb_find_from_obj(&fctx, ec->pcb->Data, ps);
+			pcb_find_free(&fctx);
+		}
 	}
 
 	return 1;
