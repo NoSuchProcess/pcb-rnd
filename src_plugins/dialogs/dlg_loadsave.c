@@ -404,7 +404,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	save_t save;
 	rnd_hidval_t timer_ctx;
 	const char *default_pattern = NULL;
-	pcb_plug_iot_t list_iot;
+	pcb_plug_iot_t list_iot = 0;
 	pcb_io_list_ext_t list_ext;
 	int dialog_by_pattern = 0, is_dialog, init_fmt_known = 0;
 
@@ -423,6 +423,9 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (rnd_strcasecmp(function, "Layout") == 0)
 		if (PCB->hidlib.loadname != NULL)
 			return rnd_actionva(RND_ACT_DESIGN, "SaveTo", "Layout", NULL);
+
+	if (rnd_strcasecmp(function, "LayoutAs") == 0)
+		list_iot = PCB_IOT_PCB;
 
 	if (is_dialog) {
 		const char *siot, *sext;
