@@ -2,7 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: start with no args, save-as dialog does not offer format-specific checkboxes [report: Evan]
-- BUG: start pcb-rnd, load bug_files/TODO/gfx-gerber.rp, export with CAM using seeed CAM, view exported gerbers, copper layer has "x" where pixmap is in layout [report: Erich].
+? BUG: start pcb-rnd, load bug_files/TODO/gfx-gerber.rp, export with CAM using seeed CAM, view exported gerbers, copper layer has "x" where pixmap is in layout [report: Erich]
+	there is no pixmap in gfx-gerber.rp, but the file looks like broken (style names)
 
 2. For later releases ===============================================================================
 - FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
