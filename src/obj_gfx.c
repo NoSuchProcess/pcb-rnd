@@ -905,11 +905,15 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 
 
 	if ((gfx->pxm_neutral == NULL) || (rnd_render->draw_pixmap == NULL)) {
-		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
-		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
-		rnd_hid_set_line_width(pcb_draw_out.fgGC, RND_MM_TO_COORD(0.1));
-		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[0].X, gfx->corner[0].Y, gfx->corner[2].X, gfx->corner[2].Y);
-		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[1].X, gfx->corner[1].Y, gfx->corner[3].X, gfx->corner[3].Y);
+		if (rnd_render->gui) {
+			/* draw a cross on GUI that can't render pixmap (shouldn't happen);
+			   do not draw anyhting on export */
+			rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
+			rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
+			rnd_hid_set_line_width(pcb_draw_out.fgGC, RND_MM_TO_COORD(0.1));
+			rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[0].X, gfx->corner[0].Y, gfx->corner[2].X, gfx->corner[2].Y);
+			rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[1].X, gfx->corner[1].Y, gfx->corner[3].X, gfx->corner[3].Y);
+		}
 	}
 	else {
 		rnd_render->draw_pixmap(rnd_render, gfx->cx, gfx->cy, gfx->sx, gfx->sy, gfx->pxm_xformed);
