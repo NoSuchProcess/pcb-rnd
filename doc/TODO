@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: start with no args, save-as dialog does not offer format-specific checkboxes [report: Evan]
-- BUG: start pcb-rnd, load bug_files/TODO/gfx-gerber.rp, file->import pixmap and insert bug_files/TODO/simple2.jpg into layout. Then export with CAM using seeed CAM, view exported gerbers, copper layer has "x" where pixmap is in layout [report: Erich]
++ BUG: start pcb-rnd, load bug_files/TODO/gfx-gerber.rp, file->import pixmap and insert bug_files/TODO/simple2.jpg into layout. Then export with CAM using seeed CAM, view exported gerbers, copper layer has "x" where pixmap is in layout [report: Erich]
 ? BUG: start pcb-rnd, and try to use file->import pixmap and insert bug_files/TODO/simple2.jpg into default layout. Pixmap fails to load into buffer. By comparison, start pcb-rnd, save layout as foo.rp, then use file->import pixmap and insert bug_files/TODO/simple2.jpg into default layout. Pixmap loads successfully into buffer after a prior file save [report: Erich]
 	-> can't reproduce; is there any error message? maybe on stderr? If not, this may be the same thing that makes it segault in the other bugreport
 ? BUG: start pcb-rnd, save layout as foo.rp, use file->import pixmap and insert bug_files/TODO/simple2.jpg, to paste buffer, click once, use file->import pixmap and insert bug_files/TODO/simple2.jpgto paste buffer, click, segfault ensues [report: Erich]
