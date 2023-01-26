@@ -9,7 +9,6 @@ Active user wishes:
 		- add new subcircuit
 		- add new net
 	W11: sch-rnd: build options in netlist export (maybe different views with a filter plugin?) [Erich]
-	W12: FSD should allow multiple files to be selected; upgrade import schematics to allow multiple files [Evan]
 	W13: sch-rnd: alternate MCU/CPU pin functions [report: Wojciech]
 	W14: pcb-rnd: subc-in-subc from hierarchic design ml=pcb-rnd@5920 [report: Vuokko]
 	W15: HPGL export (maybe a HPGL import plugin in camv-rnd for verification) [report: Erich]
