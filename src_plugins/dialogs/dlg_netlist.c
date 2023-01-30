@@ -224,12 +224,12 @@ static void netlist_update_len_by_row(netlist_ctx_t *ctx, rnd_hid_row_t *row)
 	if (nlres.type == FGW_COORD) {
 		char tmp[128];
 		rnd_snprintf(tmp, sizeof(tmp), "%$m*", rnd_conf.editor.grid_unit->suffix, fgw_coord(&nlres));
-		rnd_dad_tree_modify_cell(atree, row, 3, tmp);
+		rnd_dad_tree_modify_cell(atree, row, 3, rnd_strdup(tmp));
 	}
 	else if ((nlres.type & FGW_STR) == FGW_STR)
-		rnd_dad_tree_modify_cell(atree, row, 3, nlres.val.str);
+		rnd_dad_tree_modify_cell(atree, row, 3, rnd_strdup(nlres.val.str));
 	else
-		rnd_dad_tree_modify_cell(atree, row, 3, "invalid return");
+		rnd_dad_tree_modify_cell(atree, row, 3, rnd_strdup("invalid return"));
 }
 
 #if 0
