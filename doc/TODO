@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 + BUG: start with no args, save-as dialog does not offer format-specific checkboxes [report: Evan]
 - BUG: load bug_files/test-case-length.rp in pcb-rnd. {w n }. click on anon_net_1 in list of nets. Click "on" button adjacent to Len: settings. Click "refresh" button adjacent to Len: settings. Click "calc" adjacent to Len: settings. Segfault ensues. Imported schematic also supplied bug_files/test-case-length.rs in case useful [report: erich]
+	-> siplification: select anon_net_1, click calc twice
 
 2. For later releases ===============================================================================
 - FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
