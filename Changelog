@@ -1,2 +1,140 @@
 pcb-rnd 3.1.0 (r37222)
 ~~~~~~~~~~~~~~~~~~~~~~
+	[asm]
+		-Cleanup: rename row[] to cell[] (tree code naming convention)
+
+	[build]
+		-Cleanup: missing #include (exposed by hid.h not always included)
+		-Cleanup: simplify util Makefiles using vars defined in librnd.mak
+		-Fix: use detected CFLAGS for compiling utils and tests
+		-Change: switch over to librnd4 installation
+
+	[cam]
+		-Fix: pass on action design as the design-to-be-exported from the cam action (the code doesn't rely on PCB anymore)
+
+	[core]
+		-Del: remove 'reverted' parameter of pcb_board_replaced() - long unused, incompatible with the GUI moved out to librnd
+		-Del: config node rc/have_regex: was hardwired 1 for many many years because of genregex
+		-Fix: do not export heavy terminal marking (overlay) when when export is done from the GUI
+		-Fix: netlist: do not make 0-sized allocation on subnet mapping
+		-Fix: crosshair shouldn't register new tools before the GUI is up
+		-Fix: respect render-above/render-below setting of the GFX object when searching overlapping objects by location
+		-Fix: gfx rotate operations should generate new pixel content
+		-Fix: mark the drc flag "omit from list" in flag_str so that the propedit gets to display exportsel which shares the same bit
+		-Fix: inhibit menu merges while creating a new board so there's no invalid menu handling by a menu update between the old board already free'd and the new board not yet created
+		-Fix: do notdraw pixmap 'X' on missing pxm render if target is an exporter, not a GUI (at the moment the default should be that we are not exporting pixmaps)
+		-Change: switch over to librnd's font
+		-Change: mark conf setting editor.beep_when_finished obsolete
+
+	[dialogs]
+		-Del: preferences dialog, library tab: no need to free tree-table cells, librnd4 will do that
+		-Fix: use the right config node path for setting CLI history size in preferences general tab
+		-Fix: set expose context ->design before calling main expose
+		-Fix: generic view dialog should activate global flip on preview so that the views follow board flips
+		-Fix: preferences lib tab: memleak on excess strdup() for 'path expanded' label
+		-Fix: preferences dialog, library tab: used the wrong context pointer in the help button implementation
+		-Fix: uninitialized variable caused save-as format options showing up randomly
+		-Fix: strdup() cell value for cell modification, librnd4 API requires that
+
+	[doc]
+		-Fix: list menu keys for all plugins as well
+		-Fix: pass on LIBRND_LIBDIR to datasheet.sh when run from Makefile to avoid error on gnuism
+		-Update: menu key list: new format, list all plugins, include source
+		-Update: key tree svg and txt
+		-Add: wishlist items (2023-01 wishlist thread)
+
+	[export_c_draw]
+		-Fix: don't use global design when it is available from argument
+		-Fix: set expose context ->design before calling main expose
+		-Del: don't define set_crosshair, use hid_nogui fallback
+
+	[export_debug]
+		-Fix: don't use global design when it is available from argument
+		-Del: don't define set_crosshair, use hid_nogui fallback
+
+	[export_dxf]
+		-Fix: don't use global design when it is available from argument
+		-Del: don't define set_crosshair, use hid_nogui fallback
+
+	[export_excellon]
+		-Fix: don't use global design when it is available from argument; set expose context ->design before calling main expose
+		-Del: don't define set_crosshair, use hid_nogui fallback
+
+	[export_gerber]
+		-Fix: don't use global design when it is available from argument; set expose context ->design before calling main expose
+		-Del: don't define set_crosshair, use hid_nogui fallback
+
+	[export_oldconn]
+		-Del: don't beep when finishing the export
+
+	[export_openems]
+		-Fix: don't use global design when it is available from argument; set expose context ->design before calling main expose
+		-Del: don't define set_crosshair, use hid_nogui fallback
+
+	[export_openscad]
+		-Fix: don't use global design when it is available from argument; set expose context ->design before calling main expose
+		-Del: don't define set_crosshair, use hid_nogui fallback
+
+	[export_png]
+		-Fix: don't use global design when it is available from argument; set expose context ->design before calling main expose
+		-Del: don't define set_crosshair, use hid_nogui fallback
+
+	[export_ps]
+		-Fix: don't use global design when it is available from argument; set expose context ->design before calling main expose
+
+	[export_svg]
+		-Fix: don't use global design when it is available from argument; set expose context ->design before calling main expose
+
+	[find.c]
+		-Fix: gfx object should return explicit "no intersection" instead of assert so an accidental {c f} over a pixmap won't cause problems
+
+	[footprint]
+		-Fix: parametric common: do not generate square pad smaller than 4 nanometer to avoid polygon corner cases
+		-Fix: parametric common: minimum thickness for smd pads so there's no invalid poly
+		-Fix: common_subc: subc_proto_create_pad_rect() passed the wrong argument to paste and mask offset calculator
+		-Fix: common_subc: subc_proto_create_pad_rect() called the wrong function for mask offset calculation (so it used paste defaults when mask was not specified)
+		-Fix: common_subc: if paste/mask ratio is empty string, don't use it as a value but fall back on defaults
+
+	[gsch2pcb-rnd]
+		-Add: set up exec prefix
+
+	[import_sch2]
+		-Fix: don't crash in path resolver when there's no design path
+
+	[io_hyp]
+		-Cleanup: decide what to do with parser debug, remove hint on unsupported action arg
+
+	[librnd4]
+		-Update: follow librnd4 API changes
+
+	[millpath]
+		-Fix: don't call text object decompose with NULL transformation in toolpath calculation, that'd lead to a segfault
+
+	[oldaction]
+		-Del: Bell() doesn't beep but throws an error
+
+	[query]
+		-Fix: net_len shouldn't crash on boards without any padstack (don't search NULL padstack tree)
+
+	[report]
+		-Fix: allow net length (hotkey: {n l o}) searches originating from subc parts (e.g. a terminal) as a fallback
+
+	[tests]
+		-Fix: propedit test needs to use locally defined ASSERT(), can't depend on assert() being accessible (it's turned off in production)
+
+	[tool_std]
+		-Del: rat line draw doesn't beep when object clicked is not a terminal (this beep was really a no-op in many cases)
+		-Fix: allow GFX (pixmap) objects to be locked/unlocked by the lock tool
+
+	[util]
+		-Fix: bxl2txt needs to have an extra -I calculated for librnd4
+		-Fix: bxl2txt: use the CFLAGS as detected (-O3 and -DNDEBUG for production)
+		-Del: deblist.sh - not used by anything anymore
+		-Del: devhelper's 404.sh: it's enough to keep one copy in librnd
+		-Del: chglog scripts - use the one in librnd
+		-Del: include, comment and copyright source crawler scripts - use the one in librnd
+		-Del: rename scripts - use the ones in librnd
+		-Del: "TODO grep" scripts - use the one in librnd
+		-Del: local implementation of awk_on_formats - use librnd's
+		-Move: html dialogs generator from doc to util to be shared with other apps later
+		-Cleanup: list_dialogs doesn't get dialogs exrta from a file but from a shell var to make the system more modular and easier to reuse

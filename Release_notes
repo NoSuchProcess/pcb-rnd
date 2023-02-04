@@ -1,36 +1,12 @@
-pcb-rnd 3.0.6
+pcb-rnd 3.1.0
 ~~~~~~~~~~~~~
 
-This release introduces a major font engine refactoring (for reuse in other
-Ringdove apps) and minor bugfixes (see the Changelog for details).
+This release focuses on librnd4 switchover.
 
-Feature highlights are:
+Feature highlight (bugfixes are listed in the Changelog):
 
-1. plugin for importing netlist/schematics from sch-rnd
+1. many of the devhelper scripts got moved to librnd to be shared with
+   other Ringdove apps
 
-2. refactored font engine (reused in sch-rnd)
-
-3. new font edit actions: FontXform(), FontSetXdelta(), FontNormalize()
-
-4. switched over some exporters (png, svg, ps, lpr) to use librnd's
-   implementation instead of the local; pcb-rnd now depends on
-   librnd >= 3.2.0
-
-5. plugin for ordering PCB fabbing directly from pcb-rnd; can remember
-   settings in board attributes
-
-6. PadstackReplace() action and menu item: mass-replaces the padstack
-   prototype or selected padstacks, even within subcircuits
-
-7. named all HPANE/VPANE widgets; from now on saving and restoring window
-   geometry will also save/restore pane proportions
-
-8. change in default file naming conventions: *.rp for boards, *.rf for
-   footprints; old filenames also work, users are free to choose whatever
-   name for new files despite of the new conventions.
-
-9. new exporter: export_debug writes easy-to-process, computer-readable,
-   line-oriented plain text
-
-10. menu for saving first padstack from buffer; this makes padstack
-    construction fully consistent with subcircuit construction
+2. the generic low levels of the font engine got moved to librnd for the
+   same reason
