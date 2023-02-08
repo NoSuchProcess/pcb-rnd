@@ -38,7 +38,7 @@
 static void scad_draw_primitives(void)
 {
 	fprintf(f, "// Round cap line\n");
-	fprintf(f, "module pcb_line_rc(x1, y1, length, angle, width, thick) {\n");
+	fprintf(f, "module %s_line_rc(x1, y1, length, angle, width, thick) {\n", scad_prefix);
 	fprintf(f, "	translate([x1,y1,0]) {\n");
 	fprintf(f, "		rotate([0,0,angle]) {\n");
 	fprintf(f, "			translate([length/2, 0, 0])\n");
@@ -51,7 +51,7 @@ static void scad_draw_primitives(void)
 	fprintf(f, "}\n");
 
 	fprintf(f, "// Square cap line\n");
-	fprintf(f, "module pcb_line_sc(x1, y1, length, angle, width, thick) {\n");
+	fprintf(f, "module %s_line_sc(x1, y1, length, angle, width, thick) {\n", scad_prefix);
 	fprintf(f, "	translate([x1,y1,0]) {\n");
 	fprintf(f, "		rotate([0,0,angle]) {\n");
 	fprintf(f, "			translate([length/2, 0, 0])\n");
@@ -61,20 +61,20 @@ static void scad_draw_primitives(void)
 	fprintf(f, "}\n");
 
 	fprintf(f, "// filled rectangle\n");
-	fprintf(f, "module pcb_fill_rect(x1, y1, x2, y2, angle, thick) {\n");
+	fprintf(f, "module %s_fill_rect(x1, y1, x2, y2, angle, thick) {\n", scad_prefix);
 	fprintf(f, "	translate([(x1+x2)/2,(y1+y2)/2,0])\n");
 	fprintf(f, "		rotate([0,0,angle])\n");
 	fprintf(f, "			cube([x2-x1, y2-y1, thick], center=true);\n");
 	fprintf(f, "}\n");
 
 	fprintf(f, "// filled polygon\n");
-	fprintf(f, "module pcb_fill_poly(coords, thick) {\n");
+	fprintf(f, "module %s_fill_poly(coords, thick) {\n", scad_prefix);
 	fprintf(f, "	linear_extrude(height=thick)\n");
 	fprintf(f, "		polygon(coords);\n");
 	fprintf(f, "}\n");
 
 	fprintf(f, "// filled circle\n");
-	fprintf(f, "module pcb_fcirc(x1, y1, radius, thick) {\n");
+	fprintf(f, "module %s_fcirc(x1, y1, radius, thick) {\n", scad_prefix);
 	fprintf(f, "	translate([x1,y1,0])\n");
 	fprintf(f, "		cylinder(r=radius, h=thick, center=true, $fn=30);\n");
 	fprintf(f, "}\n");
@@ -88,7 +88,7 @@ static int scad_draw_outline(void)
 	if (poly == NULL)
 		return -1;
 
-	fprintf(f, "module pcb_outline() {\n");
+	fprintf(f, "module %s_outline() {\n", scad_prefix);
 	fprintf(f, "	polygon([\n\t\t");
 	/* we need the as-drawn polygon and we know there are no holes */
 	for(n = 0; n < poly->PointN; n++)
@@ -126,7 +126,7 @@ TODO("padstack: these ignore bbvias")
 		switch(mech->shape) {
 			case PCB_PSSH_POLY:
 				fprintf(f, "	translate([0,0,%f])\n", -effective_layer_thickness/2);
-				fprintf(f, "	pcb_fill_poly([");
+				fprintf(f, "	%s_fill_poly([", scad_prefix);
 				for(n = 0; n < mech->data.poly.len; n++)
 					rnd_fprintf(f, "%s[%mm,%mm]", (n > 0 ? ", " : ""),
 						TRX_(ps->x + mech->data.poly.x[n]),
@@ -153,7 +153,7 @@ static void scad_draw_drills(void)
 	rnd_rtree_it_t it;
 	rnd_box_t *obj;
 
-	fprintf(f, "module pcb_drill() {\n");
+	fprintf(f, "module %s_drill() {\n", scad_prefix);
 
 	for(obj = rnd_r_first(PCB->Data->padstack_tree, &it); obj != NULL; obj = rnd_r_next(&it))
 		scad_draw_pstk((pcb_pstk_t *)obj);
@@ -163,24 +163,24 @@ static void scad_draw_drills(void)
 
 static void scad_draw_finish(rnd_hid_attr_val_t *options)
 {
-	fprintf(f, "module pcb_board_main() {\n");
+	fprintf(f, "module %s_board_main() {\n", scad_prefix);
 	fprintf(f, "	translate ([0, 0, -0.8])\n");
 	fprintf(f, "		linear_extrude(height=1.6)\n");
-	fprintf(f, "			pcb_outline();\n");
+	fprintf(f, "			%s_outline();\n", scad_prefix);
 	fprintf(f, "%s", layer_group_calls.array);
 	fprintf(f, "}\n");
 	fprintf(f, "\n");
 
-	fprintf(f, "module pcb_board() {\n");
+	fprintf(f, "module %s_board() {\n", scad_prefix);
 	fprintf(f, "	intersection() {\n");
 	fprintf(f, "		translate ([0, 0, -4])\n");
 	fprintf(f, "			linear_extrude(height=8)\n");
-	fprintf(f, "				pcb_outline();\n");
+	fprintf(f, "				%s_outline();\n", scad_prefix);
 	fprintf(f, "		union() {\n");
 	fprintf(f, "			difference() {\n");
-	fprintf(f, "				pcb_board_main();\n");
+	fprintf(f, "				%s_board_main();\n", scad_prefix);
 	if (options[HA_drill].lng)
-		fprintf(f, "				pcb_drill();\n");
+		fprintf(f, "				%s_drill();\n", scad_prefix);
 	fprintf(f, "			}\n");
 	fprintf(f, "		}\n");
 	fprintf(f, "	}\n");
@@ -188,5 +188,5 @@ static void scad_draw_finish(rnd_hid_attr_val_t *options)
 	fprintf(f, "}\n");
 	fprintf(f, "\n");
 
-	fprintf(f, "pcb_board();\n");
+	fprintf(f, "%s_board();\n", scad_prefix);
 }

@@ -55,7 +55,7 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 					while(isspace(*mod)) mod++;
 					if (!isalpha(*mod) && (*mod != '_'))
 						rnd_message(RND_MSG_ERROR, "Openscad model '%s': module name must be in the same line as the module keyword\n", full_path);
-					fprintf(f, " pcb_part_%s", safe_name);
+					fprintf(f, " %s_part_%s", scad_prefix, safe_name);
 					par = strchr(mod, '(');
 					if (par != NULL)
 						fprintf(f, "%s", par);
@@ -71,7 +71,7 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 				fprintf(f, "%s", buff);
 			}
 			fclose(fin);
-			rnd_snprintf(buff, sizeof(buff), "pcb_part_%s", safe_name);
+			rnd_snprintf(buff, sizeof(buff), "%s_part_%s", scad_prefix, safe_name);
 			htsp_set(models, (char *)name, rnd_strdup(buff));
 			free(safe_name);
 		}

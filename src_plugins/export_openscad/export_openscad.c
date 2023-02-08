@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017,2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2020,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ static int scad_group_level;
 static const char *scad_group_color;
 static int scad_layer_cnt;
 static vti0_t scad_comp;
+static char *scad_prefix = "pcb";
 
 static rnd_hid_attr_val_t *openscad_options;
 
@@ -218,7 +219,7 @@ static void scad_dump_comp(void)
 		int id = scad_comp.array[n], is_pos = id > 0;
 		if (id < 0)
 			id = -id;
-		fprintf(f, "	layer_%s_%s_%d();\n", scad_group_name, is_pos ? "pos" : "neg", id);
+		fprintf(f, "	%s_layer_%s_%s_%d();\n", scad_prefix , scad_group_name, is_pos ? "pos" : "neg", id);
 		if ((n > 0) && (n < vti0_len(&scad_comp)-1)) {
 			int id2 = scad_comp.array[n+1];
 			int p1 = is_pos, p2 = (id2 > 0);
@@ -237,11 +238,11 @@ static void scad_dump_comp(void)
 static void scad_close_layer_group()
 {
 	if (scad_group_name != NULL) {
-		fprintf(f, "module layer_group_%s() {\n", scad_group_name);
+		fprintf(f, "module %s_layer_group_%s() {\n", scad_prefix, scad_group_name);
 		scad_dump_comp();
 		fprintf(f, "}\n\n");
 
-		rnd_append_printf(&layer_group_calls, "	layer_group_%s();\n", scad_group_name);
+		rnd_append_printf(&layer_group_calls, "	%s_layer_group_%s();\n", scad_prefix, scad_group_name);
 		scad_group_name = NULL;
 		scad_group_color = NULL;
 		scad_group_level = 0;
@@ -278,7 +279,7 @@ static void scad_new_layer(int is_pos)
 		h -= effective_layer_thickness/2.0;
 		effective_layer_thickness+=1.0;
 	}
-	fprintf(f, "module layer_%s_%s_%d() {\n", scad_group_name, is_pos ? "pos" : "neg", scad_layer_cnt);
+	fprintf(f, "module %s_layer_%s_%s_%d() {\n", scad_prefix, scad_group_name, is_pos ? "pos" : "neg", scad_layer_cnt);
 	fprintf(f, "	color([%s])\n", scad_group_color);
 	fprintf(f, "		translate([0,0,%f]) {\n", h);
 	layer_open = 1;
@@ -493,7 +494,7 @@ static void openscad_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	TRX(x2); TRY(y2);
 
 	fix_rect_coords();
-	rnd_fprintf(f, "			pcb_fill_rect(%mm, %mm, %mm, %mm, %f, %f);\n",
+	rnd_fprintf(f, "			%s_fill_rect(%mm, %mm, %mm, %mm, %f, %f);\n", scad_prefix,
 		x1, y1, x2, y2, 0.0, effective_layer_thickness);
 }
 
@@ -513,7 +514,7 @@ static void openscad_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	else
 		cap_style = "rc";
 
-	rnd_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
+	rnd_fprintf(f, "			%s_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", scad_prefix, cap_style,
 		x1, y1, (rnd_coord_t)rnd_round(length), angle * RND_RAD_TO_DEG, gc->width, effective_layer_thickness);
 }
 
@@ -567,13 +568,13 @@ static void openscad_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy
 {
 	TRX(cx); TRY(cy);
 
-	rnd_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, effective_layer_thickness);
+	rnd_fprintf(f, "			%s_fcirc(%mm, %mm, %mm, %f);\n", scad_prefix, cx, cy, radius, effective_layer_thickness);
 }
 
 static void openscad_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int n;
-	fprintf(f, "			pcb_fill_poly([");
+	fprintf(f, "			%s_fill_poly([", scad_prefix);
 	for(n = 0; n < n_coords-1; n++)
 		rnd_fprintf(f, "[%mm,%mm],", TRX_(x[n]+dx), TRY_(y[n]+dy));
 	rnd_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]+dx), TRY_(y[n]+dy), effective_layer_thickness);
