@@ -40,6 +40,7 @@
 	- bug_files/TODO/log3.txt
 	- bug_files/TODO/log4.txt
 	- bug_files/TODO/log5.txt
+- BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
