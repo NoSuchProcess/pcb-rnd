@@ -310,9 +310,12 @@ static void find_origin(rnd_coord_t *ox, rnd_coord_t *oy)
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
 
-	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
-		if (pcb_attribute_get(&obj->Attributes, name) != NULL)
+	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
+		if (pcb_attribute_get(&obj->Attributes, name) != NULL) {
 			pcb_obj_center(obj, ox, oy);
+			return;
+		}
+	}
 }
 
 
