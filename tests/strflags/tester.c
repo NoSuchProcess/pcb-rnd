@@ -53,7 +53,7 @@ char *rnd_strndup(const char *s, int len)
 static void dump_flag(pcb_flag_t * f)
 {
 	int l;
-	printf("F:%08x T:[", f->f);
+	printf("F:%08lx T:[", f->f);
 	for (l = 0; l < (PCB_MAX_LAYER + 7) / 8; l++)
 		printf(" %02x", f->t[l]);
 	printf("]");
