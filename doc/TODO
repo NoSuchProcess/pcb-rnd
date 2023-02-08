@@ -1,19 +1,20 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
 - FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
-- FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
-- FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
-	- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
-- FEATURE: propedit attribute edit popup: the enter key should click ok [report: Igor2]
 - FEATURE: 3d export upgrades [report: Igor2]
 	- be able to specify 0;0 coord for the export, useful for multi-board asm
 	- be able to change name prefix, useful for multi-board asm
 	- test attribute based, openscad-specific no-export
 	- PCB thickness in openscad
 	- debug why trace rendering is so slow with round cap in openscad
+- CLEANUP/FEATURE: new breadboard
+	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
+	- DOC: pool node on how to use pixmap for breadboading
+- FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
+- FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
+	- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
+- FEATURE: propedit attribute edit popup: the enter key should click ok [report: Igor2]
 - BUG: propedit: place a text, select it, propedit(selection, geo), choose x, untick the abs checlbox, enter 1 mil, apply -> set absolute, not relative [report: Igor2, Evan]
 - BUG: bug_files/TODO/disj.rp: disjoint padstack when {c f} on the blue line [report: Igor2]
 - BUG: draw a line, arrow tool, hover -> editopoint marks; swtich tools using hotkey while hovering over the line -> editopoint marks are not removed [report: Igor2]
@@ -24,7 +25,6 @@
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	- happens when subc is removed from pcb_removelist
 	- subc line is probably added but not removed from pcb_removelist's rtrees
-- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
 	- we should display layer IDs somewhere: useful for debugging and for the user for query()
 	- same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
@@ -34,13 +34,13 @@
 - BUG: erratic intnoconn {c r} behaviour. See intnoconn-test.rs, exported intnoconn-test-net.net and intnoconn-test.rp using imported net. load the .rp and use {c r}. note shorts flagged by intnoconn sections. move resistor from layout margins onto layout area and use {c r}. shorts no longer found. Seems to be a failure to allocate intnoconn groups to terminals outside the layout area when there is more than one of the same subc using an intnoconn group. Does not happen with intnoconn-test2.rp which uses different coil subcs; see also intnoconn-test-net2.rp; also identical coils but with different intnoconn group numbers seem to behave properly [report: Erich]
 - BUG: multiple coils in intnoconn-bug.rp using intnoconn-bug-actual.net reflecting partion of circuit intnoconn-bug.rs should behave like intnoconn-net-desired.net. shorts being declared with no connections apparent. Coils use different intonoconn groups, and different UIDs to no avail [report: Erich]
 	-> the bug is that the rat line end falling at the endpoint of the line at the boundary of two intnoconn sections shorts the two sections
+
+2. For later releases ===============================================================================
+- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
-- CLEANUP/FEATURE: new breadboard
-	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
-	- DOC: pool node on how to use pixmap for breadboading
 - CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
