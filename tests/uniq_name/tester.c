@@ -55,7 +55,7 @@ int main()
 			if (e->value == NULL)
 				printf("(nil)'\n");
 			else
-				printf("#%d'\n", ((int *)e->value) - values);
+				printf("#%d'\n", (int)(((int *)e->value) - values));
 		}
 	}
 
