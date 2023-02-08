@@ -81,7 +81,7 @@ static int scad_group_level;
 static const char *scad_group_color;
 static int scad_layer_cnt;
 static vti0_t scad_comp;
-static char *scad_prefix = "pcb";
+static const char *scad_prefix = "pcb";
 
 static rnd_hid_attr_val_t *openscad_options;
 
@@ -115,13 +115,17 @@ Name of the file to be exported to. Can contain a path.
 	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_models 4
 
+	{"prefix", "prefix for module names so that multiple exports can be used together",
+	 RND_HATT_STRING, 0, 0, {0, "pcb", 0}, 0},
+#define HA_prefix 5
+
 	{"drill", "enable drilling holes",
 	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
-#define HA_drill 5
+#define HA_drill 6
 
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 6
+#define HA_cam 7
 
 };
 
@@ -313,6 +317,9 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	if (!filename)
 		filename = "pcb.openscad";
 
+	scad_prefix = options[HA_prefix].str;
+	if (scad_prefix == NULL)
+		scad_prefix = "pcb";
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &filename);
 
 	f = rnd_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
