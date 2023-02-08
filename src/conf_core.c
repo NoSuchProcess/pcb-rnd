@@ -3,6 +3,7 @@
 #include "conf_core.h"
 #include <librnd/core/rnd_conf.h>
 #include <librnd/core/conf_hid.h>
+#include <librnd/core/hidlib.h>
 #include <genvector/gds_char.h>
 #include <genht/htpp.h>
 #include <genht/hash.h>
@@ -59,6 +60,8 @@ void pcb_conf_legacy(const char *dst_path, const char *legacy_path)
 }
 
 
+static char *dotdir = NULL;
+
 void pcb_conf_core_postproc(void)
 {
 	htpp_entry_t *e;
@@ -69,6 +72,10 @@ void pcb_conf_core_postproc(void)
 	rnd_conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       rnd_conf_ro("rc/path/lib");
 	rnd_conf_force_set_str(conf_core.rc.path.bin, BINDIR);          rnd_conf_ro("rc/path/bin");
 	rnd_conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   rnd_conf_ro("rc/path/share");
+
+	if (dotdir == NULL)
+		dotdir = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_app.dot_dir, NULL);
+	rnd_conf_force_set_str(conf_core.rc.path.dotdir, dotdir);   rnd_conf_ro("rc/path/dotdir");
 
 	for(e = htpp_first(&legacy_new2old); e != NULL; e = htpp_next(&legacy_new2old, e)) {
 		rnd_conf_native_t *nlegacy = e->value, *ndst = e->key;
@@ -107,6 +114,7 @@ void conf_core_uninit(void)
 {
 	htpp_uninit(&legacy_new2old);
 	htpp_uninit(&legacy_old2new);
+	free(dotdir);
 }
 
 void conf_core_init(void)

@@ -145,6 +145,7 @@ typedef struct {
 			RND_CFT_STRING share;                /* e.g. /usr/share/pcb-rnd */
 
 			RND_CFT_STRING design;               /* directory path of the current design, or <invalid> if the current design doesn't have a file name yet */
+			RND_CFT_STRING dotdir;               /* user's config dir, normally ~/.pcb-rnd */
 		} path;
 	} rc;
 
