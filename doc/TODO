@@ -4,8 +4,9 @@
 + FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
 - FEATURE: 3d export upgrades [report: Igor2]
 	- be able to specify 0;0 coord for the export, useful for multi-board asm
-	- be able to change name prefix, useful for multi-board asm
 	- test attribute based, openscad-specific no-export
+- ANNOUNCE: 3d export upgrades [report: Igor2]
+	- be able to change name prefix, useful for multi-board asm
 	- PCB thickness in openscad
 - CLEANUP/FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
