@@ -1,7 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
++ FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
 - FEATURE: 3d export upgrades [report: Igor2]
 	- be able to specify 0;0 coord for the export, useful for multi-board asm
 	- be able to change name prefix, useful for multi-board asm
