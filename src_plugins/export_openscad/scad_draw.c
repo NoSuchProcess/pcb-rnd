@@ -164,8 +164,8 @@ static void scad_draw_drills(void)
 static void scad_draw_finish(rnd_hid_attr_val_t *options)
 {
 	fprintf(f, "module %s_board_main() {\n", scad_prefix);
-	fprintf(f, "	translate ([0, 0, -0.8])\n");
-	fprintf(f, "		linear_extrude(height=1.6)\n");
+	fprintf(f, "	translate ([0, 0, -%f])\n", board_thickness/2);
+	fprintf(f, "		linear_extrude(height=%f)\n", board_thickness);
 	fprintf(f, "			%s_outline();\n", scad_prefix);
 	fprintf(f, "%s", layer_group_calls.array);
 	fprintf(f, "}\n");
@@ -173,8 +173,8 @@ static void scad_draw_finish(rnd_hid_attr_val_t *options)
 
 	fprintf(f, "module %s_board() {\n", scad_prefix);
 	fprintf(f, "	intersection() {\n");
-	fprintf(f, "		translate ([0, 0, -4])\n");
-	fprintf(f, "			linear_extrude(height=8)\n");
+	fprintf(f, "		translate ([0, 0, -%d])\n", (int)(board_thickness+1)*2);
+	fprintf(f, "			linear_extrude(height=%d)\n", (int)(board_thickness+1)*4);
 	fprintf(f, "				%s_outline();\n", scad_prefix);
 	fprintf(f, "		union() {\n");
 	fprintf(f, "			difference() {\n");

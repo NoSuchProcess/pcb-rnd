@@ -84,7 +84,7 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 	if (ref != NULL) {
 		char tab[] = "\t\t\t\t\t\t\t\t";
 		int ind = 0;
-		rnd_append_printf(&model_calls, "	translate([%mm,%mm,%c0.8])\n", x0, y0, on_bottom ? '-' : '+');
+		rnd_append_printf(&model_calls, "	translate([%mm,%mm,%f])\n", x0, y0, on_bottom ? -board_thickness/2.0 : +board_thickness/2.0);
 		ind++;
 		tab[ind] = '\0';
 

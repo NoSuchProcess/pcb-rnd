@@ -82,6 +82,7 @@ static const char *scad_group_color;
 static int scad_layer_cnt;
 static vti0_t scad_comp;
 static const char *scad_prefix = "pcb";
+static double board_thickness = 1.6;
 
 static rnd_hid_attr_val_t *openscad_options;
 
@@ -269,17 +270,17 @@ static void scad_new_layer(int is_pos)
 	if (is_pos) {
 		effective_layer_thickness = layer_thickness;
 		if (scad_group_level > 0)
-			h = 0.8+((double)scad_group_level*1.1) * effective_layer_thickness;
+			h = board_thickness/2.0+((double)scad_group_level*1.1) * effective_layer_thickness;
 		else
-			h = -0.8+((double)scad_group_level*1.1) * effective_layer_thickness;
+			h = -board_thickness/2.0+((double)scad_group_level*1.1) * effective_layer_thickness;
 	}
 	else {
 		double mult = 2.0;
 		effective_layer_thickness = layer_thickness * mult;
 		if (scad_group_level > 0)
-			h = 0.8+((double)scad_group_level*1.1) * layer_thickness;
+			h = board_thickness/2.0+((double)scad_group_level*1.1) * layer_thickness;
 		else
-			h = -0.8+((double)scad_group_level*1.1) * layer_thickness;
+			h = -board_thickness/2.0+((double)scad_group_level*1.1) * layer_thickness;
 		h -= effective_layer_thickness/2.0;
 		effective_layer_thickness+=1.0;
 	}
@@ -320,6 +321,19 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	scad_prefix = options[HA_prefix].str;
 	if (scad_prefix == NULL)
 		scad_prefix = "pcb";
+
+	{
+		rnd_layergrp_id_t from = 0, to = 0;
+
+		pcb_layergrp_list(PCB, PCB_LYT_BOTTOM|PCB_LYT_COPPER, &from, 1);
+		pcb_layergrp_list(PCB, PCB_LYT_TOP|PCB_LYT_COPPER, &to, 1);
+
+		if (from != to)
+			board_thickness = RND_COORD_TO_MM(pcb_stack_thickness(PCB, "openscad", PCB_BRDTHICK_PRINT_ERROR, from, 1, to, 0, PCB_LYT_SUBSTRATE|PCB_LYT_COPPER));
+		else
+			board_thickness = 1.6;
+	}
+
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &filename);
 
 	f = rnd_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
