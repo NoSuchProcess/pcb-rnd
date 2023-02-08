@@ -40,6 +40,7 @@
 #include <librnd/core/compat_misc.h>
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "draw.h"
 #include <librnd/core/error.h>
 #include "layer.h"
@@ -302,12 +303,25 @@ static void scad_new_layer_group(const char *group_name, int level, const char *
 	scad_group_level = level;
 }
 
+/* Find the pick and place 0;0 mark, if there is any */
+static void find_origin(rnd_coord_t *ox, rnd_coord_t *oy)
+{
+	const char *name = "openscad-origin";
+	pcb_data_it_t it;
+	pcb_any_obj_t *obj;
+
+	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
+		if (pcb_attribute_get(&obj->Attributes, name) != NULL)
+			pcb_obj_center(obj, ox, oy);
+}
+
 
 static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
 	pcb_cam_t cam;
+	rnd_coord_t ox = 0, oy = 0;
 
 	if (!options) {
 		openscad_get_export_options(hid, 0, design, appspec);
@@ -363,7 +377,9 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	if (options[HA_drill].lng)
 		scad_draw_drills();
 
-	scad_draw_finish(options);
+	find_origin(&ox, &oy);
+
+	scad_draw_finish(options, ox, oy);
 
 	pcb_hid_restore_layer_ons(save_ons);
 

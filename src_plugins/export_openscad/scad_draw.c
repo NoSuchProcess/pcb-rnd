@@ -161,8 +161,10 @@ static void scad_draw_drills(void)
 	fprintf(f, "}\n");
 }
 
-static void scad_draw_finish(rnd_hid_attr_val_t *options)
+static void scad_draw_finish(rnd_hid_attr_val_t *options, rnd_coord_t ox, rnd_coord_t oy)
 {
+	int has_origin = (ox != 0) || (oy != 0);
+
 	fprintf(f, "module %s_board_main() {\n", scad_prefix);
 	fprintf(f, "	translate ([0, 0, -%f])\n", board_thickness/2);
 	fprintf(f, "		linear_extrude(height=%f)\n", board_thickness);
@@ -172,19 +174,27 @@ static void scad_draw_finish(rnd_hid_attr_val_t *options)
 	fprintf(f, "\n");
 
 	fprintf(f, "module %s_board() {\n", scad_prefix);
-	fprintf(f, "	intersection() {\n");
-	fprintf(f, "		translate ([0, 0, -%d])\n", (int)(board_thickness+1)*2);
-	fprintf(f, "			linear_extrude(height=%d)\n", (int)(board_thickness+1)*4);
-	fprintf(f, "				%s_outline();\n", scad_prefix);
-	fprintf(f, "		union() {\n");
-	fprintf(f, "			difference() {\n");
-	fprintf(f, "				%s_board_main();\n", scad_prefix);
+
+	if (has_origin)
+	rnd_fprintf(f, "	translate([%mm, %mm, 0]) {\n", -ox, -oy);
+
+	fprintf(f, "		intersection() {\n");
+	fprintf(f, "			translate ([0, 0, -%d])\n", (int)(board_thickness+1)*2);
+	fprintf(f, "				linear_extrude(height=%d)\n", (int)(board_thickness+1)*4);
+	fprintf(f, "					%s_outline();\n", scad_prefix);
+	fprintf(f, "			union() {\n");
+	fprintf(f, "				difference() {\n");
+	fprintf(f, "					%s_board_main();\n", scad_prefix);
 	if (options[HA_drill].lng)
-		fprintf(f, "				%s_drill();\n", scad_prefix);
+		fprintf(f, "					%s_drill();\n", scad_prefix);
+	fprintf(f, "				}\n");
 	fprintf(f, "			}\n");
 	fprintf(f, "		}\n");
+	fprintf(f, "	%s", model_calls.array);
+
+	if (has_origin)
 	fprintf(f, "	}\n");
-	fprintf(f, "%s", model_calls.array);
+
 	fprintf(f, "}\n");
 	fprintf(f, "\n");
 
