@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -507,6 +507,11 @@ static void prop_data_force_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	prop_data_cb(hid_ctx, caller_data, attr, 1);
 }
 
+static void prop_attr_enter_pressed_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_dad_retovr_t **retovr = caller_data;
+	rnd_hid_dad_close(hid_ctx, *retovr, 0);
+}
 
 static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
@@ -525,10 +530,11 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 			RND_DAD_LABEL(dlg, "Attribute value:");
 			RND_DAD_STRING(dlg);
 				wval = RND_DAD_CURRENT(dlg);
+				RND_DAD_ENTER_CB(dlg, prop_attr_enter_pressed_cb);
 		RND_DAD_END(dlg);
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
-	RND_DAD_AUTORUN("propedit_add", dlg, "Propedit: add new attribute", NULL, failed);
+	RND_DAD_AUTORUN("propedit_add", dlg, "Propedit: add new attribute", &dlg_ret_override, failed);
 
 	key = dlg[wkey].val.str;
 	if (key == NULL) key = "";
