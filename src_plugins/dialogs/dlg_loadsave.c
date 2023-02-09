@@ -59,6 +59,17 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static char *last_footprint = NULL, *last_layout = NULL, *last_netlist = NULL;
 	const char *function = "Layout";
 	char *name = NULL;
+	static const char *flt_any[] = {"*", "*.*", NULL};
+	static const char *pat_lht[] = {"*.rs", "*.lht", NULL};
+	static const char *pat_pcb[] = {"*.pcb", NULL};
+	static const char *pat_tdx[] = {"*.tdx", NULL};
+	static const rnd_hid_fsd_filter_t flt_brd[] = {
+			{"rs/lihata", "rs/lihata", pat_lht},
+			{"pcb",       "pcb", pat_pcb},
+			{"tEDAx",     "tEDAx", pat_tdx},
+			{"all",       NULL, flt_any},
+			{NULL, NULL, NULL}
+		};
 
 	if (last_footprint == NULL)  last_footprint = dup_cwd();
 	if (last_layout == NULL)     last_layout = dup_cwd();
@@ -75,9 +86,9 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if ((rnd_strcasecmp(function, "FootprintToBuffer") == 0) || (rnd_strcasecmp(function, "ElementToBuffer") == 0))
 		name = rnd_hid_fileselect(rnd_gui, "Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", RND_HID_FSD_READ, NULL);
 	else if (rnd_strcasecmp(function, "LayoutToBuffer") == 0)
-		name = rnd_hid_fileselect(rnd_gui, "Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
+		name = rnd_hid_fileselect(rnd_gui, "Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, flt_brd, "board", RND_HID_FSD_READ, NULL);
 	else if (rnd_strcasecmp(function, "Layout") == 0)
-		name = rnd_hid_fileselect(rnd_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
+		name = rnd_hid_fileselect(rnd_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, flt_brd, "board", RND_HID_FSD_READ, NULL);
 	else {
 		rnd_message(RND_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
 		RND_ACT_IRES(1);
