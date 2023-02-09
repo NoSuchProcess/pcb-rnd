@@ -5,7 +5,6 @@
 - CLEANUP/FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
 	- DOC: pool node on how to use pixmap for breadboading
-- FEATURE: load file name filter, see sch-rnd r5872 [report: Igor2]
 - FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
 	- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
 - BUG: propedit: place a text, select it, propedit(selection, geo), choose x, untick the abs checlbox, enter 1 mil, apply -> set absolute, not relative [report: Igor2, Evan]
