@@ -176,7 +176,7 @@ static void prop_scope_finish(pcb_propedit_t *pe)
 extern rnd_layergrp_id_t pcb_actd_EditGroup_gid;
 
 static const char pcb_acts_propset[] = "propset([scope], name, value)";
-static const char pcb_acth_propset[] = "Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().";
+static const char pcb_acth_propset[] = "Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit(). Existing attributes can be renamed to value by using a name rename/a/old_name, where old_name is the current name of the attribute.";
 fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *first, *name, *val;

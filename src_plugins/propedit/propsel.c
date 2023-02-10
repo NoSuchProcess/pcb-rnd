@@ -457,10 +457,17 @@ static void set_attr_raw(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
 	}
 
 	orig = pcb_attribute_get(list, key);
-	if ((orig != NULL) && (strcmp(orig, st->s) == 0))
-		return;
-
-	pcb_attribute_put(list, key, st->s);
+	if (st->arename) {
+		if (strcmp(st->s, key) == 0)
+			return;
+		pcb_attribute_put(list, st->s, orig);
+		pcb_attribute_remove(list, key);
+	}
+	else {
+		if ((orig != NULL) && (strcmp(orig, st->s) == 0))
+			return;
+		pcb_attribute_put(list, key, st->s);
+	}
 	st->set_cnt++;
 }
 
@@ -468,6 +475,9 @@ static void set_attr_obj(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 {
 	const char *key = st->name+2;
 	int side_effect, res;
+
+	if (st->arename && (strcmp(st->s, key) == 0))
+			return;
 
 	if (st->toggle) {
 		toggle_attr(st, &obj->Attributes, 1, obj);
@@ -478,7 +488,20 @@ static void set_attr_obj(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 
 	if (side_effect)
 		pcb_obj_pre(obj);
-	res = pcb_uchg_attr(st->pcb, obj, key, st->s);
+
+	if (st->arename) {
+		const char *orig = pcb_attribute_get(&obj->Attributes, key);
+		if (orig != NULL) {
+			res = pcb_uchg_attr(st->pcb, obj, st->s, orig);
+			if (res == 0)
+				res = pcb_uchg_attr(st->pcb, obj, key, NULL);
+		}
+		else
+			res = -1;
+	}
+	else
+		res = pcb_uchg_attr(st->pcb, obj, key, st->s);
+
 	if (side_effect) {
 		pcb_obj_update_bbox(st->pcb, obj);
 		pcb_obj_post(obj);
@@ -1086,17 +1109,20 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 
 int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value)
 {
-	pcb_propset_ctx_t sctx;
+	pcb_propset_ctx_t sctx = {0};
 	char *end;
 	const char *start;
+
+	if ((prop[0] == 'r') && (strncmp(prop, "rename/a/", 9)) == 0) {
+		sctx.arename = 1;
+		prop += 7;
+	}
 
 	/* sanity checks for invalid props */
 	if ((prop[1] != '/') || ((prop[0] != 'a') && (prop[0] != 'p'))) {
 		rnd_message(RND_MSG_ERROR, "Invalid property path: '%s':\n must start with p/ for property or a/ for attribute\n", prop);
 		return 0;
 	}
-
-	memset(&sctx, 0, sizeof(sctx));
 
 	if (value == NULL)
 		value = "";

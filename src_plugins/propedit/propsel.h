@@ -35,6 +35,7 @@ typedef struct set_ctx_s {
 	rnd_bool c_absolute, d_absolute, c_valid, d_valid, clr_valid;
 	unsigned toggle:1;        /* when 1, ignore value and attempt to toggle */
 	unsigned toggle_create:1; /* when 1, create non-existing attribute on toggle, with value true */
+	unsigned arename:1;       /* when 1, attribute is renamed to s; must not be used for anything else but a/ */
 
 	/* private */
 	unsigned is_trace:1;
