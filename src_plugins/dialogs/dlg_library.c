@@ -134,6 +134,8 @@ static const char *xpm_refresh[] = {
 "            @   ",
 };
 
+static void library_filter_reapply(void *hid_ctx, library_ctx_t *ctx);
+
 static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplibrary_t *l)
 {
 	rnd_box_t bbox;
@@ -416,9 +418,10 @@ static void library_tree_unhide(rnd_hid_tree_t *tree, gdl_list_t *rowlist, re_se
 	}
 }
 
-static void library_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
+static void library_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp__)
 {
 	library_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *attr_inp = &ctx->dlg[ctx->wfilt];
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
 	const char *otext;
@@ -513,6 +516,12 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 	free(text);
 }
+
+static void library_filter_reapply(void *hid_ctx, library_ctx_t *ctx)
+{
+	library_filter_cb(hid_ctx, ctx, NULL);
+}
+
 
 static rnd_hid_row_t *find_fp_prefix_(rnd_hid_tree_t *tree, gdl_list_t *rowlist, const char *name, int namelen)
 {
@@ -619,8 +628,10 @@ static void library_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 
 	oname = rnd_strdup(l->name); /* need to save the name because refresh invalidates l */
 
-	if (pcb_fp_rehash(&PCB->hidlib, l) == 0)
+	if (pcb_fp_rehash(&PCB->hidlib, l) == 0) {
 		rnd_message(RND_MSG_INFO, "Refreshed library '%s'\n", oname);
+		library_filter_reapply(hid_ctx, ctx);
+	}
 	else
 		rnd_message(RND_MSG_ERROR, "Failed to refresh library '%s'\n", oname);
 
