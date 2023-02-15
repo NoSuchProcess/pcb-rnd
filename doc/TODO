@@ -26,10 +26,10 @@
 - BUG: erratic intnoconn {c r} behaviour. See intnoconn-test.rs, exported intnoconn-test-net.net and intnoconn-test.rp using imported net. load the .rp and use {c r}. note shorts flagged by intnoconn sections. move resistor from layout margins onto layout area and use {c r}. shorts no longer found. Seems to be a failure to allocate intnoconn groups to terminals outside the layout area when there is more than one of the same subc using an intnoconn group. Does not happen with intnoconn-test2.rp which uses different coil subcs; see also intnoconn-test-net2.rp; also identical coils but with different intnoconn group numbers seem to behave properly [report: Erich]
 - BUG: multiple coils in intnoconn-bug.rp using intnoconn-bug-actual.net reflecting partion of circuit intnoconn-bug.rs should behave like intnoconn-net-desired.net. shorts being declared with no connections apparent. Coils use different intonoconn groups, and different UIDs to no avail [report: Erich]
 	-> the bug is that the rat line end falling at the endpoint of the line at the boundary of two intnoconn sections shorts the two sections
-- BUG: make test bugs [report: Aron]
++ BUG: make test bugs [report: Aron]
 	+ bug_files/TODO/log1.txt
 	+ bug_files/TODO/log2.txt
-	- bug_files/TODO/log3.txt
+	+ bug_files/TODO/log3.txt
 	+ bug_files/TODO/log4.txt
 	+ bug_files/TODO/log5.txt
 - BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
