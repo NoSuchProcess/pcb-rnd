@@ -433,6 +433,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	attr = &ctx->dlg[ctx->wtree];
 	tree = attr->wdata;
 	otext = attr_inp->val.str;
+	if (otext == NULL) otext = "";
 	text = rnd_strdup(otext);
 	have_filter_text = (*text != '\0');
 
