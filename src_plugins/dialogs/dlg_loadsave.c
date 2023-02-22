@@ -60,7 +60,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function = "Layout";
 	char *name = NULL;
 	static const char *flt_any[] = {"*", "*.*", NULL};
-	static const char *pat_lht[] = {"*.rs", "*.lht", NULL};
+	static const char *pat_lht[] = {"*.rp", "*.lht", NULL};
 	static const char *pat_pcb[] = {"*.pcb", NULL};
 	static const char *pat_tdx[] = {"*.tdx", NULL};
 	static const rnd_hid_fsd_filter_t flt_brd[] = {
