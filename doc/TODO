@@ -36,6 +36,7 @@
 - BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
 - BUG: segfault recipe: place bug_files/TODO/brickhole* into ~/pcblib. start pcb-rnd, {w l}, click on brickhole(), click on it again when error spawned by lack of subc_common.awk in same dir, segfault ensues. [report: Erich]
 - BUG: segfault recipe: place bug_files/TODO/brickhole* into ~/pcblib along with a copy of subc_common.awk. remove a closing bracket from an if/then/else in brickhole.awk. start pcb-rnd, {w l}, click on brickhole(), click on it again when error spawned by lack of complete function, segfault ensues. [report: Erich]
+- BUG: if foo() v0 exists in ~/.pcb-rnd/footprint and foo() v1 exists in ~/pcblib the tree view in the left paane of {w l} will load foo() v0 in ~/.pcb-rnd even if foo() v1 under ~/pcblib is being selected in the GUI with a mouse click. GUI selection fail.  [report: Erich] 
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
