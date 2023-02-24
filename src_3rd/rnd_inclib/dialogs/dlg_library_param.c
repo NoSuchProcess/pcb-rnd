@@ -493,6 +493,8 @@ int pcb_library_param_fillin(library_param_ctx_t *ctx, library_ent_t *l, const c
 
 	if (filter_txt == NULL) {
 		filter_txt = ctx->example;
+		if (filter_txt == NULL) /* when there's no example; also happens when the script failed with syntax error */
+			return -1;
 		library_set_filter(ctx->lib_ctx, filter_txt);
 	}
 
