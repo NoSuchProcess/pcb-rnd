@@ -1246,10 +1246,10 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 		PCB_ISC_PSTK_ANYLAYER(ps, pcb_isc_pstk_poly_shp(ctx, ps, poly, &tshp->shape[n]));
 
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, poly) && PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps)) {
-		/* optimization: if there's a clearance between the padstack and the poly, no
-		   need to calculate anything */
+		/* optimization: if there's a clearance between the padstack and the poly
+		   and bloat can't overshoot it, no need to calculate anything */
 		clr = pcb_obj_clearance_at(PCB, (pcb_any_obj_t *)ps, poly->parent.layer);
-		if ((clr > 0) && (ctx->bloat == 0)) {
+		if ((clr > 0) && (ctx->bloat <= clr)) {
 			unsigned char *thr = pcb_pstk_get_thermal(ps, pcb_layer2id(PCB->Data, poly->parent.layer), 0);
 
 			/* but only if there's no thermal that'd connect it through the clearance */
