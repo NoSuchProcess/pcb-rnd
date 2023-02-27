@@ -31,6 +31,7 @@
 - BUG: bug_files/line-arc-del-assert.rp load layout, delete right most vertical, line, poly validity assert ensues [report: Erich]
 - BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most horizontal line, note strange clipping that shorts across adjacent arc [report: Erich]
 - BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most arc, note strange clipping that across where arc used to be [report: Erich]
+- BUG: on a layout with no negative soldermask layer but a positive solder mask layer, the solder mask layer of a padstack in a subcircuit is discarded on load, preventing it from being used during CAM export in combination with the positive soldermask layer [report: Erich] 
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
