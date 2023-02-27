@@ -28,6 +28,9 @@
 - BUG: multiple coils in intnoconn-bug.rp using intnoconn-bug-actual.net reflecting partion of circuit intnoconn-bug.rs should behave like intnoconn-net-desired.net. shorts being declared with no connections apparent. Coils use different intonoconn groups, and different UIDs to no avail [report: Erich]
 	-> the bug is that the rat line end falling at the endpoint of the line at the boundary of two intnoconn sections shorts the two sections
 - BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
+- BUG: bug_files/line-arc-del-assert.rp load layout, delete right most vertical, line, poly validity assert ensues [report: Erich]
+- BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most horizontal line, note strange clipping that shorts across adjacent arc [report: Erich]
+- BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most arc, note strange clipping that across where arc used to be [report: Erich]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
