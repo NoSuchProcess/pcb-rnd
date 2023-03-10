@@ -21,6 +21,7 @@
 #include "layer_vis.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/plugins/lib_exp_text/draw_eps.h>
 
 #include <librnd/hid/hid.h>
@@ -40,7 +41,7 @@ static rnd_hid_t eps_hid;
 static rnd_eps_t pctx_, *pctx = &pctx_;
 static int print_group[PCB_MAX_LAYERGRP];
 static int print_layer[PCB_MAX_LAYER];
-static int fast_erase = -1;
+static int fast_erase = -1, eps_mirx, eps_miry;
 
 static const rnd_export_opt_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -102,9 +103,21 @@ Limit the bounds of the EPS file to the visible items.
 	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_only_visible 4
 
+/* %start-doc options "92 Encapsulated Postscript Export"
+@ftable @code
+@cindex as-shown (EPS)
+@item --as-shown
+Export layers as shown on screen.
+@end ftable
+%end-doc
+*/
+	{"enable-flip", "For historical reasons eps export ignores flip_x and flip_y; unless this option is enabled",
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
+#define HA_enable_flip 5
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 5
+#define HA_cam 6
 
 };
 
@@ -227,10 +240,21 @@ void eps_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val
 		qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 	}
 
+	if (options[HA_enable_flip].lng) {
+		/* new: accurately copy mirror flags */
+		eps_mirx = rnd_conf.editor.view.flip_x;
+		eps_miry = rnd_conf.editor.view.flip_y;
+	}
+	else if (pctx->as_shown) {
+		/* legacy, kept for compatibility */
+		eps_mirx = conf_core.editor.show_solder_side;
+		eps_miry = 0;
+	}
+
 	rnd_eps_init(pctx, the_file, *bnds, options_[HA_scale].dbl, options[HA_mono].lng, options[HA_as_shown].lng);
 
 	if (pctx->outf != NULL)
-		rnd_eps_print_header(pctx, rnd_hid_export_fn(filename), pctx->as_shown && conf_core.editor.show_solder_side, 0);
+		rnd_eps_print_header(pctx, rnd_hid_export_fn(filename), eps_mirx, eps_miry);
 
 	if (pctx->as_shown) {
 		/* disable (exporter default) hiding overlay in as_shown */
@@ -322,7 +346,8 @@ static int eps_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergr
 			fclose(pctx->outf);
 		}
 		pctx->outf = rnd_fopen_askovr(&PCB->hidlib, eps_cam.fn, "w", NULL);
-		rnd_eps_print_header(pctx, eps_cam.fn, pctx->as_shown && conf_core.editor.show_solder_side, 0);
+
+		rnd_eps_print_header(pctx, eps_cam.fn, eps_mirx, eps_miry);
 	}
 
 	if (!eps_cam.active) {
