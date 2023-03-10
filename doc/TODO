@@ -10,8 +10,9 @@
 - BUG: bug_files/TODO/disj.rp: disjoint padstack when {c f} on the blue line [report: Igor2]
 - BUG: draw a line, arrow tool, hover -> editopoint marks; swtich tools using hotkey while hovering over the line -> editopoint marks are not removed [report: Igor2]
 - BUG: pcb_pixmap_alloc_insert_transformed() breaks above 90 and below 0 deg; use propedit to rotate a long narrow pixmap like doc/resources/header_600.png [report: Igor2]
-- BUG: cam export: doc_png bottom side is drawn looking from the top -> copper is over silk; figure how to flip in cam [report: aron]
-- BUG: bug_files/TODO/emptyfab.rp, -x cam gerber:JLC_PCB emptyfab.rp -> no .fab file; layer is considered empty because draw_fab is a side effect [report: Bdale]
+- CAM related:
+	- BUG: cam export: doc_png bottom side is drawn looking from the top -> copper is over silk; figure how to flip in cam [report: aron]
+	- BUG: bug_files/TODO/emptyfab.rp, -x cam gerber:JLC_PCB emptyfab.rp -> no .fab file; layer is considered empty because draw_fab is a side effect [report: Bdale]
 - BUG: bug_files/TODO/derive.rp, edit pstk proto, add mask shape, derive -> derived polygon is broken (invalid coords) [report: Scott]
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	- happens when subc is removed from pcb_removelist
