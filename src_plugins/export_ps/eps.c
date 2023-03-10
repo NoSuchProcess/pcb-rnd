@@ -332,7 +332,7 @@ static int eps_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergr
 		if (PCB_LAYER_IS_ASSY(flags, purpi) || PCB_LAYER_IS_FAB(flags, purpi) || PCB_LAYER_IS_CSECT(flags, purpi) || (flags & PCB_LYT_INVIS))
 			return 0;
 
-		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && PCB_LAYER_IS_ROUTE(flags, purpi))
+		if ((group >= 0) && pcb_cam_layergrp_is_empty(&eps_cam, PCB, group) && PCB_LAYER_IS_ROUTE(flags, purpi))
 			return 0;
 	}
 

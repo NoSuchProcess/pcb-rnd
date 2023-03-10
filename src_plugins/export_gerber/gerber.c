@@ -449,7 +449,7 @@ static int gerber_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_laye
 
 	if (!all_layers) {
 		int stay = 0;
-		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group) && !(flags & PCB_LYT_SILK)) {
+		if ((group >= 0) && pcb_cam_layergrp_is_empty(&gerber_cam, PCB, group) && !(flags & PCB_LYT_SILK)) {
 			/* layer is empty and the user didn't want to have empty layers; however;
 			   if the user wants to copy the outline to specific layers, those
 			   layers will become non-empty: even an empty outline would bring

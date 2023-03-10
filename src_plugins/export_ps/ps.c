@@ -526,7 +526,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp
 			if (is_empty)
 				return 0;
 
-			if ((group >= 0) && pcb_layergrp_is_empty(PCB, group))
+			if ((group >= 0) && pcb_cam_layergrp_is_empty(&ps_cam, PCB, group))
 				return 0;
 		}
 
