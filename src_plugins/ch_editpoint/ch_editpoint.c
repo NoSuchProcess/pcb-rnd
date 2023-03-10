@@ -93,6 +93,34 @@ static void *editpoint_find(vtp0_t *vect, pcb_any_obj_t *obj_ptr)
 	return NULL;
 }
 
+/* Undraw the old objects; returns whether anything is removed */
+static int editpoint_undraw(void)
+{
+	int n, removed = 0;
+
+	for(n = 0; n < old_editpoint_objs->used; n++) {
+		pcb_any_obj_t *op = old_editpoint_objs->array[n];
+
+		/* only remove and redraw those which aren't in the new list */
+		if (editpoint_find(editpoint_objs, op) != NULL)
+			continue;
+
+		op->ind_editpoint = 0;
+		pcb_draw_obj(op);
+		removed = 1;
+	}
+
+	return removed;
+}
+
+/* swap old and new endpoint list */
+static void endpoint_swap(void)
+{
+	vtp0_t *tmp = editpoint_objs;
+	editpoint_objs = old_editpoint_objs;
+	old_editpoint_objs = tmp;
+}
+
 /* Searches for lines/arcs which have points that are exactly at the given coords
    and adds them to the object list along with their respective type. */
 static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_t Y)
@@ -100,12 +128,9 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 	rnd_box_t SearchBox = rnd_point_box(X, Y);
 	int n;
 	rnd_bool redraw = rnd_false;
-	vtp0_t *tmp;
 
 	/* swap old and new */
-	tmp = editpoint_objs;
-	editpoint_objs = old_editpoint_objs;
-	old_editpoint_objs = tmp;
+	endpoint_swap();
 
 	/* Do not truncate to 0 because that may free the array */
 	vtp0_truncate(editpoint_objs, 1);
@@ -122,19 +147,8 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 	}
 	rnd_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
 
-
-	/* Undraw the old objects */
-	for(n = 0; n < old_editpoint_objs->used; n++) {
-		pcb_any_obj_t *op = old_editpoint_objs->array[n];
-
-		/* only remove and redraw those which aren't in the new list */
-		if (editpoint_find(editpoint_objs, op) != NULL)
-			continue;
-
-		op->ind_editpoint = 0;
-		pcb_draw_obj(op);
-		redraw = rnd_true;
-	}
+/* Undraw the old objects */
+	redraw = editpoint_undraw();
 
 	/* draw the new objects */
 	for(n = 0; n < editpoint_objs->used; n++) {
@@ -151,22 +165,30 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 		rnd_hid_redraw(&PCB->hidlib);
 }
 
-static void pcb_ch_editpoint(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
-{
-	pcb_crosshair_t *ch = argv[1].d.p;
-	if (conf_ch_editpoint.plugins.ch_editpoint.enable) {
-		const rnd_tool_t *tool = rnd_tool_get(rnd_conf.editor.mode);
-		if ((tool != NULL) && (tool->user_flags & PCB_TLF_EDIT))
-			editpoint_work(ch, ch->X, ch->Y);
-	}
-}
-
 static void pcb_editpoint_flush(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	/* clear all editpoint lists because the old list may hold objects just
 	   deleted; the edit will trigger a redraw anyway */
 	editpoint_raw[0].used = editpoint_raw[1].used = 0;
 }
+
+static void pcb_ch_editpoint(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	pcb_crosshair_t *ch = argv[1].d.p;
+	if (conf_ch_editpoint.plugins.ch_editpoint.enable) {
+		const rnd_tool_t *tool = rnd_tool_get(rnd_conf.editor.mode);
+		if ((tool != NULL) && (tool->user_flags & PCB_TLF_EDIT)) {
+			editpoint_work(ch, ch->X, ch->Y);
+		}
+		else if (editpoint_objs->used != 0) {
+			/* schedule endpoints for removal from render */
+			endpoint_swap();
+			editpoint_undraw();
+			pcb_editpoint_flush(hidlib, user_data, argc, argv);
+		}
+	}
+}
+
 
 
 int pplg_check_ver_ch_editpoint(int ver_needed) { return 0; }
