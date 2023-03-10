@@ -241,7 +241,7 @@ void pcb_attrib_compat_set_intconn(pcb_attribute_list_t *dst, int intconn)
 
 
 
-/*** undoable attribute set/del */
+/*** undoable attribute set/del and rename ***/
 typedef struct {
 	pcb_attribute_list_t *list; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
 	char *name;
