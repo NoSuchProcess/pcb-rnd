@@ -7,7 +7,6 @@
 	- DOC: pool node on how to use pixmap for breadboading
 - FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
 	- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
-- BUG: propedit: place a text, select it, propedit(selection, geo), choose x, untick the abs checlbox, enter 1 mil, apply -> set absolute, not relative [report: Igor2, Evan]
 - BUG: bug_files/TODO/disj.rp: disjoint padstack when {c f} on the blue line [report: Igor2]
 - BUG: draw a line, arrow tool, hover -> editopoint marks; swtich tools using hotkey while hovering over the line -> editopoint marks are not removed [report: Igor2]
 - BUG: pcb_pixmap_alloc_insert_transformed() breaks above 90 and below 0 deg; use propedit to rotate a long narrow pixmap like doc/resources/header_600.png [report: Igor2]
