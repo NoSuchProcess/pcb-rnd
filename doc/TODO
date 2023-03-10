@@ -6,7 +6,6 @@
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
 	- DOC: pool node on how to use pixmap for breadboading
 - BUG: bug_files/TODO/disj.rp: disjoint padstack when {c f} on the blue line [report: Igor2]
-- BUG: draw a line, arrow tool, hover -> editopoint marks; swtich tools using hotkey while hovering over the line -> editopoint marks are not removed [report: Igor2]
 - BUG: pcb_pixmap_alloc_insert_transformed() breaks above 90 and below 0 deg; use propedit to rotate a long narrow pixmap like doc/resources/header_600.png [report: Igor2]
 - CAM related:
 	- BUG: cam export: doc_png bottom side is drawn looking from the top -> copper is over silk; figure how to flip in cam [report: aron]
