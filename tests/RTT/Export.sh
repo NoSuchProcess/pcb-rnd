@@ -141,6 +141,7 @@ move_out()
 				s@%%Creator:.*@%%Creator: pcb-rnd@
 				s@%%Version:.*@%%Version: ver@
 				s@^[(]Created on.*@(Created on date@
+				/^matrix defaultmatrix setmatrix/ d;
 			' $raw_out
 			;;
 		gcode)
