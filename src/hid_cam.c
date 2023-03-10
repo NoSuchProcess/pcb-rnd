@@ -263,6 +263,8 @@ static void read_out_params(pcb_cam_t *dst, char **str)
 				dst->flip_x = 1;
 			else if (strcmp(curr, "flip_y") == 0)
 				dst->flip_y = 1;
+			else if (strcmp(curr, "force_nonempty") == 0)
+				dst->force_nonempty = 1;
 			else
 				rnd_message(RND_MSG_ERROR, "CAM: ignoring unknown global parameter [%s]\n", curr);
 		}
@@ -359,6 +361,13 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, cons
 	free(dst->inst);
 	dst->inst = NULL;
 	return -1;
+}
+
+rnd_bool pcb_cam_layergrp_is_empty(pcb_cam_t *dst, pcb_board_t *PCB, rnd_layergrp_id_t group)
+{
+	if (dst->force_nonempty)
+		return 0;
+	return pcb_layergrp_is_empty(PCB, group);
 }
 
 int pcb_cam_end(pcb_cam_t *dst)

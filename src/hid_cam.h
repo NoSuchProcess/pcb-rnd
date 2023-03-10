@@ -23,6 +23,7 @@ typedef struct pcb_cam_s {
 	unsigned int okempty_group:1;   /* do not warn if no group exported */
 	unsigned flip_x:1;
 	unsigned flip_y:1;
+	unsigned force_nonempty:1;      /* export even if layer group is empty */
 
 	/* private/internal/cache */
 	const char *fn_template;
@@ -96,5 +97,9 @@ void pcb_derive_default_filename(const char *pcbfile, rnd_hid_attr_val_t *dest, 
 /* Same as pcb_derive_default_filename() but returns an allocated string
    directly, instead  of manipulating an attribute */
 char *pcb_derive_default_filename_(const char *pcbfile, const char *suffix);
+
+/* Returns whether the layer groups hould be considered empty; most of the times
+   this matches pcb_layergrp_is_empty(), but cam may override this */
+rnd_bool pcb_cam_layergrp_is_empty(pcb_cam_t *dst, pcb_board_t *PCB, rnd_layergrp_id_t group);
 
 #endif
