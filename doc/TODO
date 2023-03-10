@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- ANNOUNCE: cam upgrade (doc_eps, doc_ps, the ps export fix in librnd)
 + FEATURE: expose DOTDIR (~/.pcb-rnd, as ./configured) in the conf tree in so $(rc.path.user_dotdir) would work [report: Ade]
 - CLEANUP/FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
@@ -10,8 +11,7 @@
 - CAM related:
 	+ BUG: cam export: doc_png bottom side is drawn looking from the top -> copper is over silk; figure how to flip in cam [report: aron]
 	- BUG: bug_files/TODO/emptyfab.rp, -x cam gerber:JLC_PCB emptyfab.rp -> no .fab file; layer is considered empty because draw_fab is a side effect [report: Bdale]
-	- FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
-		- BUG: ps cam export multiple layers into a single file re-exports scale for each group, making second group unreadably small
+	+ FEATURE: doc_ps cam export job, see bug_files/TODO/doc_ps.diff [report: aron]
 - BUG: bug_files/TODO/derive.rp, edit pstk proto, add mask shape, derive -> derived polygon is broken (invalid coords) [report: Scott]
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	- happens when subc is removed from pcb_removelist
