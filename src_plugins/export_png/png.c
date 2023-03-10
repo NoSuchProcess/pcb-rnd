@@ -390,7 +390,8 @@ void png_hid_export_to_file(rnd_design_t *dsg, FILE *the_file, rnd_hid_attr_val_
 	if (options[HA_as_shown].lng)
 		pcb_draw_setup_default_gui_xform(xform);
 	if (!options[HA_as_shown].lng) {
-		rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
+		if (!png_cam.active)
+			rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 		qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 
