@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 2004 harry eaton
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,7 +41,9 @@
 #include "layer_addr.h"
 #include "layer_vis.h"
 #include "plug_io.h"
+#include "conf_core.h"
 #include <librnd/core/misc_util.h>
+#include <librnd/core/rnd_conf.h>
 
 htsp_t *pcb_cam_vars = NULL; /* substitute %% variables from this hash */
 
@@ -257,6 +259,10 @@ static void read_out_params(pcb_cam_t *dst, char **str)
 				dst->okempty_group = 1;
 			else if (strcmp(curr, "okempty-content") == 0)
 				dst->okempty_content = 1;
+			else if (strcmp(curr, "flip_x") == 0)
+				dst->flip_x = 1;
+			else if (strcmp(curr, "flip_y") == 0)
+				dst->flip_y = 1;
 			else
 				rnd_message(RND_MSG_ERROR, "CAM: ignoring unknown global parameter [%s]\n", curr);
 		}
@@ -339,6 +345,12 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, cons
 			}
 		}
 	}
+
+	if (dst->flip_x)
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 1);
+	if (dst->flip_y)
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 1);
+	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, (dst->flip_x ^ dst->flip_y));
 
 	dst->active = 1;
 	return 0;

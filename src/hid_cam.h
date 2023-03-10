@@ -21,6 +21,8 @@ typedef struct pcb_cam_s {
 
 	unsigned int okempty_content:1; /* do not warn if no objects exported (but group exists) */
 	unsigned int okempty_group:1;   /* do not warn if no group exported */
+	unsigned flip_x:1;
+	unsigned flip_y:1;
 
 	/* private/internal/cache */
 	const char *fn_template;
