@@ -9,7 +9,6 @@
 - BUG: bug_files/TODO/disj.rp: disjoint padstack when {c f} on the blue line [report: Igor2]
 - BUG: pcb_pixmap_alloc_insert_transformed() breaks above 90 and below 0 deg; use propedit to rotate a long narrow pixmap like doc/resources/header_600.png [report: Igor2]
 + BUG: CAM: bug_files/TODO/emptyfab.rp, -x cam gerber:JLC_PCB emptyfab.rp -> no .fab file; layer is considered empty because draw_fab is a side effect [report: Bdale]
-+ BUG: CAM: doc_eps has bottom side mirrored unlike doc_png [report: aron]
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	- happens when subc is removed from pcb_removelist
 	- subc line is probably added but not removed from pcb_removelist's rtrees
