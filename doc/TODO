@@ -10,7 +10,6 @@
 - BUG: pcb_pixmap_alloc_insert_transformed() breaks above 90 and below 0 deg; use propedit to rotate a long narrow pixmap like doc/resources/header_600.png [report: Igor2]
 + BUG: CAM: bug_files/TODO/emptyfab.rp, -x cam gerber:JLC_PCB emptyfab.rp -> no .fab file; layer is considered empty because draw_fab is a side effect [report: Bdale]
 - BUG: CAM: doc_eps has bottom side mirrored unlike doc_png [report: aron]
-- BUG: bug_files/TODO/derive.rp, edit pstk proto, add mask shape, derive -> derived polygon is broken (invalid coords) [report: Scott]
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	- happens when subc is removed from pcb_removelist
 	- subc line is probably added but not removed from pcb_removelist's rtrees
@@ -74,6 +73,12 @@
 	- BUG: bug_files/line-arc-del-assert.rp load layout, delete right most vertical, line, poly validity assert ensues [report: Erich]
 	- BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most horizontal line, note strange clipping that shorts across adjacent arc [report: Erich]
 	- BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most arc, note strange clipping that across where arc used to be [report: Erich]
+	- BUG: bug_files/TODO/derive.rp, edit pstk proto, add mask shape, derive -> derived polygon is broken (invalid coords) [report: Scott]
+		-> happens because of colinear neighbor edges becoming redundant points in a subsequent iteration
+		-> simpler test file: bug_files/Poly_rewrite/offs1.rp, line 211, two vetices on the bottom side of the triangle
+		-> simpler reprodtion: just grow the coper shape by 10 mil
+		-> fix: in rnd_polo_offs() remove all redudnant vertices and subsequent vertices with the same norm in a loop before the main loop
+		-> this in turn needs rnd_polo_offs() to modify num_pts, which should be a pointer maybe
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: openems mesher: do not ignore padstack copper [report: Evan]
