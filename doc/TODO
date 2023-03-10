@@ -28,10 +28,7 @@
 - BUG: multiple coils in intnoconn-bug.rp using intnoconn-bug-actual.net reflecting partion of circuit intnoconn-bug.rs should behave like intnoconn-net-desired.net. shorts being declared with no connections apparent. Coils use different intonoconn groups, and different UIDs to no avail [report: Erich]
 	-> the bug is that the rat line end falling at the endpoint of the line at the boundary of two intnoconn sections shorts the two sections
 - BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
-- BUG: bug_files/line-arc-del-assert.rp load layout, delete right most vertical, line, poly validity assert ensues [report: Erich]
-- BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most horizontal line, note strange clipping that shorts across adjacent arc [report: Erich]
-- BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most arc, note strange clipping that across where arc used to be [report: Erich]
-- BUG: on a layout with no negative soldermask layer but a positive solder mask layer, the solder mask layer of a padstack in a subcircuit is discarded on load, preventing it from being used during CAM export in combination with the positive soldermask layer [report: Erich] 
+- BUG: on a layout with no negative soldermask layer but a positive solder mask layer, the solder mask layer of a padstack in a subcircuit is discarded on load, preventing it from being used during CAM export in combination with the positive soldermask layer [report: Erich]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
@@ -72,9 +69,13 @@
 
 3. Long term ===============================================================================
 - multi: merge sch-rnd r4718 for proper multiboard support later
-- BUG: in poly lib rewrite: bug_files/Poly_rewrite/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
-- BUG: in poly lib rewrite: bug_files/Poly_rewrite/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
-- BUG: in poly lib rewrite: bug_files/Poly_rewrite/intersect.* (thin hair gerber bug) [report: cuvoodoo]
+- poly lib rewrite:
+	- BUG: bug_files/Poly_rewrite/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
+	- BUG: bug_files/Poly_rewrite/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
+	- BUG: bug_files/Poly_rewrite/intersect.* (thin hair gerber bug) [report: cuvoodoo]
+	- BUG: bug_files/line-arc-del-assert.rp load layout, delete right most vertical, line, poly validity assert ensues [report: Erich]
+	- BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most horizontal line, note strange clipping that shorts across adjacent arc [report: Erich]
+	- BUG: bug_files/line-arc-del-assert.rp load layout, delete bottom most arc, note strange clipping that across where arc used to be [report: Erich]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: openems mesher: do not ignore padstack copper [report: Evan]
