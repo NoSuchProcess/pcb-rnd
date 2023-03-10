@@ -505,6 +505,8 @@ static int ps_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return rnd_hid_parse_command_line(argc, argv);
 }
 
+extern int rnd_ps_faded;
+
 static int ps_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	gds_t tmp_ln;
@@ -544,6 +546,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp
 	global.is_assy = PCB_LAYER_IS_ASSY(flags, purpi);
 	global.is_copper = !!(flags & PCB_LYT_COPPER);
 	global.is_paste = !!(flags & PCB_LYT_PASTE);
+	rnd_ps_faded = ((xform != NULL) && (*xform != NULL) && (*xform)->layer_faded);
 
 #if 0
 	printf("Layer %s group %d drill %d mask %d\n", name, group, global.ps.is_drill, global.ps.is_mask);
