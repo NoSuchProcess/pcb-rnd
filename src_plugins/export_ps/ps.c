@@ -431,6 +431,8 @@ void ps_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val_
 	rnd_ps_end_pages(&global.ps);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
+
+	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
 static void ps_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)

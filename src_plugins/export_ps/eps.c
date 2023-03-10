@@ -271,6 +271,8 @@ void eps_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_hid_attr_val
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	options_ = NULL;
+
+	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
 static void eps_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
