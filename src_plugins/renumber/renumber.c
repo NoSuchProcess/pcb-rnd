@@ -145,7 +145,9 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		rnd_coord_t ox, oy;
-		
+
+		if (subc->extobj != NULL) continue;
+
 		if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
 			ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2)/2;
 			oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2)/2;
