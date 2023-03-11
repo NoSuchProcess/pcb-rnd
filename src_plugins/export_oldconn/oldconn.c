@@ -198,6 +198,8 @@ static void pcb_lookup_unused_pins(FILE *f, int do_select)
 {
 	PCB_SUBC_LOOP(PCB->Data);
 	{
+		if (subc->extobj != NULL) continue;
+
 		print_select_unused_subc_terms(f, subc, do_select);
 	}
 	PCB_END_LOOP;
