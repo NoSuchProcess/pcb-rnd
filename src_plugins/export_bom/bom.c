@@ -191,6 +191,8 @@ static int bom_print(void)
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
+		if (subc->extobj != NULL) continue;
+
 		/* insert this component into the bill of materials list */
 		bom = bom_insert((char *) RND_UNKNOWN(subc->refdes),
 			(char *) RND_UNKNOWN(pcb_subc_name(subc, "bom::footprint")),
