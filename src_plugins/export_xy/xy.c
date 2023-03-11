@@ -832,6 +832,9 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 		int bott;
+
+		if (subc->extobj != NULL) continue;
+
 		ctx.count++;
 
 		ctx.pad_w = ctx.pad_h = 0;
