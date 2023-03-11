@@ -247,6 +247,8 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 	PCB_SUBC_LOOP(PCB->Data); {
 		int good = 0;
 
+		if (subc->extobj != NULL) continue;
+
 		if (stl_model_print(pcb, outf, maxy, z0, z1, &models, subc, &first, fmt, fmt) != 0) {
 			const stl_fmt_t **n; /* fallback: try all other formats */
 			for(n = fmt_all; *n != NULL; n++) {
