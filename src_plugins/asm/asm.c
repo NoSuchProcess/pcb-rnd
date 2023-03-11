@@ -294,6 +294,8 @@ static void asm_extract(vtp0_t *dst, pcb_data_t *data, const char *group_templat
 		char *grp, *srt;
 		group_t *g;
 
+		if (subc->extobj != NULL) continue;
+
 		if ((qn != NULL) && asm_extract_exclude(&ec, qn, &qit, data, subc))
 			continue;
 
