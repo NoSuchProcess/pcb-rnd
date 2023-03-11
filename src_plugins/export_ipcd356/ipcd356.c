@@ -379,6 +379,8 @@ static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 
 	ipcd356_write_head(&ctx);
 	PCB_SUBC_LOOP(pcb->Data); {
+		if (subc->extobj != NULL) continue;
+
 TODO("subc: subc-in-subc")
 		PCB_PADSTACK_LOOP(subc->data); {
 			ipcd356_write_pstk(&ctx, subc, padstack);
