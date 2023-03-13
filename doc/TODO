@@ -21,8 +21,6 @@
 	- BUG: erratic intnoconn {c r} behaviour. See intnoconn-test.rs, exported intnoconn-test-net.net and intnoconn-test.rp using imported net. load the .rp and use {c r}. note shorts flagged by intnoconn sections. move resistor from layout margins onto layout area and use {c r}. shorts no longer found. Seems to be a failure to allocate intnoconn groups to terminals outside the layout area when there is more than one of the same subc using an intnoconn group. Does not happen with intnoconn-test2.rp which uses different coil subcs; see also intnoconn-test-net2.rp; also identical coils but with different intnoconn group numbers seem to behave properly [report: Erich]
 		-> redundant: same as above; doesn't depend on drawing area but location of resistor compared to the coil
 - BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
-/ BUG: on a layout with no negative soldermask layer but a positive solder mask layer, the solder mask layer of a padstack in a subcircuit is discarded on load, preventing it from being used during CAM export in combination with the positive soldermask layer [report: Erich]
-	-> can't reproduce; this doesn't depend on pos/neg but whether "auto" is set on the layer
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
