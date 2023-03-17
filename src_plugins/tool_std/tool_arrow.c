@@ -40,6 +40,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include <librnd/core/actions.h>
+#include <librnd/core/hidlib.h>
 #include "remove.h"
 #include "move.h"
 #include "search.h"
@@ -67,6 +68,9 @@ static void click_timer_cb(rnd_hidval_t hv)
 {
 	rnd_design_t *hl = hv.ptr;
 	pcb_board_t *pcb = hv.ptr;
+
+	if (hl != rnd_multi_get_current()) /* switched away or unloaded in the meantime */
+		return;
 
 	if (hl->tool_click) {
 		rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
