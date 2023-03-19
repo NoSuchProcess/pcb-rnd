@@ -20,7 +20,6 @@
 	- BUG: erratic intnoconn {c r} behaviour. See intnoconn-test.rs, exported intnoconn-test-net.net and intnoconn-test.rp using imported net. load the .rp and use {c r}. note shorts flagged by intnoconn sections. move resistor from layout margins onto layout area and use {c r}. shorts no longer found. Seems to be a failure to allocate intnoconn groups to terminals outside the layout area when there is more than one of the same subc using an intnoconn group. Does not happen with intnoconn-test2.rp which uses different coil subcs; see also intnoconn-test-net2.rp; also identical coils but with different intnoconn group numbers seem to behave properly [report: Erich]
 		-> redundant: same as above; doesn't depend on drawing area but location of resistor compared to the coil
 - BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
-+ BUG: start pcb-rnd; {f o}, file selection window defaults to showing "rs/lihata" files [report: Erich]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
