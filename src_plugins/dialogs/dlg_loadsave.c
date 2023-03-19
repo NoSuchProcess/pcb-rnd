@@ -64,7 +64,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static const char *pat_pcb[] = {"*.pcb", NULL};
 	static const char *pat_tdx[] = {"*.tdx", NULL};
 	static const rnd_hid_fsd_filter_t flt_brd[] = {
-			{"rs/lihata", "rs/lihata", pat_lht},
+			{"rp/lihata", "rp/lihata", pat_lht},
 			{"pcb",       "pcb", pat_pcb},
 			{"tEDAx",     "tEDAx", pat_tdx},
 			{"all",       NULL, flt_any},
