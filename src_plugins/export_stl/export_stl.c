@@ -442,7 +442,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	contlen = pa_len(brdpoly->Clipped);
 	mem_req = fp2t_memory_required(contlen + pstk_points + cutout_points);
 	mem = calloc(mem_req, 1);
-	if (!fp2t_init(&tri, mem, contlen + pstk_points)) {
+	if (!fp2t_init(&tri, mem, contlen + pstk_points + cutout_points)) {
 		free(mem);
 		pcb_poly_free(brdpoly);
 		pcb_dynflag_free(df);
