@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: bug_files/TODO/disj.rp: disjoint padstack when {c f} on the blue line [report: Igor2]
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	-> happens when subc is removed from pcb_removelist
 	-> subc line is probably added but not removed from pcb_removelist's rtrees
