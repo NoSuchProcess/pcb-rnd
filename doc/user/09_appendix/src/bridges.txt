@@ -1,7 +1,7 @@
-               *io--------------------------------------------------------+
-               |[kica    ]        [gpcb  ] [hyp_]  [gsch] [ alti ] [dsn_ ]|
-               |         [  tedax  ]   [pads]  [fido]  [prtl]   [eagl]    |
-               +----------------------------------------------------------+
+           *io------------------------------------------------------------+
+           |    [kica    ]        [gpcb  ] [hyp_]  [gsch] [ alti ] [dsn_ ]|
+           |[schr]       [  tedax  ]   [pads]  [fido]  [prtl]   [eagl]    |
+           +--------------------------------------------------------------+
 *inp----+                                                                        *hid--------+
 |[eesc ]|   *pcbrnd----------------------------------------------------------+   |[batch  ]  |
 |[mucs ]|   |                                                                |   |           |
@@ -83,7 +83,7 @@ OA
 	label mucs PCB\nautorouter
 
 [lept]
-	label Lepton EDA\ngschem
+	label Lepton EDA
 
 [ltsp]
 	label LTSpice
@@ -142,6 +142,9 @@ OA
 
 [gsch]
 	label gEDA\ngschem
+
+[schr]
+	label sch-rnd
 
 [kica]
 	label kicad\npcbnew
@@ -365,6 +368,9 @@ OA
 	label board
 
 <-> gsch.s pcbrnd
+	label schematics
+
+<-> schr.s pcbrnd
 	label schematics
 
 <-> gpcb.s-0.2 pcbrnd
