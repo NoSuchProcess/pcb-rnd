@@ -126,6 +126,9 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 	sy1 = pcb_xform_y(mx, -(ipm->sx/2)-1, (ipm->sy/2)-1) * 2;
 	sy2 = pcb_xform_y(mx, -(ipm->sx/2)-1, -(ipm->sy/2)+1) * 2;
 
+	sx1 = RND_ABS(sx1); sx2 = RND_ABS(sx2);
+	sy1 = RND_ABS(sy1); sy2 = RND_ABS(sy2);
+
 	opm->sx = sx1 > sx2 ? sx1 : sx2;
 	opm->sy = sy1 > sy2 ? sy1 : sy2;
 
