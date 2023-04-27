@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.0.6-dev (svn r36663) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 3.2.0 running with librnd version 3.2.0 ,  Revision: 36844
+This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.1-dev running with librnd version 4.0.1-dev ,  Revision: 37377
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -236,7 +236,7 @@ This is pcb-rnd 3.0.6-dev (svn r36663) an interactive printed circuit board edit
 <tr><td>LoadFpcbnlFrom</td><td>Loads the specified freepcb netlist.</td><td>LoadFpcbnlFrom(filename)</td><td>fpcb_nl importer</td>
 <tr><td><a href="action_details.html#loadfrom">LoadFrom</a></td><td>Load layout data from a file.</td><td>LoadFrom(Layout|LayoutToBuffer|SubcToBuffer|Netlist|Revert,filename[,format])</td><td></td>
 <tr><td>LoadHpglFrom</td><td>Loads the specified hpgl plot file to the current buffer</td><td>LoadHpglFrom(filename)</td><td>hpgl importer</td>
-<tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename[, "debug"]...)</td><td>hyp importer</td>
+<tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename)</td><td>hyp importer</td>
 <tr><td>LoadIpc356From</td><td>Loads the specified IPC356-D netlist</td><td>LoadIpc356From(filename, [nonet], [nopad], [nosubc])</td><td>ipcd356 importer</td>
 <tr><td>LoadLtspiceFrom</td><td>Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.</td><td>LoadLtspiceFrom(filename)</td><td>ltspice importer</td>
 <tr><td>LoadMentorFrom</td><td>Loads the specified Mentor Graphics Design Capture schematics flat .edf file.</td><td>LoadMentorFrom(filename)</td><td>mentor_sch importer</td>
@@ -253,6 +253,7 @@ This is pcb-rnd 3.0.6-dev (svn r36663) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file. If second argument is "yes" or "pure", load in pure mode without side effects: do not reset or apply, only incrementally load.</td><td>LoadVendorFrom(filename, [yes|no])</td><td>vendor drill mapping</td>
 <tr><td>Log</td><td>Manages the central, in-memory log.</td><td>Log(clear, [fromID, [toID])<br>Log(export, [filename, [text|lihata])</td><td></td>
 <tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>lib_hid_common plugin</td>
+<tr><td>LogGui</td><td>Log() action GUI section</td><td>LogGui(export, [filename, [text|lihata])</td><td></td>
 <tr><td>lua</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#m">m</a></td><td>Loads a layout into the current buffer.</td><td>m [name]</td><td>shand_cmd plugin</td>
 <tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>lib_hid_common plugin</td>
@@ -296,7 +297,7 @@ This is pcb-rnd 3.0.6-dev (svn r36663) an interactive printed circuit board edit
 <tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>pas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#pastebuffer">PasteBuffer</a></td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|MoveSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(SaveAll, Filename, [format])<br>PasteBuffer(LoadAll, Filename)<br>PasteBuffer(Push)<br>PasteBuffer(Pop)<br>PasteBuffer(GetSource, [1..PCB_MAX_BUFFER])</td><td></td>
-<tr><td>PCBChanged</td><td>Tells the GUI that the whole PCB has changed. The optional "revert"parameter can be used as a hint to the GUI that the same design is beingreloaded, and that it might keep some viewport settings</td><td>PCBChanged([revert])</td><td>oldactions plugin</td>
+<tr><td>PCBChanged</td><td>Tells the GUI that the whole PCB has changed. The "revert"parameter is deprecated but kept for compatibility and is ignored.</td><td>PCBChanged([revert])</td><td>oldactions plugin</td>
 <tr><td>PcbDelete</td><td></td><td>Alias to Delete()</td><td></td>
 <tr><td>pcbsplit</td><td>Split objects (idpath or idpath list) with cutting edges (idpath or idpath list), returning the idpath list of the newly created objects</td><td>PcbSplit(cutting_edges, objs)</td><td>ddraft plugin</td>
 <tr><td>pcb_acos</td><td></td><td></td><td>script plugin</td>
@@ -339,7 +340,7 @@ This is pcb-rnd 3.0.6-dev (svn r36663) an interactive printed circuit board edit
 <tr><td>propedit</td><td></td><td>propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|subc|selection|selected)</td><td>propedit</td>
 <tr><td>propget</td><td>Return the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().</td><td>propget([scope], name, [stattype])</td><td>propedit</td>
 <tr><td>propprint</td><td>Print a property map of objects matching the scope. Scope is documented at PropEdit().</td><td>PropPrint([scope])</td><td>propedit</td>
-<tr><td>propset</td><td>Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, value)</td><td>propedit</td>
+<tr><td>propset</td><td>Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit(). Existing attributes can be renamed to value by using a name rename/a/old_name, where old_name is the current name of the attribute.</td><td>propset([scope], name, value)</td><td>propedit</td>
 <tr><td>proptoggle</td><td>Toggle the named property of scope or all selected objects, assuming the property is boolean. Scope is documented at PropEdit(). If create is true, non-existing attributes are created as true.</td><td>proptoggle([scope], name, [create])</td><td>propedit</td>
 <tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([auto|board|subcid|object], [retpid, [preselect]])</td><td>dialogs plugin</td>
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the idpath of the new object or 0 on error.</td><td>PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
@@ -385,7 +386,7 @@ This is pcb-rnd 3.0.6-dev (svn r36663) an interactive printed circuit board edit
 <tr><td>rnd_toolbar_init</td><td>For ringdove apps: initialize the toolbar.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>rnd_toolbar_uninit</td><td>For ringdove apps: uninitialize the toolbar.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>rnd_zoom</td><td>Change zoom level (relative, absolute, window, ...)</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(?)<br>Zoom(get)</td><td>lib_hid_common plugin</td>
-<tr><td><a href="action_details.html#rotate90">Rotate90</a></td><td>Rotates the object under the crosshair by 90 degree steps.</td><td>pcb_move_obj(steps)</td><td></td>
+<tr><td><a href="action_details.html#rotate90">Rotate90</a></td><td>Rotates the object under the crosshair by 90 degree steps.</td><td>Rotate90(steps)</td><td></td>
 <tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
 <tr><td><a href="action_details.html#routestyle">RouteStyle</a></td><td>Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.</td><td>RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|font|via-proto|name], [value]])<br>RouteStyle(new, [name])</td><td></td>
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
