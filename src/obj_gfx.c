@@ -292,7 +292,7 @@ static int undo_gfx_geo_swap(void *udata)
 	rnd_swap(rnd_angle_t, g->rot, g->gfx->rot);
 
 	if (g->rot != g->gfx->rot)
-		g->gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, g->gfx->pxm_neutral, g->gfx->rot, g->gfx->xmirror, g->gfx->ymirror);
+		g->gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, g->gfx->pxm_neutral, g->gfx->rot, g->sx, g->sy, g->gfx->xmirror, g->gfx->ymirror);
 
 	pcb_gfx_update(g->gfx);
 	pcb_gfx_bbox(g->gfx);
@@ -489,7 +489,7 @@ void *pcb_gfx_destroy(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 void pcb_gfx_rotate90(pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	gfx->rot = rnd_normalize_angle(gfx->rot + Number * 90);
-	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->xmirror, gfx->ymirror);
+	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->sx, gfx->sy, gfx->xmirror, gfx->ymirror);
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 }
@@ -500,7 +500,7 @@ void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord
 		rnd_r_delete_entry(layer->gfx_tree, (rnd_box_t *) gfx);
 
 	gfx->rot = rnd_normalize_angle(gfx->rot + angle);
-	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->xmirror, gfx->ymirror);
+	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->sx, gfx->sy, gfx->xmirror, gfx->ymirror);
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 
@@ -620,7 +620,7 @@ void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, rnd_pixmap_t *pxm, rnd_bool undoabl
 {
 	TODO("gfx: undoable pixmap assign");
 	gfx->pxm_neutral = pcb_pixmap_insert_neutral_or_free(&pcb_pixmaps, pxm);
-	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->xmirror, gfx->ymirror);
+	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->sx, gfx->sy, gfx->xmirror, gfx->ymirror);
 	gfx->pxm_id = 0; /* no preference on the ID now */
 }
 
@@ -628,7 +628,7 @@ void pcb_gfx_set_pixmap_dup(pcb_gfx_t *gfx, const rnd_pixmap_t *pxm, rnd_bool un
 {
 	TODO("gfx: undoable pixmap assign");
 	gfx->pxm_neutral = pcb_pixmap_insert_neutral_dup(&PCB->hidlib, &pcb_pixmaps, pxm);
-	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->xmirror, gfx->ymirror);
+	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->sx, gfx->sy, gfx->xmirror, gfx->ymirror);
 	gfx->pxm_id = 0; /* no preference on the ID now */
 }
 

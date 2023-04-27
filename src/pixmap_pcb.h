@@ -53,7 +53,7 @@ rnd_pixmap_t *pcb_pixmap_insert_neutral_dup(rnd_design_t *hl, pcb_pixmap_hash_t 
 
 
 /* Allocate and render a transformed version of pm (or return the one from cache if already cached */
-rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *pm, rnd_angle_t rot, int xmirror, int ymirror);
+rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *pm, rnd_angle_t rot, rnd_coord_t render_sx, rnd_coord_t render_sy, int xmirror, int ymirror);
 
 
 /*** global state ***/

@@ -89,16 +89,27 @@ rnd_pixmap_t *pcb_pixmap_insert_neutral_dup(rnd_design_t *hl, pcb_pixmap_hash_t 
 	return r;
 }
 
-rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *ipm, rnd_angle_t rot, int xmirror, int ymirror)
+rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *ipm, rnd_angle_t rot, rnd_coord_t render_sx, rnd_coord_t render_sy, int xmirror, int ymirror)
 {
 	rnd_pixmap_t *opm;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
 	pcb_xform_mx_t mxr = PCB_XFORM_MX_IDENT;
 	long n, len, icx, icy, ocx, ocy, xo, yo, end, sx1, sx2, sy1, sy2;
 	unsigned char *o, *i;
+	double scx, iasp, rasp;
+	int scaled = 0;
 
 	if ((rot == 0) && !xmirror && !ymirror)
 		return ipm; /* xformed == neutral */
+
+	iasp = (double)ipm->sx / (double)ipm->sy;     /* input aspect */
+	rasp = (double)render_sx / (double)render_sy; /* rendering aspect */
+
+	if (fabs(iasp-rasp) > 0.001) {
+		scx = rasp/iasp;
+		scaled = 1;
+	}
+
 
 	opm = calloc(sizeof(rnd_pixmap_t), 1);
 	if (ipm->has_transp) {
@@ -116,10 +127,16 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 	opm->tr_yscale = 1.0;
 	opm->has_transp = 1;
 
-
 	TODO("gfx: apply mirrors");
+
+	if (scaled)
+		pcb_xform_mx_scale(mxr, 1.0/scx, 1.0);
+
 	pcb_xform_mx_rotate(mx, rot);
 	pcb_xform_mx_rotate(mxr, -rot);
+
+	if (scaled)
+		pcb_xform_mx_scale(mx, scx, 1.0);
 
 	sx1 = pcb_xform_x(mx, (ipm->sx/2)+1, (ipm->sy/2)+1) * 2;
 	sx2 = pcb_xform_x(mx, -(ipm->sx/2)-1, +(ipm->sy/2)+1) * 2;
@@ -170,7 +187,7 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 			/* out pixel is transparent if out-of-range or input pixel is transparent */
 			o[0] = opm->tr;
 			o[1] = opm->tg;
-			o[2] = opm->tb;
+			o[2] = opm->tb + ROT_DEBUG;
 		}
 		else {
 			o[0] = i[0];
