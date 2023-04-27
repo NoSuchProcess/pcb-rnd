@@ -483,7 +483,7 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 					PCB_FIND_CHECK(ctx, curr, n, ctype, return ctx->nfound);
 
 			if ((ctx->consider_rats || ctx->only_mark_rats) && (PCB->Data->rat_tree != NULL))
-				if (PCB->Data->padstack_tree != NULL)
+				if (PCB->Data->rat_tree != NULL)
 					for(n = rnd_rtree_first(&it, PCB->Data->rat_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 						PCB_FIND_CHECK_RAT(ctx, curr, n, PCB_FCT_RAT, return ctx->nfound);
 
