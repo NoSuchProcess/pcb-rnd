@@ -94,7 +94,7 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 	rnd_pixmap_t *opm;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
 	pcb_xform_mx_t mxr = PCB_XFORM_MX_IDENT;
-	long n, len, icx, icy, ocx, ocy, xo, yo, end;
+	long n, len, icx, icy, ocx, ocy, xo, yo, end, sx1, sx2, sy1, sy2;
 	unsigned char *o, *i;
 
 	if ((rot == 0) && !xmirror && !ymirror)
@@ -121,8 +121,13 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 	pcb_xform_mx_rotate(mx, rot);
 	pcb_xform_mx_rotate(mxr, -rot);
 
-	opm->sx = pcb_xform_x(mx, (ipm->sx/2)+1, (ipm->sy/2)+1) * 2;
-	opm->sy = pcb_xform_y(mx, -(ipm->sx/2)-1, (ipm->sy/2)-1) * 2;
+	sx1 = pcb_xform_x(mx, (ipm->sx/2)+1, (ipm->sy/2)+1) * 2;
+	sx2 = pcb_xform_x(mx, -(ipm->sx/2)-1, +(ipm->sy/2)+1) * 2;
+	sy1 = pcb_xform_y(mx, -(ipm->sx/2)-1, (ipm->sy/2)-1) * 2;
+	sy2 = pcb_xform_y(mx, -(ipm->sx/2)-1, -(ipm->sy/2)+1) * 2;
+
+	opm->sx = sx1 > sx2 ? sx1 : sx2;
+	opm->sy = sy1 > sy2 ? sy1 : sy2;
 
 	/* alloc and fill with transparent */
 	len = opm->sx * opm->sy * 3;
