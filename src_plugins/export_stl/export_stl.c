@@ -90,7 +90,9 @@ static const rnd_export_opt_t stl_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(stl_attribute_list)/sizeof(stl_attribute_list[0]))
 
-static rnd_hid_attr_val_t stl_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t stl_values_[NUM_OPTIONS];
+static rnd_hid_attr_val_t amf_values_[NUM_OPTIONS];
+static rnd_hid_attr_val_t proj_values_[NUM_OPTIONS];
 
 static long pa_len(const rnd_polyarea_t *pa)
 {
@@ -372,13 +374,13 @@ typedef struct {
 	stl_facet_t *(*model_load)(rnd_design_t *hl, FILE *f, const char *fn);
 } stl_fmt_t;
 
-static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, const stl_fmt_t *fmt, rnd_design_t *dsg, void *appspec)
+static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, const stl_fmt_t *fmt, rnd_hid_attr_val_t *values, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = fmt->suffix;
-	const char *val = stl_values[HA_stlfile].str;
+	const char *val = values[HA_stlfile].str;
 
 	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(dsg->loadname, &stl_values[HA_stlfile], suffix);
+		pcb_derive_default_filename(dsg->loadname, &values[HA_stlfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -398,17 +400,17 @@ static const stl_fmt_t *fmt_all[] = {&fmt_amf, &fmt_stl, &fmt_proj, NULL};
 
 static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
-	return stl_get_export_options_(hid, n, &fmt_stl, dsg, appspec);
+	return stl_get_export_options_(hid, n, &fmt_stl, stl_values_, dsg, appspec);
 }
 
 static const rnd_export_opt_t *amf_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
-	return stl_get_export_options_(hid, n, &fmt_amf, dsg, appspec);
+	return stl_get_export_options_(hid, n, &fmt_amf, amf_values_, dsg, appspec);
 }
 
 static const rnd_export_opt_t *proj_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
-	return stl_get_export_options_(hid, n, &fmt_proj, dsg, appspec);
+	return stl_get_export_options_(hid, n, &fmt_proj, proj_values_, dsg, appspec);
 }
 
 static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1, const stl_fmt_t *fmt)
@@ -531,7 +533,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	return 0;
 }
 
-static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, const stl_fmt_t *fmt, rnd_design_t *dsg, void *appspec)
+static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, const stl_fmt_t *fmt, rnd_hid_attr_val_t *values, rnd_design_t *dsg, void *appspec)
 {
 	const char *filename;
 	pcb_cam_t cam;
@@ -539,8 +541,8 @@ static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, const st
 	rnd_coord_t thick;
 
 	if (!options) {
-		stl_get_export_options_(hid, 0, fmt, dsg, appspec);
-		options = stl_values;
+		stl_get_export_options_(hid, 0, fmt, values, dsg, appspec);
+		options = values;
 	}
 
 	filename = options[HA_stlfile].str;
@@ -574,17 +576,17 @@ static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, const st
 
 static void stl_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
-	stl_do_export_(hid, options, &fmt_stl, design, appspec);
+	stl_do_export_(hid, options, &fmt_stl, stl_values_, design, appspec);
 }
 
 static void amf_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
-	stl_do_export_(hid, options, &fmt_amf, design, appspec);
+	stl_do_export_(hid, options, &fmt_amf, amf_values_, design, appspec);
 }
 
 static void proj_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
-	stl_do_export_(hid, options, &fmt_proj, design, appspec);
+	stl_do_export_(hid, options, &fmt_proj, proj_values_, design, appspec);
 }
 
 static int stl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
@@ -628,7 +630,7 @@ int pplg_init_export_stl(void)
 	stl_hid.get_export_options = stl_get_export_options;
 	stl_hid.do_export = stl_do_export;
 	stl_hid.parse_arguments = stl_parse_arguments;
-	stl_hid.argument_array = stl_values;
+	stl_hid.argument_array = stl_values_;
 
 	stl_hid.usage = stl_usage;
 
@@ -641,6 +643,7 @@ int pplg_init_export_stl(void)
 	amf_hid.description = "export board outline in 3-dimensional AMF";
 	amf_hid.get_export_options = amf_get_export_options;
 	amf_hid.do_export = amf_do_export;
+	amf_hid.argument_array = amf_values_;
 
 	rnd_hid_register_hid(&amf_hid);
 	rnd_hid_load_defaults(&amf_hid, stl_attribute_list, NUM_OPTIONS);
@@ -651,6 +654,7 @@ int pplg_init_export_stl(void)
 	proj_hid.description = "export board outline as a projector(1) object for 3d rendering";
 	proj_hid.get_export_options = proj_get_export_options;
 	proj_hid.do_export = proj_do_export;
+	proj_hid.argument_array = proj_values_;
 
 	rnd_hid_register_hid(&proj_hid);
 	rnd_hid_load_defaults(&proj_hid, stl_attribute_list, NUM_OPTIONS);
