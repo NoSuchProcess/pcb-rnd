@@ -259,10 +259,16 @@ static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df
 		int purpi = pcb_layer_purpose(pcb, lid, NULL);
 		pcb_layer_t *layer = &pcb->Data->Layer[lid];
 		pcb_poly_t *poly;
+		pcb_line_t *line;
+		pcb_arc_t *arc;
+		rnd_rtree_it_t it;
+		
 
 		if (!PCB_LAYER_IS_ROUTE(lyt, purpi)) continue;
 /*		rnd_trace("Outline [%ld]\n", lid);*/
-		PCB_LINE_LOOP(layer) {
+
+		if (layer->line_tree != NULL)
+		for(line = rnd_rtree_all_first(&it, layer->line_tree); line != NULL; line = rnd_rtree_all_next(&it)) {
 			if (PCB_DFLAG_TEST(&line->Flags, df)) continue; /* object already found - either as outline or as a cutout */
 			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)line, PCB_TOPOLY_FLOATING, df);
 			if (poly != NULL) {
@@ -272,15 +278,18 @@ static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df
 			else
 				rnd_message(RND_MSG_ERROR, "Cutout error: need closed loops; cutout omitted\n(Hint: use the wireframe draw mode to see broken connections; use a coarse grid and snap to fix them up!)\n");
 /*			rnd_trace(" line: %ld %d -> %p\n", line->ID, PCB_DFLAG_TEST(&line->Flags, df), poly);*/
-		} PCB_END_LOOP;
-		PCB_ARC_LOOP(layer) {
+		}
+
+		if (layer->arc_tree != NULL)
+		for(arc = rnd_rtree_all_first(&it, layer->arc_tree); arc != NULL; arc = rnd_rtree_all_next(&it)) {
 			if (PCB_DFLAG_TEST(&arc->Flags, df)) continue; /* object already found - either as outline or as a cutout */
 			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)arc, PCB_TOPOLY_FLOATING, df);
 			vtp0_append(cutouts, poly);
 			cnt += poly_len(poly);
 /*			rnd_trace(" arc: %ld %d -> %p\n", arc->ID, PCB_DFLAG_TEST(&arc->Flags, df), poly);*/
-		} PCB_END_LOOP;
+		}
 	}
+
 	return cnt;
 }
 
