@@ -386,7 +386,7 @@ static rnd_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 		} \
 	} while(0)
 
-#define PCB_FIND_CHECK_RAT(ctx, curr, obj, ctype, retstmt) \
+#define PCB_FIND_CHECK_RAT_GEO(ctx, curr, obj, ctype, retstmt) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!pcb_find_mark_get(ctx, __obj__, (curr))) { \
@@ -397,6 +397,35 @@ static rnd_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 			} \
 		} \
 	} while(0)
+
+#define PCB_FIND_CHECK_RAT_IDP(ctx, curr, rat, ctype, retstmt) \
+	do { \
+		int n; \
+		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)rat; \
+		for(n = 0; n < 2; n++) { \
+			if (pcb_idpath_obj_match(ctx->pcb, rat->anchor[n], curr)) { \
+				if (pcb_find_addobj(ctx, __obj__, curr, ctype, ctx->consider_rats) != 0) { retstmt; } \
+				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
+					find_int_conn(ctx, __obj__); \
+			} \
+		} \
+	} while(0)
+
+
+/* If anchors are available, check object idpath against the anchor instead
+   of fiding intersections; this is safer because other objects on the same
+   point/layer can be present; corner case: two nointconn lines intersect
+   at their endpoints and a rat is drawn to one of them - if we go by _GEO(),
+   the rat's endpoint still connects them! */
+#define PCB_FIND_CHECK_RAT(ctx, curr, obj, ctype, retstmt) \
+	do { \
+		pcb_rat_t *rat = (pcb_rat_t *)obj; \
+		if ((rat->anchor[0] != NULL) && (rat->anchor[1] != NULL)) \
+			PCB_FIND_CHECK_RAT_IDP(ctx, curr, rat, ctype, retstmt); \
+		else \
+			PCB_FIND_CHECK_RAT_GEO(ctx, curr, obj, ctype, retstmt); \
+	} while(0)
+
 
 void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, rnd_rtree_box_t *sb, pcb_found_conn_type_t ctype)
 {

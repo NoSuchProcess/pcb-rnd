@@ -268,6 +268,19 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 	return rnd_false;
 }
 
+/* If anchors are available: return true if obj is one of the two anchors, else
+   return false. If no anchors, don't do anything */
+#define PCB_ISC_RAT_BY_IDPATH(ctx, rat, obj) \
+	do { \
+		if ((rat->anchor[0] != NULL) && (rat->anchor[1] != NULL)) { \
+			int n; \
+			for(n = 0; n < 2; n++) \
+				if (pcb_idpath_obj_match(ctx->pcb, rat->anchor[n], (obj))) \
+					return rnd_true; \
+			return rnd_false; \
+		} \
+	} while(0)
+
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point or center point
  */
@@ -292,6 +305,8 @@ static rnd_bool pcb_isc_ratp_line(const pcb_find_t *ctx, rnd_point_t *Point, pcb
 static rnd_bool pcb_isc_rat_line(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_line_t *line)
 {
 	rnd_layergrp_id_t gid = pcb_layer_get_group_(line->parent.layer);
+
+	PCB_ISC_RAT_BY_IDPATH(ctx, rat, (pcb_any_obj_t *)line);
 
 	if ((rat->group1 == gid) && pcb_isc_ratp_line(ctx, &rat->Point1, line))
 		return rnd_true;
@@ -329,6 +344,8 @@ static rnd_bool pcb_isc_ratp_arc(const pcb_find_t *ctx, rnd_point_t *Point, pcb_
 static rnd_bool pcb_isc_rat_arc(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_arc_t *arc)
 {
 	rnd_layergrp_id_t gid = pcb_layer_get_group_(arc->parent.layer);
+
+	PCB_ISC_RAT_BY_IDPATH(ctx, rat, (pcb_any_obj_t *)arc);
 
 	if ((rat->group1 == gid) && pcb_isc_ratp_arc(ctx, &rat->Point1, arc))
 		return rnd_true;
@@ -398,6 +415,8 @@ static rnd_bool pcb_isc_rat_poly(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_poly
 	rnd_layergrp_id_t gid = pcb_layer_get_group_(poly->parent.layer);
 	int donut = PCB_FLAG_TEST(PCB_FLAG_VIA, rat);
 
+	PCB_ISC_RAT_BY_IDPATH(ctx, rat, (pcb_any_obj_t *)poly);
+
 	if ((rat->group1 == gid) && pcb_isc_ratp_poly(ctx, &rat->Point1, poly, donut))
 		return rnd_true;
 	if ((rat->group2 == gid) && pcb_isc_ratp_poly(ctx, &rat->Point2, poly, donut))
@@ -409,6 +428,10 @@ static rnd_bool pcb_isc_rat_poly(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_poly
 /* Tests any end of a rat line is on the other rat */
 static rnd_bool pcb_isc_rat_rat(const pcb_find_t *ctx, pcb_rat_t *r1, pcb_rat_t *r2)
 {
+
+/* Can't do this by idpath: a rat will never have another rat for anchor!
+	PCB_ISC_RAT_BY_IDPATH(ctx, r1, (pcb_any_obj_t *)r2); */
+
 	if ((r1->group1 == r2->group1) && (r1->Point1.X == r2->Point1.X) && (r1->Point1.Y == r2->Point1.Y))
 		return rnd_true;
 	if ((r1->group2 == r2->group2) && (r1->Point2.X == r2->Point2.X) && (r1->Point2.Y == r2->Point2.Y))
@@ -1419,6 +1442,8 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, 
 RND_INLINE rnd_bool_t pcb_isc_pstk_rat(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_rat_t *rat)
 {
 	pcb_board_t *pcb = PCB;
+
+	PCB_ISC_RAT_BY_IDPATH(ctx, rat, (pcb_any_obj_t *)ps);
 
 	if ((rat->Point1.X == ps->x) && (rat->Point1.Y == ps->y)) {
 		pcb_layer_t *layer = pcb_get_layer(pcb->Data, pcb->LayerGroups.grp[rat->group1].lid[0]);
