@@ -521,9 +521,9 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 
 	fmt->print_footer(f);
 
-	vtp0_uninit(&cutouts);
 	for(n = 0; n < cutouts.used; n++)
 		pcb_poly_free((pcb_poly_t *)cutouts.array[n]);
+	vtp0_uninit(&cutouts);
 	vtd0_uninit(&contours);
 	free(mem);
 	pcb_poly_free(brdpoly);
