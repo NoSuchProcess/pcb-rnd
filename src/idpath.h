@@ -3,7 +3,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -72,5 +72,8 @@ pcb root. Always has access to the buffers. Returns NULL on error. */
 pcb_any_obj_t *pcb_idpath2obj(pcb_board_t *pcb, const pcb_idpath_t *path);
 
 void pcb_idpath_list_clear(pcb_idpath_list_t *lst);
+
+/* Returns whether path is the obj's idpath; cheaper than pcb_idpath2obj() */
+rnd_bool pcb_idpath_obj_match(pcb_board_t *pcb, const pcb_idpath_t *path, pcb_any_obj_t *obj);
 
 #endif

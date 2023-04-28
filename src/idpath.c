@@ -3,7 +3,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@
 #include "data.h"
 #include "layer.h"
 #include "layer_ui.h"
+#include "obj_subc_parent.h"
 #include <librnd/core/rnd_printf.h>
 
 static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *numlevels)
@@ -286,3 +287,14 @@ pcb_idpath_t *pcb_idpath_dup(const pcb_idpath_t *path)
 }
 
 
+rnd_bool pcb_idpath_obj_match(pcb_board_t *pcb, const pcb_idpath_t *path, pcb_any_obj_t *obj)
+{
+	int n;
+	for(n = path->len-1; n >= 0; n--) {
+		if ((obj == NULL) || (obj->ID != path->id[n]))
+			return 0;
+		obj = (pcb_any_obj_t *)pcb_obj_parent_subc(obj);
+	}
+
+	return 1;
+}
