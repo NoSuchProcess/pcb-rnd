@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,2004,2006 Thomas Nau
- *  Copyright (C) 2016, 2017, 2020 Tibor 'Igor2' Palinkas (pcb-rnd extensions)
+ *  Copyright (C) 2016, 2017, 2020, 2023 Tibor 'Igor2' Palinkas (pcb-rnd extensions)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -911,6 +911,30 @@ static pcb_layer_t *pcb_layer_move_insert_(pcb_board_t *pcb, rnd_layer_id_t new_
 	return lp;
 }
 
+/* update padstack thermals for layer ID changes on del */
+static void layer_del_update_thermals(pcb_board_t *pcb, rnd_layer_id_t old_index, rnd_bool undoable)
+{
+	rnd_box_t *b;
+	rnd_rtree_it_t it;
+
+	if (pcb->Data->padstack_tree == NULL)
+		return;
+
+	/* thermals are referenced by layer IDs which are going to change now */
+	for(b = rnd_r_first(pcb->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it)) {
+		int n;
+		pcb_pstk_t *ps = (pcb_pstk_t *)b;
+		for(n = old_index; n < pcb->Data->LayerN-1; n++) {
+			unsigned char *src = pcb_pstk_get_thermal(ps, n+1, 0);
+			unsigned char *dst = pcb_pstk_get_thermal(ps, n, 0);
+			if (src == NULL)
+				break;
+			if (*src != *dst)
+				pcb_pstk_set_thermal(ps, n, *src, undoable);
+		}
+	}
+}
+
 static int pcb_layer_move_delete_(pcb_board_t *pcb, rnd_layer_id_t old_index, rnd_bool undoable)
 {
 	rnd_layer_id_t l;
@@ -944,6 +968,8 @@ static int pcb_layer_move_delete_(pcb_board_t *pcb, rnd_layer_id_t old_index, rn
 			if (g->lid[n] > old_index)
 				g->lid[n]--;
 	}
+
+	layer_del_update_thermals(pcb, old_index, undoable);
 
 	/* update visibility */
 	for(l = old_index; l < pcb->Data->LayerN-1; l++) {
