@@ -878,7 +878,9 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 						RND_DAD_LABEL(dlg, "Thermals per layer");
 						RND_DAD_BEGIN_TABLE(dlg, 2);
 						{
+							gds_t tmp = {0};
 							rnd_layergrp_id_t gid;
+
 							pse->thermal.len = 0;
 							for(gid = 0; gid < pse->pcb->LayerGroups.len; gid++) {
 								pcb_layergrp_t *g = &pse->pcb->LayerGroups.grp[gid];
@@ -888,7 +890,12 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 									pcb_layer_t *ly = pcb_get_layer(pse->pcb->Data, g->lid[n]);
 									if (ly == NULL)
 										continue;
-									RND_DAD_LABEL(dlg, ly->name);
+
+									tmp.used = 0;
+									rnd_append_printf(&tmp, "[%ld] ", (long)g->lid[n]);
+									gds_append_str(&tmp, ly->name);
+									RND_DAD_LABEL(dlg, tmp.array);
+
 									pse->thermal.lid[pse->thermal.len] = g->lid[n];
 									RND_DAD_BEGIN_HBOX(dlg);
 										RND_DAD_ENUM(dlg, pcb_thermal_type);
@@ -898,6 +905,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 									pse->thermal.len++;
 								}
 							}
+							gds_uninit(&tmp);
 						}
 						RND_DAD_END(dlg);
 					RND_DAD_END(dlg);
