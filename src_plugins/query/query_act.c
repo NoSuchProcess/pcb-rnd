@@ -48,11 +48,11 @@
 
 static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
-	"query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout\n"
-	"query(count, expr) - compile and evaluate an expression and return the number of matched objects (-1 on error)\n"
-	"query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression\n"
-	"query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression\n"
-	"query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist\n"
+	"query(eval|evalidp, expr, [scope]) - compile and evaluate an expression and print a list of results on stdout\n"
+	"query(count, expr, [scope]) - compile and evaluate an expression and return the number of matched objects (-1 on error)\n"
+	"query(select|unselect|view, expr, [scope]) - select or unselect or build a view of objects matching an expression\n"
+	"query(setflag:flag|unsetflag:flag, expr, [scope]) - set or unset a named flag on objects matching an expression\n"
+	"query(append, idplist, expr, [scope]) - compile and run expr and append the idpath of resulting objects on idplist\n"
 	;
 static const char pcb_acth_query[] = "Perform various queries on PCB data.";
 
