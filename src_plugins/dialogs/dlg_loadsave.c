@@ -396,9 +396,10 @@ static void setup_fmt_sub(save_t *save, pcb_plug_iot_t save_type)
 
 const char pcb_acts_Save[] = 
 	"Save()\n"
-	"Save(Layout|LayoutAs)\n"
-	"Save(AllConnections|AllUnusedPins|ElementConnections)\n"
-	"Save(PasteBuffer)\n"
+	"Save(Layout)\n"
+	"Save(LayoutAs, [path])\n"
+	"Save(AllConnections|AllUnusedPins|ElementConnections, [path])\n"
+	"Save(PasteBuffer, [path])\n"
 	"Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])";
 const char pcb_acth_Save[] = "Save layout data to a user-selected file.";
 /* DOC: save.html */
