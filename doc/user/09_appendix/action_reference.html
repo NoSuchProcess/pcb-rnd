@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.1-dev running with librnd version 4.0.1-dev ,  Revision: 37377
+This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.1-dev running with librnd version 4.0.1-dev ,  Revision: 37403
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -171,6 +171,7 @@ This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board edit
 <tr><td>fpas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>fp_rehash</td><td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td><td>fp_rehash()</td><td></td>
 <tr><td><a href="action_details.html#freerotatebuffer">FreeRotateBuffer</a></td><td>Rotates the current paste buffer contents by the specified angle.  The<br>angle is given in degrees.  If no angle is given, the user is prompted<br>for one.</td><td>FreeRotateBuffer([Angle])</td><td></td>
+<tr><td>FsdSimple</td><td>File selection dialog, simplified API; for meaning of the arguments, see the HID API doc.</td><td>FsdSimple(title, descr, default_file, default_ext, history_tag, [read])</td><td>lib_hid_common plugin</td>
 <tr><td>FsdTest</td><td>Central, DAD based File Selection Dialog demo</td><td>FsdTest()</td><td>lib_hid_common plugin</td>
 <tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>FullScreen(on|off|toggle)</td><td></td>
 <tr><td>GetMark</td><td>Return mark properties in numeric form.</td><td>GetMark(active|user_placed|x|y)</td><td>act_read</td>
@@ -351,7 +352,7 @@ This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board edit
 <tr><td>python</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
-<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout<br>query(count, expr) - compile and evaluate an expression and return the number of matched objects (-1 on error)<br>query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression<br>query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td>query plugin</td>
+<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(eval|evalidp, expr, [scope]) - compile and evaluate an expression and print a list of results on stdout<br>query(count, expr, [scope]) - compile and evaluate an expression and return the number of matched objects (-1 on error)<br>query(select|unselect|view, expr, [scope]) - select or unselect or build a view of objects matching an expression<br>query(setflag:flag|unsetflag:flag, expr, [scope]) - set or unset a named flag on objects matching an expression<br>query(append, idplist, expr, [scope]) - compile and run expr and append the idpath of resulting objects on idplist</td><td>query plugin</td>
 <tr><td>QueryCalcNetLen</td><td>Calculates the network length by netname; returns an error message string or a positive coord with the length</td><td>QueryCalcNetLen(netname)</td><td>query plugin</td>
 <tr><td>QueryCompileField</td><td>With "compile": precompiles textual field name to field ID; with "free": frees the memory allocated for a previously precompiled fieldID.</td><td>QueryCompileField(compile, fieldname)<br>QueryCompileField(free, fieldID)</td><td>query plugin</td>
 <tr><td>QueryObj</td><td>Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.</td><td>QueryObj(idpath, [.fieldname|fieldID])</td><td>query plugin</td>
@@ -392,7 +393,7 @@ This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board edit
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
 <tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
-<tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout)<br>Save(LayoutAs, [path])<br>Save(AllConnections|AllUnusedPins|ElementConnections, [path])<br>Save(PasteBuffer, [path])<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td><a href="action_details.html#savelib">SaveLib</a></td><td>Saves all subcircuits to a library file or directory from a board or buffer.</td><td>SaveLib(file|dir, board|buffer, [filename], [fmt])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
