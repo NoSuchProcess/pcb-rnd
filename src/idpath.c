@@ -240,8 +240,15 @@ static pcb_any_obj_t *idpath2obj(pcb_data_t *data, const pcb_idpath_t *path, int
 	}
 }
 
+pcb_any_obj_t *pcb_idpath2obj_in_only(pcb_data_t *data, const pcb_idpath_t *path)
+{
+	return idpath2obj(data, path, 0);
+}
+
 pcb_any_obj_t *pcb_idpath2obj_in(pcb_data_t *data, const pcb_idpath_t *path)
 {
+	if ((path->data_addr >= 2) && (path->data_addr < PCB_MAX_BUFFER+2))
+		data = pcb_buffers[path->data_addr - 2].Data;
 	return idpath2obj(data, path, 0);
 }
 
