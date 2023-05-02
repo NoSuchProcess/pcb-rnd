@@ -974,7 +974,7 @@ static pcb_data_t *pcb_data_by_name_(pcb_board_t *pcb, const char **name, int *a
 	else if (rnd_strncasecmp(*name, "buffer#", 7) == 0) {
 		char *end;
 		long idx = strtol((*name)+7, &end, 10);
-		if ((*end == '\0') && (idx >= 0) && (idx < PCB_MAX_BUFFER)) {
+		if (((*end == '\0') || (*end == '/')) && (idx >= 0) && (idx < PCB_MAX_BUFFER)) {
 			*name = end;
 			if (**name == '/')
 				(*name)++;
