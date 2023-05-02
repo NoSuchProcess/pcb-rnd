@@ -979,6 +979,8 @@ static pcb_data_t *pcb_data_by_name_(pcb_board_t *pcb, const char **name, int *a
 			if (**name == '/')
 				(*name)++;
 			*addr = idx+2;
+			if ((idx < 0) || (idx >= PCB_MAX_BUFFER))
+				return NULL;
 			return pcb_buffers[idx].Data;
 		}
 	}
