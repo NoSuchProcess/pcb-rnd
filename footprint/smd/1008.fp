@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = 1008 Standard SMT resistor, capacitor etc
+   openscad = 1008.scad
   }
   ha:data {
    li:padstack_prototypes {
