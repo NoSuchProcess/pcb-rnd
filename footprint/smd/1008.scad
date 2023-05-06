@@ -37,8 +37,8 @@ module part_1008(body_len=2.5, width=2.0, height=2.0, pad_len=0.5, pad_width=1.4
 			// body
 			color([0.1,0.1,0.1])
 				cube([body_len-pad_len,width,height], center=true);
-        }
-        translate([0,0,pad_height/2]) {
+		}
+		translate([0,0,pad_height/2]) {
 			// terminals
 			color([0.8,0.8,0.8]) {
 				translate([+body_len/2-pad_len/2, 0, 0])
