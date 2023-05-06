@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = SC70_4 SMT transistor, 4 pins
+   openscad = SC70_4.scad
   }
   ha:data {
    li:padstack_prototypes {
