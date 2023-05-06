@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = SOT143 SMT transistor, 4 pins
+   openscad = SOT143.scad
   }
   ha:data {
    li:padstack_prototypes {
