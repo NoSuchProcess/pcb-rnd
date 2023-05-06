@@ -39,7 +39,7 @@ module package_sod87() {
 		}
 	}
 
-	translate([-1.575,0,0.8]) {
+	translate([-1.575,0,1.025]) {
 		rotate([0,90,0]) {
 			union () {
 				color([1,0.1,0.1]) {
