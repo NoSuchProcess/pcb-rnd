@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = SOT323D SMT diode (pin 1 is cathode)
+   openscad = SOT323D.scad
   }
   ha:data {
    li:padstack_prototypes {
