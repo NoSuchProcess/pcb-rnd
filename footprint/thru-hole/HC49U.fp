@@ -2,6 +2,8 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = HC49U Crystals
+   openscad = HC49U.scad
+   openscad-param = {height=13.46}
   }
   ha:data {
    li:padstack_prototypes {
