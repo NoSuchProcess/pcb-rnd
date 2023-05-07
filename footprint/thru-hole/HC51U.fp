@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = HC51U Crystals
+   openscad = HC51U.scad
   }
   ha:data {
    li:padstack_prototypes {
