@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to220w()
+module to220w(pins=3)
 {
     pin_thickness = 0.5;
     pin_width1 = 1.45;
@@ -95,12 +95,14 @@ module to220w()
         translate([0,0,0.05])
             polyhedron(body_points, body_faces);        
     }
-    translate([0,2.54,0]) {
-        rotate([90,0,90]) {
+    translate([(3-pins)*2.54,2.54+(3-pins)*pin_thickness,0]) {
+        rotate([90,0,(pins-2)*90]) {
             union() {
                 color([0.9, 0.9, 0.9]) {
-                    translate([0,pin_neck+0.05,-pin_thickness/2])
-                        pin();
+                    if (pins==3) {
+                        translate([0,pin_neck+0.05,-pin_thickness/2])
+                            pin();
+                    }
                     translate([-2.54,pin_neck+0.05,-pin_thickness/2])
                         pin();
                     translate([2.54,pin_neck+0.05,-pin_thickness/2])
