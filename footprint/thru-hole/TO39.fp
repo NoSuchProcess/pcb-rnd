@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = TO39 Transistor
+   openscad = TO39.scad
   }
   ha:data {
    li:padstack_prototypes {
