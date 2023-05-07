@@ -3,7 +3,7 @@ li:pcb-rnd-subcircuit-v6 {
   ha:attributes {
    footprint = LED5, 5mm LED (pin 1 is +, 2 is -)
    openscad = LED.scad
-   openscad-param = 5.0
+   openscad-param = {diameter=5.0}
   }
   ha:data {
    li:padstack_prototypes {
