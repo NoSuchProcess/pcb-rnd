@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint =  OSC14, Crystal oscillator
+   openscad = OSC14_8.scad
   }
   ha:data {
    li:padstack_prototypes {
