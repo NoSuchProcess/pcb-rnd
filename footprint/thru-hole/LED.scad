@@ -39,7 +39,7 @@ module led(diameter)
                 sphere(r = diameter/2, $fn = 50);
             cylinder(r = diameter/2, h = height-diameter/2, $fn = 50);
             intersection () {
-                translate ([-0.425,0,0.5])
+                translate ([-0.45,0,0.5])
                     cube ([diameter+0.9, diameter+0.9, 1.0], true);
                 cylinder(r = (diameter+0.9)/2, h = 1.0, $fn = 50);
             }
