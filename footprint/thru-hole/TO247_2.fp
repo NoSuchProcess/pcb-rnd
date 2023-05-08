@@ -2,6 +2,8 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = TO247_2 diode in TO220
+   openscad = TO247.scad
+   openscad-param = {pins=2}
   }
   ha:data {
    li:padstack_prototypes {
