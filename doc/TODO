@@ -11,6 +11,7 @@
 - BUG: segfault recipe: open pcb-rnd, {w l} and place a footprint which has a corresponding .scad model. Export to openscad. modify .scad local .scad model, i.e. alter rotation, then export openscad; segfault ensues. No segfault if {f s} done before export. [report: Erich] 
 
 2. For later releases ===============================================================================
+- CLEANUP: remove inline, use RND_INLINE - check src_3rd as well (librnd5 critical)
 - BUG: export_stl: before counting points, merge all the cutout polygons into one to avoid buggy exports due to overlapping/embedded cutouts; see bug_files/TODO/stl_olap.stl [report: keantoken]
 	- BUG: via-on-via triggers an assert, see bug_files/TODO/stl-vv.rp [report: Majenko]
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
