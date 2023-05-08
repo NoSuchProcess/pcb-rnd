@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = PENTAWATT Power IC
+   openscad = PENTAWATT.scad
   }
   ha:data {
    li:padstack_prototypes {
