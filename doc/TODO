@@ -8,10 +8,6 @@
 	-> subc line is probably added but not removed from pcb_removelist's rtrees
 + BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
 	+ same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
-+ BUG: multiple coils in intnoconn-bug.rp using intnoconn-bug-actual.net reflecting partion of circuit intnoconn-bug.rs should behave like intnoconn-net-desired.net. shorts being declared with no connections apparent. Coils use different intonoconn groups, and different UIDs to no avail [report: Erich]
-	+ BUG: erratic intnoconn {c r} behaviour. See intnoconn-test.rs, exported intnoconn-test-net.net and intnoconn-test.rp using imported net. load the .rp and use {c r}. note shorts flagged by intnoconn sections. move resistor from layout margins onto layout area and use {c r}. shorts no longer found. Seems to be a failure to allocate intnoconn groups to terminals outside the layout area when there is more than one of the same subc using an intnoconn group. Does not happen with intnoconn-test2.rp which uses different coil subcs; see also intnoconn-test-net2.rp; also identical coils but with different intnoconn group numbers seem to behave properly [report: Erich]
-	-> these two bugs were the same
-	-> fix: {c f} stops at nointconn boundary even if a rat "shorts" the two line objects there
 + BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
 - DOC: pool node on how to use pixmap for breadboading
 - BUG: segfault recipe: open pcb-rnd, {w l} and place a footprint which has a corresponding .scad model. Export to openscad. modify .scad local .scad model, i.e. alter rotation, then export openscad; segfault ensues. No segfault if {f s} done before export. [report: Erich] 
