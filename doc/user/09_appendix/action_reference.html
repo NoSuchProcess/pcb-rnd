@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.1-dev running with librnd version 4.0.2-dev ,  Revision: 37476
+This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.1-dev running with librnd version 4.0.2-dev ,  Revision: 37478
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -394,6 +394,14 @@ This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board edit
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
 <tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
+<tr><td>SafeFsFileMtime</td><td>Return the last modification time of a file, from Epoch, or -1 on error.</td><td>SafeFsFileMtime(path)</td><td></td>
+<tr><td>SafeFsFileSize</td><td>Return the size of a file in bytes, or -1 on error.</td><td>SafeFsFileSize(path)</td><td></td>
+<tr><td>SafeFsIsDir</td><td>Return 1 if path exists and is a directory, else return 0.</td><td>SafeFsIsDir(path)</td><td></td>
+<tr><td>SafeFsMkdir</td><td>Mkdir a file from the file system. If mode is a string, it is converted from octal. Return value is the same as mkdir(2)'s</td><td>SafeFsMkdir(path, mode)</td><td></td>
+<tr><td>SafeFsRemove</td><td>Remove an object from the file system. Return value is the same as remove(3)'s</td><td>SafeFsRemove(path)</td><td></td>
+<tr><td>SafeFsRename</td><td>Rename an object on the file system. Return value is the same as rename(2)'s</td><td>SafeFsRename(old_path, new_path)</td><td></td>
+<tr><td>SafeFsSystem</td><td>Runs cmdline with a shell using librnd safe_fs. Return value is the same integer as system()'s</td><td>SafeFsSystem(cmdline)</td><td></td>
+<tr><td>SafeFsUnlink</td><td>Unlink a file from the file system. Return value is the same as unlink(2)'s</td><td>SafeFsUnlink(path)</td><td></td>
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout)<br>Save(LayoutAs, [path])<br>Save(AllConnections|AllUnusedPins|ElementConnections, [path])<br>Save(PasteBuffer, [path])<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td><a href="action_details.html#savelib">SaveLib</a></td><td>Saves all subcircuits to a library file or directory from a board or buffer.</td><td>SaveLib(file|dir, board|buffer, [filename], [fmt])</td><td></td>
