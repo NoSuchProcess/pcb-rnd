@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = HEPTAWATT Power IC, as in MULTIWATT15
+   openscad = HEPTAWATT.scad
   }
   ha:data {
    li:padstack_prototypes {
