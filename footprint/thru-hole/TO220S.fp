@@ -2,6 +2,8 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = TO220S Transistor
+   openscad = TO220.scad
+   openscad-param = {S=1}
   }
   ha:data {
    li:padstack_prototypes {
