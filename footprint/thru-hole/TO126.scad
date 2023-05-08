@@ -56,7 +56,7 @@ module to126(pins=3, S=0)
     $fn = 30;
     
     module downbent_pin(S=0) {
-        pin_descent = 4.5;
+        pin_descent = 2.5 + body_offset-1.02;
         union() {
             linear_extrude(height=pin_thickness)
                 polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-0.01-S*2.54],[-pin_width2/2,-pin_neck-0.01-S*2.54],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
@@ -95,7 +95,7 @@ module to126(pins=3, S=0)
         }
     }
 
-    translate([-1.02,2.54,body_offset+pin_thickness/2]) {
+    translate([-1.02,2.54,body_offset]) {
         rotate([0,0,90]) {
             union() {
                 color([0.9, 0.9, 0.9]) {
