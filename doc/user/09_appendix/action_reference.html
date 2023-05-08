@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.1-dev running with librnd version 4.0.1-dev ,  Revision: 37403
+This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.1-dev running with librnd version 4.0.2-dev ,  Revision: 37476
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -79,6 +79,7 @@ This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#clrflag">ClrFlag</a></td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td><a href="action_details.html#command">Command</a></td><td>Displays the command line input in the status area.</td><td>Command()</td><td>lib_hid_common plugin</td>
 <tr><td>conf</td><td>Perform various operations on the configuration tree.</td><td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td><td></td>
+<tr><td>confget</td><td>Return conf node value or property from the merged in-memory/native storage. Returns nil if node is unset (for value query) or not found. Intended for scripting.</td><td>ConfGet(path, [value]) - return the value of a conf node; units, colors and lists are returned as string.<br>ConfGet(path, desc) - return the human readable description<br>ConfGet(path, ArraySize) - number of elements<br>ConfGet(path, ReadOnly) - returns 1 if node is read-only, 0 otherwise<br>ConfGet(path, ConfRev) - conf (merge) rev number the value last changed</td><td></td>
 <tr><td><a href="action_details.html#connection">Connection</a></td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
 <tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
 <tr><td>cpcb</td><td>Executed external autorouter cpcb to route the board or parts of the board</td><td>cpcb(board|selected, [command])</td><td>cpcb plugin</td>
