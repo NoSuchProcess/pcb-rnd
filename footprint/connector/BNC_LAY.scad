@@ -47,8 +47,6 @@ module bnc_lay()
     mounting_pin_setback = 7.37;
     pin_setback = body_length-1.35;
     pin_descent = 2.5;
-    diameter = 3.0;
-    height = 1.65*diameter + 0.35;
  
     module pin() {
         pin_straight = pin_descent+body_offset+socket_centre_height-pin_diameter*2;
