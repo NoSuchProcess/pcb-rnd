@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module led(diameter)
+module led(diameter=3)
 {
     height = 1.65*diameter + 0.35;
     union () {
