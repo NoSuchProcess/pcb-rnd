@@ -2,6 +2,7 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = right angle BNC
+   openscad = BNC_LAY.scad
   }
   ha:data {
    li:padstack_prototypes {
