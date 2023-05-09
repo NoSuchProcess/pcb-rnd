@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.2-dev running with librnd version 4.0.2-dev ,  Revision: 37485
+This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.2-dev running with librnd version 4.0.2-dev ,  Revision: 37492
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -394,13 +394,19 @@ This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board edit
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
 <tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
+<tr><td>SafeFsclearerr</td><td>Same as clearerr(3)</td><td>SafeFsclearerr(f)</td><td></td>
 <tr><td>SafeFsFclose</td><td>Closes a file previously open using SafeFsFopen()</td><td>SafeFsFclose(f)</td><td></td>
 <tr><td>SafeFsFeof</td><td>Returns 1 if file has reached EOF, 0 otherwise</td><td>SafeFsFeof(f)</td><td></td>
+<tr><td>SafeFsFerror</td><td>Returns 1 if file had errors, 0 otherwise</td><td>SafeFsFerror(f)</td><td></td>
 <tr><td>SafeFsFgets</td><td>Reads and returns a line from f (open with SafeFsFopen()). Stops reading after maxlen (subsequent call will continue reading the same line). Returns nil on error or eof or empty line. Maxlen is 64k by default. Note: string heap allocation is made for maxlen.</td><td>SafeFsFgets(f, [maxlen])</td><td></td>
 <tr><td>SafeFsFileMtime</td><td>Return the last modification time of a file, from Epoch, or -1 on error.</td><td>SafeFsFileMtime(path)</td><td></td>
 <tr><td>SafeFsFileSize</td><td>Return the size of a file in bytes, or -1 on error.</td><td>SafeFsFileSize(path)</td><td></td>
 <tr><td>SafeFsFopen</td><td>Opens a file using fopen, returns FILE *. If mode is not specified, r is assumed. Returns nil on error.</td><td>SafeFsFopen(path, [mode])</td><td></td>
+<tr><td>SafeFsFputs</td><td>Writes str to file f (previously opne with SafeFsFopen))</td><td>SafeFsFputs(f, str)</td><td></td>
 <tr><td>SafeFsFread</td><td>Reads and returns at most len bytes from a file (open with SafeFsFopen()). Returns nil on error or eof or empty line.</td><td>SafeFsFread(f, len)</td><td></td>
+<tr><td>SafeFsFreadSep</td><td>Reads characters that are either all non-seps or all seps. Reads at most maxlen bytes. Returns the string read or nil on eof or error. Seps is a string that contains every separator character. Maxlen is 64k by default.</td><td>SafeFsFreadSep(f, seps, [maxlen])</td><td></td>
+<tr><td>SafeFsFseek</td><td>Same as fseek(3); whence is a string, one of set, cur or end not specified (set is used when not specified)</td><td>SafeFsFseek(f, offs, [whence])</td><td></td>
+<tr><td>SafeFsFtell</td><td>Same as ftell(3).</td><td>SafeFsFtell(f)</td><td></td>
 <tr><td>SafeFsIsDir</td><td>Return 1 if path exists and is a directory, else return 0.</td><td>SafeFsIsDir(path)</td><td></td>
 <tr><td>SafeFsMkdir</td><td>Mkdir a file from the file system. If mode is a string, it is converted from octal. Return value is the same as mkdir(2)'s</td><td>SafeFsMkdir(path, mode)</td><td></td>
 <tr><td>SafeFsPathSep</td><td>Return the system dependet path separator character (normally slash).</td><td>SafeFsPathSep(path)</td><td></td>
@@ -408,6 +414,7 @@ This is pcb-rnd 3.1.1-dev (svn r37226) an interactive printed circuit board edit
 <tr><td>SafeFsRealPath</td><td>Returns the realpath(3) of path, or NULL on error.</td><td>SafeFsRealPath(path)</td><td></td>
 <tr><td>SafeFsRemove</td><td>Remove an object from the file system. Return value is the same as remove(3)'s</td><td>SafeFsRemove(path)</td><td></td>
 <tr><td>SafeFsRename</td><td>Rename an object on the file system. Return value is the same as rename(2)'s</td><td>SafeFsRename(old_path, new_path)</td><td></td>
+<tr><td>SafeFsRewind</td><td>Same as rewind(3)</td><td>SafeFsRewind(f)</td><td></td>
 <tr><td>SafeFsSystem</td><td>Runs cmdline with a shell using librnd safe_fs. Return value is the same integer as system()'s</td><td>SafeFsSystem(cmdline)</td><td></td>
 <tr><td>SafeFsUnlink</td><td>Unlink a file from the file system. Return value is the same as unlink(2)'s</td><td>SafeFsUnlink(path)</td><td></td>
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout)<br>Save(LayoutAs, [path])<br>Save(AllConnections|AllUnusedPins|ElementConnections, [path])<br>Save(PasteBuffer, [path])<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
