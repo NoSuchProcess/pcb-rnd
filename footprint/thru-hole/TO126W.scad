@@ -71,18 +71,13 @@ module to126w(pins=3, S=0)
         }
     }
 
-    module body() {
-        difference() {
-            union() {
-                color([0.3,0.3,0.3])
+   module body() {
+        union() {
+            color([0.3,0.3,0.3])
+                difference() {
                     translate([0,hole_height,-body_offset])
                         linear_extrude(height=body_thickness)
                             polygon([[-device_width/2,-device_height],[device_width/2,-device_height],[device_width/2,0],[-device_width/2,0]]);
-                color([0.8,0.8,0.8])
-                    translate([0,tab_hole_height,-body_thickness/2-0.01])
-                        linear_extrude(height=body_thickness/2)
-                            polygon([[-tab_width/2,-tab_height],[tab_width/2,-tab_height],[tab_width/2,0],[-tab_width/2,0]]);
-            }
             translate([0,0,-body_thickness])
                 cylinder(r=hole_dia/2, h=body_thickness*3);
             rotate([0,0,120])
@@ -93,6 +88,15 @@ module to126w(pins=3, S=0)
                     cube(notch_width, false);
             translate([-notch_width/2,hole_dia/2-0.1,body_thickness/2-notch_width+0.01])
                 cube(notch_width, false);
+            }
+            difference() {
+                color([0.8,0.8,0.8])
+                    translate([0,tab_hole_height,-body_thickness/2-0.01])
+                        linear_extrude(height=body_thickness/2)
+                            polygon([[-tab_width/2,-tab_height],[tab_width/2,-tab_height],[tab_width/2,0],[-tab_width/2,0]]);
+                translate([0,0,-body_thickness])
+                    cylinder(r=hole_dia/2+0.05, h=body_thickness*3);
+            }
         }
     }
 
