@@ -37,7 +37,7 @@ module pentawatt()
     pin_thickness = 0.5;
     pin_width = 0.7;
     
-    pin_neck = 3.85;
+    pin_neck = 3.0;
     pin_spacing = 1.7018;
 
     tab_thickness = 1.6;
