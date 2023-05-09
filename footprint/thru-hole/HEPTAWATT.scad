@@ -44,7 +44,7 @@ module heptawatt()
     tab_width = 10.05;
     tab_height = 6.81;
     tab_overhang = 6.8;
-    tab_bevel = 2.3;
+    tab_bevel = 0.1;
     
     device_height = 10;
     device_width = 10.05;
@@ -84,9 +84,9 @@ module heptawatt()
                             rotate([0,-90,0])
                                 linear_extrude(height=device_width)
                                     polygon([[0,0],[1.6,0],[4.8,-0.3],[4.8,-9.6],[3.8,-10.0],[1.6,-10.0],[0,-9.7]]);
-                    translate([-device_width/2,hole_height-notch_height,-3])
+                    translate([-device_width/2,hole_height-notch_height,-2])
                         cylinder(r=notch_size/2, h=body_thickness*2);
-                    translate([device_width/2,hole_height-notch_height,-3])
+                    translate([device_width/2,hole_height-notch_height,-2])
                         cylinder(r=notch_size/2, h=body_thickness*2);
                 }
             }
