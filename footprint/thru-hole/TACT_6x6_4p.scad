@@ -47,8 +47,6 @@ module tact6x6(button_height=1.0)
     dimple_height = 0.3;
     dimple_spacing = 4.5;
 
-    $fn = 30;
-
     module pin() {
         rotate([90,0,0])
             translate([-pin_thickness/2,1.2,-pin_width/2])

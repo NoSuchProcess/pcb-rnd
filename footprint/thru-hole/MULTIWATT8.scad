@@ -57,8 +57,6 @@ module multiwatt8()
     notch_size = 3.0;
     notch_height = 6.0;
 
-    $fn = 30;
-
     module pin() {
         pin_descent = 2.5;
         linear_extrude(height=pin_thickness)

@@ -39,7 +39,6 @@ module to39()
     tab_square = 0.82;
     pin_diameter = 0.41;
     pcb_offset = 3.0;
-    $fn = 50;
     
     // r[adius], h[eight], [rou]n[d]
     module rounded_cylinder(r,h,n) {

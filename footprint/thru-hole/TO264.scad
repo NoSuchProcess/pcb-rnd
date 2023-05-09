@@ -56,8 +56,6 @@ module to264(pins=3)
     notch_height = 6.0;
     notch2_height = 15.0;
 
-    $fn = 30;
-    
     module pin() {
         pin_descent = 2.5;
         linear_extrude(height=pin_thickness)

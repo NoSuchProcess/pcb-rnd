@@ -52,7 +52,6 @@ module to220w(pins=3)
     body_thickness = 4.45;
     chamfer = 0.5;
     body_offset = 2.76;
-    $fn = 30;
     
     module pin() {
         linear_extrude(height=pin_thickness)

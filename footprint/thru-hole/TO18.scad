@@ -39,7 +39,6 @@ module to18()
     tab_square = 1.0;
     pin_diameter = 0.45;
     pcb_offset = 3.0;
-    $fn = 50;
     
     // r[adius], h[eight], [rou]n[d]
     module rounded_cylinder(r,h,n) {

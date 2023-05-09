@@ -40,7 +40,6 @@ module HC51(height=19.7, pins=2)
     major_axis2 = 19.2;
     pcb_offset = 0.1;
     rounding = 0.5;
-    $fn = 50;
     
     // r[adius], h[eight], [rou]n[d]
     module rounded_cylinder(r,h,n) {

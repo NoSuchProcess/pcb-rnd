@@ -53,8 +53,6 @@ module to126w(pins=3)
     dimple_dia = 1.2;
     hole_height = device_height/2;
 
-    $fn = 30;
-    
     module pin() {
         pin_descent = 2.5;
         linear_extrude(height=pin_thickness)

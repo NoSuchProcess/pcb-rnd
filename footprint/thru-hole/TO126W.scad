@@ -53,7 +53,6 @@ module to126w(pins=3, S=0)
     device_width = 8.2;
     body_thickness = 2.8;
     body_offset = body_thickness/2;
-    $fn = 30;
     
     module pin(S=0) {
         pin_descent = (1-S)*2.5 + S*1.717;

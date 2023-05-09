@@ -44,18 +44,18 @@ module package_sod80() {
 			union () {
 				color([1,0.1,0.1]) {
 					translate([0,0,0.35/2])
-						rounded_cylinder(r=0.73,h=2.8,n=0.2,$fn=80);
+						rounded_cylinder(r=0.73,h=2.8,n=0.2);
 				}
 				color([0.1,0.1,0.1]) {
 					translate([0,0,0.7])
-						cylinder(r=0.74, h=0.35, $fn = 30);
+						cylinder(r=0.74, h=0.35);
 				}
 				color([0.8,0.8,0.8]) {
 					translate([0,0,-0.35/2])
-						cylinder(r=0.8, h=0.35, $fn = 30);
+						cylinder(r=0.8, h=0.35);
 
 					translate([0,0,0.35/2 + 2.8])
-						cylinder(r=0.8, h=0.35, $fn = 30);
+						cylinder(r=0.8, h=0.35);
 				}
 			}
 		}

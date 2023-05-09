@@ -52,7 +52,6 @@ module to220(pins=3, S=0)
     body_thickness = 4.45;
     chamfer = 0.5;
     body_offset = 2.76;
-    $fn = 30;
     
     module downbent_pin(S=0) {
         pin_descent = 4.5;

@@ -38,7 +38,6 @@ module HC49H(height=13.46, pins=2)
     pin_diameter = 0.43;
     pcb_offset = 0.1;
     rounding = 0.5;
-    $fn = 50;
     
     // r[adius], h[eight], [rou]n[d]
     module rounded_cylinder(r,h,n) {

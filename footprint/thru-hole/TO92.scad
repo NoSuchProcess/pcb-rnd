@@ -49,7 +49,7 @@ module to92()
                     intersection () {
                         translate ([0,-1.0,height/2])
                             cube ([diameter, diameter, height], true);
-                        cylinder(r = diameter/2, h = height, $fn = 50);
+                        cylinder(r = diameter/2, h = height);
                     }
                 }
             }

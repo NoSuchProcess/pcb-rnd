@@ -35,7 +35,6 @@ module part_do214 (var)
    module impl (L, W, H, P, Tw, Th)
    {
       delta = 1e-3 ;
-      $fn = 30 ;
 
       module lead (P, Tw, Th)
          color ([0.9, 0.9, 0.9])

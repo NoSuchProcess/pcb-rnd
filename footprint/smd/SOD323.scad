@@ -32,8 +32,6 @@
 
 module part_sod323()
 {
-   $fn = 30 ;
-
    module lead()
       color ([0.9, 0.9, 0.9])
       {

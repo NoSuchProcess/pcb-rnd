@@ -50,7 +50,6 @@ module OSC8_14(size=0)
     minor_rounding = 0.4;
     pin_spacing_x = 2.54*3;
     pin_spacing_y = 2.54*(6-size*3);
-    $fn = 50;
     
     // r[adius], h[eight], [rou]n[d]
     module rounded_cylinder(r,h,n) {

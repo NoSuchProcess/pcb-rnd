@@ -55,8 +55,6 @@ module to247(pins=3)
     notch_size = 5.0;
     notch_height = 5.6;
 
-    $fn = 30;
-    
     module pin() {
         pin_descent = 2.5;
         linear_extrude(height=pin_thickness)
