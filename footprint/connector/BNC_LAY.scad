@@ -32,9 +32,12 @@
 
 module bnc_lay()
 {
-    body_length = 12.45;
+    overall_length = 34.7;
+    body_length = 13.97;
     body_width = 14.50;
     body_height = 14.84;
+    threaded_collar = 8.9;
+    connector_length = 20.9;
     body_offset = 0.78;
     socket_centre_height = 7.42 + body_offset;
     pin_diameter = 0.74;
@@ -62,57 +65,67 @@ module bnc_lay()
                 }
     }
     
-    module body() {
-        union() {
-                translate([body_length/2 - (body_length-pin_setback),0,body_height/2+body_offset])
-                    union() {
-                        color([0.3,0.3,0.3]) {
-                            translate([-body_length/2+1,-body_width/2+1,-body_height/2-body_offset])
-                                cylinder(r=1, h = 1);
-                            translate([body_length/2-1,body_width/2-1,-body_height/2-body_offset])
-                                cylinder(r=1, h = 1);
-                            translate([body_length/2-1,-body_width/2+1,-body_height/2-body_offset])
-                                cylinder(r=1, h = 1);
-                            translate([-body_length/2+1,body_width/2-1,-body_height/2-body_offset])
-                                cylinder(r=1, h = 1);
-                        }
-                       color([0.8,0.8,0.8]) {
-                            difference() {
-                                translate([-2,0,0])
-                                    rotate([0,90,0])
-                                        cylinder(r=2.36, h = 26.5);
-                                translate([-2,0,0])
-                                    rotate([0,90,0])
-                                        cylinder(r=0.66, h = 27);
-                            }
-                            difference() {
-                                union() {
-                                    translate([24.5,-5.55,0])
-                                        rotate([0,90,90])
-                                            cylinder(r=1, h = 11.1);
-                                    translate([-2.0,0,0])
-                                        rotate([0,90,0])
-                                            cylinder(r=4.85, h = 30.35);
-                                    translate([-body_length/2+4,0,0.4])
-                                        rotate([0,-90,0])
-                                            cylinder(r=1.0, h = 2.0);
-                                }
-                                translate([-1,0,0])
-                                    rotate([0,90,0])
-                                        cylinder(r=4.4, h = 30);
-                            }
-                        }
-                        color([1,1,1]) {
+    module connector_body() {
+       //connector body proper
+       color([0.8,0.8,0.8]) {
+            // outer tube
+            difference() {
+                union() {
+                    // outer metal connector proper
+                    translate([0,0,0])
+                        cylinder(r=4.85, h = connector_length);
+                    // side lugs x2
+                    translate([0,-4.55,connector_length -4.25])
+                        rotate([90,0,0])
+                            cylinder(r=1, h = 1);
+                    translate([0,5.55,connector_length -4.25])
+                        rotate([90,0,0])
+                            cylinder(r=1, h = 1);
+                }
+                // inner major cavity
+                translate([0,0,0])
+                        cylinder(r=4.4, h = 85);
+            }
+            // inner tube and pin receptacle
+            difference() {
+                    cylinder(r=2.36, h = connector_length - 3.6);
+                    cylinder(r=0.66, h = connector_length);
+            }
+        }
+    }
+    
+    module plastic_body() {
+                        // centre pin
+                        color([0.8,0.8, 0.8])
+                            translate([-body_length/2+4,0,0.4])
+                                rotate([0,-90,0])
+                                    cylinder(r=1.0, h = 2.0);
+                        // insulating cylinder
+                        color([1,1,1])
                             translate([-body_length/2+4,0,0.4])
                                 rotate([0,-90,0])
                                     cylinder(r=3.5, h = 1.6);
-                        }
+                        // basic feet, cubical shape and threaded section
                         color([0.3,0.3,0.3]) {
-                            translate([-3.35,0,0])
-                                rotate([0,90,0])
-                                    cylinder(r=5.94, h = 18.35);
                             difference () {
-                                cube([body_length,body_width,body_height],true);
+                                union() {
+                                    // four standoffs
+                                    translate([-body_length/2+1,-body_width/2+1,-body_height/2-body_offset])
+                                        cylinder(r=1, h = 1);
+                                    translate([body_length/2-1,body_width/2-1,-body_height/2-body_offset])
+                                        cylinder(r=1, h = 1);
+                                    translate([body_length/2-1,-body_width/2+1,-body_height/2-body_offset])
+                                        cylinder(r=1, h = 1);
+                                    translate([-body_length/2+1,body_width/2-1,-body_height/2-body_offset])
+                                        cylinder(r=1, h = 1);
+                                    // threaded collar
+                                    translate([-body_length/2,0,0])
+                                        rotate([0,90,0])
+                                            cylinder(r=5.94, h = threaded_collar + body_length);
+                                    // body
+                                    cube([body_length,body_width,body_height],true);
+                                }
+                                // apperture at the back of the body for pins
                                 translate([-body_length/2,0,0])
                                     cube([5.5,15,5.5],true);
                                 translate([-body_length/2,0,-5])
@@ -120,23 +133,29 @@ module bnc_lay()
                                 translate([-body_length/2+4,0,0])
                                     rotate([0,-90,0])
                                         cylinder(r=4, h = 5);                                 
-                            }
-                    }
             }
-            color([0.7,0.7,0.7]) {
-                translate([mounting_pin_setback-2.27, mounting_pin_spacing/2,-pin_descent])
-                    cylinder(r=mounting_pin_dia/2, h=pin_descent+body_offset);
-                translate([mounting_pin_setback-2.27, -mounting_pin_spacing/2,-pin_descent])
-                    cylinder(r=mounting_pin_dia/2, h=pin_descent+body_offset);
-            }
+        }
+    }
+    module mounting_pins() {
+        // mechanical mounting pins x2     
+         color([0.7,0.7,0.7]) {
+            translate([mounting_pin_setback-2.27, mounting_pin_spacing/2,-pin_descent])
+                cylinder(r=mounting_pin_dia/2, h=pin_descent+body_offset);
+            translate([mounting_pin_setback-2.27, -mounting_pin_spacing/2,-pin_descent])
+                cylinder(r=mounting_pin_dia/2, h=pin_descent+body_offset);
         }
     }
     
     rotate([0,0,90])
         union () {
+            translate([body_length/2 - (body_length-pin_setback),0,body_height/2+body_offset])
+                plastic_body();
+            translate([overall_length-body_offset-connector_length,0,socket_centre_height])
+                rotate([0,90,0])
+                    connector_body();
             translate ([0,pin_spacing,0])
                 pin();
             pin();
-            body();
+            mounting_pins();
         }
 }
