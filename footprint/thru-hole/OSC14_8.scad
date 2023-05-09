@@ -1,4 +1,7 @@
-// Model for OSC8_14 vertical 2 and 3 pin through hole packages
+// Model for OSC8_14 oscillator in a can 8 and 14 variants
+// openscad parameter:
+// size = 0 OSC14 (default)
+// size = 1 OSC8
 //
 // Copyright (C) 2023 Erich Heinzle
 //
