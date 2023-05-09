@@ -85,9 +85,9 @@ module pentawatt()
                             rotate([0,-90,0])
                                 linear_extrude(height=device_width)
                                     polygon([[0,0],[1.6,0],[4.8,-0.3],[4.8,-9.6],[3.8,-10.0],[1.6,-10.0],[0,-9.7]]);
-                    translate([-device_width/2,hole_height-notch_height,-3])
+                    translate([-device_width/2,hole_height-notch_height,-2])
                         cylinder(r=notch_size/2, h=body_thickness*2);
-                    translate([device_width/2,hole_height-notch_height,-3])
+                    translate([device_width/2,hole_height-notch_height,-2])
                         cylinder(r=notch_size/2, h=body_thickness*2);
                 }
             }
@@ -95,7 +95,7 @@ module pentawatt()
                 translate([0,hole_height+tab_overhang,-body_offset])
                     difference() {
                         linear_extrude(height=tab_thickness)
-                            polygon([[-tab_width/2,-tab_height],[tab_width/2,-tab_height],[tab_width/2,-tab_bevel],[tab_width/2-tab_bevel,0],[-tab_width/2+tab_bevel,0],[-tab_width/2,-tab_bevel]]);
+                            polygon([[-tab_width/2,-tab_height],[tab_width/2,-tab_height],[tab_width/2,-(hole_height+tab_overhang)],[tab_width/2-pin_thickness/2,-(hole_height+tab_overhang)],[tab_width/2-pin_thickness/2,0],[-tab_width/2+pin_thickness/2,0],[-tab_width/2+pin_thickness/2,-(hole_height+tab_overhang)],[-tab_width/2,-(hole_height+tab_overhang)]]);
                     translate([0,-hole_height-tab_overhang,-body_thickness])
                         cylinder(r=hole_dia/2, h=body_thickness*3);
                     }
