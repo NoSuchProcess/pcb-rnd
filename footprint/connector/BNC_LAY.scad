@@ -73,11 +73,11 @@ module bnc_lay()
                     translate([0,0,0])
                         cylinder(r=4.85, h = connector_length);
                     // side lugs x2
-                    translate([0,-4.55,connector_length -4.25])
-                        rotate([90,0,0])
+                    translate([-5.55,0,connector_length -4.25])
+                        rotate([0,90,0])
                             cylinder(r=1, h = 1);
-                    translate([0,5.55,connector_length -4.25])
-                        rotate([90,0,0])
+                    translate([4.55,0,connector_length -4.25])
+                        rotate([0,90,0])
                             cylinder(r=1, h = 1);
                 }
                 // inner major cavity
@@ -157,4 +157,5 @@ module bnc_lay()
             mounting_pins();
         }
 }
+bnc_lay();
 
