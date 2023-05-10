@@ -118,7 +118,7 @@ module dsub(pins=9,gender=1,rotation=90)
     module M_plug() {
         translate([body_width/2,face_height/2,base_face_thickness])
             difference(){
-                scale([male_shroud_width/female_shroud_width,    shroud_opening_height_male/plug_height_female,1])
+                scale([(male_shroud_width-2*(shroud_opening_height_male-plug_height_female))/female_shroud_width,    shroud_opening_height_male/plug_height_female,1])
                         raw_F_plug();
                 scale([0.95,0.95,1.1])
                         raw_F_plug();
@@ -254,3 +254,4 @@ module dsub(pins=9,gender=1,rotation=90)
         }
     }
 }
+
