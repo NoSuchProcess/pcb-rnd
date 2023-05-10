@@ -99,13 +99,13 @@ module dsub(pins=9,gender=1,rotation=90)
 [delta_f,f_radius],
 [0,plug_height_female-f_radius]]);
             translate([f_radius,plug_height_female-f_radius,0])
-                cylinder(r=f_radius,h=shroud_depth,$fn=20);
+                cylinder(r=f_radius,h=shroud_depth);
             translate([f_radius+delta_f,f_radius,0])
-                cylinder(r=f_radius,h=shroud_depth,$fn=20);
+                cylinder(r=f_radius,h=shroud_depth);
             translate([female_shroud_width-delta_f-f_radius,f_radius,0])
-                cylinder(r=f_radius,h=shroud_depth,$fn=20);
+                cylinder(r=f_radius,h=shroud_depth);
             translate([female_shroud_width-f_radius,plug_height_female-f_radius,0])
-                cylinder(r=f_radius,h=shroud_depth,$fn=20);
+                cylinder(r=f_radius,h=shroud_depth);
         }
     }
 
@@ -214,14 +214,14 @@ module dsub(pins=9,gender=1,rotation=90)
                         difference() {
                             cylinder(r=2.844, h=4.8, $fn=6);
                             translate([0,0,-0.1])
-                                cylinder(r=1.4424, h=5.0, $fn=10);
+                                cylinder(r=1.4424, h=5.0);
                         }                        
                 translate([hex_socket_spacing/2,-base_face_thickness,face_height/2])
                     rotate([-90,0,0])
                         difference() {
                             cylinder(r=2.844, h=4.8, $fn=6);
                             translate([0,0,-0.1])
-                                cylinder(r=1.4424, h=5.0, $fn=10);
+                                cylinder(r=1.4424, h=5.0);
                         }
              }         
     }
@@ -254,4 +254,3 @@ module dsub(pins=9,gender=1,rotation=90)
         }
     }
 }
-
