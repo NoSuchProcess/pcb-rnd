@@ -2,6 +2,8 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = DSUB connector, female/male
+   openscad = DSUB.scad
+   openscad-param = {pins=37,gender=0,rotation=270}
   }
   ha:data {
    li:padstack_prototypes {
