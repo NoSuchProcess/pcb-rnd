@@ -64,7 +64,7 @@ ha:rnd-menu-v1 {
 				-
 				ha:Import {
 					li:submenu {
-						ha:Import schematics...              = {                             action=ImportSch() }
+						ha:Import schematics...              = {a={<key>f;<key>f;<key>s};    action=ImportSch() }
 						ha:Configure import schematics...    = {                             action=ImportSch(dialog) }
 						@import_top
 						ha:Import AnyLoad (or lht config)    = {                             action=AnyLoad() }
