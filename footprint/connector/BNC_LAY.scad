@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module bnc_lay()
+module bnc_lay(pin_descent = 2.5)
 {
     overall_length = 34.7;
     body_length = 13.97;
@@ -46,7 +46,6 @@ module bnc_lay()
     mounting_pin_spacing = 10.16;
     mounting_pin_setback = 7.37;
     pin_setback = body_length-1.35;
-    pin_descent = 2.5;
  
     module pin() {
         pin_straight = pin_descent+body_offset+socket_centre_height-pin_diameter*2;
@@ -157,5 +156,3 @@ module bnc_lay()
             mounting_pins();
         }
 }
-bnc_lay();
-
