@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module multiwatt8()
+module multiwatt8(pin_descent=2.5)
 {
     pins=8;
     pin_thickness = 0.6;
@@ -58,7 +58,6 @@ module multiwatt8()
     notch_height = 6.0;
 
     module pin() {
-        pin_descent = 2.5;
         linear_extrude(height=pin_thickness)
             polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-0.01-pin_descent ],[-pin_width2/2,-pin_neck-0.01-pin_descent],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
     }
