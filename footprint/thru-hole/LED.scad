@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module led(diameter=3)
+module led(diameter=3, pin_descent=2.5)
 {
     height = 1.65*diameter + 0.35;
     union () {
@@ -45,11 +45,10 @@ module led(diameter=3)
             }
         }
         color([0.8,0.8,0.8]) {
-            translate ([-1.252,0,-1.2])
-                cube ([0.5, 0.5, 2.5], true);
-            translate ([1.252,0,-1.2])
-                cube ([0.5, 0.5, 2.5], true);
+            translate ([-1.252,0,-pin_descent/2])
+                cube ([0.5, 0.5, pin_descent], true);
+            translate ([1.252,0,-pin_descent/2])
+                cube ([0.5, 0.5, pin_descent], true);
         }
     }
 }
-

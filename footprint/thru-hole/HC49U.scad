@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module HC49(height=13.46, pins=2)
+module HC49(height=13.46, pins=2, pin_descent=2.5)
 {
     major_diameter = 4.65;
     minor_diameter = 3.8;
@@ -75,13 +75,13 @@ module HC49(height=13.46, pins=2)
                 }
             }
             color([0.8,0.8,0.8]) {
-                translate ([0,0,-2.45])
-                    cylinder(r = pin_diameter/2, h = pcb_offset +2.5);
-                translate ([4.88,0,-2.45])
-                    cylinder(r = pin_diameter/2, h = pcb_offset + 2.5);
+                translate ([0,0,-pin_descent])
+                    cylinder(r = pin_diameter/2, h = pcb_offset +pin_descent);
+                translate ([4.88,0,-pin_descent])
+                    cylinder(r = pin_diameter/2, h = pcb_offset + pin_descent);
                 if (pins == 3) {
-                    translate ([2.44,0,-2.45])
-                        cylinder(r = pin_diameter/2, h = pcb_offset + 2.5);
+                    translate ([2.44,0,-pin_descent])
+                        cylinder(r = pin_diameter/2, h = pcb_offset + pin_descent);
                 }
             }
         }

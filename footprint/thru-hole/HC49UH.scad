@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module HC49H(height=13.46, pins=2)
+module HC49H(height=13.46, pins=2, pin_descent=2.5)
 {
     major_diameter = 4.65;
     minor_diameter = 3.8;
@@ -96,13 +96,13 @@ module HC49H(height=13.46, pins=2)
                         }
                         rotate([-90*pin_sense,0,0]) {
                             translate ([0,pin_sense*major_diameter/2,major_diameter]) {
-                                translate ([0,0,-2.45])
-                                    cylinder(r = pin_diameter/2, h = 2.451);
-                                translate ([4.88,0,-2.45])
-                                    cylinder(r = pin_diameter/2, h = 2.451);
+                                translate ([0,0,-2.35])
+                                    cylinder(r = pin_diameter/2, h = pin_descent);
+                                translate ([4.88,0,-2.35])
+                                    cylinder(r = pin_diameter/2, h = pin_descent);
                                 if (pins == 3) {
-                                    translate ([2.44,0,-2.45])
-                                        cylinder(r = pin_diameter/2, h = 2.451);
+                                    translate ([2.44,0,-2.35])
+                                        cylinder(r = pin_diameter/2, h = pin_descent);
                                 }
                             }
                         }

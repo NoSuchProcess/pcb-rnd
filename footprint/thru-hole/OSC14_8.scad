@@ -33,7 +33,7 @@
 //  in any way.
 //
 
-module OSC8_14(size=0)
+module OSC8_14(size=0,pin_descent=2.5)
 {
     height = 5.3;
     major_diameter = 9.2;
@@ -107,15 +107,14 @@ module OSC8_14(size=0)
 
         }
         color([0.8,0.8,0.8]) {
-            translate ([0,0,-2.45])
-                cylinder(r = pin_diameter/2, h = pcb_offset +2.5);
-            translate ([pin_spacing_x,0,-2.45])
-                cylinder(r = pin_diameter/2, h = pcb_offset + 2.5);
-            translate ([pin_spacing_x,-pin_spacing_y,-2.45])
-                cylinder(r = pin_diameter/2, h = pcb_offset + 2.5);
-            translate ([0,-pin_spacing_y,-2.45])
-                cylinder(r = pin_diameter/2, h = pcb_offset + 2.5);
+            translate ([0,0,-pin_descent])
+                cylinder(r = pin_diameter/2, h = pcb_offset +pin_descent);
+            translate ([pin_spacing_x,0,-pin_descent])
+                cylinder(r = pin_diameter/2, h = pcb_offset + pin_descent);
+            translate ([pin_spacing_x,-pin_spacing_y,-pin_descent])
+                cylinder(r = pin_diameter/2, h = pcb_offset + pin_descent);
+            translate ([0,-pin_spacing_y,-pin_descent])
+                cylinder(r = pin_diameter/2, h = pcb_offset + pin_descent);
          }
      }
 }
-
