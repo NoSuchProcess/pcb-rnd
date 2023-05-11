@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to126(pins=3, S=0)
+module to126(pins=3,S=0,pin_descent=2.5)
 {
     pin_thickness = 0.5;
     pin_width1 = 1.2;
@@ -55,7 +55,7 @@ module to126(pins=3, S=0)
     body_offset = body_thickness/2;
     
     module downbent_pin(S=0) {
-        pin_descent = 2.5 + body_offset-1.02;
+        pin_descent2 = pin_descent + body_offset-1.02;
         union() {
             linear_extrude(height=pin_thickness)
                 polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-0.01-S*2.54],[-pin_width2/2,-pin_neck-0.01-S*2.54],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
@@ -63,8 +63,8 @@ module to126(pins=3, S=0)
                 rotate([0,-90,0])
                     rotate_extrude(angle=-90)
                         polygon([[1.02-pin_thickness/2,pin_width2/2],[1.02-pin_thickness/2,-pin_width2/2],[1.02+pin_thickness/2,-pin_width2/2],[1.02+pin_thickness/2,pin_width2/2]]);
-            translate([0,-pin_neck-1.02-pin_thickness/2-S*2.54,pin_thickness/2-1.02-pin_descent])
-                linear_extrude(height=pin_descent)
+            translate([0,-pin_neck-1.02-pin_thickness/2-S*2.54,pin_thickness/2-1.02-pin_descent2])
+                linear_extrude(height=pin_descent2)
                      polygon([[-pin_width2/2, pin_thickness],[pin_width2/2,pin_thickness],[pin_width2/2, 0],[-pin_width2/2, 0]]);
         }
     }

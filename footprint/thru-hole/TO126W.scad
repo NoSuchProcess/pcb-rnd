@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to126w(pins=3, S=0)
+module to126w(pins=3, S=0, pin_descent=2.5)
 {
     pin_thickness = 0.5;
     pin_width1 = 1.2;
@@ -55,11 +55,11 @@ module to126w(pins=3, S=0)
     body_offset = body_thickness/2;
     
     module pin(S=0) {
-        pin_descent = (1-S)*2.5 + S*1.717;
+        pin_descent2 = (1-S)*pin_descent + S*1.717;
         rotate([S*(-45),0,0]) {
             union() {
                 linear_extrude(height=pin_thickness)
-                    polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-0.01-pin_descent ],[-pin_width2/2,-pin_neck-0.01-pin_descent],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
+                    polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-0.01-pin_descent2],[-pin_width2/2,-pin_neck-0.01-pin_descent2],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
             }
         }
         if (S==1) {
