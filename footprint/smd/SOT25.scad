@@ -31,8 +31,55 @@
 //  in any way.
 //
 
-module sot25()
+module sot25(fillet=0)
 {
+   pad_len=0.23;
+   pad_width=0.43;
+   pad_height= 0.1; 
+
+   module fillet() {
+        fillet_height = pad_height/3;
+        fillet_width = pad_len/3;        
+        overall_width = fillet_width + pad_width;
+        overall_length = pad_len + fillet_width;
+
+        translate([-pad_len/2,0,0]) {
+            fillet_points = [
+                [0,overall_width/2,0], // 0
+                [overall_length,overall_width/2,0], // 1
+                [overall_length,-overall_width/2,0], // 2
+                [0,-overall_width/2,0], // 3
+                [0,pad_width/2+fillet_width/2,fillet_height/3], // 4
+                [pad_len+fillet_width/2,pad_width/2+fillet_width/2,fillet_height/3], // 5
+                [pad_len+fillet_width/2,-pad_width/2-fillet_width/2,fillet_height/3], // 6
+                [0,-pad_width/2-fillet_width/2,fillet_height/3], // 7
+                [0,pad_width/2+fillet_width/6,2*fillet_height/3], // 8
+                [pad_len+fillet_width/6,pad_width/2+fillet_width/6,2*fillet_height/3], // 9
+                [pad_len+fillet_width/6,-pad_width/2-fillet_width/6,2*fillet_height/3], // 10
+                [0,-pad_width/2-fillet_width/6,2*fillet_height/3], // 11
+                [0,pad_width/2,fillet_height], // 12
+                [pad_len,pad_width/2,fillet_height], // 13
+                [pad_len,-pad_width/2,fillet_height], // 14
+                [0,-pad_width/2,fillet_height]]; // 15
+    
+            fillet_faces = [
+                [0,4,8,12,15,11,7,3], // 0
+                [0,1,5,4], // 1
+                [1,2,6,5], // 2
+                [7,6,2,3], // 3
+                [4,5,9,8], // 4
+                [5,6,10,9],// 5
+                [10,6,7,11],// 6
+                [8,9,13,12],// 7
+                [9,10,14,13],// 8
+                [15,14,10,11],// 9
+                [12,13,14,15],// 10
+                [3,2,1,0]];// 11
+
+            polyhedron(fillet_points, fillet_faces);        
+        }
+    }
+
 	module sot25_()
 	{
 		// pin prototype
@@ -70,9 +117,26 @@ module sot25()
 		}
 	}
 
+    if (fillet) {
+			color([0.9, 0.9, 0.9]) {
+				translate([0,0.02,0])
+                    fillet();
+				translate([0,2.0,0])
+					fillet();
+				translate([-2.03,0.02,0])
+                    rotate([0,0,180])
+                        fillet();
+  				translate([-2.03,1.01,0])
+                    rotate([0,0,180])
+                        fillet();
+  				translate([-2.03,2.0,0])
+                    rotate([0,0,180])
+                        fillet();
+			}
+    }
+
     translate([0,0.1,0])
 	// match rotation with stock footprint's
 	rotate([0,0,90])
 		sot25_();
 }
-
