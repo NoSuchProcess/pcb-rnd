@@ -32,7 +32,7 @@
 //  in any way.
 //
 
-module dsub(pins=9,gender=1,rotation=90)
+module dsub(pins=9,gender=1,rotation=90,pin_descent=2.5)
 {
 
 //    body_width  = 1.378603*pins + 18.48503;
@@ -69,8 +69,6 @@ module dsub(pins=9,gender=1,rotation=90)
     pin_spacing = 2.7432;
     pin_setback1 = 8.08;
     pin_setback2 = pin_setback1 + pin_row_spacing;
-
-    pin_descent = 2.5;
  
     module pin() {
         color([0.7,0.7,0.7])
