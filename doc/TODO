@@ -12,6 +12,8 @@
 
 2. For later releases ===============================================================================
 - FEATURE: openscad export: option to set/change $fn (default to 0, which should mean don't set, for compatibility) [report: Erich]
+- FEATURE: openscad export: option to set/change fillet=0|1 for SMD/reflowed devices [report: Erich]
+- FEATURE: openscad export: option to set/change unmasked copper colour to depict tinning/HASL/ENIG etc.. [report: Erich]
 - CLEANUP: remove inline, use RND_INLINE - check src_3rd as well (librnd5 critical)
 - BUG: export_stl: before counting points, merge all the cutout polygons into one to avoid buggy exports due to overlapping/embedded cutouts; see bug_files/TODO/stl_olap.stl [report: keantoken]
 	- BUG: via-on-via triggers an assert, see bug_files/TODO/stl-vv.rp [report: Majenko]
