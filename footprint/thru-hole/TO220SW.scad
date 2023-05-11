@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to220sw()
+module to220sw(pin_descent=2.5)
 {
     pin_thickness = 0.5;
     pin_width1 = 1.45;
@@ -55,7 +55,7 @@ module to220sw()
     
     module pin() {
         linear_extrude(height=pin_thickness)
-	        polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-2.5],[-pin_width2/2,-pin_neck-2.5],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);        
+	        polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-pin_descent],[-pin_width2/2,-pin_neck-pin_descent],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);        
     }
     
     module bent_pin() {
@@ -64,8 +64,8 @@ module to220sw()
                 linear_extrude(height=pin_thickness)
                     polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-0.25],[-pin_width2/2,-pin_neck-0.25],
             [-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
-            translate([-pin_width2/2,-6.04,2.54])
-                cube([pin_width2,(3.55-2.54)+2.695,pin_thickness],false);
+            translate([-pin_width2/2,-3.54-pin_descent,2.54])
+                cube([pin_width2,1.196+pin_descent,pin_thickness],false);
         }
     }
 
@@ -126,4 +126,3 @@ module to220sw()
         }
     }
 }
-

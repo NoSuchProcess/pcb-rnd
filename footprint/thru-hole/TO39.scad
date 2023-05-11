@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module to39()
+module to39(pin_descent=2.5)
 {
     height = 6.35;
     major_diameter = 8.95;
@@ -59,12 +59,12 @@ module to39()
             }
         }
         color([0.8,0.8,0.8]) {
-            translate ([-2.54,0,-2.45])
-                cylinder(r = pin_diameter/2, h = pcb_offset +2.5);
-            translate ([0,2.54,-2.45])
-                cylinder(r = pin_diameter/2, h = pcb_offset + 2.5);
-            translate ([2.54,0,-2.45])
-                cylinder(r = pin_diameter/2, h = pcb_offset + 2.5);
+            translate ([-2.54,0,-pin_descent])
+                cylinder(r = pin_diameter/2, h = pcb_offset +pin_descent);
+            translate ([0,2.54,-pin_descent])
+                cylinder(r = pin_diameter/2, h = pcb_offset + pin_descent);
+            translate ([2.54,0,-pin_descent])
+                cylinder(r = pin_diameter/2, h = pcb_offset + pin_descent);
         }
     }
 }

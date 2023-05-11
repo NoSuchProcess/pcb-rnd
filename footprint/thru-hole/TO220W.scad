@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to220w(pins=3)
+module to220w(pins=3,pin_descent=2.5)
 {
     pin_thickness = 0.5;
     pin_width1 = 1.45;
@@ -55,7 +55,7 @@ module to220w(pins=3)
     
     module pin() {
         linear_extrude(height=pin_thickness)
-	        polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-2.5],[-pin_width2/2,-pin_neck-2.5],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
+	        polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-pin_descent],[-pin_width2/2,-pin_neck-pin_descent],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
     }
 
     module tab() {
@@ -117,4 +117,3 @@ module to220w(pins=3)
         }
     }
 }
-

@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module to92()
+module to92(pin_descent=2.5)
 {
     height = 5.0;
     diameter = 5.0;
@@ -39,7 +39,7 @@ module to92()
     module bent_pin(pin_thickness) {
         translate([0,0,-pin_thickness/2])
               linear_extrude(height=pin_thickness)
-                  polygon([[-pin_thickness/2,-2.45],[-pin_thickness/2,2.25],[1.27-pin_thickness/2,3.25],[1.27-pin_thickness/2,5.5],[1.27+pin_thickness/2,5.5],[1.27+pin_thickness/2,3.0],[pin_thickness/2,2.0],[pin_thickness/2,-2.45]]);
+                  polygon([[-pin_thickness/2,-pin_descent],[-pin_thickness/2,2.25],[1.27-pin_thickness/2,3.25],[1.27-pin_thickness/2,5.5],[1.27+pin_thickness/2,5.5],[1.27+pin_thickness/2,3.0],[pin_thickness/2,2.0],[pin_thickness/2,-pin_descent]]);
     }
 
     rotate([0,0,-90]) {
@@ -56,8 +56,8 @@ module to92()
             color([0.8,0.8,0.8]) {
                 rotate([90,0,0])
                     bent_pin(pin_thickness);
-                translate ([2.54,0,height-2.45])
-                    cube ([pin_thickness, pin_thickness, height*2], true);
+                translate ([2.54,0,height-(height+pin_descent)/2])
+                    cube ([pin_thickness, pin_thickness, height+pin_descent], true);
                 translate ([5.08,0,0])
                     rotate([90,0,180])
                     bent_pin(pin_thickness);
