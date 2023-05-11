@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to126w(pins=3)
+module to251(pins=3,pin_descent=2.5)
 {
     pin_thickness = 0.5;
     pin_width1 = 1.0;
@@ -54,7 +54,6 @@ module to126w(pins=3)
     hole_height = device_height/2;
 
     module pin() {
-        pin_descent = 2.5;
         linear_extrude(height=pin_thickness)
             polygon([[-pin_width1/2,0],[pin_width1/2,0],[pin_width1/2,pin_width1-pin_width2-pin_neck],[pin_width2/2,-pin_neck],[pin_width2/2,-pin_neck-0.01-pin_descent ],[-pin_width2/2,-pin_neck-0.01-pin_descent],[-pin_width2/2,-pin_neck],[-pin_width1/2,pin_width1-pin_width2-pin_neck]]);
     }
