@@ -33,11 +33,8 @@
 
 module sc90(fillet=1)
 {
-   pad_len=0.2;
-   pad_width=0.24;
-   pad_height= 0.15; 
 
-   module fillet() {
+   module fillet(pad_len=0.2, pad_width=0.2, pad_height= 0.15) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/3;        
         overall_width = fillet_width + pad_width;
@@ -96,7 +93,7 @@ module sc90(fillet=1)
 				linear_extrude(height=1.6)
 					polygon([[-0.3,0.1],[-0.4,0.7],[0.4,0.7],[0.3,0.1]]);
 
-			// 6 pins
+			// 3 pins
 			color([0.9, 0.9, 0.9]) {
 				translate([0.21,0.5,0.3-0.2/2])
 					pin(0.5, 0.25, 0.2);
@@ -114,11 +111,11 @@ module sc90(fillet=1)
 			color([0.9, 0.9, 0.9]) {
 				translate([0,-0.02,0])
                     fillet();
-				translate([0,1.13-0.3/2,0])
+				translate([0,1.08-0.2/2,0])
 					fillet();
   				translate([-1.41,0.63-0.3/2,0])
                     rotate([0,0,180])
-                        fillet();
+                        fillet(pad_width=0.3);
 			}
     }
 
