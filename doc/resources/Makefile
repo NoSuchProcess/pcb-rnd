@@ -5,7 +5,7 @@ all:
 
 install_all:
 	$(SCCBOX) mkdir -p $(RESDIR)
-	$(SCCBOX) $(HOW) -d *.png *.svg *.eps *.jpg $(RESDIR)
+	$(SCCBOX) $(HOW) -d *.png *.svg *.jpg $(RESDIR)
 
 install:
 	$(MAKE) install_all HOW="install -f -d"
