@@ -33,12 +33,8 @@
 
 
 module sot143(fillet=0)
-{
-   pad_len=0.35;
-   pad_width=0.4;
-   pad_height= 0.1; 
-
-   module fillet() {
+{ 
+   module fillet(pad_len=0.35, pad_width=0.4, pad_height= 0.1) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/3;        
         overall_width = fillet_width + pad_width;
@@ -117,10 +113,8 @@ module sot143(fillet=0)
 
     if (fillet) {
 			color([0.9, 0.9, 0.9]) {
-				translate([0,0.02,0])
-                    fillet();
-				translate([0,0.43,0])
-                    fillet();
+				translate([0,0.45-0.45/2,0])
+                    fillet(pad_width=0.84);
 				translate([0,1.81,0])
 					fillet();
   				translate([-2.03,0.02,0])
@@ -136,3 +130,4 @@ module sot143(fillet=0)
 	rotate([0,0,90])
 		sot143_();
 }
+
