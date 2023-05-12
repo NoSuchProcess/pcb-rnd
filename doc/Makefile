@@ -26,6 +26,7 @@ install:
 	$(SCCBOX) mkdir -p "$(DOCDIR)"
 	cd man && $(MAKE) install
 	cd user && $(MAKE) install
+	cd resources && $(MAKE) install
 	cd tutorials && $(MAKE) install
 	cd security && $(MAKE) install
 	cd conf && $(MAKE) install
@@ -35,6 +36,7 @@ install:
 linstall:
 	cd man && $(MAKE) linstall
 	cd user && $(MAKE) linstall
+	cd resources && $(MAKE) linstall
 	cd tutorials && $(MAKE) linstall
 	cd security && $(MAKE) linstall
 	cd conf && $(MAKE) linstall
@@ -44,6 +46,7 @@ linstall:
 uninstall:
 	cd man && $(MAKE) uninstall
 	cd user && $(MAKE) uninstall
+	cd resources && $(MAKE) uninstall
 	cd tutorials && $(MAKE) uninstall
 	cd security && $(MAKE) uninstall
 	cd conf && $(MAKE) uninstall
