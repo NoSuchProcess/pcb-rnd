@@ -33,11 +33,8 @@
 
 module sot323D(fillet=0)
 {
-   pad_len=0.3;
-   pad_width=0.3;
-   pad_height= 0.2; 
 
-   module fillet() {
+   module fillet(pad_len=0.3, pad_width=0.3, pad_height= 0.2) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/3;        
         overall_width = fillet_width + pad_width;
@@ -127,3 +124,4 @@ module sot323D(fillet=0)
 	rotate([0,0,0])
 		sot323D_();
 }
+
