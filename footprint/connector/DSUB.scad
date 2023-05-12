@@ -32,7 +32,7 @@
 //  in any way.
 //
 
-module dsub(pins=9,gender=1,rotation=90,pin_descent=2.5)
+module part_dsub(pins=9,gender=1,rotation=90,pin_descent=2.5)
 {
 
 //    body_width  = 1.378603*pins + 18.48503;
@@ -252,3 +252,4 @@ module dsub(pins=9,gender=1,rotation=90,pin_descent=2.5)
         }
     }
 }
+

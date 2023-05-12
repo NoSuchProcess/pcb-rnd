@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module pwrjack(centre_pin_dia = 2.1,pin_descent=2.5)
+module part_pwrjack(centre_pin_dia = 2.1,pin_descent=2.5)
 {
     pin_thickness = 0.3;
     pin1_width = 2.8;
@@ -98,3 +98,4 @@ module pwrjack(centre_pin_dia = 2.1,pin_descent=2.5)
             }
         }
 }
+

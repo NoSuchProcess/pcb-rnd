@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module bnc_lay(pin_descent = 2.5)
+module part_bnc_lay(pin_descent = 2.5)
 {
     overall_length = 34.7;
     body_length = 13.97;
@@ -156,3 +156,4 @@ module bnc_lay(pin_descent = 2.5)
             mounting_pins();
         }
 }
+
