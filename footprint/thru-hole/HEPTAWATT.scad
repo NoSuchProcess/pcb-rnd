@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module heptawatt(pin_descent=2.5)
+module part_heptawatt(pin_descent=2.5)
 {
     pins=7;
     pin_thickness = 0.5;
@@ -118,3 +118,4 @@ module heptawatt(pin_descent=2.5)
         }
     }
 }
+

@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module led(diameter=3, pin_descent=2.5)
+module part_led(diameter=3, pin_descent=2.5)
 {
     height = 1.65*diameter + 0.35;
     union () {
@@ -52,3 +52,4 @@ module led(diameter=3, pin_descent=2.5)
         }
     }
 }
+

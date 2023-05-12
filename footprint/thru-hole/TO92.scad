@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module to92(pin_descent=2.5)
+module part_to92(pin_descent=2.5)
 {
     height = 5.0;
     diameter = 5.0;
@@ -65,3 +65,4 @@ module to92(pin_descent=2.5)
         }
     }
 }
+

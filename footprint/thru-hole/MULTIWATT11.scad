@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module multiwatt11(pin_descent=2.5)
+module part_multiwatt11(pin_descent=2.5)
 {
     pins=11;
     pin_thickness = 0.6;
@@ -117,3 +117,4 @@ module multiwatt11(pin_descent=2.5)
         }
     }
 }
+

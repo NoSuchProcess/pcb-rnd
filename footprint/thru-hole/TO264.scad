@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to264(pins=3,pin_descent=2.5)
+module part_to264(pins=3,pin_descent=2.5)
 {
     pin_thickness = 0.6;
     pin_width1 = 2.9;
@@ -112,3 +112,4 @@ module to264(pins=3,pin_descent=2.5)
         }
     }
 }
+

@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module pentawatt(pin_descent=2.5)
+module part_pentawatt(pin_descent=2.5)
 {
     pins=5;
     pin_thickness = 0.5;
@@ -119,3 +119,4 @@ module pentawatt(pin_descent=2.5)
         }
     }
 }
+

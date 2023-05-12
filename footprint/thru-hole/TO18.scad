@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module to18(pin_descent=2.5)
+module part_to18(pin_descent=2.5)
 {
     height = 4.83;
     major_diameter = 5.6;
@@ -68,3 +68,4 @@ module to18(pin_descent=2.5)
         }
     }
 }
+

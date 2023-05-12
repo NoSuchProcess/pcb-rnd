@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module to39(pin_descent=2.5)
+module part_to39(pin_descent=2.5)
 {
     height = 6.35;
     major_diameter = 8.95;
@@ -68,3 +68,4 @@ module to39(pin_descent=2.5)
         }
     }
 }
+

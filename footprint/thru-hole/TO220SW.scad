@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to220sw(pin_descent=2.5)
+module part_to220sw(pin_descent=2.5)
 {
     pin_thickness = 0.5;
     pin_width1 = 1.45;
@@ -126,3 +126,4 @@ module to220sw(pin_descent=2.5)
         }
     }
 }
+

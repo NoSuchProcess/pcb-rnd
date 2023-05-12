@@ -32,7 +32,7 @@
 //  in any way.
 //
 
-module tact6x6(button_height=1.0)
+module part_tact6x6(button_height=1.0)
 {
     pin_thickness = 0.3;
     pin_width = 0.7;
@@ -92,3 +92,4 @@ module tact6x6(button_height=1.0)
         }
     }
 }
+

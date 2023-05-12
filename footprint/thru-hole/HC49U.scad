@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module HC49(height=13.46, pins=2, pin_descent=2.5)
+module part_HC49(height=13.46, pins=2, pin_descent=2.5)
 {
     major_diameter = 4.65;
     minor_diameter = 3.8;
@@ -87,3 +87,4 @@ module HC49(height=13.46, pins=2, pin_descent=2.5)
         }
     }
 }
+

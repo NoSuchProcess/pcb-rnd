@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module to126(pins=3,S=0,pin_descent=2.5)
+module part_to126(pins=3,S=0,pin_descent=2.5)
 {
     pin_thickness = 0.5;
     pin_width1 = 1.2;
@@ -117,3 +117,4 @@ module to126(pins=3,S=0,pin_descent=2.5)
         }
     }
 }
+

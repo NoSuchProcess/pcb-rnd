@@ -33,7 +33,7 @@
 //  in any way.
 //
 
-module OSC8_14(size=0,pin_descent=2.5)
+module part_OSC8_14(size=0,pin_descent=2.5)
 {
     height = 5.3;
     major_diameter = 9.2;
@@ -118,3 +118,4 @@ module OSC8_14(size=0,pin_descent=2.5)
          }
      }
 }
+
