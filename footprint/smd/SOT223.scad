@@ -33,12 +33,9 @@
 
 
 module sot223(fillet=0)
-{
-   pad_len=0.7;
-   pad_width=0.6;
-   pad_height= 0.2; 
+{ 
 
-   module fillet() {
+   module fillet(pad_len=0.7, pad_width=0.6, pad_height= 0.2) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/3;        
         overall_width = fillet_width + pad_width;
@@ -120,21 +117,9 @@ module sot223(fillet=0)
 					fillet();
 				translate([0,4.6,0])
 					fillet();
-  				translate([-6.3,1.1,0])
+  				translate([-6.3,2.29,0])
                     rotate([0,0,180])
-                        fillet();
-  				translate([-6.3,1.7,0])
-                    rotate([0,0,180])
-                        fillet();
-  				translate([-6.3,2.2,0])
-                    rotate([0,0,180])
-                        fillet();
-  				translate([-6.3,2.8,0])
-                    rotate([0,0,180])
-                        fillet();
-				translate([-6.3,3.4,0])
-                    rotate([0,0,180])
-                        fillet();
+                        fillet(pad_width=3.0);
 			}
     }
 
@@ -142,3 +127,4 @@ module sot223(fillet=0)
 	rotate([0,0,270])
 		sot223_();
 }
+
