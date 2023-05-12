@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module mpak(fillet=0)
+module part_mpak(fillet=0)
 {
 
    module fillet(pad_width=0.45, pad_len=1.1, pad_height= 0.2) {

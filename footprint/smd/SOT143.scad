@@ -32,7 +32,7 @@
 //
 
 
-module sot143(fillet=0)
+module part_sot143(fillet=0)
 { 
    module fillet(pad_len=0.35, pad_width=0.4, pad_height= 0.1) {
         fillet_height = pad_height/3;

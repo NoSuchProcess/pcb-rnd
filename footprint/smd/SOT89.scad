@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module sot89(fillet=0)
+module part_sot89(fillet=0)
 {
    module fillet(pad_width=0.48,pad_len=1.0,pad_height= 0.4) {
         fillet_height = pad_height/3;

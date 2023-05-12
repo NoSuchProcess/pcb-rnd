@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module sot323D(fillet=0)
+module part_sot323D(fillet=0)
 {
 
    module fillet(pad_len=0.3, pad_width=0.3, pad_height= 0.2) {

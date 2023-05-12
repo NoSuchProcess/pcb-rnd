@@ -32,7 +32,7 @@
 //
 
 
-module sot223(fillet=0)
+module part_sot223(fillet=0)
 { 
 
    module fillet(pad_len=0.7, pad_width=0.6, pad_height= 0.2) {

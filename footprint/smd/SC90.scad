@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module sc90(fillet=0)
+module part_sc90(fillet=0)
 {
 
    module fillet(pad_len=0.2, pad_width=0.2, pad_height= 0.15) {

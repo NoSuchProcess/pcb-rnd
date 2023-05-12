@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module sot25(fillet=0)
+module part_sot25(fillet=0)
 {
 
    module fillet(pad_len=0.23, pad_width=0.43, pad_height= 0.1) {
