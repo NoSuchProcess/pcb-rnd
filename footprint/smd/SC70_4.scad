@@ -33,11 +33,8 @@
 
 module sc70_4(fillet=0)
 {
-   pad_len=0.3;
-   pad_width=0.3;
-   pad_height= 0.2; 
 
-   module fillet() {
+   module fillet(pad_len=0.3, pad_width=0.3, pad_height= 0.2) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/3;        
         overall_width = fillet_width + pad_width;
@@ -115,7 +112,7 @@ module sc70_4(fillet=0)
 			color([0.9, 0.9, 0.9]) {
                 fillet();
 				translate([0,1.4-0.3/2,0])
-					fillet();
+					fillet(pad_width=0.41);
   				translate([-2.03,0,0])
                     rotate([0,0,180])
                         fillet();
@@ -129,3 +126,4 @@ module sc70_4(fillet=0)
 	rotate([0,0,90])
 		sc70_4_();
 }
+
