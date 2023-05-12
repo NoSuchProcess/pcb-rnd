@@ -33,11 +33,7 @@
 
 module sot89(fillet=0)
 {
-   pad_len=1.0;
-   pad_width=0.48;
-   pad_height= 0.4; 
-
-   module fillet() {
+   module fillet(pad_width=0.48,pad_len=1.0,pad_height= 0.4) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/3;        
         overall_width = fillet_width + pad_width;
@@ -116,6 +112,9 @@ module sot89(fillet=0)
                 fillet();
             translate([0,3.05,0])
                 fillet();
+            translate([-3.2,1.55,0])
+                rotate([0,0,180])
+                    fillet(pad_width=1.7,pad_len=0.5);
         }
     }
 }
