@@ -33,10 +33,8 @@
 
 module mpak(fillet=0)
 {
-   pad_len=1.1;
-   pad_height= 0.2; 
 
-   module fillet(pad_width=0.45) {
+   module fillet(pad_width=0.45, pad_len=1.1, pad_height= 0.2) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/3;        
         overall_width = fillet_width + pad_width;
