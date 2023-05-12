@@ -34,10 +34,9 @@
 module mpak(fillet=0)
 {
    pad_len=1.1;
-   pad_width=0.45;
    pad_height= 0.2; 
 
-   module fillet() {
+   module fillet(pad_width=0.45) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/3;        
         overall_width = fillet_width + pad_width;
@@ -96,7 +95,6 @@ module mpak(fillet=0)
 				linear_extrude(height=6.35)
 					polygon([[-4.2,0.25],[-4.2,4.0],[4.2,4.0],[4.2,0.25]]);
 
-			// 3 pins
 			color([0.9, 0.9, 0.9]) {
 				translate([3.6,2.0,1.27-0.45/2])
 					pin(2.6, 1.2, 0.45);
@@ -106,7 +104,6 @@ module mpak(fillet=0)
 					pin(2.6, 1.2, 0.45);
 				translate([3.6,2.0,5.08-0.45/2])
 					pin(2.6, 1.2, 0.45);
-
 				translate([-3.6,2.0,3.17-3.18/2])
 					pin(-2.6, 1.2, 3.18);
 			}
@@ -122,27 +119,9 @@ module mpak(fillet=0)
 					fillet();
 				translate([0,3.83,0])
 					fillet();
-  				translate([-11.3,0.8,0])
+  				translate([-11.3,1.95,0])
                     rotate([0,0,180])
-                        fillet();
-  				translate([-11.3,1.2,0])
-                    rotate([0,0,180])
-                        fillet();
-  				translate([-11.3,1.6,0])
-                    rotate([0,0,180])
-                        fillet();
-  				translate([-11.3,2.0,0])
-                    rotate([0,0,180])
-                        fillet();
-  				translate([-11.3,2.4,0])
-                    rotate([0,0,180])
-                        fillet();
-				translate([-11.3,2.8,0])
-                    rotate([0,0,180])
-                        fillet();
-				translate([-11.3,3.2,0])
-                    rotate([0,0,180])
-                        fillet();
+                        fillet(3.2);
 			}
     }
 
@@ -150,3 +129,4 @@ module mpak(fillet=0)
 	rotate([0,0,90])
 		mpak_();
 }
+mpak(fillet=1);
