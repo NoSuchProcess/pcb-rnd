@@ -5,7 +5,6 @@
 	+ same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
 + BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
 - DOC: pool node on how to use pixmap for breadboading
-+ BUG: segfault recipe: open pcb-rnd, and import subcircuit bug_files/TODO/piezo-example.rf which has a corresponding .scad model piezo-example.scad. Use export dialogue to export openscad unknown.scad. Then modify .scad model, i.e. insert "    color([0.5,0.5,0.5])" above cylinder line, save change to .scad, then switch to still running pcb-rnd session and export dialogue window and press the "export" openscad button again; segfault ensues. No segfault if {f s} done in pcb-rnd before export and after change to 3D model. [report: Erich]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
