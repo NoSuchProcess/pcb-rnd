@@ -149,7 +149,7 @@ int pcb_thermal_chars2bits(pcb_thermal_t *dst, const char *src)
 {
 	pcb_thermal_t res = 0;
 
-	if (src[0] == '\0') {
+	if ((src == NULL) || (src[0] == '\0')) {
 		*dst = 0;
 		return 0;
 	}
