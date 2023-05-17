@@ -7,6 +7,7 @@
 - DOC: pool node on how to use pixmap for breadboading
 
 2. For later releases ===============================================================================
+- BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	-> happens when subc is removed from pcb_removelist
 	-> subc line is probably added but not removed from pcb_removelist's rtrees
