@@ -1,3 +1,144 @@
+pcb-rnd 3.1.1 (r37566)
+~~~~~~~~~~~~~~~~~~~~~~
+	[asm]
+		-Fix: ignore subcircuits of extended objects
+
+	[cam]
+		-Fix: doc_png exports bottom side with flip_y enabled for proper layer ordering
+		-Add: doc_eps job to export colored top and bottom in eps for documentation purposes
+		-Add: doc_ps job, similar to doc_png and doc_eps
+		-Add: doc_ps draws copper faded and silk solid for readability
+		-Add: cam job for Advanced Circuits, as reported by Bdale
+
+	[ch_endpoint]
+		-Fix: remove endpoint indications (on first subsequent redraw) when tool is switched to a non-indicating one
+
+	[core]
+		-Fix: pixmap transformation: avoid sign swap in rotation
+		-Fix: scale pixmaps before rotation to keep their aspect if it's not 1.000
+		-Fix: find.c vs. disjoint padstacks: set all-copper-conn'd for multi-copper padstacks only if the hole that connects them are plated
+		-Fix: find.c vs. disjoint padstacks: don't require plated hole for the single-copper (smd) case
+		-Fix: find.c: skip checking bloated up pstk against polygon for isc if clearance is larger than bloat and there's no thermal connecting them (works around line approximation false positive isc)
+		-Fix: find.c: switch over from geometric rat-end connection find to (more precise) anchor based when rat anchors are avaliable; this means the rat line is connected only to the two objects it was mapped for; fixes the bug when two nointconn lines touch at endpoint from where a rat also starts and by geometry the rat shorts to two nointconn lines making an internal connection against the user's will
+		-Fix: typo: check if rat rtree exists (not padstack rtree) before looking into the rat rtree
+		-Fix: when removing a layer, all layers are renumbered; shift the thermal bits (indexed by layer index) in each padstack so thermals remain on the same layer after the re-indexing
+		-Fix: allow idpath data address of buffer#n to end in /
+		-Fix: idpath data address lookup: boundary check on the buffer array
+		-Fix: pcb_idpath2obj_in() should be able to return object from buffer if the path refers to a buffer; provide an _only() variant that excludes the buffer
+		-Fix: draw code used the wrong field for applying gui xform, causing conditional jump on uninitialized value
+		-Fix: when converting string to thermal bits, accept NULL as empty string
+		-Add: initialize new conf node rc.path.dotdir so users can refer to their own config easier
+		-Add: hid_cam: support for global opt flip_x and flip_y so that bottom side layer order can be rendered correctly
+		-Add: low level cam support for force_nonepty (creates output file even if layer group is empty, overriding the export plugins normal decision, in case the plugin cooperates)
+
+	[dialogs]
+		-Fix: reapply filter after a refresh to avoid gui inconsistency between the filter entry and the tree displayed
+		-Fix: library window: refresh button shouldn't crash when filter entry is empty
+		-Fix: library window on parametric edit: when the parametric footprint fails to produce a valid help text, don't override the filter with NULL string (causes segf)
+		-Fix: typo in load file name filter name (should be rp, not rs)
+		-Fix: Save() syntax should mention the extra, optional path argument where it is available
+		-Add: library window: refine filter text tooltip: mention regex and case-insensitive
+		-Add: padstack dialog instance tab displays logical layer id (for reference and to ease debugging)
+		-Add: open dialog: file name filtering widget when opening a board
+
+	[doc]
+		-Add: gtk4 and sch-rnd formats in datasheet
+		-Add: document new openscad export features
+		-Add: mention gmail is not supported
+		-Add: link in route-rnd
+		-Add: FAQ item about high DPI screen icon_scale
+		-Add: document cam's global option flip_x and flip_y and force_nonempty option
+		-Add: sch-rnd on the bridges drawing and Ringdove listing
+		-Add: install resources/ when installing doc
+		-Update: conf tree docs generated with the centralzied tool (removing excess pcb-rnd from titles)
+		-Update: dotdir node in conf tree doc
+		-Update: user manual: prefer sch-rnd over gschem
+		-Update: use nlnet logo for the link
+
+	[export_bom]
+		-Fix: ignore subcircuits of extended objects
+
+	[export_fidocadj]
+		-Fix: ignore subcircuits of extended objects
+
+	[export_gerber]
+		-Add: let cam override "layer group is empty" decision
+
+	[export_ipdcd356]
+		-Fix: ignore subcircuits of extended objects
+
+	[export_oldconn]
+		-Fix: ignore subcircuits of extended objects
+
+	[export_openscad]
+		-Fix: don't hardwire pcb_ prefix in generated scad script, read it from a global var so later it can be changed
+		-Add: export option 'prefix' to change module names to allow multiple exports to be used in a single large project
+		-Add: do not hardwire board thickness 1.6mm but use the standard thickness query between top and bottom copper
+		-Add: support for openscad-origin (object attribute) to set 0;0 of the board on the x;y plane
+
+	[export_ps]
+		-Fix: restore config after the export so that forced conf sets (like flips) are reverted
+		-Add: set librnd's ps_faded before rendering a layer, depending on xform->layer_faded
+		-Add: let cam override "layer group is empty" decision in both ps end eps
+		-Add: --enable-flip in eps to respect flip_x and flip_y
+
+	[export_stl]
+		-Fix: ignore subcircuits of extended objects
+		-Fix: initialize triangulation pool large enough to host cutout coords as well
+		-Fix: use rtree search for cutout objects so that ones from subcircuits are picked up as well
+		-Fix: remove temporary cutout polygons before uninitializing the cutout poly vector
+		-Fix: separate export options into per format arrays so file names and other settings are remembered separately when exporting from the GUI
+
+	[export_xy]
+		-Fix: ignore subcircuits of extended objects
+		-Fix: get the format enum initialized when called from the export() action
+		-Add: make enum values (format template names) available for --help
+
+	[exprot_png]
+		-Fix: don't override onsolder-rendering in cam mode, let the cam rule decide
+
+	[footprint]
+		-Add: openscad: 1008, 1210, 1806, 1825, 2706 SMD model
+		-Add: openscad: SOT143, SOT223, SOT25, SOT26, SOT323, SOT232D SMD model
+		-Add: openscad: SOT325, SOT325, SOT23, SOT89, SC90, SOD110, SOD80, SOD87 SMD model
+		-Add: openscad: SC70_3 uses SOT323 package model
+		-Add: openscad: SC70-4 3D model
+		-Add: openscad: SOD80 3D model compatible with minimelf
+		-Add: openscad: SOD106A, MPAK 3D model
+		-Add: openscad: 3 and 5 mm LEDs, TO92, TO39(-3), TO18, OSC14_8
+		-Add: openscad: HC49*, HC51, TO220*, TO126, TO251, TO247, TO264
+		-Add: openscad: MULTIWATT*, HEPTAWATT, PENTAWATT
+		-Add: openscad: 3D model for 6x6 mm tactile switch
+		-Add: openscad: BNC, DC power jack, DSUB connectors
+
+	[menu]
+		-Add: hotkey {f f s} for import (fetch) schematics
+
+	[oldactions]
+		-Fix: ignore subcircuits of extended objects when listing rotations
+
+	[propedit]
+		-Fix: relative set on geo fields is not mistaken for absolute set
+		-Add: pressing enter in the value input of the "new attribute" dialog should be the same as clicking on ok
+		-Add: propset(rename/a/oldname, newname) renames the attribute (in an undoable way) keeping its value
+
+	[query]
+		-Fix: query() action syntax includes the optional scope argument
+
+	[renumber]
+		-Fix: ignore subcircuits of extended objects
+
+	[tests]
+		-Fix: filter out pup soft uninit warning to reduce noise
+		-Fix: strflags: wront printf format for unsigned long int in hex
+		-Fix: uniq_name: wrong array index integer width for printf %d
+		-Fix: cam refs: 0 is written as 0.000 in current code
+		-Add: test board for different disjoint padstack-padstack touches for find.c
+
+	[tool_std]
+		-Fix: arrow tool timer drops current click timing if the board got unloaded (or switched) meanwhile, to avoid operating on invalid or background board
+
+
 pcb-rnd 3.1.0 (r37222)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[asm]

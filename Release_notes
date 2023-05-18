@@ -1,12 +1,5 @@
-pcb-rnd 3.1.0
+pcb-rnd 3.1.1
 ~~~~~~~~~~~~~
 
-This release focuses on librnd4 switchover.
-
-Feature highlight (bugfixes are listed in the Changelog):
-
-1. many of the devhelper scripts got moved to librnd to be shared with
-   other Ringdove apps
-
-2. the generic low levels of the font engine got moved to librnd for the
-   same reason
+This release is a minor bugfix release with only one major feature:
+openscad 3d models for all static file footprints in the stock lib.
