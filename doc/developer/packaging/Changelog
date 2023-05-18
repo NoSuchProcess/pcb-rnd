@@ -1,11 +1,27 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.1.0
+  ver=3.1.1
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
 TODO: doc/resources installed
+
+Packaging changes between 3.1.1 and 3.1.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A. changes that probably don't need action
+
+1. a lot more files are installed in the docdir: the whole resources/
+   dir, making installed doc more self-contained (mostly due to logo graphics)
+
+2. a lot more files are installed in the footprint dir: openscad scripts for
+   3d models of the static footprints
+
+B. changes that probably DO need action
+
+(none)
+
 
 Packaging changes between 3.1.0 and 3.0.6
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
