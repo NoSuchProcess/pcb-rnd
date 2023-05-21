@@ -4,9 +4,9 @@
 + BUG: thermal: bug_files/TODO/thermal.lht: remove an intern layer group the double click poly -> thermal is lost [report: cuvoodoo]
 	+ same bug: DRC: removing bottom-power unrelated layer without any objects turns insufficient overlap into net to close to other net in bug_files/TODO/overlap3.lht [report: cuvoodoo] -> changes thermal on the via
 + BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
-- DOC: pool node on how to use pixmap for breadboading
 
 2. For later releases ===============================================================================
+- DOC: pool node on how to use pixmap for breadboading
 - BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	-> happens when subc is removed from pcb_removelist
