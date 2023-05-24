@@ -38,12 +38,12 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
     bevel = 0.1;
     sizex=width;
     sizey=height;
-    
+
     module ball() {
         translate([0,0,balldia/2])
             sphere(r=balldia/2);
     }
-        
+
     module body() {
         body_points = [
             [-sizex/2,-sizey/2+slant,pcb_offset],//0
@@ -63,7 +63,7 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
             [sizex/2,-sizey/2+slant+bevel,(device_height-pcb_offset)/2],
             [sizex/2-slant-bevel,-sizey/2,(device_height-pcb_offset)/2],
             [-sizex/2+slant,-sizey/2,(device_height-pcb_offset)/2],//15
-    
+
             [-sizex/2+bevel,-sizey/2+slant+bevel,device_height],//16
             [-sizex/2+bevel,sizey/2-slant-bevel,device_height],
             [-sizex/2+slant+bevel,sizey/2-bevel,device_height],
@@ -77,7 +77,7 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
         body_faces=[
             [7,6,5,4,3,2,1,0],
             [16,17,18,19,20,21,22,23],
-    
+
             [0,1,9,8],
             [8,9,17,16],
             [1,2,10,9],
@@ -86,7 +86,7 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
             [10,11,19,18],
             [3,4,12,11],
             [11,12,20,19],
-    
+
             [4,5,13,12],
             [12,13,21,20],
             [5,6,14,13],
@@ -96,7 +96,7 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
             [7,0,8,15],
             [15,8,16,23],
             ];
-            
+
         rotate([0,0,180])
                 color([0.2,0.2,0.2])
                     difference() {
@@ -110,7 +110,7 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
                             cylinder(r=spacing/2, h=3);
                     }
     }
-    
+
     module place_balls() {
         color([0.7,0.7,0.7]) {
             for(x = [0:nx-1]) {
