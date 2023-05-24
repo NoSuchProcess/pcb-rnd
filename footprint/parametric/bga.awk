@@ -27,6 +27,37 @@ function automap(algo, pivot, revx, revy   ,xx,yy)
 	}
 }
 
+# figure if we need to export openscad map (has any pin missing)
+function scadmap_need(     x,y)
+{
+	for(x = 0; x < nx; x++)
+		for(y = 0; y < ny; y++)
+			if (MAP[x,y] == "!")
+				return 1;
+	return 0;
+}
+
+function scadmap(     x,y,s)
+{
+
+	if (!scadmap_need())
+		return "";
+
+
+	s = ",map=["
+	for(x = 0; x < nx; x++) {
+		if (x > 0) s = s ","
+		s = s "[";
+		for(y = 0; y < ny; y++) {
+			if (y > 0) s = s ","
+			s = s (MAP[x,y] != "!")
+		}
+		s = s "]"
+	}
+	s = s "]"
+	return s
+}
+
 BEGIN {
 	help_auto()
 	set_arg(P, "?spacing", "0.5mm")
@@ -106,7 +137,7 @@ BEGIN {
 	yo = (ny-1)*step/2
 
 	SCAT["openscad"]="bga.scad";
-	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia);
+	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia) scadmap();
 
 	subc_begin(nx "*" ny, "U1", 0, -bh, "", SCAT)
 
