@@ -101,8 +101,8 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
                 color([0.2,0.2,0.2])
                     difference() {
                         polyhedron(body_points, body_faces);
-                        translate([sizex/2-spacing*2,-sizey/2+spacing*2,device_height-0.1])
-                            cylinder(r=2*spacing/3, h=3);
+                        translate([sizex/2-1.3*spacing,-sizey/2+1.3*spacing,device_height-0.1])
+                            cylinder(r=spacing/2, h=3);
                     }
     }
     
@@ -127,3 +127,4 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
     }
 }
 
+part_bga(width=2.5, height=2.5);
