@@ -98,7 +98,6 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
             ];
             
         rotate([0,0,180])
-            translate([-sizex/2+1,-sizey/2+1,0])
                 color([0.2,0.2,0.2])
                     difference() {
                         polyhedron(body_points, body_faces);
@@ -121,8 +120,8 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
     }
 
     rotate([0,0,0]) {
+        body();
         translate([-(nx-1)*spacing/2,-(ny-1)*spacing/2,0]) {
-            body();
             place_balls();
         }
     }
