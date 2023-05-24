@@ -123,4 +123,4 @@ module part_bga(spacing=0.5, balldia=0.3, nx=8, ny=8, fillet=0) {
     }
     
 }
-part_bga(nx=8,ny=8,fillet=0);
+
