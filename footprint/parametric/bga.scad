@@ -36,7 +36,8 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, omit_map)
     pcb_offset=0.27;
     device_height=1.2;
     bevel = spacing/3;
-    size=((nx+ny)/2-1)*spacing+2;
+    sizex=(nx-1)*spacing+2;
+    sizey=(ny-1)*spacing+2;
     
     module ball() {
         translate([0,0,balldia/2])
@@ -45,32 +46,32 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, omit_map)
         
     module body() {
         body_points = [
-            [-size/2,-size/2+0.3,pcb_offset],//0
-            [-size/2,size/2-0.3,pcb_offset],
-            [-size/2+0.3,size/2,pcb_offset],
-            [size/2-0.3,size/2,pcb_offset],
-            [size/2,size/2-0.3,pcb_offset],
-            [size/2,-size/2+0.3+bevel,pcb_offset],
-            [size/2-0.3-bevel,-size/2,pcb_offset],
-            [-size/2+0.3,-size/2,pcb_offset],//7
+            [-sizex/2,-sizey/2+0.3,pcb_offset],//0
+            [-sizex/2,sizey/2-0.3,pcb_offset],
+            [-sizex/2+0.3,sizey/2,pcb_offset],
+            [sizex/2-0.3,sizey/2,pcb_offset],
+            [sizex/2,sizey/2-0.3,pcb_offset],
+            [sizex/2,-sizey/2+0.3+bevel,pcb_offset],
+            [sizex/2-0.3-bevel,-sizey/2,pcb_offset],
+            [-sizex/2+0.3,-sizey/2,pcb_offset],//7
 
-            [-size/2,-size/2+0.3,(device_height-pcb_offset)/2],//8
-            [-size/2,size/2-0.3,(device_height-pcb_offset)/2],
-            [-size/2+0.3,size/2,(device_height-pcb_offset)/2],
-            [size/2-0.3,size/2,(device_height-pcb_offset)/2],
-            [size/2,size/2-0.3,(device_height-pcb_offset)/2],
-            [size/2,-size/2+0.3+bevel,(device_height-pcb_offset)/2],
-            [size/2-0.3-bevel,-size/2,(device_height-pcb_offset)/2],
-            [-size/2+0.3,-size/2,(device_height-pcb_offset)/2],//15
+            [-sizex/2,-sizey/2+0.3,(device_height-pcb_offset)/2],//8
+            [-sizex/2,sizey/2-0.3,(device_height-pcb_offset)/2],
+            [-sizex/2+0.3,sizey/2,(device_height-pcb_offset)/2],
+            [sizex/2-0.3,sizey/2,(device_height-pcb_offset)/2],
+            [sizex/2,sizey/2-0.3,(device_height-pcb_offset)/2],
+            [sizex/2,-sizey/2+0.3+bevel,(device_height-pcb_offset)/2],
+            [sizex/2-0.3-bevel,-sizey/2,(device_height-pcb_offset)/2],
+            [-sizex/2+0.3,-sizey/2,(device_height-pcb_offset)/2],//15
     
-            [-size/2+bevel,-size/2+0.3+bevel,device_height],//16
-            [-size/2+bevel,size/2-0.3-bevel,device_height],
-            [-size/2+0.3+bevel,size/2-bevel,device_height],
-            [size/2-0.3-bevel,size/2-bevel,device_height],
-            [size/2-bevel,size/2-0.3-bevel,device_height],
-            [size/2-bevel,-size/2+0.3+bevel*2,device_height],
-            [size/2-0.3-bevel*2,-size/2+bevel,device_height],
-            [-size/2+0.3+bevel,-size/2+bevel,device_height]//23
+            [-sizex/2+bevel,-sizey/2+0.3+bevel,device_height],//16
+            [-sizex/2+bevel,sizey/2-0.3-bevel,device_height],
+            [-sizex/2+0.3+bevel,sizey/2-bevel,device_height],
+            [sizex/2-0.3-bevel,sizey/2-bevel,device_height],
+            [sizex/2-bevel,sizey/2-0.3-bevel,device_height],
+            [sizex/2-bevel,-sizey/2+0.3+bevel*2,device_height],
+            [sizex/2-0.3-bevel*2,-sizey/2+bevel,device_height],
+            [-sizex/2+0.3+bevel,-sizey/2+bevel,device_height]//23
             ];
 
         body_faces=[
@@ -96,12 +97,12 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, omit_map)
             [15,8,16,23],
             ];
             
-        rotate([0,0,-90])
-            translate([-size/2+1,size/2-1,0])
+        rotate([0,0,180])
+            translate([-sizex/2+1,-sizey/2+1,0])
                 color([0.2,0.2,0.2])
                     difference() {
                         polyhedron(body_points, body_faces);
-                        translate([size/2-1,-size/2+1,device_height-0.1])
+                        translate([sizex/2-1,-sizey/2+1,device_height-0.1])
                             cylinder(r=2*spacing/3, h=3);
                     }
     }
