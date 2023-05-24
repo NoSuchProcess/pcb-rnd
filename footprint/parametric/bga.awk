@@ -137,7 +137,7 @@ BEGIN {
 	yo = (ny-1)*step/2
 
 	SCAT["openscad"]="bga.scad";
-	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia) scadmap();
+	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia) ",width=" rev_mm(bw) ",height=" rev_mm(bh) scadmap();
 
 	subc_begin(nx "*" ny, "U1", 0, -bh, "", SCAT)
 
