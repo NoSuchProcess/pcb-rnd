@@ -16,7 +16,7 @@ BEGIN {
 
 	SCAT["openscad"]="dip.scad"
 	SCAT["openscad-param"]="pins=" P["n"] ",spacing=" rev_mm(spacing) ",pitch=" rev_mm(pitch)
-#TODO: pin_descent=2.5
+#TODO: pin_descent=2.5, pin_dia
 
 	subc_begin(P["n"] "*" P["spacing"], "U1", 0, mil(-pitch), "", SCAT)
 
