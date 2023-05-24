@@ -35,7 +35,7 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
     pin_width=0.3;
     pcb_offset=0.27;
     device_height=1.2;
-    bevel = slant;
+    bevel = 0.1;
     sizex=width;
     sizey=height;
     
@@ -46,32 +46,32 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
         
     module body() {
         body_points = [
-            [-sizex/2,-sizey/2+0.3,pcb_offset],//0
-            [-sizex/2,sizey/2-0.3,pcb_offset],
-            [-sizex/2+0.3,sizey/2,pcb_offset],
-            [sizex/2-0.3,sizey/2,pcb_offset],
-            [sizex/2,sizey/2-0.3,pcb_offset],
-            [sizex/2,-sizey/2+0.3+bevel,pcb_offset],
-            [sizex/2-0.3-bevel,-sizey/2,pcb_offset],
-            [-sizex/2+0.3,-sizey/2,pcb_offset],//7
+            [-sizex/2,-sizey/2+slant,pcb_offset],//0
+            [-sizex/2,sizey/2-slant,pcb_offset],
+            [-sizex/2+slant,sizey/2,pcb_offset],
+            [sizex/2-slant,sizey/2,pcb_offset],
+            [sizex/2,sizey/2-slant,pcb_offset],
+            [sizex/2,-sizey/2+slant+bevel,pcb_offset],
+            [sizex/2-slant-bevel,-sizey/2,pcb_offset],
+            [-sizex/2+slant,-sizey/2,pcb_offset],//7
 
-            [-sizex/2,-sizey/2+0.3,(device_height-pcb_offset)/2],//8
-            [-sizex/2,sizey/2-0.3,(device_height-pcb_offset)/2],
-            [-sizex/2+0.3,sizey/2,(device_height-pcb_offset)/2],
-            [sizex/2-0.3,sizey/2,(device_height-pcb_offset)/2],
-            [sizex/2,sizey/2-0.3,(device_height-pcb_offset)/2],
-            [sizex/2,-sizey/2+0.3+bevel,(device_height-pcb_offset)/2],
-            [sizex/2-0.3-bevel,-sizey/2,(device_height-pcb_offset)/2],
-            [-sizex/2+0.3,-sizey/2,(device_height-pcb_offset)/2],//15
+            [-sizex/2,-sizey/2+slant,(device_height-pcb_offset)/2],//8
+            [-sizex/2,sizey/2-slant,(device_height-pcb_offset)/2],
+            [-sizex/2+slant,sizey/2,(device_height-pcb_offset)/2],
+            [sizex/2-slant,sizey/2,(device_height-pcb_offset)/2],
+            [sizex/2,sizey/2-slant,(device_height-pcb_offset)/2],
+            [sizex/2,-sizey/2+slant+bevel,(device_height-pcb_offset)/2],
+            [sizex/2-slant-bevel,-sizey/2,(device_height-pcb_offset)/2],
+            [-sizex/2+slant,-sizey/2,(device_height-pcb_offset)/2],//15
     
-            [-sizex/2+bevel,-sizey/2+0.3+bevel,device_height],//16
-            [-sizex/2+bevel,sizey/2-0.3-bevel,device_height],
-            [-sizex/2+0.3+bevel,sizey/2-bevel,device_height],
-            [sizex/2-0.3-bevel,sizey/2-bevel,device_height],
-            [sizex/2-bevel,sizey/2-0.3-bevel,device_height],
-            [sizex/2-bevel,-sizey/2+0.3+bevel*2,device_height],
-            [sizex/2-0.3-bevel*2,-sizey/2+bevel,device_height],
-            [-sizex/2+0.3+bevel,-sizey/2+bevel,device_height]//23
+            [-sizex/2+bevel,-sizey/2+slant+bevel,device_height],//16
+            [-sizex/2+bevel,sizey/2-slant-bevel,device_height],
+            [-sizex/2+slant+bevel,sizey/2-bevel,device_height],
+            [sizex/2-slant-bevel,sizey/2-bevel,device_height],
+            [sizex/2-bevel,sizey/2-slant-bevel,device_height],
+            [sizex/2-bevel,-sizey/2+slant+bevel*2,device_height],
+            [sizex/2-slant-bevel*2,-sizey/2+bevel,device_height],
+            [-sizex/2+slant+bevel,-sizey/2+bevel,device_height]//23
             ];
 
         body_faces=[
