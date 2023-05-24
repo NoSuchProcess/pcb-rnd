@@ -30,11 +30,11 @@
 //  in any way.
 //
 
-module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, omit_map, slant=0)
+module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, omit_map, slant=0, elevation=1.2)
 {
     pin_width=0.3;
     pcb_offset=0.27;
-    device_height=1.2;
+    device_height=elevation;
     bevel = 0.1;
     sizex=width;
     sizey=height;
