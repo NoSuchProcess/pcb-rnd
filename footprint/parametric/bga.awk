@@ -139,9 +139,17 @@ BEGIN {
 	slant = parse_dim(P["3dslant"])
 	if (slant != 0)
 		slant = ",slant=" rev_mm(slant)
+	else
+		slant = ""
+
+	elev = parse_dim(P["3delevation"])
+	if (elev > 0)
+		elev = ",elevation=" rev_mm(elev)
+	else
+		elev = ""
 
 	SCAT["openscad"]="bga.scad";
-	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia) ",width=" rev_mm(bw) ",height=" rev_mm(bh) slant scadmap();
+	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia) ",width=" rev_mm(bw) ",height=" rev_mm(bh) slant elev scadmap();
 
 	subc_begin(nx "*" ny, "U1", 0, -bh, "", SCAT)
 
