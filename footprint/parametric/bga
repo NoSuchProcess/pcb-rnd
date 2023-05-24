@@ -8,7 +8,7 @@
 
 #@@desc Generate a grid of circular pads for BGA chips
 
-#@@params nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2,alphabet,ballmask,ballpaste
+#@@params nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2,alphabet,ballmask,ballpaste,3dslant
 
 #@@param:nx number of pins in the X direction
 #@@optional:nx
@@ -74,6 +74,10 @@
 #@@preview_args:automap2 3,3,automap=alnum,alphabet=QDT
 #@@thumbsize:automap2 3
 #@@thumbnum:automap2 1
+
+#@@param:3dslant slant if 0, 3d model is a cube, else it is the size of the slant on the 3d package model corners
+#@@optional:3dslant
+#@@default:0
 
 
 #@@include common_subc.awk

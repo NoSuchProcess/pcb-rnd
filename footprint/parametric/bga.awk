@@ -136,8 +136,12 @@ BEGIN {
 	xo = (nx-1)*step/2
 	yo = (ny-1)*step/2
 
+	slant = parse_dim(P["3dslant"])
+	if (slant != 0)
+		slant = ",slant=" rev_mm(slant)
+
 	SCAT["openscad"]="bga.scad";
-	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia) ",width=" rev_mm(bw) ",height=" rev_mm(bh) scadmap();
+	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia) ",width=" rev_mm(bw) ",height=" rev_mm(bh) slant scadmap();
 
 	subc_begin(nx "*" ny, "U1", 0, -bh, "", SCAT)
 
