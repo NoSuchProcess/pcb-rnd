@@ -44,7 +44,7 @@ function scadmap(     x,y,s)
 		return "";
 
 
-	s = ",map=["
+	s = ",omit_map=["
 	for(x = 0; x < nx; x++) {
 		if (x > 0) s = s ","
 		s = s "[";
