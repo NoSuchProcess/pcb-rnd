@@ -30,8 +30,8 @@
 //  in any way.
 //
 
-module part_bga(spacing=0.5, balldia=0.3, nx=8, ny=8, fillet=0) {
-
+module part_bga(spacing=0.5, balldia=0.3, nx=8, ny=8, fillet=0)
+{
     pin_width=0.3;
     pcb_offset=0.27;
     device_height=1.2;
