@@ -50,7 +50,7 @@ function scadmap(     x,y,s)
 		s = s "[";
 		for(y = 0; y < ny; y++) {
 			if (y > 0) s = s ","
-			s = s (MAP[x,y] != "!")
+			s = s (MAP[x,y] == "!")
 		}
 		s = s "]"
 	}
