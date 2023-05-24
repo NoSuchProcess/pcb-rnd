@@ -105,7 +105,10 @@ BEGIN {
 	xo = (nx-1)*step/2
 	yo = (ny-1)*step/2
 
-	subc_begin(nx "*" ny, "U1", 0, -bh)
+	SCAT["openscad"]="bga.scad";
+	SCAT["openscad-param"]="nx=" nx ", ny=" ny ",balldia=" rev_mm(balldia);
+
+	subc_begin(nx "*" ny, "U1", 0, -bh, "", SCAT)
 
 	proto = subc_proto_create_pad_circle(balldia, ballmask, ballpaste)
 
