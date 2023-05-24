@@ -30,14 +30,14 @@
 //  in any way.
 //
 
-module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, omit_map)
+module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, omit_map)
 {
     pin_width=0.3;
     pcb_offset=0.27;
     device_height=1.2;
     bevel = spacing/3;
-    sizex=(nx-1)*spacing+2;
-    sizey=(ny-1)*spacing+2;
+    sizex=width;
+    sizey=height;
     
     module ball() {
         translate([0,0,balldia/2])
