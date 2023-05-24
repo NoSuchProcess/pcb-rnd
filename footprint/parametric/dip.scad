@@ -31,9 +31,9 @@
 //  in any way.
 //
 
-module dip(pins=8,spacing=300,pitch=100,pin_descent=2.5)
+module dip(pins=8,spacing=300,pitch=100,pin_descent=2.5, pin_dia=0.3)
 {
-    pin_thickness = 0.3;
+    pin_thickness = pin_dia;
     row_spacing = 25.4*spacing/1000;
     pin_spacing = 25.4*pitch/1000;
     pcb_pin_width = 0.6;
