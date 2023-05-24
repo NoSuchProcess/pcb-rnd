@@ -1,4 +1,4 @@
-// Model for generic DC power jack, defaults to 2.1mm pin
+// Model for parametric dip socket
 // openscad-param= {pins=8,spacing=300,pitch=100}
 //
 // Copyright (C) 2023 Erich Heinzle
