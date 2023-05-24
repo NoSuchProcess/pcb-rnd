@@ -31,7 +31,7 @@
 //  in any way.
 //
 
-module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3)
+module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=1)
 {
     pin_thickness = pin_dia;
     row_spacing = spacing;
@@ -146,13 +146,35 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3)
         }
     }
 
-    translate([row_spacing/2,0,pcb_offset]) {
-        rotate([0,0,180]) {
-            translate([0,0,pcb_offset]) {
-                build_frame();
-                place_pins();
+    module socket() {
+        translate([row_spacing/2,0,pcb_offset]) {
+            rotate([0,0,180]) {
+                translate([0,0,pcb_offset]) {
+                    build_frame();
+                    place_pins();
+                }
             }
         }
     }
+
+    module ic() {        
+    }
+    
+    module socketed_ic() {
+        translate([0,0,end_height]) {
+            ic();
+        }
+    }
+    
+    if (modules !=2) {
+        socket();
+    }
+    if (modules == 2) {
+        ic();
+    }
+    if (modules == 3) {
+        socketed_ic();
+    }
+    
 }
-dip(spacing=300,pins=26,pitch=100);
+dip(spacing=7.62,pins=18,pitch=2.54, modules=3);
