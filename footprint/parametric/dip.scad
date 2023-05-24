@@ -145,10 +145,14 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3)
                     pin();
         }
     }
-    
-    translate([0,0,pcb_offset]) {
-        build_frame();
-        place_pins();
+
+    translate([row_spacing/2,0,pcb_offset]) {
+        rotate([0,0,180]) {
+            translate([0,0,pcb_offset]) {
+                build_frame();
+                place_pins();
+            }
+        }
     }
 }
 dip(spacing=300,pins=26,pitch=100);
