@@ -30,12 +30,12 @@
 //  in any way.
 //
 
-module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, omit_map)
+module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, omit_map, slant=0)
 {
     pin_width=0.3;
     pcb_offset=0.27;
     device_height=1.2;
-    bevel = spacing/3;
+    bevel = slant;
     sizex=width;
     sizey=height;
     
@@ -100,7 +100,12 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
         rotate([0,0,180])
                 color([0.2,0.2,0.2])
                     difference() {
-                        polyhedron(body_points, body_faces);
+                        if (slant) {
+                            polyhedron(body_points, body_faces);
+                        } else {
+                            translate([0,0,(device_height+pcb_offset)/2])
+                                cube([sizex, sizey, device_height-pcb_offset], true);
+                        }
                         translate([sizex/2-1.3*spacing,-sizey/2+1.3*spacing,device_height-0.1])
                             cylinder(r=spacing/2, h=3);
                     }
@@ -127,4 +132,3 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, width, height, o
     }
 }
 
-part_bga(width=2.5, height=2.5);
