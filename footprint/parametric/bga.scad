@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module part_bga(spacing=0.5, balldia=0.3, nx=8, ny=8, fillet=0)
+module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, map=[1,1,1,1,1,1,1,1,1])
 {
     pin_width=0.3;
     pcb_offset=0.27;
@@ -111,7 +111,9 @@ module part_bga(spacing=0.5, balldia=0.3, nx=8, ny=8, fillet=0)
             for(x = [0:nx-1]) {
                 for(y = [0:ny-1]) {
                     translate([x*spacing,y*spacing,0])
-                        ball();
+                        if (map[x+y]) {
+                            ball();
+                        }
                 }
             }
         }
@@ -123,4 +125,3 @@ module part_bga(spacing=0.5, balldia=0.3, nx=8, ny=8, fillet=0)
     }
     
 }
-
