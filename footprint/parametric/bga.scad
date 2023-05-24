@@ -111,7 +111,7 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, omit_map)
             for(x = [0:nx-1]) {
                 for(y = [0:ny-1]) {
                     translate([x*spacing,y*spacing,0])
-                        if (!omit_map[x][y]) {
+                        if (!omit_map[x][(ny-1)-y]) {
                             ball();
                         }
                 }
@@ -119,7 +119,7 @@ module part_bga(spacing=0.5, balldia=0.3, nx=3, ny=3, fillet=0, omit_map)
         }
     }
 
-    rotate([0,0,-90]) {
+    rotate([0,0,0]) {
         translate([-(nx-1)*spacing/2,-(ny-1)*spacing/2,0]) {
             body();
             place_balls();
