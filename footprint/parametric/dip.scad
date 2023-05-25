@@ -43,6 +43,10 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
     end_height = 3.77;
     notch = 0.75;   // notch radius     
 
+    ic_overhang = 0.825;
+    ic_length = ((pins/2)-1)*pitch+ic_overhang *2;
+    ic_pin_thickness = 0.25;
+
     module pin() {
         rotate([-90,0,0])
             color([0.8,0.8,0.8])
@@ -135,7 +139,7 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
             }
         }
     }
-    
+        
     module place_pins() {
         for(i = [0:pins/2-1]) {
             translate([-row_spacing/2,i*pin_spacing,0])
@@ -150,18 +154,94 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
         translate([row_spacing/2,0,pcb_offset]) {
             rotate([0,0,180]) {
                 translate([0,0,pcb_offset]) {
-                    build_frame();
-                    place_pins();
+                    union () {
+                        build_frame();
+                        place_pins();
+                    }
                 }
             }
         }
     }
 
-    module ic() {        
+    module ic_pin() {
+        translate([0,ic_pin_thickness/2,0])
+            rotate([90,0,0])
+                union() {
+                    linear_extrude(height=ic_pin_thickness) {
+                        polygon([[-0.23,-pin_descent+0.2],[-0.13,-pin_descent],[0.13,-pin_descent],[0.23,-pin_descent+0.2],[0.23,0.0],[0.39,0.0],[0.67,0.45],[0.67,2.2],[-0.23,2.2]]);
+                    }
+                    translate([0.22,2.2-ic_pin_thickness/2,0.4]) {
+                        cube([0.9,ic_pin_thickness,0.8],true);
+                    }
+                }
+    }
+
+    module first_ic_pin() {
+        mirror([1,0,0])
+            rotate([0,0,90])
+                ic_pin();
+    }
+
+    module last_ic_pin() {
+        rotate([0,0,-90])
+            ic_pin();
+    }
+
+    module middle_ic_pin() {
+        union () {
+            first_ic_pin();
+            last_ic_pin();
+        }
+    }
+
+    module place_ic_pins() {
+        color([0.8,0.8,0.8]) {
+            translate([-row_spacing/2,0,0])
+                mirror([1,0,0])
+                    first_ic_pin();
+            translate([row_spacing/2,0,0])
+                first_ic_pin();   
+            for (i = [1:(pins/2-2)]) {
+                translate([-row_spacing/2,i*pitch,0])
+                    mirror([1,0,0])
+                        middle_ic_pin();
+                translate([row_spacing/2,i*pitch,0])
+                    middle_ic_pin();            
+            }
+            translate([-row_spacing/2,(pins/2-1)*pitch,0])
+                mirror([1,0,0])
+                    last_ic_pin();
+            translate([row_spacing/2,(pins/2-1)*pitch,0])
+                last_ic_pin();
+        }
+    }
+    
+    module ic_body() {
+        color([0.2,0.2,0.2]) {
+            translate([0,ic_length-ic_overhang,0]) {
+                difference() {
+                    rotate([90,0,0])
+                        linear_extrude(height=ic_length) {
+                            polygon([[-row_spacing/2+0.51,1.9],[-row_spacing/2+0.88,0.38],[row_spacing/2-0.88,0.38],[row_spacing/2-0.51,1.9],[row_spacing/2-0.51,2.2],[row_spacing/2-0.88,3.68],[-row_spacing/2+0.88,3.68],[-row_spacing/2+0.51,2.2]]);
+                        }
+                    translate([0,0,2.3])
+                        cylinder(r=pitch/3, h=3);
+                }
+            }
+        }
+    }
+
+    module ic() {
+        translate([row_spacing/2,-(pins/2-1)*pitch,0]) {
+            union () {
+                ic_body();
+                place_ic_pins();
+            }
+        }
     }
     
     module socketed_ic() {
-        translate([0,0,end_height]) {
+        translate([0,0,end_height+pcb_offset+0.05]) {
             ic();
         }
     }
@@ -177,4 +257,4 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
     }
     
 }
-dip(spacing=7.62,pins=18,pitch=2.54, modules=3);
+
