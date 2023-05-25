@@ -20,6 +20,10 @@
 #@@optional:pitch
 #@@default:pitch 100 mil
 
+#@@param:3dmodules 1=socket, 2=IC, 3=socket+IC
+#@@optional:3dmodules
+#@@default:3dmodules 1
+
 #@@include common_subc.awk
 
 awk -f `dirname $0`/common_subc.awk -f `dirname $0`/dip.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"

@@ -14,8 +14,14 @@ BEGIN {
 	spacing=parse_dim(P["spacing"])
 	pitch=parse_dim(P["pitch"])
 
+	modules = int(P["3dmodules"])
+	if (modules != "")
+		modules = ", modules=" modules
+	else
+		modules = ""
+
 	SCAT["openscad"]="dip.scad"
-	SCAT["openscad-param"]="pins=" P["n"] ",spacing=" rev_mm(spacing) ",pitch=" rev_mm(pitch)
+	SCAT["openscad-param"]="pins=" P["n"] ",spacing=" rev_mm(spacing) ",pitch=" rev_mm(pitch) modules
 #TODO: pin_descent=2.5, pin_dia
 
 	subc_begin(P["n"] "*" P["spacing"], "U1", 0, mil(-pitch), "", SCAT)
