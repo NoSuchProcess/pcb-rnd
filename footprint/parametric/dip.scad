@@ -1,5 +1,5 @@
 // Model for parametric dip socket
-// openscad-param= {pins=8,spacing=300,pitch=100}
+// openscad-param= {pins=8,spacing=7.62,pitch=2.54}
 //
 // Copyright (C) 2023 Erich Heinzle
 //
