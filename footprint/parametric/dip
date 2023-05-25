@@ -24,6 +24,10 @@
 #@@optional:3dmodules
 #@@default:3dmodules 1
 
+#@@param:3dpindia pin diameter on the 3d model
+#@@dim:3dpindia
+#@@optional:3dpindia
+
 #@@include common_subc.awk
 
 awk -f `dirname $0`/common_subc.awk -f `dirname $0`/dip.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"

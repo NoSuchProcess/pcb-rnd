@@ -20,8 +20,19 @@ BEGIN {
 	else
 		modules = ""
 
+	pindia = int(P["3dpindia"])
+	if (int(pindia) != 0)
+		pindia = ", pindia=" pindia
+	else {
+		pindia = parse_dim(P["pin_drill"])
+		if (int(pindia) != 0)
+			pindia = ", pindia=" rev_mm(pin_drill*0.8);
+		else
+			pindia = ""
+	}
+
 	SCAT["openscad"]="dip.scad"
-	SCAT["openscad-param"]="pins=" P["n"] ",spacing=" rev_mm(spacing) ",pitch=" rev_mm(pitch) modules
+	SCAT["openscad-param"]="pins=" P["n"] ",spacing=" rev_mm(spacing) ",pitch=" rev_mm(pitch) modules pindia
 #TODO: pin_descent=2.5, pin_dia
 
 	subc_begin(P["n"] "*" P["spacing"], "U1", 0, mil(-pitch), "", SCAT)
