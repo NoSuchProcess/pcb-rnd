@@ -39,9 +39,9 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
     pcb_pin_width = 0.6;
     standard_pitch = 2.54;
     pcb_offset = 0.31;
-    
+
     end_height = 3.77;
-    notch = 0.75;   // notch radius     
+    notch = 0.75;   // notch radius
 
     ic_overhang = 0.825;
     ic_length = ((pins/2)-1)*pitch+ic_overhang *2;
@@ -58,16 +58,16 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
                                 polygon([[0.0,0.1],[-0.08,0.1],[-0.08,-0.68],[-0.48,-0.68],[-0.48,-3.04],[-0.70,-4.62],[-0.58,-4.63],[-0.34,-2.95],[-0.34,-0.82],[1.14,-0.82],[1.14,-3.66],[1.03,-3.73],[-0.18,-2.81],[-0.18,-2.60],[-0.05,-2.36],[-0.16,-2.29],[-0.30,-2.60],[-0.30,-2.86],[1.03,-3.87],[1.10,-3.87],[1.18,-3.83],[1.24,-3.74],[1.24,-0.68],[0.08,-0.68],[0.08,0.1]]);
                     // actual PCB pin
                     translate([0,0,-pcb_pin_width/2])
-                        linear_extrude(height = pcb_pin_width)        
+                        linear_extrude(height = pcb_pin_width)
                             polygon([[pin_thickness/2,0.1],[pin_thickness/2,pin_descent-pin_thickness],[0,pin_descent+pcb_offset],[-pin_thickness/2,pin_descent-pin_thickness],[-pin_thickness/2,0.1]]);
                 }
     }
-    
+
     module housing() {
         linear_extrude(height = pins/2*pin_spacing)
             polygon([[-0.98,-4.69],[-0.66,-4.69],[-0.40,-2.84],[-0.40,-0.46],[1.21,-0.46],[1.21,-3.77],[2.42,-3.77],[2.42,-0.02],[1.24,-0.02],[1.24,0.31],[0.32,0.31],[0.32,0.0],[-0.98,0.0]]);
     }
-    
+
     module housingL() {
         rotate([-90,0,0])
             housing();
@@ -79,7 +79,7 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
                 rotate([0,0,180])
                     housing();
     }
-    
+
     module frame_end() {
         linear_extrude(height = end_height)
             polygon([
@@ -93,7 +93,7 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
         [-(row_spacing-standard_pitch )/2,-pin_spacing/4]
         ]);
     }
-    
+
     module frame_end_notched() {
            difference() {
                frame_end();
@@ -111,9 +111,9 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
 
     module pin_spacer() {
             translate([-1.25,pin_spacing/4,0])
-                cube([2.5,pin_spacing/2,end_height],false);        
+                cube([2.5,pin_spacing/2,end_height],false);
     }
-    
+
     module pin_spacers() {
         for(i = [0:pins/2-2]) {
             translate([-row_spacing/2+0.5,i*pin_spacing,0])
@@ -122,7 +122,7 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
                 pin_spacer();
         }
     }
-    
+
     module build_frame() {
         color([0.3,0.3,0.3]) {
             union() {
@@ -139,7 +139,7 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
             }
         }
     }
-        
+
     module place_pins() {
         for(i = [0:pins/2-1]) {
             translate([-row_spacing/2,i*pin_spacing,0])
@@ -200,13 +200,13 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
                 mirror([1,0,0])
                     first_ic_pin();
             translate([row_spacing/2,0,0])
-                first_ic_pin();   
+                first_ic_pin();
             for (i = [1:(pins/2-2)]) {
                 translate([-row_spacing/2,i*pitch,0])
                     mirror([1,0,0])
                         middle_ic_pin();
                 translate([row_spacing/2,i*pitch,0])
-                    middle_ic_pin();            
+                    middle_ic_pin();
             }
             translate([-row_spacing/2,(pins/2-1)*pitch,0])
                 mirror([1,0,0])
@@ -215,7 +215,7 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
                 last_ic_pin();
         }
     }
-    
+
     module ic_body() {
         color([0.2,0.2,0.2]) {
             translate([0,ic_length-ic_overhang,0]) {
@@ -239,13 +239,13 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
             }
         }
     }
-    
+
     module socketed_ic() {
         translate([0,0,end_height+pcb_offset+0.05]) {
             ic();
         }
     }
-    
+
     if (modules !=2) {
         socket();
     }
@@ -255,6 +255,4 @@ module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=
     if (modules == 3) {
         socketed_ic();
     }
-    
 }
-
