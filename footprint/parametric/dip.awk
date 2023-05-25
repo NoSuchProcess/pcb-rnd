@@ -15,7 +15,7 @@ BEGIN {
 	pitch=parse_dim(P["pitch"])
 
 	modules = int(P["3dmodules"])
-	if (modules != "")
+	if (int(modules) != 0)
 		modules = ", modules=" modules
 	else
 		modules = ""
