@@ -27,8 +27,32 @@ BEGIN {
 	if ((eshift != "x") && (eshift != "y") && (eshift != "") && (eshift != "none"))
 		error("eshift must be x or y or none (got: " eshift ")");
 
+	elev = parse_dim(P["3delevation"])
+	if (elev > 0)
+		elev = ",elevation=" rev_mm(elev)
+	else
+		elev = ""
+
+	fem = tobool(P["3dfemale"])
+	if (fem)
+		fem = ",female=1"
+	else
+		fem = ""
+
+	shroud = tobool(P["3dshroud"])
+	if (shroud)
+		shroud = ",shroud=1"
+	else
+		shroud = ""
+
+	angl = tobool(P["3dangle"])
+	if (angl)
+		angl = ",angle=1"
+	else
+		angl = ""
+
 	SCAT["openscad"]="connector.scad"
-	SCAT["openscad-param"]="nx=" P["nx"] ", ny=" P["ny"] ", spacing=" rev_mm(step)
+	SCAT["openscad-param"]="nx=" P["nx"] ", ny=" P["ny"] ", spacing=" rev_mm(step) elev fem shroud angl
 #TODO: pin_descent=2.5
 
 	subc_begin(P["nx"] "*" P["ny"], "CONN1", 0, -step, "", SCAT)
