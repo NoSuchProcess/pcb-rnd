@@ -31,8 +31,8 @@
 //  in any way.
 //
 
-module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, shroud=1, female=0, angle=0, elevation=8.8) {
-
+module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, shroud=1, female=0, angle=0, elevation=8.8)
+{
     module base_block(x,y) {
         base_length = x*spacing;
         base_width = y*spacing;
