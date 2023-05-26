@@ -48,7 +48,7 @@
 #@@param:3dshroud draw shroud (bracket) around the header on the 3d model
 #@@bool:3dshroud
 #@@optional:3dshroud
-#@@default:3dshroud 1
+#@@default:3dshroud 0
 
 #@@param:3dfemale draw female version of the 3d model
 #@@bool:3dfemale
