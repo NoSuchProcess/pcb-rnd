@@ -53,7 +53,7 @@
 #@@param:3dfemale draw female version of the 3d model
 #@@bool:3dfemale
 #@@optional:3dfemale
-#@@default:3dfemale 1
+#@@default:3dfemale 0
 
 #@@param:3dangle if set, generate 90 degree bent 3d model
 #@@bool:3dfemale
