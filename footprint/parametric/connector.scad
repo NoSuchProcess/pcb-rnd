@@ -32,6 +32,15 @@
 //
 
 module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, shroud=1, female=0, angle=0, elevation=8.8) {
+
+    module base_block(x,y) {
+        base_length = x*spacing;
+        base_width = y*spacing;
+        color([0.3,0.3,0.3]) {
+            translate([-spacing/2,-spacing/2,0])
+                cube([base_length,base_width, spacing],false);
+        }
+    }
     
     module shroud(x,y,notch_side) {
         frame_height = elevation+0.3;
@@ -70,16 +79,23 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, s
    
     if (nx>=ny) {
         translate([0,-(ny-1)*spacing,0]) {
-            if (shroud)
+            if (shroud) {
                 shroud(x=nx,y=ny,notch_side=1);
+            } else {
+                base_block(x=nx,y=ny);
+            }
             place_pins(x=nx,y=ny);
         }
     } else {
         // +/- translate([0,0,0])
         rotate([0,0,-90]) {
-            if (shroud)
+            if (shroud) {
                 shroud(x=ny,y=nx,notch_side=0);
+            } else {
+                base_block(x=ny,y=nx);
+            }            
             place_pins(x=ny,y=nx);
         }
     }   
 }
+
