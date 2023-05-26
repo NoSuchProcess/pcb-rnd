@@ -27,7 +27,11 @@ BEGIN {
 	if ((eshift != "x") && (eshift != "y") && (eshift != "") && (eshift != "none"))
 		error("eshift must be x or y or none (got: " eshift ")");
 
-	subc_begin(P["nx"] "*" P["ny"], "CONN1", 0, -step)
+	SCAT["openscad"]="connector.scad"
+	SCAT["openscad-param"]="nx=" P["nx"] ", ny=" P["ny"] ", spacing=" rev_mm(step)
+#TODO: pin_descent=2.5
+
+	subc_begin(P["nx"] "*" P["ny"], "CONN1", 0, -step, "", SCAT)
 
 	proto_s = subc_proto_create_pin_square()
 	proto_r = subc_proto_create_pin_round()
