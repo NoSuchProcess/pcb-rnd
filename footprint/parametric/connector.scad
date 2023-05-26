@@ -31,13 +31,13 @@
 //  in any way.
 //
 
-module part_connector(nx=2, ny=6, spacing_mm=2.54,pin_descent=2.5) {
+module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5) {
     
     module frame(x,y,notch_side) {
         frame_height = 9.1;
         wall_thickness = 1.1;
         notch_width = 4.5;
-        //notch_side = 1;// or -1
+        //notch_side = 1 or 0
         frame_length =(x-1)*spacing_mm+5.07*2;
         frame_width = (y)*spacing_mm+3.13;
 
@@ -55,7 +55,7 @@ module part_connector(nx=2, ny=6, spacing_mm=2.54,pin_descent=2.5) {
         
     module pin() {
         pin_height=9.1-0.3;
-        pin_thickness = 0.64;
+        pin_thickness = pin_dia;
         translate([0,0,pin_height/2-pin_descent/2])
             cube([pin_thickness,pin_thickness,pin_height+pin_descent],true);
     }
