@@ -38,11 +38,11 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5) {
         wall_thickness = 1.1;
         notch_width = 4.5;
         //notch_side = 1 or 0
-        frame_length =(x-1)*spacing_mm+5.07*2;
-        frame_width = (y)*spacing_mm+3.13;
+        frame_length =(x-1)*spacing+5.07*2;
+        frame_width = (y)*spacing+3.13;
 
         color([0.3,0.3,0.3])
-            translate([-(frame_length-spacing_mm*(x-1))/2,-(frame_width-spacing_mm*(y-1))/2,0])
+            translate([-(frame_length-spacing*(x-1))/2,-(frame_width-spacing*(y-1))/2,0])
                 difference() {
                     cube([frame_length,frame_width,frame_height],false);
                     translate([wall_thickness,wall_thickness,wall_thickness])
@@ -64,7 +64,7 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5) {
         color([0.7,0.7,0.7])
             for(xx=[0:x-1])
                 for(yy=[0:y-1])
-                    translate([xx*spacing_mm,yy*spacing_mm,0])
+                    translate([xx*spacing,yy*spacing,0])
                         pin();
     }
    
