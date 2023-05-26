@@ -62,19 +62,39 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, s
                 }
    }
         
-    module pin() {
-        pin_height=9.1-0.3;
+    module straight_pin() {
+        pin_height=elevation;
         pin_thickness = pin_dia;
         translate([0,0,pin_height/2-pin_descent/2])
             cube([pin_thickness,pin_thickness,pin_height+pin_descent],true);
     }
+    
+    module bent_pin(row,nx,ny) {
+        pin_height=elevation;
+        pin_thickness = pin_dia;
+            union() {
+                translate([0,0,(pin_height-pin_descent-row*spacing)/2])
+                    cube([pin_thickness,pin_thickness,pin_height+pin_descent-row*spacing],true);
+                translate([0,((ny-row+1)*spacing-pin_thickness)/2,pin_height-row*spacing])
+                    rotate([-90,0,0])
+                        cube([pin_thickness,pin_thickness,(ny-row+1)*spacing],true);
+            }
+    }        
    
     module place_pins(x,y) {
-        color([0.7,0.7,0.7])
-            for(xx=[0:x-1])
-                for(yy=[0:y-1])
-                    translate([xx*spacing,yy*spacing,0])
-                        pin();
+        if (angle==0) {
+            color([0.7,0.7,0.7])
+                for(xx=[0:x-1])
+                    for(yy=[0:y-1])
+                        translate([xx*spacing,yy*spacing,0])
+                                straight_pin();
+        } else {
+            color([0.7,0.7,0.7])
+                for(xx=[0:x-1])
+                    for(yy=[0:y-1])
+                        translate([xx*spacing,yy*spacing,0])
+                                bent_pin(yy,x,y);
+        }
     }
    
     if (nx>=ny) {
