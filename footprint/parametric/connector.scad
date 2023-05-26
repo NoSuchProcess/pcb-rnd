@@ -55,7 +55,7 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, s
     }
     
     module shroud(x,y,notch_side) {
-        frame_height = elevation+0.3;
+        frame_height = (1-angle)*(elevation+0.3) + angle*((y+2)*spacing+0.3);
         wall_thickness = 1.1;
         notch_width = 4.5;
         //notch_side = 1 or 0
@@ -113,6 +113,10 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, s
         translate([0,-(ny-1)*spacing,0]) {
             if (shroud && !angle && !female) {
                 shroud(x=nx,y=ny,notch_side=1);
+            } else if (shroud && angle && !female) {
+                translate([0,-spacing,elevation])
+                    rotate([-90,0,0])
+                        shroud(x=nx,y=ny,notch_side=0);
             } else {
                 base_block(x=nx,y=ny);
             }
@@ -122,6 +126,10 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, s
         rotate([0,0,-90]) {
             if (shroud && !angle && !female) {
                 shroud(x=ny,y=nx,notch_side=0);
+            } else if (shroud && angle && !female) {
+                translate([0,-spacing,elevation])
+                    rotate([-90,0,0])                
+                        shroud(x=ny,y=nx,notch_side=0);
             } else {
                 base_block(x=ny,y=nx);
             }            
