@@ -36,10 +36,21 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5, s
     module base_block(x,y) {
         base_length = x*spacing;
         base_width = y*spacing;
-        base_height = spacing + (1-angle)*female*(elevation-spacing-0.001);
+        base_height = spacing + female*(elevation-spacing-0.001);
         color([0.3,0.3,0.3]) {
-            translate([-spacing/2,-spacing/2,0])
-                cube([base_length,base_width, base_height],false);
+            union() {
+                translate([-spacing/2,-spacing/2,0])
+                    cube([base_length,base_width, base_height],false);
+                if (angle && female) {
+                    rotate ([-90,0,0])
+                        translate([-spacing/2,-base_height-spacing/2,-spacing/2])
+                            if (ny>nx) {
+                                cube([base_length,base_width, (nx+1.35)*spacing-0.001],false);
+                            } else {
+                                cube([base_length,base_width, (ny+1.35)*spacing-0.001],false);                                
+                            }
+                }
+            }
         }
     }
     
