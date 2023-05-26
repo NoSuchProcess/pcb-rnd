@@ -1,5 +1,5 @@
 // Model for parametric connector footprint
-// openscad-param= {nx=2,ny=3,spacing_mm=2.54,pin_descent=2.5}
+// openscad-param= {nx=2,ny=3,spacing=2.54,pin_dia=0.64,pin_descent=2.5}
 //
 // Copyright (C) 2023 Erich Heinzle
 //
