@@ -44,14 +44,14 @@ module part_1210(len=3.2, width=2.55, height=1.3, pad_len=0.5, fillet=0)
                 [overall_length,overall_width/2,0], // 1
                 [overall_length,-overall_width/2,0], // 2
                 [0,-overall_width/2,0], // 3
-                [0,width/2+fillet_width/2,fillet_height/3], // 4
-                [pad_len+fillet_width/2,width/2+fillet_width/2,fillet_height/3], // 5
-                [pad_len+fillet_width/2,-width/2-fillet_width/2,fillet_height/3], // 6
-                [0,-width/2-fillet_width/2,fillet_height/3], // 7
-                [0,width/2+fillet_width/6,2*fillet_height/3], // 8
-                [pad_len+fillet_width/6,width/2+fillet_width/6,2*fillet_height/3], // 9
-                [pad_len+fillet_width/6,-width/2-fillet_width/6,2*fillet_height/3], // 10
-                [0,-width/2-fillet_width/6,2*fillet_height/3], // 11
+                [0,width/2+(overall_width-width)/5,fillet_height/3], // 4
+                [pad_len+fillet_width/2,width/2+(overall_width-width)/5,fillet_height/3], // 5
+                [pad_len+fillet_width/2,-width/2-(overall_width-width)/5,fillet_height/3], // 6
+                [0,-width/2-(overall_width-width)/5,fillet_height/3], // 7
+                [0,width/2+(overall_width-width)/11,2*fillet_height/3], // 8
+                [pad_len+fillet_width/6,width/2+(overall_width-width)/11,2*fillet_height/3], // 9
+                [pad_len+fillet_width/6,-width/2-(overall_width-width)/11,2*fillet_height/3], // 10
+                [0,-width/2-(overall_width-width)/11,2*fillet_height/3], // 11
                 [0,width/2,fillet_height], // 12
                 [pad_len,width/2,fillet_height], // 13
                 [pad_len,-width/2,fillet_height], // 14
