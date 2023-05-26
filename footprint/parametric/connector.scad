@@ -69,8 +69,10 @@ module part_connector(nx=2, ny=6, spacing=2.54, pin_dia=0.64, pin_descent=2.5) {
     }
    
     if (nx>=ny) {
-        frame(x=nx,y=ny,notch_side=1);
-        place_pins(x=nx,y=ny);
+        translate([0,-(ny-1)*spacing,0]) {
+            frame(x=nx,y=ny,notch_side=1);
+            place_pins(x=nx,y=ny);
+        }
     } else {
         // +/- translate([0,0,0])
         rotate([0,0,-90]) {
