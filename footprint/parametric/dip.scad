@@ -31,12 +31,12 @@
 //  in any way.
 //
 
-module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.3, modules=1)
+module dip(pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.6, modules=1)
 {
-    pin_thickness = pin_dia;
+    pin_thickness = 0.3;
     row_spacing = spacing;
     pin_spacing = pitch;
-    pcb_pin_width = 0.6;
+    pcb_pin_width = pin_dia;
     standard_pitch = 2.54;
     pcb_offset = 0.31;
 
