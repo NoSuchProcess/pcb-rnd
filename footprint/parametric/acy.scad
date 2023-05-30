@@ -113,7 +113,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         if (!link) {
             if (standing) {
                 translate([0,0,(R_length/2)+(body_ell-1)/2*R_width])
-                    rotate([0,90,0])
+                    rotate([0,-90,0])
                         body(body);
             } else {
                 translate([pitch_mm/2,0,R_width/2])
@@ -160,4 +160,4 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         
 }
 
-part_acy(standing=0,pitch=7.68, body=4, body_dia=3.2);
+part_acy(standing=0,pitch=7.68, body=4, body_dia=2.2);
