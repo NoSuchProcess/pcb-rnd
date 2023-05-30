@@ -30,6 +30,8 @@
 //  in any way.
 //
 
+$fn=20;
+
 module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pin_dia=0.3)
 {
     
@@ -38,6 +40,13 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
     R_length = 5.5;
     R_neck = 4*body_dia/5;
     body_ell = 1.2;
+
+    module rounded_cylinder(r,h,n) {
+        rotate_extrude(convexity=1) {
+            offset(r=n) offset(delta=-n) square([r,h]);
+                square([n,h]);
+        }
+    }
 
     module pins(standing=0, link=0) {
         radius=pin_dia;
@@ -81,17 +90,22 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                         cylinder(r=R_neck/2, h=R_length-R_width);
             }
         } else if (body == 3) { //ferrite bead
-            color([0.3,0.3,0.3]) {
+            color([0.3,0.3,0.3])
                 translate([-(R_length)/3,0,0])
                     rotate([0,90,0])
                         cylinder(r=R_width/2, h=2*R_length/3);
-            }
         } else if (body == 4) { //axial electro
-            color([0.3,0.5,0.6]) {
-                translate([-R_length/2,0,0])
+            color([0.3,0.5,0.6])
+                translate([-R_length/2,0,R_width/2])
                     rotate([0,90,0])
-                        cylinder(r=R_width/2, h=R_length);
-            }
+                        union () {
+                            translate([R_width/2,0,1.5*R_length/6])
+                                rounded_cylinder(r=R_width/2, h=4.5*R_length/6, n=0.5);
+                            translate([R_width/2,0,0])
+                                rounded_cylinder(r=R_width/2, h=R_length/5, n=0.5);
+                            translate([R_width/2,0,0])
+                                cylinder(r=R_width/2-0.3, h=R_length);
+                        }
         }
     }
     
