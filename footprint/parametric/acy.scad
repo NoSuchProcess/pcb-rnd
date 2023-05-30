@@ -30,13 +30,13 @@
 //  in any way.
 //
 
-module part_acy(pitch=7.68, standing=0, link=0, pin_descent=2.5, pin_dia=0.3)
+module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pin_dia=0.3)
 {
     
     pitch_mm = pitch;
-    R_width = 2.3;
+    R_width = body_dia;
     R_length = 5.5;
-    R_neck = 1.9;
+    R_neck = 4*body_dia/5;
     body_ell = 1.2;
 
     module pins(standing=0, link=0) {
@@ -67,36 +67,54 @@ module part_acy(pitch=7.68, standing=0, link=0, pin_descent=2.5, pin_dia=0.3)
         }
     }
     
-    module body() {
-        color([0.5,0.5,0.8]) {
-            translate([-(R_length-R_width)/2,0,0])
-                scale([body_ell,1,1])
-                    sphere(R_width/2);
-            translate([(R_length-R_width)/2,0,0])
-                scale([body_ell,1,1])
-                    sphere(R_width/2);
-            translate([-(R_length-R_width)/2,0,0])
-                rotate([0,90,0])
-                    cylinder(r=R_neck/2, h=R_length-R_width);
-        }
-    }
-    
-    module aligned_body(standing=0, link=0) {
-        if (!link) {
-            if (standing) {
-                translate([0,0,(R_length/2)+(body_ell-1)/2*R_width])
+    module body(body) {
+        if (body == 1 || body == 2) { // resistor, inductor
+            color([0.5,0.5,0.8]) {
+                translate([-(R_length-R_width)/2,0,0])
+                    scale([body_ell,1,1])
+                        sphere(R_width/2);
+                translate([(R_length-R_width)/2,0,0])
+                    scale([body_ell,1,1])
+                        sphere(R_width/2);
+                translate([-(R_length-R_width)/2,0,0])
                     rotate([0,90,0])
-                        body();
-            } else {
-                translate([pitch_mm/2,0,R_width/2])
-                    body();
+                        cylinder(r=R_neck/2, h=R_length-R_width);
+            }
+        } else if (body == 3) { //ferrite bead
+            color([0.3,0.3,0.3]) {
+                translate([-(R_length)/3,0,0])
+                    rotate([0,90,0])
+                        cylinder(r=R_width/2, h=2*R_length/3);
             }
         }
     }
     
-    aligned_body(standing,link);
-    pins(standing, link);
+    module aligned_body(standing=0, link=0,body) {
+        if (!link) {
+            if (standing) {
+                translate([0,0,(R_length/2)+(body_ell-1)/2*R_width])
+                    rotate([0,90,0])
+                        body(body);
+            } else {
+                translate([pitch_mm/2,0,R_width/2])
+                    body(body);
+            }
+        }
+    }
+    
+    if (body == 0) {
+        pins(standing=0, link=1);
+    }
+    if (body == 1 || body == 2) { // resistor
+        aligned_body(standing,link=0,body=1);
+        pins(standing, link=0);
+    }
+    if (body == 3) { // ferrite bead
+        aligned_body(standing,link=0,body=3);
+        pins(standing, link=0);
+    }
+    
     
 }
 
-part_acy(standing=1,pitch=7.68, link=0);
+part_acy(standing=1,pitch=7.68, body=3, body_dia=3.2);
