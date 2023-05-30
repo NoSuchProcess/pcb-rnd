@@ -143,7 +143,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         }
     }
     
-    if (body == 0) {
+    if (body == 0) { // wire link
         pins(standing=0, link=1);
     }
     if (body == 1 || body == 2) { // resistor
@@ -158,15 +158,15 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         aligned_body(standing,link=0,body=4);
         pins(standing, link=0);
     }
-    if (body == 5) { // diode
+    if (body == 5) { // axial diode
         aligned_body(standing,link=0,body=5);
         pins(standing, link=0);
     }
-    if (body == 6) { // wirewound power resistor
+    if (body == 6) { // axial wirewound power resistor
         aligned_body(standing,link=0,body=6);
         pins(standing, link=0);
     }
-    if (body == 7) { // monolithic capacitor
+    if (body == 7) { // axial monolithic capacitor
         aligned_body(standing,link=0,body=7);
         pins(standing, link=0);
     }
