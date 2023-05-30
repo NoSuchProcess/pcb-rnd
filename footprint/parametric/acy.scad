@@ -120,6 +120,9 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                             cylinder(r=R_width/2+0.01, h=R_length/7);
                 }
             }
+        } else if (body == 6) { // wirewound power resistor
+            color([0.9,0.9,0.9])
+                cube ([R_length,R_width,R_width],true);
         }
     }
     
@@ -174,4 +177,4 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         
 }
 
-part_acy(standing=1,pitch=7.68, body=5, body_dia=2.2);
+part_acy(standing=1,pitch=7.68, body=6, body_dia=3.2);
