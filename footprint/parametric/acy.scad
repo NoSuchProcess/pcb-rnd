@@ -134,12 +134,16 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                     translate([0,R_width*4.5,R_width*1.65])
                         sphere(r=R_width*5);
                 }
+        } else if (body == 9) { // monolithic capacitor
+            color([0.9,0.9,0.5])
+                translate([0,0,R_length/3-R_width/2])
+                    cube([R_length,R_width,2*R_length/3],true);
         }
     }
     
-    module aligned_body(standing=0, link=0,body) {
+    module aligned_body(is_standing=0, link=0,body) {
         if (!link) {
-            if (standing) {
+            if (is_standing) {
                 translate([0,0,(R_length/2)+(body_ell-1)/2*R_width])
                     rotate([0,-90,0])
                         body(body);
@@ -154,42 +158,42 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         pins(standing=0, link=1);
     }
     if (body == 1 || body == 2) { // resistor
-        aligned_body(standing,link=0,body=1);
+        aligned_body(is_standing=standing,link=0,body=1);
         pins(standing, link=0);
     }
     if (body == 3) { // ferrite bead
-        aligned_body(standing,link=0,body=3);
+        aligned_body(is_standing=standing,link=0,body=3);
         pins(standing, link=0);
     }
     if (body == 4) { // axial electro
-        aligned_body(standing,link=0,body=4);
+        aligned_body(is_standing=standing,link=0,body=4);
         pins(standing, link=0);
     }
     if (body == 5) { // axial diode
-        aligned_body(standing,link=0,body=5);
+        aligned_body(is_standing=standing,link=0,body=5);
         pins(standing, link=0);
     }
     if (body == 6) { // axial wirewound power resistor
-        aligned_body(standing,link=0,body=6);
+        aligned_body(is_standing=standing,link=0,body=6);
         pins(standing, link=0);
     }
     if (body == 7) { // axial monolithic capacitor
-        aligned_body(standing,link=0,body=7);
+        aligned_body(is_standing=standing,link=0,body=7);
         pins(standing, link=0);
     }
     if (body == 8) { // ceramic disc capacitor
-        aligned_body(standing,link=0,body=8);
-        pins(standing, link=0);
+        aligned_body(is_standing=0,link=0,body=8);
+        pins(link=0);
     }
     if (body == 9) { // monoblock/multilayer capacitor
-        aligned_body(standing,link=0,body=9);
-        pins(standing, link=0);
+        aligned_body(is_standing=0,link=0,body=9);
+        pins(link=0);
     }
     if (body == 10) { // two pin potentiometer
-        aligned_body(standing,link=0,body=10);
+        aligned_body(is_standing=0,link=0,body=10);
         pins(standing, link=0);
     }
         
 }
 
-part_acy(standing=0,pitch=2.54, body=8, body_dia=1.1);
+part_acy(standing=0,pitch=2.54, body=9, body_dia=3.1);
