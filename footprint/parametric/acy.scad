@@ -165,44 +165,34 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
     
     if (body == 0) { // wire link
         pins(standing=0, link=1);
-    }
-    if (body == 1 || body == 2) { // resistor
+    } else if (body == 1 || body == 2) { // resistor, inductor
         aligned_body(is_standing=standing,link=0,body=1);
         pins(standing, link=0);
-    }
-    if (body == 3) { // ferrite bead
+    } else if (body == 3) { // ferrite bead
         aligned_body(is_standing=standing,link=0,body=3);
         pins(standing, link=0);
-    }
-    if (body == 4) { // axial electro
+    } else if (body == 4) { // axial electro
         aligned_body(is_standing=standing,link=0,body=4);
         pins(standing, link=0);
-    }
-    if (body == 5) { // axial diode
+    } else if (body == 5) { // axial diode
         aligned_body(is_standing=standing,link=0,body=5);
         pins(standing, link=0);
-    }
-    if (body == 6) { // axial wirewound power resistor
+    } else if (body == 6) { // axial wirewound power resistor
         aligned_body(is_standing=standing,link=0,body=6);
         pins(standing, link=0);
-    }
-    if (body == 7) { // axial monolithic capacitor
+    } else if (body == 7) { // axial monolithic capacitor
         aligned_body(is_standing=standing,link=0,body=7);
         pins(standing, link=0);
-    }
-    if (body == 8) { // ceramic disc capacitor
+    } else if (body == 8) { // ceramic disc capacitor
         aligned_body(is_standing=0,link=0,body=8);
         pins(link=0);
-    }
-    if (body == 9) { // monoblock/multilayer capacitor
+    } esle if (body == 9) { // monoblock/multilayer capacitor
         aligned_body(is_standing=0,link=0,body=9);
         pins(link=0);
-    }
-    if (body == 10) { // two pin potentiometer
+    } else if (body == 10) { // two pin potentiometer
         aligned_body(is_standing=0,link=0,body=10);
         pins(standing, link=0);
     }
         
 }
 
-part_acy(standing=0,pitch=5.08, body=10, body_dia=3.1);
