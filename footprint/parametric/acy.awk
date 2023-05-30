@@ -26,7 +26,7 @@ function get_body_type(    rt,ty,pol)
 
 		if (ty == "line") return 0;
 		if (ty == "coil") return 2;
-		if ((ty == "block") && (pol != "none")) return 4;
+		if ((ty == "block") && (pol != "none") && (pol != "")) return 4;
 	}
 	else {
 		if (rt == "wire") return 0;
@@ -57,8 +57,12 @@ BEGIN {
 
 	offs_x = +spacing/2
 
+	body_dia = parse_dim(P["3dbodydia"])
+	if (body_dia <= 0)
+		body_dia = dia;
+
 	SCAT["openscad"]="acy.scad"
-	SCAT["openscad-param"]="pitch=" rev_mm(spacing) ", standing=" (P["type"] == "standing") ", body_dia=" rev_mm(dia) ", body=" get_body_type()
+	SCAT["openscad-param"]="pitch=" rev_mm(spacing) ", standing=" (P["type"] == "standing") ", body_dia=" rev_mm(body_dia) ", body=" get_body_type()
 
 # oops, dia is a radius rather
 	dia=dia/2

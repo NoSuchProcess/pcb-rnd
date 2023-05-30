@@ -48,8 +48,12 @@
 #@@default:wiper none
 #@@preview_args:wiper 400
 
-#@@param:3dbody one of: resistor, wire, coil, bead, elco, diode, brick, monocap, diskcap, pot; if not specified, guessed from silk graphics
+#@@param:3dbody 3d model body shape, one of: resistor, wire, coil, bead, elco, diode, brick, monocap, diskcap, pot; if not specified, guessed from silk graphics
 #@@optional:3dbody
+
+#@@param:3dbodydia the diameter (or width) of the body on the 3d moel
+#@@optional:3dbodydia
+#@@dim:3dbodydia
 
 #@@thumbsize 2
 
