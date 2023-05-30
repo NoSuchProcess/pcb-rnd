@@ -29,8 +29,7 @@
 //  with or without modifications, without affecting the board file's license
 //  in any way.
 //
-
-
+ 
 module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pin_dia=0.3)
 {
     
@@ -127,6 +126,14 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                 rotate([0,90,0])
                     translate([0,0,-R_length/2])
                         rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
+        } else if (body == 8) { // axial monolithic capacitor
+            color([0.9,0.9,0.5])
+                intersection () {
+                    translate([0,-R_width*4.5,R_width*1.65])
+                        sphere(r=R_width*5);
+                    translate([0,R_width*4.5,R_width*1.65])
+                        sphere(r=R_width*5);
+                }
         }
     }
     
@@ -170,15 +177,19 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         aligned_body(standing,link=0,body=7);
         pins(standing, link=0);
     }
-    if (body == 8) { // ceramic capacitor
+    if (body == 8) { // ceramic disc capacitor
         aligned_body(standing,link=0,body=8);
         pins(standing, link=0);
     }
-    if (body == 9) { // two pin potentiometer
+    if (body == 9) { // monoblock/multilayer capacitor
         aligned_body(standing,link=0,body=9);
+        pins(standing, link=0);
+    }
+    if (body == 10) { // two pin potentiometer
+        aligned_body(standing,link=0,body=10);
         pins(standing, link=0);
     }
         
 }
 
-part_acy(standing=1,pitch=7.68, body=7, body_dia=2.2);
+part_acy(standing=0,pitch=2.54, body=8, body_dia=1.1);
