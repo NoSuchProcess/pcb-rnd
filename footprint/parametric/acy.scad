@@ -30,7 +30,6 @@
 //  in any way.
 //
 
-$fn=20;
 
 module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pin_dia=0.3)
 {
@@ -123,6 +122,11 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         } else if (body == 6) { // wirewound power resistor
             color([0.9,0.9,0.9])
                 cube ([R_length,R_width,R_width],true);
+        } else if (body == 7) { // axial monolithic capacitor
+            color([0.9,0.9,0.5])
+                rotate([0,90,0])
+                    translate([0,0,-R_length/2])
+                        rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
         }
     }
     
@@ -177,4 +181,4 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         
 }
 
-part_acy(standing=1,pitch=7.68, body=6, body_dia=3.2);
+part_acy(standing=1,pitch=7.68, body=7, body_dia=2.2);
