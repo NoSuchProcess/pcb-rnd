@@ -155,6 +155,23 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                     translate([-R_width/2,0,-R_length/2])
                         rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
                 }
+        } else if (body == 12) { // polyester/greencap
+            translate([0,0,R_length/2])
+                rotate([0,180,0])
+                    intersection() {
+                        rotate([15,0,0])
+                            union() {
+                                translate([0,0,R_width/2])
+                                    rounded_cylinder(r=R_width/2, h=R_length-R_width/2, n=R_width/5);
+                                sphere(r=R_width/2);
+                            }
+                        rotate([-15,0,0]) 
+                            union() {
+                                translate([0,0,R_width/2])
+                                    rounded_cylinder(r=R_width/2, h=R_length-R_width/2, n=R_width/5);
+                                sphere(r=R_width/2);
+                            }
+                    }
         }
 
     }
