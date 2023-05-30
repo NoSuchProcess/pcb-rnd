@@ -26,13 +26,19 @@ function get_body_type(    rt,ty,pol)
 
 		if (ty == "line") return 0;
 		if (ty == "coil") return 2;
-
-#		if ((ty == "block") && (pol != "none")) return cap;
+		if ((ty == "block") && (pol != "none")) return 4;
 	}
 	else {
 		if (rt == "wire") return 0;
 		if (rt == "resistor") return 1;
 		if (rt == "coil") return 2;
+		if (rt == "bead") return 3;
+		if (rt == "elco") return 4;
+		if (rt == "diode") return 5;
+		if (rt == "brick") return 6;
+		if (rt == "monocap") return 7;
+		if (rt == "diskcap") return 8;
+		if (rt == "pot") return 9;
 	}
 
 # final fallback: default to resistor
