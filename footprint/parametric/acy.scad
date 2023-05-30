@@ -138,6 +138,15 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
             color([0.9,0.9,0.5])
                 translate([0,0,R_length/3-R_width/2])
                     cube([R_length,R_width,2*R_length/3],true);
+        } else if (body == 10) { // 2 pin trimpot
+            translate([0,0,10.03/2-R_width/2])
+                union() {
+                    color([0.4,0.4,0.9])
+                        cube([9.53,4.83,10.03],true);
+                    color([0.6,0.6,0.2])
+                        translate([-3.0,-0.6,5.0])
+                            cylinder(r=1.2, h=1.52);
+                }                    
         }
     }
     
@@ -196,4 +205,4 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         
 }
 
-part_acy(standing=0,pitch=2.54, body=9, body_dia=3.1);
+part_acy(standing=0,pitch=5.08, body=10, body_dia=3.1);
