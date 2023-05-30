@@ -15,6 +15,30 @@ function wave(type, repeat,    step,x,y)
 	}
 }
 
+function get_body_type(    rt,ty,pol)
+{
+	rt = P["3dbody"]
+
+	if (rt == "") {
+# autodetect
+		ty = P["type"];
+		pol = P["pol"];
+
+		if (ty == "line") return 0;
+		if (ty == "coil") return 2;
+
+#		if ((ty == "block") && (pol != "none")) return cap;
+	}
+	else {
+		if (rt == "wire") return 0;
+		if (rt == "resistor") return 1;
+		if (rt == "coil") return 2;
+	}
+
+# final fallback: default to resistor
+	return 1;
+}
+
 BEGIN {
 	base_unit_mm = 0
 
@@ -25,13 +49,13 @@ BEGIN {
 	spacing = parse_dim(P["spacing"])
 	dia = either(parse_dim(P["dia"]), spacing/6)
 
-# oops, dia is a radius rather
-	dia=dia/2
-
 	offs_x = +spacing/2
 
 	SCAT["openscad"]="acy.scad"
-	SCAT["openscad-param"]="pitch=" rev_mm(spacing) ", standing=" (P["type"] == "standing")
+	SCAT["openscad-param"]="pitch=" rev_mm(spacing) ", standing=" (P["type"] == "standing") ", body_dia=" rev_mm(dia) ", body=" get_body_type()
+
+# oops, dia is a radius rather
+	dia=dia/2
 
 	subc_begin("acy" P["spacing"], "R1", -spacing/5, -mil(20), 0, SCAT)
 
