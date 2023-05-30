@@ -48,6 +48,9 @@
 #@@default:wiper none
 #@@preview_args:wiper 400
 
+#@@param:3dbody one of: resistor, wire, coil, bead, elco, diode, brick, monocap, diskcap, pot; if not specified, guessed from silk graphics
+#@@optional:3dbody
+
 #@@thumbsize 2
 
 #@@include common_subc.awk
