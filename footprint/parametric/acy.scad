@@ -106,6 +106,20 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                             translate([R_width/2,0,0])
                                 cylinder(r=R_width/2-0.3, h=R_length);
                         }
+        } else if (body == 5) {
+            band_end = 1; // or 0
+            union() {
+                color([0.3,0.3,0.3]) {
+                    translate([-(R_length)/2,0,0])
+                        rotate([0,90,0])
+                            cylinder(r=R_width/2, h=R_length);
+                }
+                color([0.9,0.9,0.9]) {
+                    translate([(band_end-1)*(R_length)/3 + band_end*(R_length)/6,0,0])
+                        rotate([0,90,0])
+                            cylinder(r=R_width/2+0.01, h=R_length/7);
+                }
+            }
         }
     }
     
@@ -160,4 +174,4 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         
 }
 
-part_acy(standing=0,pitch=7.68, body=4, body_dia=2.2);
+part_acy(standing=1,pitch=7.68, body=5, body_dia=2.2);
