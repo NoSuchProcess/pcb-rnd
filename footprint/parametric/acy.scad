@@ -148,15 +148,16 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                             cylinder(r=1.2, h=1.52);
                 }                    
         } else if (body == 11) { // polyester/greencap
-            rotate([0,90,0])
-                intersection() {
-                    translate([R_width/2,0,-R_length/2])
-                        rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
-                    translate([-R_width/2,0,-R_length/2])
-                        rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
-                }
-        } else if (body == 12) { // polyester/greencap
-            translate([0,0,R_length/2])
+            translate([0,0,-R_width/2])
+                rotate([0,90,0])
+                    intersection() {
+                        translate([R_width/2,0,-R_length/2])
+                            rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
+                        translate([-R_width/2,0,-R_length/2])
+                            rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
+                    }
+        } else if (body == 12) { // tantalum
+            translate([0,0,R_length/2-R_width/2])
                 rotate([0,180,0])
                     intersection() {
                         rotate([15,0,0])
@@ -218,6 +219,12 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
     } else if (body == 10) { // two pin potentiometer
         aligned_body(is_standing=0,link=0,body=10);
         pins(standing, link=0);
+    } else if (body == 11) { // greencap/polyester capacitor
+        aligned_body(is_standing=0,link=0,body=11);
+        pins(link=0);
+    } else if (body == 12) { // tantalum capacitor
+        aligned_body(is_standing=0,link=0,body=12);
+        pins(link=0);
     }
         
 }
