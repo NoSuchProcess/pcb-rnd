@@ -157,23 +157,24 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                             rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
                     }
         } else if (body == 12) { // tantalum
-            translate([0,0,R_length/2-R_width/2])
-                rotate([0,180,0])
-                    intersection() {
-                        rotate([15,0,0])
-                            union() {
-                                cylinder(r=R_width/2, h=R_length*2);
-                                sphere(r=R_width/2);
-                            }
-                        rotate([-15,0,0]) 
-                            union() {
-                                cylinder(r=R_width/2, h=R_length*2);
-                                sphere(r=R_width/2);
-                            }
-                        cube([R_width*2,R_width*2,R_height*2],true);
-                    }
+                translate([0,0,R_length-R_width])
+                    rotate([0,180,0])
+                        color([0.9,0.6,0.2])
+                            intersection () {
+                                rotate([10,0,0])
+                                    union() {
+                                        cylinder(r=R_width/2, h=R_length*2);
+                                        sphere(r=R_width/2);
+                                    }
+                                rotate([-10,0,0]) 
+                                    union() {
+                                        cylinder(r=R_width/2, h=R_length*2);
+                                        sphere(r=R_width/2);
+                                    }   
+                                translate([-R_length,-R_length,-R_width/2])
+                                    cube([R_length*2,R_length*2,R_length],false);
+                        }
         }
-
     }
     
     module aligned_body(is_standing=0, link=0,body) {
@@ -223,7 +224,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         pins(link=1);
     } else if (body == 12) { // tantalum capacitor
         aligned_body(is_standing=0,link=0,body=12);
-        pins(link=0);
+        pins(link=1);
     }
         
 }
