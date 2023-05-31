@@ -92,6 +92,9 @@ module part_rcy(pitch=1.27, body=0, body_dia=5, body_len=8, pin_dia=0.3, pin_des
                         cylinder(r=C_width/2,h=2.4);
                         cube([C_width*2,C_width*0.85,5],true);
                     }
+            } else if (body == 4) { // ferrite bead
+                color([0.3,0.3,0.3])
+                    rounded_cylinder(r=C_width/2, h=C_length, n=0.5);
             }
     }
         
