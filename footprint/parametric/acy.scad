@@ -35,7 +35,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
     
     pitch_mm = pitch;
     R_width = body_dia;
-    R_length = 5.5;
+    R_length = body_dia*2.4;
     R_neck = 4*body_dia/5;
     body_ell = 1.2;
 
