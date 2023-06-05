@@ -59,6 +59,8 @@
 #@@enum:3dbody:monocap monolithic capacitor
 #@@enum:3dbody:diskcap ceramic capacitor, standing disk shaped
 #@@enum:3dbody:pot two pin trim/potmeter
+#@@enum:3dbody:greencap polyester/greencap capacitor, vertical
+#@@enum:3dbody:tantalum tantalum, vertical
 #@@optional:3dbody
 
 #@@param:3dbodydia the diameter (or width) of the body on the 3d model
