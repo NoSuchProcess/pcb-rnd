@@ -10,6 +10,31 @@ function pol_sign(   ox)
 	subc_line("top-silk", ox, -size, ox, size)
 }
 
+function get_body_type(    rt,ty,pol)
+{
+	rt = P["3dbody"]
+
+	if (rt == "") {
+# autodetect: coil when not polarized, elco otherwise
+		pol = P["pol"];
+
+		if ((pol == "none") || (pol == "")) return 1;
+		return 0;
+	}
+	else {
+		if (rt == "elco") return 0;
+		if (rt == "coil") return 1;
+		if (rt == "piezo") return 2;
+		if (rt == "ldr") return 3;
+		if (rt == "trimcap") return 4;
+		if (rt == "bead") return 5;
+	}
+
+# final fallback: default to elco
+	return 0;
+}
+
+
 BEGIN {
 	base_unit_mm = 0
 
@@ -22,7 +47,31 @@ BEGIN {
 
 	offs_x = +spacing/2
 
-	subc_begin("rcy" P["spacing"], "C1", -spacing/5, -mil(20), 0)
+	body_dia = parse_dim(P["3dbodydia"])
+	if (body_dia <= 0)
+		body_dia = dia;
+
+	pindia = int(P["3dpindia"])
+	if (int(pindia) != 0)
+		pindia = ", pindia=" pindia
+	else {
+		pindia = parse_dim(P["pin_drill"])
+		if (int(pindia) != 0)
+			pindia = ", pindia=" rev_mm(pin_drill*0.8);
+		else
+			pindia = ""
+	}
+
+	elev = parse_dim(P["3delevation"])
+	if (elev > 0)
+		elev = ",elevation=" rev_mm(elev)
+	else
+		elev = ""
+
+	SCAT["openscad"]="rcy.scad"
+	SCAT["openscad-param"]="pitch=" rev_mm(spacing) ", body_dia=" rev_mm(body_dia) ", body=" get_body_type() pindia elev
+
+	subc_begin("rcy" P["spacing"], "C1", -spacing/5, -mil(20), 0, SCAT)
 
 	proto_s = subc_proto_create_pin_square()
 	proto_r = subc_proto_create_pin_round()

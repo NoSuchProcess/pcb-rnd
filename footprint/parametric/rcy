@@ -26,6 +26,26 @@
 #@@optional:dia
 #@@default:dia spacing*2
 
+#@@param:3dbody 3d model body shape; if not specified, guessed from silk graphics
+#@@enum:3dbody:elco electrolytic capacitor
+#@@enum:3dbody:coil power coil
+#@@enum:3dbody:piezo piezoelectric buzzer
+#@@enum:3dbody:ldr light dependent resistor
+#@@enum:3dbody:trimcap trimmable capacitor
+#@@enum:3dbody:bead ferrite bead
+#@@optional:3dbody
+
+#@@param:3dbodydia the diameter (or width) of the body on the 3d model, if it differs from dia
+#@@optional:3dbodydia
+#@@dim:3dbodydia
+
+#@@param:3dpindia pin diameter on the 3d model
+#@@dim:3dpindia
+#@@optional:3dpindia
+
+#@@param:3delevation z-height of the body of the 3d model
+#@@optional:3delevation
+
 #@@include common_subc.awk
 
 awk -f `dirname $0`/common_subc.awk -f `dirname $0`/rcy.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
