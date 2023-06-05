@@ -76,7 +76,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
     
     module body(body) {
         if (body == 1 || body == 2) { // resistor, inductor
-            color([0.5,0.5,0.8]) {
+            color([0.5,0.4+body*body/10,0.9-body*body/10]) {
                 translate([-(R_length-R_width)/2,0,0])
                     scale([body_ell,1,1])
                         sphere(R_width/2);
@@ -192,8 +192,11 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
     
     if (body == 0) { // wire link
         pins(standing=0, link=1);
-    } else if (body == 1 || body == 2) { // resistor, inductor
+    } else if (body == 1) { // resistor
         aligned_body(is_standing=standing,link=0,body=1);
+        pins(standing, link=0);
+    } else if (body == 2) { // inductor
+        aligned_body(is_standing=standing,link=0,body=2);
         pins(standing, link=0);
     } else if (body == 3) { // ferrite bead
         aligned_body(is_standing=standing,link=0,body=3);
