@@ -126,7 +126,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                 rotate([0,90,0])
                     translate([0,0,-R_length/2])
                         rounded_cylinder(r=R_width/2, h=R_length, n=R_width/5);
-        } else if (body == 8) { // axial monolithic capacitor
+        } else if (body == 8) { // ceramic capacitor
             color([0.9,0.9,0.5])
                 intersection () {
                     translate([0,-R_width*4.5,R_width*1.65])
@@ -134,7 +134,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                     translate([0,R_width*4.5,R_width*1.65])
                         sphere(r=R_width*5);
                 }
-        } else if (body == 9) { // monolithic capacitor
+        } else if (body == 9) { // monolithic capacitor, vertical
             color([0.9,0.9,0.5])
                 translate([0,0,R_length/3-R_width/2])
                     cube([R_length,R_width,2*R_length/3],true);
