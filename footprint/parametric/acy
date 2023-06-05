@@ -52,16 +52,16 @@
 #@@enum:3dbody:resistor resistor
 #@@enum:3dbody:wire jumper wire
 #@@enum:3dbody:coil similar to resistor
-#@@enum:3dbody:bead ferrit bead
+#@@enum:3dbody:bead ferrite bead
 #@@enum:3dbody:elco electrolytic capacitor
 #@@enum:3dbody:diode diode with cathode marking
 #@@enum:3dbody:brick wirewound power resistor, brick style
-#@@enum:3dbody:monoap monolithic capacitor
+#@@enum:3dbody:monocap monolithic capacitor
 #@@enum:3dbody:diskcap ceramic capacitor, standing disk shaped
 #@@enum:3dbody:pot two pin trim/potmeter
 #@@optional:3dbody
 
-#@@param:3dbodydia the diameter (or width) of the body on the 3d moel
+#@@param:3dbodydia the diameter (or width) of the body on the 3d model
 #@@optional:3dbodydia
 #@@dim:3dbodydia
 
