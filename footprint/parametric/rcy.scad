@@ -34,7 +34,7 @@
 
 module part_rcy(pitch=1.27, body=0, body_dia=5, body_len=8, pin_dia=0.3, pin_descent=2.5)
 {
-    
+
     pitch_mm = pitch;
     C_width = body_dia;
     C_length = body_len;
@@ -57,7 +57,7 @@ module part_rcy(pitch=1.27, body=0, body_dia=5, body_len=8, pin_dia=0.3, pin_des
                 cylinder(r=pin_dia/2, h=pin_descent);
         }
     }
-    
+
     module body() {
         translate([pitch_mm/2,0,0])
             if (body == 0) {
@@ -111,8 +111,8 @@ module part_rcy(pitch=1.27, body=0, body_dia=5, body_len=8, pin_dia=0.3, pin_des
                     rounded_cylinder(r=C_width/2, h=C_length, n=0.5);
             }
     }
-        
+
     body();
     pins();
-    
+
 }

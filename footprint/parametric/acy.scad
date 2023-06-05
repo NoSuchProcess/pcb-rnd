@@ -32,7 +32,7 @@
 
 module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pin_dia=0.3)
 {
-    
+
     pitch_mm = pitch;
     R_width = body_dia;
     R_length = body_dia*2.4;
@@ -73,7 +73,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
             }
         }
     }
-    
+
     module body(body) {
         if (body == 1 || body == 2) { // resistor, inductor
             color([0.5,0.4+body*body/10,0.9-body*body/10]) {
@@ -146,7 +146,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                     color([0.6,0.6,0.2])
                         translate([-3.0,-0.6,5.0])
                             cylinder(r=1.2, h=1.52);
-                }                    
+                }
         } else if (body == 11) { // polyester/greencap
             translate([0,0,-R_width/2])
                 color([0.3,0.7,0.3])
@@ -170,13 +170,13 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
                                     union() {
                                         cylinder(r=R_width/2, h=R_length*2);
                                         sphere(r=R_width/2);
-                                    }   
+                                    }
                                 translate([-R_length,-R_length,-R_width/2])
                                     cube([R_length*2,R_length*2,R_length],false);
                         }
         }
     }
-    
+
     module aligned_body(is_standing=0, link=0,body) {
         if (!link) {
             if (is_standing) {
@@ -189,7 +189,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
             }
         }
     }
-    
+
     if (body == 0) { // wire link
         pins(standing=0, link=1);
     } else if (body == 1) { // resistor
@@ -229,6 +229,6 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         aligned_body(is_standing=0,link=0,body=12);
         pins(link=1);
     }
-        
+
 }
 
