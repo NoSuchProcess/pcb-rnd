@@ -56,8 +56,9 @@
 #@@enum:3dbody:elco electrolytic capacitor
 #@@enum:3dbody:diode diode with cathode marking
 #@@enum:3dbody:brick wirewound power resistor, brick style
-#@@enum:3dbody:monocap monolithic capacitor
+#@@enum:3dbody:monocap axial monolithic capacitor
 #@@enum:3dbody:diskcap ceramic capacitor, standing disk shaped
+#@@enum:3dbody:monoblock monolithic capacitor, vertical
 #@@enum:3dbody:pot two pin trim/potmeter
 #@@enum:3dbody:greencap polyester/greencap capacitor, vertical
 #@@enum:3dbody:tantalum tantalum, vertical
