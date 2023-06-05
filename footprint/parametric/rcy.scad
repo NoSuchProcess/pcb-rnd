@@ -31,12 +31,12 @@
 //  in any way.
 //
 
-module part_rcy(pitch=1.27, body=0, body_dia=5, body_len=8, pin_dia=0.3, pin_descent=2.5)
+module part_rcy(pitch=1.27, body=0, body_dia=5, elevation=8, pin_dia=0.3, pin_descent=2.5)
 {
 
     pitch_mm = pitch;
     C_width = body_dia;
-    C_length = body_len;
+    C_length = elevation;
 
     // r[adius], h[eight], [rou]n[d]
     module rounded_cylinder(r,h,n) {
