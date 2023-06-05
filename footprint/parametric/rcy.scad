@@ -1,10 +1,3 @@
-// body == 0  elco
-// body == 1  coil
-// body == 2  piezo
-// body == 3  LDR
-// body == 4  trimmer capacitor
-// body == 5  ferrite bead
-//
 // Copyright (C) 2023 Erich Heinzle
 //
 // File distribution license:
@@ -34,6 +27,15 @@
 //  with or without modifications, without affecting the board file's license
 //  in any way.
 //
+// Parameters:
+//   body == 0  elco
+//   body == 1  coil
+//   body == 2  piezo
+//   body == 3  LDR
+//   body == 4  trimmer capacitor
+//   body == 5  ferrite bead
+// All sizes are in mm
+
 
 module part_rcy(pitch=1.27, body=0, body_dia=5, elevation=8, pin_dia=0.3, pin_descent=2.5)
 {
