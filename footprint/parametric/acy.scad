@@ -1,4 +1,4 @@
-// Model for parametric acy() package
+// Generic axial thru-hole parts
 //
 // Copyright (C) 2023 Erich Heinzle
 //

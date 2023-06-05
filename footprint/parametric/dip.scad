@@ -1,5 +1,4 @@
-// Model for parametric dip socket
-// openscad-param= {pins=8,spacing=7.62,pitch=2.54,pin_descent=2.5, pin_dia=0.6,modules=1}
+// Model for parametric DIP socket and ICs
 //
 // Copyright (C) 2023 Erich Heinzle
 //

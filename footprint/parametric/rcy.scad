@@ -1,3 +1,5 @@
+// Generic radial thru-hole parts
+//
 // Copyright (C) 2023 Erich Heinzle
 //
 // File distribution license:
