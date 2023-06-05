@@ -38,7 +38,10 @@ function get_body_type(    rt,ty,pol)
 		if (rt == "brick") return 6;
 		if (rt == "monocap") return 7;
 		if (rt == "diskcap") return 8;
-		if (rt == "pot") return 9;
+		if (rt == "monoblock") return 9;
+		if (rt == "pot") return 10;
+		if (rt == "greencap") return 11;
+		if (rt == "tantalum") return 12;
 	}
 
 # final fallback: default to resistor
