@@ -62,7 +62,7 @@ BEGIN {
 
 	body_dia = parse_dim(P["3dbodydia"])
 	if (body_dia <= 0)
-		body_dia = dia;
+		body_dia = dia*2;
 
 	SCAT["openscad"]="acy.scad"
 	SCAT["openscad-param"]="pitch=" rev_mm(spacing) ", standing=" (P["type"] == "standing") ", body_dia=" rev_mm(body_dia) ", body=" get_body_type()
