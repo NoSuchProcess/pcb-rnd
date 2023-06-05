@@ -1,6 +1,3 @@
-// Model for parametric rcy() package
-// provides elco, LDR, piezo, vertical ferrite bead, trimmer cap, and coil models
-//
 // body == 0  elco
 // body == 1  coil
 // body == 2  piezo
