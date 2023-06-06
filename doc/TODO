@@ -18,6 +18,7 @@
 - BUG: start pcb-rnd. switch to mm units. select 0.01 grid size. Draw polygon from (1.9,1.9) to (10.95,1.9) to (10.95,7.3) to (1.9,2.3. Save layout. Inspect lihata .rp to find contour: { 74.80314961mil; 74.80314961mil },{ 431.1023622mil; 74.80314961mil },{ 431.1023622mil; 287.4015748mil },{ 74.80314961mil; 90.5511811mil }. Additional examples 218.50393701mil vs 5.55mm, and 143.7007874mil vs 3.65mm [report: Erich]
 - BUG: openscad export. Copper layer sits at +/- [0,0,0.811], but SMD components are placed at [x,y,0.8], causing copper to intersect with base of SMD components. Nominal thickness is typically/1.6mm in total https://www.pcbonline.com/file/2020-07-22/two-layer-pcb-copper-thickness.jpg and https://www.pcbonline.com/blog/standard-pcb-thickness_222.html [report: Erich]
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
+- FEATURE: common_subc.awk lacks subc_pstck_add_hshadow(proto, layer, s) function or similar. This makes it harder for users to generate optimal parametric footprints with mechanical mounting holes [report: Erich]  
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
