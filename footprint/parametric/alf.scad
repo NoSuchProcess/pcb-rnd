@@ -37,9 +37,7 @@ module part_alf(pitch=7.68, pin_descent=2.5, pin_dia=0.3, body_dia=2, body_lengt
     body_aspect = 3;
     pitch_mm = pitch;
     D_width = body_dia;
-    D_length = body_length;
-    if (D_length == 0)
-        D_length = D_width*body_aspect;
+    D_length = body_length <= 0 ? D_width*body_aspect : body_length;
 
     module pins(standing=0, link=0) {
         radius=pin_dia;
