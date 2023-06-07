@@ -30,6 +30,14 @@
 #@@optional:aspect
 #@@default:aspect spacing/6
 
+#@@param:3dbodydia the diameter (or width) of the body on the 3d model
+#@@optional:3dbodydia
+#@@dim:3dbodydia
+
+#@@param:3dbodylength the length of the body on the 3d model
+#@@optional:3dbodylength
+#@@dim:3dbodylength
+
 
 #@@include common_subc.awk
 

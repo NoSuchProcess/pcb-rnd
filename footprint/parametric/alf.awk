@@ -13,7 +13,22 @@ BEGIN {
 
 	offs_x = +spacing/2
 
-	subc_begin("acy" P["spacing"], "D1", 2.2*spacing/3-offs_x,-mil(50))
+	body_dia = parse_dim(P["3dbodydia"])
+	if (body_dia > 0)
+		body_dia = ",body_dia=" rev_mm(body_dia);
+	else
+		body_dia = ""
+
+	body_length = parse_dim(P["3dbodylength"])
+	if (body_length > 0)
+		body_length = ",body_length=" rev_mm(body_length);
+	else
+		body_length = ""
+
+	SCAT["openscad"]="alf.scad"
+	SCAT["openscad-param"]="pitch=" rev_mm(spacing) body_dia body_length
+
+	subc_begin("acy" P["spacing"], "D1", 2.2*spacing/3-offs_x,-mil(50), 0, SCAT)
 
 	proto_s = subc_proto_create_pin_square()
 	proto_r = subc_proto_create_pin_round()
