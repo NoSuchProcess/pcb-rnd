@@ -473,6 +473,16 @@ function subc_pstk_add_shape_poly(proto, layer, POLY    ,s,n)
 	PROTO[proto] = PROTO[proto] s
 }
 
+function subc_pstk_add_shape_hshadow(proto, layer    ,s)
+{
+	s = s "      ha:ps_shape_v4 {" NL
+	s = s "       clearance = 0" NL
+	s = s "       ha:ps_hashdow =" NL
+	s = s subc_pstk_shape_layer(layer)
+	s = s "      }" NL
+	PROTO[proto] = PROTO[proto] s
+}
+
 function subc_proto_create_pin_round(drill_dia, ring_dia, mask_dia      ,proto)
 {
 	proto = subc_proto_alloc()
