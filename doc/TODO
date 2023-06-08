@@ -3,9 +3,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: remove inline, use RND_INLINE - check src_3rd as well (librnd5 critical)
-+ FEATURE: openscad export: option to set/change $fn (default to 0, which should mean don't set, for compatibility) [report: Erich]
-	-> it's $fs that's the most useful for our application as it scales with diameter
-	+ gui does not allow anything other than 0.0 to be entered
 / FEATURE: openscad export: option to set/change fillet=0|1 for SMD/reflowed devices [report: Erich]
 	-> can't do on a per model basis, and we are too late for a global solution either; openscad is_num() is too new. We can't solve this for now.
 + FEATURE: openscad export: option to set/change unmasked copper colour to depict tinning/HASL/ENIG etc.. [report: Erich]
