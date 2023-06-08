@@ -125,9 +125,13 @@ Name of the file to be exported to. Can contain a path.
 	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_drill 6
 
+	{"fs", "if greater than zero, set $fs to this value and $fa to 1; arc length of curve approximation in mm",
+	 RND_HATT_REAL, 0, 0, {0, 0, 0}, 0},
+#define HA_fs 7
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 7
+#define HA_cam 8
 
 };
 
@@ -359,6 +363,9 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 		perror(filename);
 		return;
 	}
+
+	if (options[HA_fs].dbl > 0)
+		fprintf(f, "$fs = %f;\n$fa = 1;\n\n", options[HA_fs].dbl);
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
