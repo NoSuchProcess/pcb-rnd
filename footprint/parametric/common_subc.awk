@@ -477,7 +477,7 @@ function subc_pstk_add_shape_hshadow(proto, layer    ,s)
 {
 	s = s "      ha:ps_shape_v4 {" NL
 	s = s "       clearance = 0" NL
-	s = s "       ha:ps_hashdow =" NL
+	s = s "       ps_hshadow = {}" NL
 	s = s subc_pstk_shape_layer(layer)
 	s = s "      }" NL
 	PROTO[proto] = PROTO[proto] s
