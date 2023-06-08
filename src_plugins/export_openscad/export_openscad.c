@@ -129,9 +129,21 @@ Name of the file to be exported to. Can contain a path.
 	 RND_HATT_REAL, 0, 0, {0, 0, 0}, 0},
 #define HA_fs 7
 
+	{"copper-color", "color values to use for top and bottom copper, in r,g,b,a (each component is a number between 0 and 1, alpha is optional)",
+	 RND_HATT_STRING, 0, 0, {0, "1,0.4,0.2", 0}, 0},
+#define HA_copper_color 8
+
+	{"silk-color", "color values to use for top and bottom silk layers, in r,g,b,a (each component is a number between 0 and 1, alpha is optional)",
+	 RND_HATT_STRING, 0, 0, {0, "0,0,0", 0}, 0},
+#define HA_silk_color 9
+
+	{"mask-color", "color values to use for top and bottom mask layers, in r,g,b,a (each component is a number between 0 and 1, alpha is optional)",
+	 RND_HATT_STRING, 0, 0, {0, "0,0.7,0,0.5", 0}, 0},
+#define HA_mask_color 10
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 8
+#define HA_cam 11
 
 };
 
@@ -430,11 +442,11 @@ static int openscad_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_la
 		if (!openscad_options[HA_mask].lng)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
-			scad_new_layer_group("top_mask", +2, "0,0.7,0,0.5");
+			scad_new_layer_group("top_mask", +2, openscad_options[HA_mask_color].str);
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
-			scad_new_layer_group("bottom_mask", -2, "0,0.7,0,0.5");
+			scad_new_layer_group("bottom_mask", -2, openscad_options[HA_mask_color].str);
 			return 1;
 		}
 	}
@@ -443,11 +455,11 @@ static int openscad_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_la
 		if (!openscad_options[HA_silk].lng)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
-			scad_new_layer_group("top_silk", +3, "0,0,0");
+			scad_new_layer_group("top_silk", +3, openscad_options[HA_silk_color].str);
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
-			scad_new_layer_group("bottom_silk", -3, "0,0,0");
+			scad_new_layer_group("bottom_silk", -3, openscad_options[HA_silk_color].str);
 			return 1;
 		}
 	}
@@ -458,11 +470,11 @@ static int openscad_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_la
 			return 0;
 		}
 		if (flags & PCB_LYT_TOP) {
-			scad_new_layer_group("top_copper", +1, "1,0.4,0.2");
+			scad_new_layer_group("top_copper", +1, openscad_options[HA_copper_color].str);
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
-			scad_new_layer_group("bottom_copper", -1, "1,0.4,0.2");
+			scad_new_layer_group("bottom_copper", -1, openscad_options[HA_copper_color].str);
 			return 1;
 		}
 	}
