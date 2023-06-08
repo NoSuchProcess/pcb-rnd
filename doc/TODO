@@ -4,7 +4,6 @@
 1. For the upcoming release ===============================================================================
 - CLEANUP: remove inline, use RND_INLINE - check src_3rd as well (librnd5 critical)
 - BUG: start pcb-rnd, {fe}, select openscad, hit export. hit export again, so that overwrite warning comes up. With overwrite warning window still present drag/move export window with mouse, segfault ensues [report: Erich]
-+ FEATURE: openscad export: option to set/change unmasked copper colour to depict tinning/HASL/ENIG etc.. [report: Erich]
 - DOC: pool node on how to use pixmap for breadboading
 - BUG: export_stl: before counting points, merge all the cutout polygons into one to avoid buggy exports due to overlapping/embedded cutouts; see bug_files/TODO/stl_olap.stl [report: keantoken]
 	- BUG: via-on-via triggers an assert, see bug_files/TODO/stl-vv.rp [report: Majenko]
