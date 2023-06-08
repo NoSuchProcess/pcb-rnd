@@ -126,7 +126,7 @@ Name of the file to be exported to. Can contain a path.
 #define HA_drill 6
 
 	{"fs", "if greater than zero, set $fs to this value and $fa to 1; arc length of curve approximation in mm",
-	 RND_HATT_REAL, 0, 0, {0, 0, 0}, 0},
+	 RND_HATT_REAL, 0, 10, {0, 0, 0}, 0},
 #define HA_fs 7
 
 	{"copper-color", "color values to use for top and bottom copper, in r,g,b,a (each component is a number between 0 and 1, alpha is optional)",
