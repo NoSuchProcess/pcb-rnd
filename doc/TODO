@@ -19,6 +19,7 @@
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 + FEATURE: common_subc.awk lacks subc_pstck_add_hshadow(proto, layer, s) function or similar. This makes it harder for users to generate optimal parametric footprints with mechanical mounting holes. See bug_files/TODO diff for possible solution [report: Erich]  
 	-> added subc_pstk_add_shape_hshadow(); we won't subc_proto_create_pin*() with this, those are for the simplest cases only; for any tricky padstack, you need to build it shape by shape
+	-> fixed typo "ha:... .. {}", now seems to work
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
