@@ -34,69 +34,69 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0) {
 
         module body(body=0, body_overhang=0, pin_width=0.3,pad_spacing=0.65, row_spacing=7.8) {
 
-            if (body==0) { //so
-                color([0.2,0.2,0.2])
-                    translate([0,0,-body_overhang])
-                        difference() {
-                            linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
-                                polygon([
+        if (body==0) { //so
+            color([0.2,0.2,0.2])
+                translate([0,0,-body_overhang])
+                    difference() {
+                        linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
+                            polygon([
 [1.47,1.6],[1.11,1.28],[0.97,0.65],[1.06,0.3],[1.12,0.21],[1.19,0.17],[1.27,0.15],[4.73,0.15],[4.81,0.17],[4.88,0.21],[4.94,0.33],[5.03,0.66],[4.89,1.38],[4.85,1.49],[4.8,1.55],[4.73,1.58],[4.63,1.6]                            ]);
-                            translate([1.31+pin_width,1.65,pin_width])
-                                rotate([-90,0,0])
-                                    cylinder(r=pin_width/2,h=1);
-                        }                
-            } else if (body == 1) { //ssop
-                color([0.2,0.2,0.2])
-                    translate([0,0,-body_overhang])
-                        difference() {
-                            linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
-                                polygon([
-                   [1.52,0.15],[1.47,0.16],[1.44,0.17],[1.41,0.2],[1.39,0.24],[1.38,0.28],[1.31,1.08],[1.38,1.9],[1.39,1.94],[1.41,1.97],[1.44,1.99],[1.47,2.0],
-                   [6.33,2.0],[6.36,1.99],[6.39,1.97],[6.41,1.94],[6.42,1.9],[6.49,1.08],[6.42,0.28],[6.41,0.24],[6.39,0.2],[6.36,0.17],[6.33,0.16],[6.28,0.15]
-                                ]);
-                            translate([1.31+pin_width*2,1.85,pin_width*2])
-                                rotate([-90,0,0])
-                                    cylinder(r=0.3,h=1);
-                        }
-             } else if (body == 2) { //tssop
-                color([0.2,0.2,0.2])
-                    translate([0,0,-body_overhang])
-                        difference() {
-                            linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
-                                polygon([
-                            [4.92,1.20],[4.99,1.19],[5.05,1.17],[5.10,1.11],[5.12,1.04],[5.13,0.73],[5.10,0.35],[5.09, 0.32],[5.07,0.29],[5.05,0.27],[5.03,0.26],[4.99,0.25],[4.92,0.24],
-                            [1.48,0.24],[1.41,0.25],[1.37,0.26],[1.35,0.27],[1.33,0.29],[1.31,0.32],[1.30,0.35],[1.27,0.73],[1.28,1.04],[1.30,1.11],[1.35,1.17],[1.41,1.19],[1.48,1.20]]);
-                            translate([1.27+pin_width*2,1.05,pin_width*2])
-                                rotate([-90,0,0])
-                                    cylinder(r=pin_width/2,h=1);
-                        }
-             } else if (body == 3) { //msop
-                color([0.2,0.2,0.2])
-                    translate([0,0,-body_overhang])
-                        difference() {
-                            linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
-                                polygon([
-                            [1.13,0.155],[1.09,0.16],[1.05,0.17],[1.015,0.19],[0.99,0.215],[0.975,0.245],[0.955,0.63],[1.005,0.98],[1.015,1.02],[1.035,1.06],[1.06,1.085],[1.095,1.10],
-                            [3.805,1.10],[3.84,1.085],[3.865,1.06],[3.885,1.02],[3.895,0.98],[3.945,0.63],[3.925,0.245],[3.91,0.215],[3.885,0.19],[3.85,0.17],[3.81,0.16],[3.77,0.155]]);
-                            translate([1.095+0.75,1.0,0.75])
-                                rotate([-90,0,0])
-                                    cylinder(r=0.3,h=1);
-                        }
-             } else if (body == 4) { //qsop
-                color([0.2,0.2,0.2])
-                    translate([0,0,-body_overhang])
-                        difference() {
-                            linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
-                                polygon([
-                            [1.05,0.2],[0.95,0.84],[0.95,1.12],[0.97,1.33],[1.31,1.75],
-                            [4.37,1.75],[4.46,1.1],[4.46,0.83],[4.37,0.2]
-                                ]);
-                            translate([1.31+pin_width,1.65,pin_width])
-                                rotate([-90,0,0])
-                                    cylinder(r=pin_width/2,h=1);
-                        }
-             }
-        }
+                        translate([1.31+pin_width,1.65,pin_width])
+                            rotate([-90,0,0])
+                                cylinder(r=pin_width/2,h=1);
+                    }
+        } else if (body == 1) { //ssop
+            color([0.2,0.2,0.2])
+                translate([0,0,-body_overhang])
+                    difference() {
+                        linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
+                            polygon([
+               [1.52,0.15],[1.47,0.16],[1.44,0.17],[1.41,0.2],[1.39,0.24],[1.38,0.28],[1.31,1.08],[1.38,1.9],[1.39,1.94],[1.41,1.97],[1.44,1.99],[1.47,2.0],
+               [6.33,2.0],[6.36,1.99],[6.39,1.97],[6.41,1.94],[6.42,1.9],[6.49,1.08],[6.42,0.28],[6.41,0.24],[6.39,0.2],[6.36,0.17],[6.33,0.16],[6.28,0.15]
+                            ]);
+                        translate([1.31+pin_width*2,1.85,pin_width*2])
+                            rotate([-90,0,0])
+                                cylinder(r=0.3,h=1);
+                    }
+         } else if (body == 2) { //tssop
+            color([0.2,0.2,0.2])
+                translate([0,0,-body_overhang])
+                    difference() {
+                        linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
+                            polygon([
+                        [4.92,1.20],[4.99,1.19],[5.05,1.17],[5.10,1.11],[5.12,1.04],[5.13,0.73],[5.10,0.35],[5.09, 0.32],[5.07,0.29],[5.05,0.27],[5.03,0.26],[4.99,0.25],[4.92,0.24],
+                        [1.48,0.24],[1.41,0.25],[1.37,0.26],[1.35,0.27],[1.33,0.29],[1.31,0.32],[1.30,0.35],[1.27,0.73],[1.28,1.04],[1.30,1.11],[1.35,1.17],[1.41,1.19],[1.48,1.20]]);
+                        translate([1.27+pin_width*2,1.05,pin_width*2])
+                            rotate([-90,0,0])
+                                cylinder(r=pin_width/2,h=1);
+                    }
+         } else if (body == 3) { //msop
+            color([0.2,0.2,0.2])
+                translate([0,0,-body_overhang])
+                    difference() {
+                        linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
+                            polygon([
+                        [1.13,0.155],[1.09,0.16],[1.05,0.17],[1.015,0.19],[0.99,0.215],[0.975,0.245],[0.955,0.63],[1.005,0.98],[1.015,1.02],[1.035,1.06],[1.06,1.085],[1.095,1.10],
+                        [3.805,1.10],[3.84,1.085],[3.865,1.06],[3.885,1.02],[3.895,0.98],[3.945,0.63],[3.925,0.245],[3.91,0.215],[3.885,0.19],[3.85,0.17],[3.81,0.16],[3.77,0.155]]);
+                        translate([1.095+0.75,1.0,0.75])
+                            rotate([-90,0,0])
+                                cylinder(r=0.3,h=1);
+                    }
+         } else if (body == 4) { //qsop
+            color([0.2,0.2,0.2])
+                translate([0,0,-body_overhang])
+                    difference() {
+                        linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
+                            polygon([
+                        [1.05,0.2],[0.95,0.84],[0.95,1.12],[0.97,1.33],[1.31,1.75],
+                        [4.37,1.75],[4.46,1.1],[4.46,0.83],[4.37,0.2]
+                            ]);
+                        translate([1.31+pin_width,1.65,pin_width])
+                            rotate([-90,0,0])
+                                cylinder(r=pin_width/2,h=1);
+                    }
+         }
+    }
 
     module pin(body=0, pin_width=0.3) {
         if (body == 0) { // so
@@ -120,13 +120,13 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0) {
         } else if (body == 4) { //qsop
             translate([0,0,-pin_width/2])
                 linear_extrude(height=pin_width)
-                    polygon([[0.01,0.0],[0.24,0.01],[0.3,0.02],[0.37,0.05],[0.43,0.09],[0.48,0.14],[0.52,0.2],[0.55,0.25],[0.57,0.3],[0.59,0.37],[0.6,0.48],[0.6,0.68],[0.62,0.74],[0.67,0.8],[0.73,0.84],[0.78,0.85],[0.97,0.85],[0.97,1.12],[0.75,1.12],[0.67,1.11],[0.6,1.08],[0.53,1.03],[0.48,0.97],[0.43,0.89],[0.4,0.82],[0.38,0.76],[0.37,0.66],[0.37,0.48],[0.36,0.41],[0.34,0.37],[0.32,0.34],[0.28,0.31],[0.23,0.29],[0.16,0.28],[0.0,0.27]]);        
+                    polygon([[0.01,0.0],[0.24,0.01],[0.3,0.02],[0.37,0.05],[0.43,0.09],[0.48,0.14],[0.52,0.2],[0.55,0.25],[0.57,0.3],[0.59,0.37],[0.6,0.48],[0.6,0.68],[0.62,0.74],[0.67,0.8],[0.73,0.84],[0.78,0.85],[0.97,0.85],[0.97,1.12],[0.75,1.12],[0.67,1.11],[0.6,1.08],[0.53,1.03],[0.48,0.97],[0.43,0.89],[0.4,0.82],[0.38,0.76],[0.37,0.66],[0.37,0.48],[0.36,0.41],[0.34,0.37],[0.32,0.34],[0.28,0.31],[0.23,0.29],[0.16,0.28],[0.0,0.27]]);
         }
     }
 
     module fillet(pad_width=0.3, pad_len=0.5, pad_height= 0.3) {
         fillet_height = pad_height/3;
-        fillet_width = pad_len/5;        
+        fillet_width = pad_len/5;
         overall_width = fillet_width*2 + pad_width;
         overall_length = pad_len + fillet_width;
 
@@ -162,8 +162,8 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0) {
                     [15,14,10,11],// 9
                     [12,13,14,15],// 10
                     [3,2,1,0]];// 11
-    
-                polyhedron(fillet_points, fillet_faces);        
+
+                polyhedron(fillet_points, fillet_faces);
             }
     }
 
@@ -189,7 +189,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0) {
             }
         }
     }
-    
+
     module place_fillets(pad_spacing=0.64, row_spacing=5.41,pin_width=0.3) {
         color([0.8,0.8,0.8]) {
             for(i = [0:(pins/2)-1]) {
@@ -237,7 +237,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0) {
         if (fillet)
             place_fillets(pad_spacing=0.64, row_spacing=5.41, pin_width=0.3);
     }
-    
+
 }
 
 part_so(body=1, pins=28, fillet=1);
