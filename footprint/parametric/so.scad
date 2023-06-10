@@ -247,4 +247,3 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
 
 }
 
-part_so(body=0, pins=28, fillet=0, pin_width=0.4, pad_spacing=0.65, row_spacing=6);
