@@ -214,7 +214,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
                 place_pins();
             }
             if (fillet)
-                place_fillets(pad_spacing=1.27);
+                place_fillets();
         } else if (body == 1) { // ssop
             rotate([90,0,0]) {
                 body(body_overhang=0.75/2);
