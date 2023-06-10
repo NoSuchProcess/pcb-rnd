@@ -30,7 +30,8 @@
 //  in any way.
 //
 
-module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0) {
+module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0)
+{
 
         module body(body=0, body_overhang=0, pin_width=0.3,pad_spacing=0.65, row_spacing=7.8) {
 
