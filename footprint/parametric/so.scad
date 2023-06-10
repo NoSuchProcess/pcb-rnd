@@ -202,42 +202,43 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
         }
     }
 
-    if (body == 0) {
-        rotate([90,0,0]) { // so
-            body(body_overhang=1.09/2);
-            place_pins();
+    translate([-row_spacing/2,pad_spacing*pins/4,0])
+        if (body == 0) {
+            rotate([90,0,0]) { // so
+                body(body_overhang=1.09/2);
+                place_pins();
+            }
+            if (fillet)
+                place_fillets(pad_spacing=1.27);
+        } else if (body == 1) { // ssop
+            rotate([90,0,0]) {
+                body(body_overhang=0.75/2);
+                place_pins();
+            }
+            if (fillet)
+                place_fillets();
+        } else if (body == 2) { // tssop
+            rotate([90,0,0]) {
+                body(body_overhang=0.75/2);
+                place_pins();
+            }
+            if (fillet)
+                place_fillets();
+        } else if (body == 3) { // msop
+            rotate([90,0,0]) {
+                body(body_overhang=0.75/2);
+                place_pins();
+            }
+            if (fillet)
+                place_fillets();
+        } else if (body == 4) { // qsop
+            rotate([90,0,0]) {
+                body(body_overhang=0.52/2);
+                place_pins();
+            }
+            if (fillet)
+                place_fillets();
         }
-        if (fillet)
-            place_fillets(pad_spacing=1.27);
-    } else if (body == 1) { // ssop
-        rotate([90,0,0]) {
-            body(body_overhang=0.75/2);
-            place_pins();
-        }
-        if (fillet)
-            place_fillets();
-    } else if (body == 2) { // tssop
-        rotate([90,0,0]) {
-            body(body_overhang=0.75/2);
-            place_pins();
-        }
-        if (fillet)
-            place_fillets();
-    } else if (body == 3) { // msop
-        rotate([90,0,0]) {
-            body(body_overhang=0.75/2);
-            place_pins();
-        }
-        if (fillet)
-            place_fillets();
-    } else if (body == 4) { // qsop
-        rotate([90,0,0]) {
-            body(body_overhang=0.52/2);
-            place_pins();
-        }
-        if (fillet)
-            place_fillets();
-    }
 
 }
 
