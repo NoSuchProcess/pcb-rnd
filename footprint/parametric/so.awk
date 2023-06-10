@@ -35,8 +35,11 @@ BEGIN {
 	offs_x = -(row_spacing/2)
 	offs_y = -int((P["n"]/4-0.5) * pad_spacing)
 
+	pad_width = P["pad_thickness"]
+	pinwidth = ",pin_width="  rev_mm(DEFAULT["pad_thickness"] * 0.6)
+
 	SCAT["openscad"]="so.scad"
-	SCAT["openscad-param"]="pins=" P["n"] ",pad_spacing=" rev_mm(pad_spacing) ",row_spacing=" rev_mm(row_spacing) ",body=" bodynum()
+	SCAT["openscad-param"]="pins=" P["n"] ",pad_spacing=" rev_mm(pad_spacing) ",row_spacing=" rev_mm(row_spacing) ",body=" bodynum() pinwidth
 
 	subc_begin(P["n"] "*" P["row_spacing"], "U1", -offs_x, mil(-100)-offs_y, 0, SCAT)
 
