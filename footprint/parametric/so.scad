@@ -30,10 +30,10 @@
 //  in any way.
 //
 
-module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0)
+module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=0, body=0)
 {
 
-        module body(body=0, body_overhang=0, pin_width=0.3,pad_spacing=0.65, row_spacing=7.8) {
+        module body(body=0, body_overhang=0, pad_spacing=0.65, row_spacing=7.8) {
 
         if (body==0) { //so
             color([0.2,0.2,0.2])
@@ -99,7 +99,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0)
          }
     }
 
-    module pin(body=0, pin_width=0.3) {
+    module pin(body=0) {
         if (body == 0) { // so
             translate([0,0,-pin_width/2])
                 linear_extrude(height=pin_width)
@@ -125,7 +125,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0)
         }
     }
 
-    module fillet(pad_width=0.3, pad_len=0.5, pad_height= 0.3) {
+    module fillet(pad_width=pin_width, pad_len=0.5, pad_height= 0.3) {
         fillet_height = pad_height/3;
         fillet_width = pad_len/5;
         overall_width = fillet_width*2 + pad_width;
@@ -168,35 +168,35 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0)
             }
     }
 
-    module opposite_fillet(row_spacing=5.41,pad_width=0.3) {
+    module opposite_fillet(row_spacing=5.41) {
         translate([row_spacing,0,0])
             mirror([1,0,0])
-                fillet(pad_width=pad_width);
+                fillet();
     }
 
-    module opposite_pin(body=body, row_spacing=7.8,pin_width=0.3) {
+    module opposite_pin(body=body, row_spacing=7.8) {
         translate([row_spacing,0,0])
             mirror([1,0,0])
-                pin(body,pin_width=pin_width);
+                pin(body);
     }
 
     module place_pins(body=0, pad_spacing=0.65, row_spacing=7.8,pin_width=0.3) {
         color([0.7,0.7,0.7]) {
             for(i = [0:(pins/2)-1]) {
                 translate([0,0,i*pad_spacing]){
-                    pin(body,pin_width=pin_width);
-                    opposite_pin(row_spacing=row_spacing,pin_width=pin_width);
+                    pin(body);
+                    opposite_pin(row_spacing=row_spacing);
                 }
             }
         }
     }
 
-    module place_fillets(pad_spacing=0.64, row_spacing=5.41,pin_width=0.3) {
+    module place_fillets(pad_spacing=0.64, row_spacing=5.41) {
         color([0.8,0.8,0.8]) {
             for(i = [0:(pins/2)-1]) {
                 translate([0,-i*pad_spacing,0]){
-                    fillet(pad_width=pin_width);
-                    opposite_fillet(row_spacing=row_spacing,pad_width=pin_width);
+                    fillet();
+                    opposite_fillet(row_spacing=row_spacing);
                 }
             }
         }
@@ -204,41 +204,41 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, fillet=0, body=0)
 
     if (body == 0) {
         rotate([90,0,0]) { // so
-            body(body=body, body_overhang=1.09/2, pin_width=0.4,pad_spacing=1.27, row_spacing=6);
-            place_pins(body=body, pad_spacing=1.27, row_spacing=6, pin_width=0.4);
+            body(body=body, body_overhang=1.09/2,pad_spacing=1.27, row_spacing=6);
+            place_pins(body=body, pad_spacing=1.27, row_spacing=6);
         }
         if (fillet)
-            place_fillets(pad_spacing=1.27, row_spacing=6, pin_width=0.4);
+            place_fillets(pad_spacing=1.27, row_spacing=6);
     } else if (body == 1) { // ssop
         rotate([90,0,0]) {
-            body(body=body, body_overhang=0.75/2, pin_width=0.3,pad_spacing=0.65, row_spacing=7.8);
+            body(body=body, body_overhang=0.75/2, pad_spacing=0.65, row_spacing=7.8);
             place_pins(body=body,pad_spacing=0.65, row_spacing=7.8);
         }
         if (fillet)
-            place_fillets(pad_spacing=0.65, row_spacing=7.8, pin_width=0.3);
+            place_fillets(pad_spacing=0.65, row_spacing=7.8);
     } else if (body == 2) { // tssop
         rotate([90,0,0]) {
-            body(body=body, body_overhang=0.75/2, pin_width=0.3,pad_spacing=0.65, row_spacing=6.4);
+            body(body=body, body_overhang=0.75/2, pad_spacing=0.65, row_spacing=6.4);
             place_pins(body=body,pad_spacing=0.65, row_spacing=6.4);
         }
         if (fillet)
-            place_fillets(pad_spacing=0.65, row_spacing=6.4,pin_width=0.3);
+            place_fillets(pad_spacing=0.65, row_spacing=6.4);
     } else if (body == 3) { // msop
         rotate([90,0,0]) {
-            body(body=body, body_overhang=0.75/2, pin_width=0.3,pad_spacing=0.65, row_spacing=4.9);
+            body(body=body, body_overhang=0.75/2, pad_spacing=0.65, row_spacing=4.9);
             place_pins(body=body,pad_spacing=0.65, row_spacing=4.9);
         }
         if (fillet)
-            place_fillets(pad_spacing=0.65, row_spacing=4.9,pin_width=0.3);
+            place_fillets(pad_spacing=0.65, row_spacing=4.9);
     } else if (body == 4) { // qsop
         rotate([90,0,0]) {
-            body(body=body, body_overhang=0.52/2, pin_width=0.3,pad_spacing=0.64, row_spacing=5.41);
+            body(body=body, body_overhang=0.52/2, pad_spacing=0.64, row_spacing=5.41);
             place_pins(body=body, pad_spacing=0.64, row_spacing=5.41);
         }
         if (fillet)
-            place_fillets(pad_spacing=0.64, row_spacing=5.41, pin_width=0.3);
+            place_fillets(pad_spacing=0.64, row_spacing=5.41);
     }
 
 }
 
-part_so(body=1, pins=28, fillet=1);
+part_so(body=0, pins=28, fillet=0, pin_width=0.4);
