@@ -32,6 +32,15 @@
 #@@optional:int_bloat
 #@@default:int_bloat 55 mil
 
+#@@param:3dbody 3d model body shape
+#@@enum:3dbody:so
+#@@enum:3dbody:ssop
+#@@enum:3dbody:tssop
+#@@enum:3dbody:msop
+#@@enum:3dbody:qsop
+#@@optional:3dbody
+
+
 #@@include common_subc.awk
 
 #@@over@ignore::pin_

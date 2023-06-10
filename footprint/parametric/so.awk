@@ -1,3 +1,16 @@
+function bodynum(    body)
+{
+	body = P["3dbody"]
+
+	if (body == "so")    return 0;
+	if (body == "ssop")  return 1;
+	if (body == "tssop") return 2;
+	if (body == "msop")  return 3;
+	if (body == "qsop")  return 4;
+
+	return 0;
+}
+
 BEGIN {
 	base_unit_mm = 0
 
@@ -22,7 +35,10 @@ BEGIN {
 	offs_x = -(row_spacing/2)
 	offs_y = -int((P["n"]/4-0.5) * pad_spacing)
 
-	subc_begin(P["n"] "*" P["row_spacing"], "U1", -offs_x, mil(-100)-offs_y)
+	SCAT["openscad"]="so.scad"
+	SCAT["openscad-param"]="pins=" P["n"] ",pad_spacing=" rev_mm(pad_spacing) ",row_spacing=" rev_mm(row_spacing) ",body=" bodynum()
+
+	subc_begin(P["n"] "*" P["row_spacing"], "U1", -offs_x, mil(-100)-offs_y, 0, SCAT)
 
 	proto = subc_proto_create_pad_sqline(-ext_bloat, int_bloat, pad_width)
 
