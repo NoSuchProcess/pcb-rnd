@@ -33,64 +33,69 @@
 module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=0, body=0)
 {
 
-        module body(body_overhang=0) {
+    module body(body_overhang=0) {
 
         if (body==0) { //so, default row_spacing=6
+            offset = (row_spacing-6);
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
                         linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
                             polygon([
-[1.47,1.6],[1.11,1.28],[0.97,0.65],[1.06,0.3],[1.12,0.21],[1.19,0.17],[1.27,0.15],[4.73,0.15],[4.81,0.17],[4.88,0.21],[4.94,0.33],[5.03,0.66],[4.89,1.38],[4.85,1.49],[4.8,1.55],[4.73,1.58],[4.63,1.6]                            ]);
+[1.47,1.6],[1.11,1.28],[0.97,0.65],[1.06,0.3],[1.12,0.21],[1.19,0.17],[1.27,0.15],[4.73+offset,0.15],[4.81+offset,0.17],[4.88+offset,0.21],[4.94+offset,0.33],[5.03+offset,0.66],[4.89+offset,1.38],[4.85+offset,1.49],[4.8+offset,1.55],[4.73+offset,1.58],[4.63+offset,1.6]                            ]);
                         translate([1.31+pin_width,1.65,pin_width])
                             rotate([-90,0,0])
                                 cylinder(r=pin_width/2,h=1);
                     }
         } else if (body == 1) { //ssop, default row_spacing=7.8
+            offset = (row_spacing-7.8);
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
                         linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
                             polygon([
                [1.52,0.15],[1.47,0.16],[1.44,0.17],[1.41,0.2],[1.39,0.24],[1.38,0.28],[1.31,1.08],[1.38,1.9],[1.39,1.94],[1.41,1.97],[1.44,1.99],[1.47,2.0],
-               [6.33,2.0],[6.36,1.99],[6.39,1.97],[6.41,1.94],[6.42,1.9],[6.49,1.08],[6.42,0.28],[6.41,0.24],[6.39,0.2],[6.36,0.17],[6.33,0.16],[6.28,0.15]
+               [6.33+offset,2.0],[6.36+offset,1.99],[6.39+offset,1.97],[6.41+offset,1.94],[6.42+offset,1.9],[6.49+offset,1.08],[6.42+offset,0.28],[6.41+offset,0.24],[6.39+offset,0.2],[6.36+offset,0.17],[6.33+offset,0.16],[6.28+offset,0.15]
                             ]);
                         translate([1.31+pin_width*2,1.85,pin_width*2])
                             rotate([-90,0,0])
                                 cylinder(r=0.3,h=1);
                     }
          } else if (body == 2) { //tssop, default row_spacing=6.4
+            offset = (row_spacing-6.4);
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
                         linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
                             polygon([
-                        [4.92,1.20],[4.99,1.19],[5.05,1.17],[5.10,1.11],[5.12,1.04],[5.13,0.73],[5.10,0.35],[5.09, 0.32],[5.07,0.29],[5.05,0.27],[5.03,0.26],[4.99,0.25],[4.92,0.24],
+                        [4.92+offset,1.20],[4.99+offset,1.19],[5.05+offset,1.17],[5.10+offset,1.11],[5.12+offset,1.04],[5.13+offset,0.73],[5.10+offset,0.35],[5.09+offset, 0.32],[5.07+offset,0.29],[5.05+offset,0.27],[5.03+offset,0.26],[4.99+offset,0.25],[4.92+offset,0.24],
                         [1.48,0.24],[1.41,0.25],[1.37,0.26],[1.35,0.27],[1.33,0.29],[1.31,0.32],[1.30,0.35],[1.27,0.73],[1.28,1.04],[1.30,1.11],[1.35,1.17],[1.41,1.19],[1.48,1.20]]);
                         translate([1.27+pin_width*2,1.05,pin_width*2])
                             rotate([-90,0,0])
                                 cylinder(r=pin_width/2,h=1);
                     }
          } else if (body == 3) { //msop, default row_spacing=4.9
+            offset = (row_spacing-4.9);
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
                         linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
                             polygon([
                         [1.13,0.155],[1.09,0.16],[1.05,0.17],[1.015,0.19],[0.99,0.215],[0.975,0.245],[0.955,0.63],[1.005,0.98],[1.015,1.02],[1.035,1.06],[1.06,1.085],[1.095,1.10],
-                        [3.805,1.10],[3.84,1.085],[3.865,1.06],[3.885,1.02],[3.895,0.98],[3.945,0.63],[3.925,0.245],[3.91,0.215],[3.885,0.19],[3.85,0.17],[3.81,0.16],[3.77,0.155]]);
+                        [3.805+offset,1.10],[3.84+offset,1.085],[3.865+offset,1.06],[3.885+offset,1.02],[3.895+offset,0.98],[3.945+offset,0.63],[3.925+offset,0.245],[3.91+offset,0.215],[3.885+offset,0.19],[3.85+offset,0.17],[3.81+offset,0.16],[3.77+offset,0.155]]);
                         translate([1.095+0.75,1.0,0.75])
                             rotate([-90,0,0])
                                 cylinder(r=0.3,h=1);
                     }
          } else if (body == 4) { //qsop, default row_spacing=5.41
+            offset = (row_spacing-5.41);
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
                         linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
                             polygon([
                         [1.05,0.2],[0.95,0.84],[0.95,1.12],[0.97,1.33],[1.31,1.75],
-                        [4.37,1.75],[4.46,1.1],[4.46,0.83],[4.37,0.2]
+                        [4.37+offset,1.75],[4.46+offset,1.1],[4.46+offset,0.83],[4.37+offset,0.2]
                             ]);
                         translate([1.31+pin_width,1.65,pin_width])
                             rotate([-90,0,0])
