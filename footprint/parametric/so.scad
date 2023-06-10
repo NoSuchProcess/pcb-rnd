@@ -35,7 +35,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
 
         module body(body_overhang=0) {
 
-        if (body==0) { //so
+        if (body==0) { //so, default row_spacing=6
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
@@ -46,7 +46,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
                             rotate([-90,0,0])
                                 cylinder(r=pin_width/2,h=1);
                     }
-        } else if (body == 1) { //ssop
+        } else if (body == 1) { //ssop, default row_spacing=7.8
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
@@ -59,7 +59,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
                             rotate([-90,0,0])
                                 cylinder(r=0.3,h=1);
                     }
-         } else if (body == 2) { //tssop
+         } else if (body == 2) { //tssop, default row_spacing=6.4
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
@@ -71,7 +71,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
                             rotate([-90,0,0])
                                 cylinder(r=pin_width/2,h=1);
                     }
-         } else if (body == 3) { //msop
+         } else if (body == 3) { //msop, default row_spacing=4.9
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
@@ -83,7 +83,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
                             rotate([-90,0,0])
                                 cylinder(r=0.3,h=1);
                     }
-         } else if (body == 4) { //qsop
+         } else if (body == 4) { //qsop, default row_spacing=5.41
             color([0.2,0.2,0.2])
                 translate([0,0,-body_overhang])
                     difference() {
@@ -202,7 +202,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
         }
     }
 
-    translate([-row_spacing/2,pad_spacing*pins/4,0])
+    translate([-row_spacing/2,pad_spacing*(pins/2-1)/2,0])
         if (body == 0) {
             rotate([90,0,0]) { // so
                 body(body_overhang=1.09/2);
