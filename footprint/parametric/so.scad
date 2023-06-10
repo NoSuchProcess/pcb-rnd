@@ -33,7 +33,7 @@
 module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=0, body=0)
 {
 
-        module body(body=0, body_overhang=0, pad_spacing=0.65, row_spacing=7.8) {
+        module body(body_overhang=0) {
 
         if (body==0) { //so
             color([0.2,0.2,0.2])
@@ -99,7 +99,7 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
          }
     }
 
-    module pin(body=0) {
+    module pin() {
         if (body == 0) { // so
             translate([0,0,-pin_width/2])
                 linear_extrude(height=pin_width)
@@ -168,30 +168,30 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
             }
     }
 
-    module opposite_fillet(row_spacing=5.41) {
+    module opposite_fillet() {
         translate([row_spacing,0,0])
             mirror([1,0,0])
                 fillet();
     }
 
-    module opposite_pin(body=body, row_spacing=7.8) {
+    module opposite_pin() {
         translate([row_spacing,0,0])
             mirror([1,0,0])
-                pin(body);
+                pin();
     }
 
-    module place_pins(body=0, pad_spacing=0.65, row_spacing=7.8,pin_width=0.3) {
+    module place_pins() {
         color([0.7,0.7,0.7]) {
             for(i = [0:(pins/2)-1]) {
                 translate([0,0,i*pad_spacing]){
-                    pin(body);
-                    opposite_pin(row_spacing=row_spacing);
+                    pin();
+                    opposite_pin();
                 }
             }
         }
     }
 
-    module place_fillets(pad_spacing=0.64, row_spacing=5.41) {
+    module place_fillets() {
         color([0.8,0.8,0.8]) {
             for(i = [0:(pins/2)-1]) {
                 translate([0,-i*pad_spacing,0]){
@@ -204,41 +204,41 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
 
     if (body == 0) {
         rotate([90,0,0]) { // so
-            body(body=body, body_overhang=1.09/2,pad_spacing=1.27, row_spacing=6);
-            place_pins(body=body, pad_spacing=1.27, row_spacing=6);
+            body(body_overhang=1.09/2);
+            place_pins();
         }
         if (fillet)
-            place_fillets(pad_spacing=1.27, row_spacing=6);
+            place_fillets(pad_spacing=1.27);
     } else if (body == 1) { // ssop
         rotate([90,0,0]) {
-            body(body=body, body_overhang=0.75/2, pad_spacing=0.65, row_spacing=7.8);
-            place_pins(body=body,pad_spacing=0.65, row_spacing=7.8);
+            body(body_overhang=0.75/2);
+            place_pins();
         }
         if (fillet)
-            place_fillets(pad_spacing=0.65, row_spacing=7.8);
+            place_fillets();
     } else if (body == 2) { // tssop
         rotate([90,0,0]) {
-            body(body=body, body_overhang=0.75/2, pad_spacing=0.65, row_spacing=6.4);
-            place_pins(body=body,pad_spacing=0.65, row_spacing=6.4);
+            body(body_overhang=0.75/2);
+            place_pins();
         }
         if (fillet)
-            place_fillets(pad_spacing=0.65, row_spacing=6.4);
+            place_fillets();
     } else if (body == 3) { // msop
         rotate([90,0,0]) {
-            body(body=body, body_overhang=0.75/2, pad_spacing=0.65, row_spacing=4.9);
-            place_pins(body=body,pad_spacing=0.65, row_spacing=4.9);
+            body(body_overhang=0.75/2);
+            place_pins();
         }
         if (fillet)
-            place_fillets(pad_spacing=0.65, row_spacing=4.9);
+            place_fillets();
     } else if (body == 4) { // qsop
         rotate([90,0,0]) {
-            body(body=body, body_overhang=0.52/2, pad_spacing=0.64, row_spacing=5.41);
-            place_pins(body=body, pad_spacing=0.64, row_spacing=5.41);
+            body(body_overhang=0.52/2);
+            place_pins();
         }
         if (fillet)
-            place_fillets(pad_spacing=0.64, row_spacing=5.41);
+            place_fillets();
     }
 
 }
 
-part_so(body=0, pins=28, fillet=0, pin_width=0.4);
+part_so(body=0, pins=28, fillet=0, pin_width=0.4, pad_spacing=0.65, row_spacing=6);
