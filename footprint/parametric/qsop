@@ -26,7 +26,8 @@ defaults="$defaults?ext_bloat=23mil,"
 defaults="$defaults?rarc=25,"
 defaults="$defaults?silk_ext_x=18,"
 defaults="$defaults?silk_ext_y=22,"
-defaults="$defaults?pad_thickness=16mil"
+defaults="$defaults?pad_thickness=16mil,"
+defaults="$defaults?3dbody=qsop"
 
 
 awk -f `dirname $0`/common_subc.awk -f `dirname $0`/so.awk -v "args=$defaults,$*" -v gen=`basename $0` -v "genfull=$0"
