@@ -43,9 +43,9 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
                         linear_extrude(height=pad_spacing*(pins/2-1)+body_overhang*2)
                             polygon([
 [1.47,1.6],[1.11,1.28],[0.97,0.65],[1.06,0.3],[1.12,0.21],[1.19,0.17],[1.27,0.15],[4.73+offset,0.15],[4.81+offset,0.17],[4.88+offset,0.21],[4.94+offset,0.33],[5.03+offset,0.66],[4.89+offset,1.38],[4.85+offset,1.49],[4.8+offset,1.55],[4.73+offset,1.58],[4.63+offset,1.6]                            ]);
-                        translate([1.31+pin_width,1.65,pin_width])
-                            rotate([-90,0,0])
-                                cylinder(r=pin_width/2,h=1);
+                        translate([1.47+pin_width*2,2.3,body_overhang])
+                            rotate([90,0,0])
+                                cylinder(r=pin_width,h=1);
                     }
         } else if (body == 1) { //ssop, default row_spacing=7.8
             offset = (row_spacing-7.8);
@@ -246,4 +246,3 @@ module part_so(pad_spacing=0.65, row_spacing=6.4, pins=8, pin_width=0.3, fillet=
         }
 
 }
-
