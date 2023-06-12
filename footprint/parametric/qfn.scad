@@ -30,7 +30,8 @@
 //  in any way.
 //
 
-module part_qfn(pins=16,size_x=4,size_y=4,size_z=0.9,pitch=0.65) {
+module part_qfn(pins=16,size_x=4,size_y=4,size_z=0.9,pitch=0.65)
+{
  
     pad_height=0.2;
     pad_width=0.3;
