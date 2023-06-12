@@ -30,10 +30,9 @@
 //  in any way.
 //
 
-module part_qfp(pad_spacing=0.65, pins=8, size=7, fillet=0)
+module part_qfp(pad_spacing=0.65, pins=8, size=7, pin_width=0.3, fillet=0)
 {
 
-    pin_width=0.3;
     pcb_offset=0.1;
     device_height=1.6;
     bevel = 0.2;
