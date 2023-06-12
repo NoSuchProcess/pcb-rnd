@@ -162,7 +162,8 @@ module part_qfp(pitch=0.65, pins=8, size_x=7, size_y=7, pin_width=0.3, fillet=0)
     }
 
     module place_pins() {
-        body_offset = (size_y-(pins/4-1)*pitch)/2;
+        body_offset_y = (size_y-(pins/4-1)*pitch)/2;
+        body_offset_x = (size_x-(pins/4-1)*pitch)/2;
         color([0.7,0.7,0.7]) {
             for(i = [0:(pins/4)-1]) {
                 translate([0,i*pitch,0]){
@@ -174,8 +175,8 @@ module part_qfp(pitch=0.65, pins=8, size_x=7, size_y=7, pin_width=0.3, fillet=0)
                     }
                 }
 
-                translate([-i*pitch-body_offset-1,
-                -1-body_offset,0]){
+                translate([-i*pitch-body_offset_x-1,
+                -1-body_offset_y,0]){
                     rotate([0,0,-90]) {
                         pin();
                         opposite_pin(distance=size_y);
@@ -195,5 +196,4 @@ module part_qfp(pitch=0.65, pins=8, size_x=7, size_y=7, pin_width=0.3, fillet=0)
     }
 
 }
-
 
