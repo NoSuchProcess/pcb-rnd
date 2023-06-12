@@ -30,13 +30,14 @@
 //  in any way.
 //
 
-module part_screw(hole=3.2, shape="hex",head="button") {
+module part_screw(hole=3.2, shape="hex",head="button")
+{
 //optional head name for a standard screw: pan, button, cheese, flat-washer, internal-lock-washer
-    
+
     module head() {
         head_size=2*hole; // average size
-        height= head_size/3;    
-        
+        height= head_size/3;
+
         if (shape=="hex") {
             cylinder(r=head_size/2, h=height, $fn=6);
         } else {
@@ -101,17 +102,17 @@ module part_screw(hole=3.2, shape="hex",head="button") {
             }
         }
     }
-    
+
     module shank() {
         shank_descent = 3;
         translate([0,0,-shank_descent ])
             cylinder(r=hole*0.95/2, h=shank_descent );
     }
-    
+
     color([0.7,0.7,0.7]) {
         head();
         shank();
     }
 }
 
-part_screw(hole=3.1,shape="xzn",head="button");
+
