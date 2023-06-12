@@ -84,9 +84,9 @@ module part_qfp(pitch=0.65, nx=4, ny=4, size_x=7, size_y=7, size_z=1.6, pin_widt
                 fillet();
     }
 
-    module pin() {
+    module pin(distance=0) {
         rotate([90,0,180])
-            translate([0,0,-pin_width/2])
+            translate([distance,0,-pin_width/2])
                 linear_extrude(height=pin_width)
                     polygon([[1.05,0.9],[0.69,0.9],[0.63,0.89],[0.59,0.88],[0.56,0.86],[0.54,0.83],[0.52,0.78],[0.51,0.74],[0.44,0.33],[0.43,0.28],[0.41,0.25],[0.38,0.23],[0.33,0.21],[0.26,0.2],[0.12,0.19],[0.0,0.18],[0.01,0.0],[0.26,0.01],[0.34,0.02],[0.41,0.04],[0.48,0.07],[0.52,0.1],[0.55,0.14],[0.57,0.19],[0.59,0.26],[0.64,0.53],[0.66,0.64],[0.67,0.68],[0.69,0.7],[0.72,0.71],[0.79,0.72],[1.05,0.72]]
 );
@@ -151,35 +151,32 @@ module part_qfp(pitch=0.65, nx=4, ny=4, size_x=7, size_y=7, size_z=1.6, pin_widt
             [15,8,16,23],
             ];
 
-        translate([-size_x/2-1,(ny/2-1)*pitch/2,0])
-            color([0.2,0.2,0.2])
-                difference() {
-                    polyhedron(body_points, body_faces);
-                    translate([size_x/2-1,-size_y/2+1,size_z-0.1])
-                        cylinder(r=0.5, h=3);
-                }
+        color([0.2,0.2,0.2])
+            difference() {
+                polyhedron(body_points, body_faces);
+                translate([size_x/2-1,-size_y/2+1,size_z-0.1])
+                    cylinder(r=0.5, h=3);
+            }
     }
 
     module place_pins() {
-        body_offset_y = (size_y-(ny/4-1)*pitch)/2;
-        body_offset_x = (size_x-(nx/4-1)*pitch)/2;
         color([0.7,0.7,0.7]) {
-            for(i = [0:ny]) {
-                translate([0,i*pitch,0]){
-                    pin();
-                    opposite_pin(distance=size_x);
+            for(i = [0:ny-1]) {
+                translate([0,((ny-1)/2)*pitch-i*pitch,0]){
+                    pin(distance=-size_x/2-1);
+                    opposite_pin(distance=size_x/2-1);
                     if (fillet) {
                         fillet();
                         opposite_fillet();
                     }
                 }
             }
-            for(i = [0:nx]) {
-                translate([-i*pitch-body_offset_x-1,
-                -1-body_offset_y,0]){
+            for(i = [0:nx-1]) {
+                translate([((nx-1)/2)*pitch-i*pitch,
+                -1,0]){
                     rotate([0,0,-90]) {
-                        pin();
-                        opposite_pin(distance=size_y);
+                        pin(distance=-size_y/2);
+                        opposite_pin(distance=size_y/2);
                         if (fillet) {
                             fillet();
                             opposite_fillet();
