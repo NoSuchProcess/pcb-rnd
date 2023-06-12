@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module part_qfp(pad_spacing=0.65, pins=8, size=7, pin_width=0.3, fillet=0)
+module part_qfp(pitch=0.65, pins=8, size_x=7, size_y=7, pin_width=0.3, fillet=0)
 {
 
     pcb_offset=0.1;
@@ -94,39 +94,39 @@ module part_qfp(pad_spacing=0.65, pins=8, size=7, pin_width=0.3, fillet=0)
     }
 
     module opposite_pin() {
-        translate([-size-2,0,0])
+        translate([-size_x-2,0,0])
             mirror([1,0,0])
                 pin();
     }
 
     module body() {
         body_points = [
-            [-size/2+bevel,-size/2+0.3+bevel,pcb_offset],//0
-            [-size/2+bevel,size/2-0.3-bevel,pcb_offset],
-            [-size/2+0.3+bevel,size/2-bevel,pcb_offset],
-            [size/2-0.3-bevel,size/2-bevel,pcb_offset],
-            [size/2-bevel,size/2-0.3-bevel,pcb_offset],
-            [size/2-bevel,-size/2+0.3+bevel*2,pcb_offset],
-            [size/2-0.3-bevel*2,-size/2+bevel,pcb_offset],
-            [-size/2+0.3+bevel,-size/2+bevel,pcb_offset],//7
+            [-size_x/2+bevel,-size_y/2+0.3+bevel,pcb_offset],//0
+            [-size_x/2+bevel,size_y/2-0.3-bevel,pcb_offset],
+            [-size_x/2+0.3+bevel,size_y/2-bevel,pcb_offset],
+            [size_x/2-0.3-bevel,size_y/2-bevel,pcb_offset],
+            [size_x/2-bevel,size_y/2-0.3-bevel,pcb_offset],
+            [size_x/2-bevel,-size_y/2+0.3+bevel*2,pcb_offset],
+            [size_x/2-0.3-bevel*2,-size_y/2+bevel,pcb_offset],
+            [-size_x/2+0.3+bevel,-size_y/2+bevel,pcb_offset],//7
 
-            [-size/2,-size/2+0.3,(device_height-pcb_offset)/2],//8
-            [-size/2,size/2-0.3,(device_height-pcb_offset)/2],
-            [-size/2+0.3,size/2,(device_height-pcb_offset)/2],
-            [size/2-0.3,size/2,(device_height-pcb_offset)/2],
-            [size/2,size/2-0.3,(device_height-pcb_offset)/2],
-            [size/2,-size/2+0.3+bevel,(device_height-pcb_offset)/2],
-            [size/2-0.3-bevel,-size/2,(device_height-pcb_offset)/2],
-            [-size/2+0.3,-size/2,(device_height-pcb_offset)/2],//15
+            [-size_x/2,-size_y/2+0.3,(device_height-pcb_offset)/2],//8
+            [-size_x/2,size_y/2-0.3,(device_height-pcb_offset)/2],
+            [-size_x/2+0.3,size_y/2,(device_height-pcb_offset)/2],
+            [size_x/2-0.3,size_y/2,(device_height-pcb_offset)/2],
+            [size_x/2,size_y/2-0.3,(device_height-pcb_offset)/2],
+            [size_x/2,-size_y/2+0.3+bevel,(device_height-pcb_offset)/2],
+            [size_x/2-0.3-bevel,-size_y/2,(device_height-pcb_offset)/2],
+            [-size_x/2+0.3,-size_y/2,(device_height-pcb_offset)/2],//15
 
-            [-size/2+bevel,-size/2+0.3+bevel,device_height],//16
-            [-size/2+bevel,size/2-0.3-bevel,device_height],
-            [-size/2+0.3+bevel,size/2-bevel,device_height],
-            [size/2-0.3-bevel,size/2-bevel,device_height],
-            [size/2-bevel,size/2-0.3-bevel,device_height],
-            [size/2-bevel,-size/2+0.3+bevel*2,device_height],
-            [size/2-0.3-bevel*2,-size/2+bevel,device_height],
-            [-size/2+0.3+bevel,-size/2+bevel,device_height]//23
+            [-size_x/2+bevel,-size_y/2+0.3+bevel,device_height],//16
+            [-size_x/2+bevel,size_y/2-0.3-bevel,device_height],
+            [-size_x/2+0.3+bevel,size_y/2-bevel,device_height],
+            [size_x/2-0.3-bevel,size_y/2-bevel,device_height],
+            [size_x/2-bevel,size_y/2-0.3-bevel,device_height],
+            [size_x/2-bevel,-size_y/2+0.3+bevel*2,device_height],
+            [size_x/2-0.3-bevel*2,-size_y/2+bevel,device_height],
+            [-size_x/2+0.3+bevel,-size_y/2+bevel,device_height]//23
             ];
 
         body_faces=[
@@ -152,20 +152,20 @@ module part_qfp(pad_spacing=0.65, pins=8, size=7, pin_width=0.3, fillet=0)
             [15,8,16,23],
             ];
 
-        translate([-size/2-1,(pins/4-1)*pad_spacing/2,0])
+        translate([-size_x/2-1,(pins/4-1)*pitch/2,0])
             color([0.2,0.2,0.2])
                 difference() {
                     polyhedron(body_points, body_faces);
-                    translate([size/2-1,-size/2+1,device_height-0.1])
+                    translate([size_x/2-1,-size_y/2+1,device_height-0.1])
                         cylinder(r=0.5, h=3);
                 }
     }
 
     module place_pins() {
-        body_offset = (size-(pins/4-1)*pad_spacing)/2;
+        body_offset = (size_y-(pins/4-1)*pitch)/2;
         color([0.7,0.7,0.7]) {
             for(i = [0:(pins/4)-1]) {
-                translate([0,i*pad_spacing,0]){
+                translate([0,i*pitch,0]){
                     pin();
                     opposite_pin();
                     if (fillet) {
@@ -173,7 +173,8 @@ module part_qfp(pad_spacing=0.65, pins=8, size=7, pin_width=0.3, fillet=0)
                         opposite_fillet();
                     }
                 }
-                translate([-i*pad_spacing-body_offset-1,
+
+                translate([-i*pitch-body_offset-1,
                 -1-body_offset,0]){
                     rotate([0,0,-90]) {
                         pin();
@@ -194,5 +195,4 @@ module part_qfp(pad_spacing=0.65, pins=8, size=7, pin_width=0.3, fillet=0)
     }
 
 }
-
 
