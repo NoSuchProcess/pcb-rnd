@@ -32,9 +32,9 @@
 
 module part_qfn(pins=16,size_x=4,size_y=4,size_z=0.9,pitch=0.65, pin_width=0.3)
 {
- 
+
     pin_height=0.2;
- 
+
     module body(pcb_standoff=0.02) {
         color([0.3,0.3,0.3])
             translate([-size_x/2,size_y/2-(size_y-(pins/4-1)*pitch)/2,(size_z-pcb_standoff)/2+pcb_standoff])
