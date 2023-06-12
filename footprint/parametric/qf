@@ -113,6 +113,9 @@
 #@@enum:3dmodel:qfp.scad
 #@@default:3dmodel qfp.scad
 
+#@@param:3delevation z-height of the body of the 3d model
+#@@optional:3delevation
+
 #@@include common_subc.awk
 
 
