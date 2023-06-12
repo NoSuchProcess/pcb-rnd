@@ -30,11 +30,10 @@
 //  in any way.
 //
 
-module part_qfn(pins=16,size_x=4,size_y=4,size_z=0.9,pitch=0.65)
+module part_qfn(pins=16,size_x=4,size_y=4,size_z=0.9,pitch=0.65, pin_width=0.3)
 {
  
-    pad_height=0.2;
-    pad_width=0.3;
+    pin_height=0.2;
  
     module body(pcb_standoff=0.02) {
         color([0.3,0.3,0.3])
@@ -43,8 +42,8 @@ module part_qfn(pins=16,size_x=4,size_y=4,size_z=0.9,pitch=0.65)
     }
 
     module pin() {
-        translate([-pad_width/2,0,pad_height/2])
-            cube([pad_width,pad_width,pad_height],true);
+        translate([-pin_width/2,0,pin_height/2])
+            cube([pin_width,pin_width,pin_height],true);
     }
 
     module place_pins() {
@@ -54,11 +53,11 @@ module part_qfn(pins=16,size_x=4,size_y=4,size_z=0.9,pitch=0.65)
                 for(i = [0:pins/4-1]) {
                     translate([0,i*pitch,0])
                         pin();
-                    translate([-size_x+pad_width,i*pitch,0])
+                    translate([-size_x+pin_width,i*pitch,0])
                         pin();
-                    translate([-x_offset+pad_width/2-i*pitch,-y_offset+pad_width/2,0])
+                    translate([-x_offset+pin_width/2-i*pitch,-y_offset+pin_width/2,0])
                         pin();
-                    translate([-x_offset+pad_width/2-i*pitch,size_y-y_offset-pad_width/2,0])
+                    translate([-x_offset+pin_width/2-i*pitch,size_y-y_offset-pin_width/2,0])
                         pin();
 
                 }
