@@ -151,12 +151,13 @@ module part_qfp(pitch=0.65, nx=4, ny=4, size_x=7, size_y=7, size_z=1.6, pin_widt
             [15,8,16,23],
             ];
 
-        color([0.2,0.2,0.2])
-            difference() {
-                polyhedron(body_points, body_faces);
-                translate([size_x/2-1,-size_y/2+1,size_z-0.1])
-                    cylinder(r=0.5, h=3);
-            }
+        rotate([0,0,180])
+            color([0.2,0.2,0.2])
+                difference() {
+                    polyhedron(body_points, body_faces);
+                    translate([size_x/2-1,-size_y/2+1,size_z-0.1])
+                        cylinder(r=0.5, h=3);
+                }
     }
 
     module place_pins() {
