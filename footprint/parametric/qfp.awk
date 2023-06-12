@@ -14,6 +14,8 @@ BEGIN {
 
 	proc_args(P, "pins,size,pitch,cpad_size,pad_thickness", "pins,size,pitch")
 
+	args = args ",3dmodel=qfp.scad"
+
 	pitch = P["pitch"]
 	sub("0*$", "", pitch)
 

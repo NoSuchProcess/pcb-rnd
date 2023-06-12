@@ -107,6 +107,12 @@
 #@@preview_args:silkmark 4,4
 
 #@@default:silkmark dot
+
+#@@param:3dmodel 3d model name to use
+#@@enum:3dmodel:qfn.scad
+#@@enum:3dmodel:qfp.scad
+#@@default:3dmodel qfp.scad
+
 #@@include common_subc.awk
 
 

@@ -98,7 +98,15 @@ BEGIN {
 	help_auto()
 	qf_globals()
 
-	subc_begin("", "U1", -width/2 - mm(1), -height/2 - mm(2), 0)
+	SCAT["openscad"]=P["3dmodel"]
+	if (SCAT["openscad"] == "")
+		SCAT["openscad"]="qfp"
+
+	pinwidth = ",pin_width="  rev_mm(DEFAULT["pad_thickness"] * 0.6)
+
+	SCAT["openscad-param"]="nx=" nx ",ny=" ny ",pitch=" rev_mm(pad_spacing) ",size_x=" rev_mm(x_spacing) ",size_y=" rev_mm(y_spacing) ",pitch=" rev_mm(pad_spacing) pinwidth
+
+	subc_begin("", "U1", -width/2 - mm(1), -height/2 - mm(2), 0, SCAT)
 
 	cx = (nx+1)/2
 	cy = (ny+1)/2
