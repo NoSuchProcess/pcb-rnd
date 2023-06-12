@@ -93,8 +93,8 @@ module part_qfp(pitch=0.65, pins=8, size_x=7, size_y=7, pin_width=0.3, fillet=0)
 );
     }
 
-    module opposite_pin() {
-        translate([-size_x-2,0,0])
+    module opposite_pin(distance) {
+        translate([-distance-2,0,0])
             mirror([1,0,0])
                 pin();
     }
@@ -167,7 +167,7 @@ module part_qfp(pitch=0.65, pins=8, size_x=7, size_y=7, pin_width=0.3, fillet=0)
             for(i = [0:(pins/4)-1]) {
                 translate([0,i*pitch,0]){
                     pin();
-                    opposite_pin();
+                    opposite_pin(distance=size_x);
                     if (fillet) {
                         fillet();
                         opposite_fillet();
@@ -178,7 +178,7 @@ module part_qfp(pitch=0.65, pins=8, size_x=7, size_y=7, pin_width=0.3, fillet=0)
                 -1-body_offset,0]){
                     rotate([0,0,-90]) {
                         pin();
-                        opposite_pin();
+                        opposite_pin(distance=size_y);
                         if (fillet) {
                             fillet();
                             opposite_fillet();
@@ -195,4 +195,5 @@ module part_qfp(pitch=0.65, pins=8, size_x=7, size_y=7, pin_width=0.3, fillet=0)
     }
 
 }
+
 
