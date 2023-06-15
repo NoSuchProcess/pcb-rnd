@@ -246,6 +246,10 @@ static int search_decompile_op(gds_t *dst, pcb_qry_node_t *nd, rnd_bool want_coo
 				rnd_append_printf(dst, "%f", nd->data.dbl);
 			return 0;
 		case PCBQ_DATA_STRING:
+			gds_append(dst, '"');
+			gds_append_str(dst, nd->data.str);
+			gds_append(dst, '"');
+			return 0;
 		case PCBQ_DATA_REGEX:
 		case PCBQ_DATA_CONST:
 			gds_append_str(dst, nd->data.str);
