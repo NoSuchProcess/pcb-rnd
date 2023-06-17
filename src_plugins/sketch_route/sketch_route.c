@@ -55,6 +55,7 @@
 #include "ewire_point.h"
 #include "pointdata.h"
 #include "spoke.h"
+#define CDT_INLINE RND_INLINE
 #include <libcdtr/cdt.h>
 #include <genht/htip.h>
 #include <genht/htpp.h>

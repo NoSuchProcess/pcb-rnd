@@ -33,6 +33,10 @@
 #include "edge.h"
 #include "triangle.h"
 
+#ifndef CDT_INLINE
+#define CDT_INLINE static
+#endif
+
 typedef struct cdt_s cdt_t;
 
 struct cdt_s {
@@ -66,7 +70,7 @@ edge_t *get_edge_from_points(point_t *p1, point_t *p2);
 /* TODO: check epsilon for collinear case? */
 #define ORIENT_COLLINEAR(a, b, c) (orientation(a, b, c) == 0)
 #define ORIENT_CCW_CL(a, b, c) (orientation(a, b, c) <= 0)
-static inline double orientation(point_t *p1, point_t *p2, point_t *p3)
+CDT_INLINE double orientation(point_t *p1, point_t *p2, point_t *p3)
 {
 	return ((double)p2->pos.y - (double)p1->pos.y) * ((double)p3->pos.x - (double)p2->pos.x)
 				 - ((double)p2->pos.x - (double)p1->pos.x) * ((double)p3->pos.y - (double)p2->pos.y);
