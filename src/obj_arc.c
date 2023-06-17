@@ -1276,7 +1276,7 @@ void pcb_arc_invalidate_erase(pcb_arc_t *Arc)
 	if (!Arc->Thickness)
 		return;
 	pcb_draw_invalidate(Arc);
-	pcb_flag_erase(&Arc->Flags);
+	pcb_flag_uninit(&Arc->Flags);
 }
 
 void pcb_arc_invalidate_draw(pcb_layer_t *Layer, pcb_arc_t *Arc)

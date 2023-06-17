@@ -1637,7 +1637,7 @@ rnd_r_dir_t pcb_poly_draw_term_callback(const rnd_box_t * b, void *cl)
 void pcb_poly_invalidate_erase(pcb_poly_t *Polygon)
 {
 	pcb_draw_invalidate(Polygon);
-	pcb_flag_erase(&Polygon->Flags);
+	pcb_flag_uninit(&Polygon->Flags);
 }
 
 void pcb_poly_invalidate_draw(pcb_layer_t *Layer, pcb_poly_t *Polygon)

@@ -966,7 +966,7 @@ rnd_r_dir_t pcb_gfx_draw_above_callback(const rnd_box_t *b, void *cl)
 void pcb_gfx_invalidate_erase(pcb_gfx_t *gfx)
 {
 	pcb_draw_invalidate(gfx);
-	pcb_flag_erase(&gfx->Flags);
+	pcb_flag_uninit(&gfx->Flags);
 }
 
 void pcb_gfx_invalidate_draw(pcb_layer_t *Layer, pcb_gfx_t *gfx)

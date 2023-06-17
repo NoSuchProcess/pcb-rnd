@@ -1138,7 +1138,7 @@ void pcb_subc_bbox(pcb_subc_t *sc)
 void EraseSubc(pcb_subc_t *sc)
 {
 	pcb_draw_invalidate(sc);
-/*	pcb_flag_erase(&sc->Flags); ??? */
+/*	pcb_flag_uninit(&sc->Flags); ??? */
 }
 
 void DrawSubc(pcb_subc_t *sc)

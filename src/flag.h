@@ -136,7 +136,7 @@ pcb_flag_t pcb_flag_add(pcb_flag_t dst, unsigned int src);
 pcb_flag_t pcb_flag_mask(pcb_flag_t dst, unsigned int src);
 
 /* destroy flags: clear all bits and free fields */
-void pcb_flag_erase(pcb_flag_t *f);
+void pcb_flag_uninit(pcb_flag_t *f);
 
 #define		pcb_no_flags() pcb_flag_make(0)
 

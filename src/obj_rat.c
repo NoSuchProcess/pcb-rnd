@@ -465,7 +465,7 @@ void pcb_rat_invalidate_erase(pcb_rat_t *Rat)
 	}
 	else
 		pcb_line_invalidate_erase((pcb_line_t *) Rat);
-	pcb_flag_erase(&Rat->Flags);
+	pcb_flag_uninit(&Rat->Flags);
 }
 
 void pcb_rat_invalidate_draw(pcb_rat_t *Rat)
