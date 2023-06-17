@@ -138,11 +138,9 @@ pcb_flag_t pcb_flag_mask(pcb_flag_t dst, unsigned int src);
 /* destroy flags: clear all bits and free fields */
 void pcb_flag_uninit(pcb_flag_t *f);
 
-#define		pcb_no_flags() pcb_flag_make(0)
+#define pcb_no_flags() pcb_flag_make(0)
 
-/* ---------------------------------------------------------------------------
- * some routines for flag setting, clearing, changing and testing
- */
+/*** some routines for flag setting, clearing, changing and testing ***/
 #define PCB_FLAG_SET(F,P)       ((P)->Flags.f |= (F))
 #define PCB_FLAG_CLEAR(F,P)     ((P)->Flags.f &= (~(F)))
 #define PCB_FLAG_TEST(F,P)      ((P)->Flags.f & (F) ? 1 : 0)

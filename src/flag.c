@@ -62,10 +62,10 @@ int rnd_mem_any_set(unsigned char *ptr, int bytes)
 	return 0;
 }
 
-void pcb_flag_uninit(pcb_flag_t * f)
+void pcb_flag_uninit(pcb_flag_t *f)
 {
 	pcb_unknown_flag_t *u, *next;
-	for (u = f->unknowns; u != NULL; u = next) {
+	for(u = f->unknowns; u != NULL; u = next) {
 		free(u->str);
 		next = u->next;
 		free(u);
