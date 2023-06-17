@@ -125,7 +125,6 @@ void pcb_line_free(pcb_line_t *line)
 	pcb_attribute_free(&line->Attributes);
 	pcb_line_unreg(line);
 	pcb_obj_common_free((pcb_any_obj_t *)line);
-	pcb_flag_uninit(&line->Flags);
 	free(line);
 }
 

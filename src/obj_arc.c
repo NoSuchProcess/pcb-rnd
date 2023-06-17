@@ -363,7 +363,6 @@ void pcb_arc_free(pcb_arc_t *arc)
 	pcb_attribute_free(&arc->Attributes);
 	pcb_arc_unreg(arc);
 	pcb_obj_common_free((pcb_any_obj_t *)arc);
-	pcb_flag_uninit(&arc->Flags);
 	free(arc);
 }
 

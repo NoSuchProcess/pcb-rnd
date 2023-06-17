@@ -146,7 +146,6 @@ void pcb_subc_free(pcb_subc_t *sc)
 	pcb_data_free(sc->data);
 	pcb_term_uninit(&sc->terminals);
 	pcb_obj_common_free((pcb_any_obj_t *)sc);
-	pcb_flag_uninit(&sc->Flags);
 	free(sc);
 }
 

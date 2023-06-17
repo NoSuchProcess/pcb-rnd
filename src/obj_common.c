@@ -451,6 +451,7 @@ void pcb_obj_common_free(pcb_any_obj_t *o)
 		free(o->override_color);
 		o->override_color = NULL;
 	}
+	pcb_flag_uninit(&o->Flags);
 }
 
 unsigned char *pcb_obj_common_get_thermal(pcb_any_obj_t *obj, unsigned long lid, rnd_bool_t alloc)

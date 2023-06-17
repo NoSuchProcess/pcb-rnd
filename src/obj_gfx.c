@@ -214,7 +214,6 @@ void pcb_gfx_free(pcb_gfx_t *gfx)
 	pcb_attribute_free(&gfx->Attributes);
 	pcb_gfx_unreg(gfx);
 	pcb_obj_common_free((pcb_any_obj_t *)gfx);
-	pcb_flag_uninit(&gfx->Flags);
 	free(gfx);
 }
 

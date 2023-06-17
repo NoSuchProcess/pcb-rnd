@@ -121,7 +121,6 @@ void pcb_poly_free(pcb_poly_t *poly)
 	pcb_attribute_free(&poly->Attributes);
 	pcb_poly_unreg(poly);
 	pcb_obj_common_free((pcb_any_obj_t *)poly);
-	pcb_flag_uninit(&poly->Flags);
 	free(poly);
 }
 
