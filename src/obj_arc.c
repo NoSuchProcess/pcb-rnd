@@ -363,6 +363,7 @@ void pcb_arc_free(pcb_arc_t *arc)
 	pcb_attribute_free(&arc->Attributes);
 	pcb_arc_unreg(arc);
 	pcb_obj_common_free((pcb_any_obj_t *)arc);
+	pcb_flag_uninit(&arc->Flags);
 	free(arc);
 }
 
@@ -1276,7 +1277,6 @@ void pcb_arc_invalidate_erase(pcb_arc_t *Arc)
 	if (!Arc->Thickness)
 		return;
 	pcb_draw_invalidate(Arc);
-	pcb_flag_uninit(&Arc->Flags);
 }
 
 void pcb_arc_invalidate_draw(pcb_layer_t *Layer, pcb_arc_t *Arc)

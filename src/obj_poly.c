@@ -121,6 +121,7 @@ void pcb_poly_free(pcb_poly_t *poly)
 	pcb_attribute_free(&poly->Attributes);
 	pcb_poly_unreg(poly);
 	pcb_obj_common_free((pcb_any_obj_t *)poly);
+	pcb_flag_uninit(&poly->Flags);
 	free(poly);
 }
 
@@ -1637,7 +1638,6 @@ rnd_r_dir_t pcb_poly_draw_term_callback(const rnd_box_t * b, void *cl)
 void pcb_poly_invalidate_erase(pcb_poly_t *Polygon)
 {
 	pcb_draw_invalidate(Polygon);
-	pcb_flag_uninit(&Polygon->Flags);
 }
 
 void pcb_poly_invalidate_draw(pcb_layer_t *Layer, pcb_poly_t *Polygon)

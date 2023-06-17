@@ -125,6 +125,7 @@ void pcb_line_free(pcb_line_t *line)
 	pcb_attribute_free(&line->Attributes);
 	pcb_line_unreg(line);
 	pcb_obj_common_free((pcb_any_obj_t *)line);
+	pcb_flag_uninit(&line->Flags);
 	free(line);
 }
 
@@ -1545,7 +1546,6 @@ rnd_r_dir_t pcb_line_draw_term_callback(const rnd_box_t * b, void *cl)
 void pcb_line_invalidate_erase(pcb_line_t *Line)
 {
 	pcb_draw_invalidate(Line);
-	pcb_flag_uninit(&Line->Flags);
 }
 
 void pcb_line_invalidate_draw(pcb_layer_t *Layer, pcb_line_t *Line)
