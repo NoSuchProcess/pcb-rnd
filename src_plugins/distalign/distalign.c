@@ -87,7 +87,7 @@ static int keyword(const char *s)
 
 /* this macro produces a function in X or Y that switches on 'point' */
 #define COORD(DIR)						\
-static inline rnd_coord_t		        			\
+RND_INLINE rnd_coord_t		        			\
 coord ## DIR(pcb_any_obj_t *obj, int point)			\
 {								\
 	rnd_coord_t oX, oY; \
