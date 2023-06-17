@@ -1,6 +1,9 @@
 #CFLAGS_DBG=-Wall -O0 -g3 
 #CFLAGS_COORDT=-DCDT_COORD_T=double -Dcdt_precision=1000000.0
-CFLAGS=$(CFLAGS_DBG) $(CFLAGS_COORDT) $(CFLAGS_LIBCDTR) -I. -I.. -I../..
+
+LIBRND_PREFIX=/usr/local
+
+CFLAGS=$(CFLAGS_DBG) $(CFLAGS_COORDT) $(CFLAGS_LIBCDTR) -I. -I.. -I../.. -I$(LIBRND_PREFIX)/include/librnd4/librnd/src_3rd
 LDFLAGS=-lm $(LDFLAGS_LIBCDTR)
 
 OBJS= cdt.o point.o edge.o triangle.o debug.o
