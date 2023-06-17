@@ -323,7 +323,7 @@ static fgw_error_t pcb_act_polycombine(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	PCB_ENDALL_LOOP;
 
 	/* Now de-construct the resulting polygon into raw PCB polygons */
-	pcb_poly_to_polygons_on_layer(PCB->Data, Layer, rs, pcb_strflg_board_s2f("clearpoly", NULL));
+	pcb_poly_to_polygons_on_layer(PCB->Data, Layer, rs, pcb_flag_make(PCB_FLAG_CLEARPOLY));
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
 	pcb_draw();
