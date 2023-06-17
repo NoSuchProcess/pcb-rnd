@@ -1384,6 +1384,17 @@ void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly, rnd_bool vis_s
 	}
 }
 
+/* Draw an as-drawn contour loop (outline or hole); first point is 'from',
+   last point is 'to'-1. */
+static void poly_draw_annot_loop(pcb_poly_t *poly, rnd_cardinal_t from, rnd_cardinal_t to)
+{
+	rnd_cardinal_t n;
+
+	for(n = from + 1; n < to; n++)
+		rnd_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[n].X, poly->Points[n].Y);
+	rnd_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[from].X, poly->Points[from].Y);
+}
+
 void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
 {
 	rnd_cardinal_t n, np;
@@ -1399,14 +1410,15 @@ void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, -1);
 	rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 
-	if (poly->HoleIndexN > 0)
-		np = poly->HoleIndex[0];
-	else
-		np = poly->PointN;
+	/* draw the outline */
+	np = (poly->HoleIndexN > 0) ? poly->HoleIndex[0] : poly->PointN;
+	poly_draw_annot_loop(poly, 0, np);
 
-	for(n = 1; n < np; n++)
-		rnd_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[n].X, poly->Points[n].Y);
-	rnd_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[0].X, poly->Points[0].Y);
+	/* draw each cutout */
+	for(n = 0; n < poly->HoleIndexN; n++) {
+		np = ((n+1) < poly->HoleIndexN) ? poly->HoleIndex[n+1] : poly->PointN;
+		poly_draw_annot_loop(poly, poly->HoleIndex[n], np);
+	}
 }
 
 static void pcb_poly_draw_tr_offs(pcb_poly_it_t *it, rnd_coord_t offs)
