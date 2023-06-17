@@ -70,7 +70,7 @@ void pcb_flag_uninit(pcb_flag_t * f)
 		next = u->next;
 		free(u);
 	}
-	f->unknowns = NULL;
+	memset(f, 0, sizeof(pcb_flag_t));
 }
 
 int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2)
