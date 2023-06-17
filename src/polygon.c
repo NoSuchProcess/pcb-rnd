@@ -301,8 +301,8 @@ rnd_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t *a, rnd_coord_t thick)
 }
 
 
-/* clear np1 from the polygon - should be inline with -O3 */
-static int Subtract(rnd_polyarea_t * np1, pcb_poly_t * p, rnd_bool fnp)
+/* clear np1 from the polygon */
+RND_INLINE int Subtract(rnd_polyarea_t * np1, pcb_poly_t * p, rnd_bool fnp)
 {
 	rnd_polyarea_t *merged = NULL, *np = np1;
 	int x;

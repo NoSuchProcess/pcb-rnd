@@ -57,7 +57,7 @@
 #define PCB do_not_use_PCB
 
 /* print usage lines */
-static inline void u(const char *fmt, ...)
+RND_INLINE void u(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);

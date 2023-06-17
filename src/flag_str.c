@@ -167,7 +167,7 @@ void pcb_strflg_uninit_layerlist(void)
 	}
 }
 
-static inline void set_layer_list(int layer, int v)
+RND_INLINE void set_layer_list(int layer, int v)
 {
 	if (layer >= num_layers)
 		grow_layer_list(layer + 1);
