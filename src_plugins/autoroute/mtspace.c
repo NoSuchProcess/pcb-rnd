@@ -194,7 +194,7 @@ struct query_closure {
 	rnd_bool touch_is_vec;
 };
 
-static inline void heap_append(rnd_heap_t * heap, rnd_cheap_point_t * desired, rnd_box_t * newone)
+RND_INLINE void heap_append(rnd_heap_t * heap, rnd_cheap_point_t * desired, rnd_box_t * newone)
 {
 	rnd_cheap_point_t p = *desired;
 	assert(desired);
@@ -202,7 +202,7 @@ static inline void heap_append(rnd_heap_t * heap, rnd_cheap_point_t * desired, r
 	rnd_heap_insert(heap, RND_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
 }
 
-static inline void append(struct query_closure *qc, rnd_box_t * newone)
+RND_INLINE void append(struct query_closure *qc, rnd_box_t * newone)
 {
 	if (qc->desired)
 		heap_append(qc->checking.h, qc->desired, newone);

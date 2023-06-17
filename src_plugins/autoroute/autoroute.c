@@ -560,23 +560,23 @@ static void init_const_box(routebox_t * rb, rnd_coord_t X1, rnd_coord_t Y1, rnd_
 	rb->flags.inited = 1;
 }
 
-static inline rnd_box_t shrink_routebox(const routebox_t * rb)
+RND_INLINE rnd_box_t shrink_routebox(const routebox_t * rb)
 {
 	return rb->sbox;
 }
 
-static inline rnd_heap_cost_t box_area(const rnd_box_t b)
+RND_INLINE rnd_heap_cost_t box_area(const rnd_box_t b)
 {
 	rnd_heap_cost_t ans = b.X2 - b.X1;
 	return ans * (b.Y2 - b.Y1);
 }
 
-static inline rnd_cheap_point_t closest_point_in_routebox(const rnd_cheap_point_t * from, const routebox_t * rb)
+RND_INLINE rnd_cheap_point_t closest_point_in_routebox(const rnd_cheap_point_t * from, const routebox_t * rb)
 {
 	return rnd_closest_cheap_point_in_box(from, &rb->sbox);
 }
 
-static inline rnd_bool point_in_shrunk_box(const routebox_t * box, rnd_coord_t X, rnd_coord_t Y)
+RND_INLINE rnd_bool point_in_shrunk_box(const routebox_t * box, rnd_coord_t X, rnd_coord_t Y)
 {
 	rnd_box_t b = shrink_routebox(box);
 	return rnd_point_in_box(&b, X, Y);
@@ -1274,7 +1274,7 @@ static void ResetSubnet(routebox_t * net)
 	PCB_END_LOOP;
 }
 
-static inline rnd_heap_cost_t pcb_cost_to_point_on_layer(const rnd_cheap_point_t * p1, const rnd_cheap_point_t * p2, rnd_cardinal_t point_layer)
+RND_INLINE rnd_heap_cost_t pcb_cost_to_point_on_layer(const rnd_cheap_point_t * p1, const rnd_cheap_point_t * p2, rnd_cardinal_t point_layer)
 {
 	rnd_heap_cost_t x_dist = p1->X - p2->X, y_dist = p1->Y - p2->Y, r;
 	x_dist *= x_cost[point_layer];
@@ -2484,7 +2484,7 @@ static rnd_r_dir_t __GatherBlockers(const rnd_box_t * box, void *cl)
  * i.e. if dir is SOUTH, then this means fixing up an EAST leftover
  * edge, which would be the southern most edge for that example.
  */
-static inline rnd_box_t previous_edge(rnd_coord_t last, rnd_direction_t i, const rnd_box_t * b)
+RND_INLINE rnd_box_t previous_edge(rnd_coord_t last, rnd_direction_t i, const rnd_box_t * b)
 {
 	rnd_box_t db = *b;
 	switch (i) {
