@@ -2,7 +2,6 @@
 + BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: remove inline, use RND_INLINE - check src_3rd as well (librnd5 critical)
 - DOC: pool node on how to use pixmap for breadboading
 - BUG: export_stl: before counting points, merge all the cutout polygons into one to avoid buggy exports due to overlapping/embedded cutouts; see bug_files/TODO/stl_olap.stl [report: keantoken]
 	- BUG: via-on-via triggers an assert, see bug_files/TODO/stl-vv.rp [report: Majenko]
