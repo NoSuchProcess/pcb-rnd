@@ -509,8 +509,8 @@ int pcb_pstk_proto_conv_selection(pcb_board_t *pcb, pcb_pstk_proto_t *dst, int q
 	vtp0_t objs;
 
 	vtp0_init(&objs);
-	pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_CLASS_REAL, PCB_FLAG_SELECTED);
-	ret = pcb_pstk_proto_conv(pcb->Data, dst, quiet, &objs, ox, oy);
+	pcb_data_list_by_flag(PCB_REAL_DATA(pcb), &objs, PCB_OBJ_CLASS_REAL, PCB_FLAG_SELECTED);
+	ret = pcb_pstk_proto_conv(PCB_REAL_DATA(pcb), dst, quiet, &objs, ox, oy);
 	vtp0_uninit(&objs);
 
 	return ret;
