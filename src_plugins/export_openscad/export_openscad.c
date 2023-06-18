@@ -84,6 +84,9 @@ static int scad_layer_cnt;
 static vti0_t scad_comp;
 static const char *scad_prefix = "pcb";
 static double board_thickness = 1.6;
+static int scad_doing_top_copper, scad_doing_bot_copper;
+static double scad_top_copper_elev, scad_bot_copper_elev;
+
 
 static rnd_hid_attr_val_t *openscad_options;
 
@@ -306,6 +309,8 @@ static void scad_new_layer(int is_pos)
 	fprintf(f, "		translate([0,0,%f]) {\n", h);
 	layer_open = 1;
 
+	if (scad_doing_top_copper) scad_top_copper_elev = h + layer_thickness;
+	if (scad_doing_bot_copper) scad_bot_copper_elev = h - layer_thickness;
 }
 
 
@@ -366,6 +371,10 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 			board_thickness = RND_COORD_TO_MM(pcb_stack_thickness(PCB, "openscad", PCB_BRDTHICK_PRINT_ERROR, from, 1, to, 0, PCB_LYT_SUBSTRATE|PCB_LYT_COPPER));
 		else
 			board_thickness = 1.6;
+
+		/* fallback if we didn't figure real copper layer elevation during layer render */
+		scad_top_copper_elev =+board_thickness/2.0;
+		scad_bot_copper_elev =-board_thickness/2.0;
 	}
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &filename);
@@ -391,11 +400,12 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	gds_init(&model_calls);
 	vti0_init(&scad_comp);
 
-	if (options[HA_models].lng)
-		scad_insert_models();
 
 	openscad_hid_export_to_file(design, f, options);
 	scad_close_layer_group();
+
+	if (options[HA_models].lng)
+		scad_insert_models();
 
 	if (options[HA_drill].lng)
 		scad_draw_drills();
@@ -425,6 +435,8 @@ static int openscad_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 static int openscad_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
+	scad_doing_top_copper = scad_doing_bot_copper = 0;
+
 	if (flags & PCB_LYT_UI)
 		return 0;
 
@@ -471,10 +483,12 @@ static int openscad_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_la
 		}
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer_group("top_copper", +1, openscad_options[HA_copper_color].str);
+			scad_doing_top_copper = 1;
 			return 1;
 		}
 		if (flags & PCB_LYT_BOTTOM) {
 			scad_new_layer_group("bottom_copper", -1, openscad_options[HA_copper_color].str);
+			scad_doing_bot_copper = 1;
 			return 1;
 		}
 	}
