@@ -26,8 +26,6 @@
 
 #include "config.h"
 
-#define NEW_CUTOUT
-
 #include <genvector/vtd0.h>
 #include <librnd/core/actions.h>
 #include <librnd/hid/hid_init.h>
@@ -112,217 +110,6 @@ static long pa_len(const rnd_polyarea_t *pa_start)
 	} while(pa != pa_start);
 
 	return cnt;
-}
-
-static long poly_len(const pcb_poly_t *poly)
-{
-	return poly->PointN; /* assume no holes */
-}
-
-static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy, vtd0_t *contours, rnd_hid_attr_val_t *options)
-{
-	pcb_pstk_shape_t *shp, tmp;
-	rnd_polyarea_t *pa = NULL;
-	int segs = 0;
-
-	shp = pcb_pstk_shape_mech_or_hole_at(pcb, pstk, layer, &tmp);
-	if (shp == NULL)
-		return 0;
-
-	switch(shp->shape) {
-		case PCB_PSSH_POLY:
-			if (!options[HA_slotpoly].lng)
-				return 0;
-			segs = shp->data.poly.len;
-			break;
-		case PCB_PSSH_CIRC:
-			if (shp->data.circ.dia < options[HA_mindrill].crd)
-				return 0;
-			segs = RND_COORD_TO_MM(shp->data.circ.dia)*8+6;
-			break;
-		case PCB_PSSH_HSHADOW: return 0;
-		case PCB_PSSH_LINE:
-			if (shp->data.line.thickness < options[HA_minline].crd)
-				return 0;
-
-			{
-				pcb_line_t l = {0};
-				l.Point1.X = pstk->x + shp->data.line.x1; l.Point1.Y = pstk->y + shp->data.line.y1;
-				l.Point2.X = pstk->x + shp->data.line.x2; l.Point2.Y = pstk->y + shp->data.line.y2;
-				l.Thickness = shp->data.line.thickness;
-				if (shp->data.line.square)
-					PCB_FLAG_SET(PCB_FLAG_SQUARE, &l);
-				pa = pcb_poly_from_pcb_line(&l, l.Thickness);
-				segs += pa_len(pa);
-			}
-			break;
-	}
-
-	if (tri != NULL) {
-		switch(shp->shape) {
-			case PCB_PSSH_POLY:
-				{
-					int n;
-					rnd_coord_t px, py;
-
-					for(n = 0; n < shp->data.poly.len; n++) {
-						rnd_coord_t x = pstk->x + shp->data.poly.x[n], y = maxy - (pstk->y + shp->data.poly.y[n]);
-						fp2t_point_t *pt;
-						
-						if ((n > 0) && (px == x) && (py == y))
-							continue;
-
-						pt = fp2t_push_point(tri);
-						pt->X = x;
-						pt->Y = y;
-						vtd0_append(contours, pt->X);
-						vtd0_append(contours, pt->Y);
-						px = x;
-						py = y;
-					}
-					fp2t_add_hole(tri);
-					vtd0_append(contours, HUGE_VAL);
-					vtd0_append(contours, HUGE_VAL);
-				}
-				break;
-			case PCB_PSSH_LINE:
-				{
-					rnd_pline_t *pl = pa->contours;
-					rnd_vnode_t *n = pl->head;
-					do {
-						fp2t_point_t *pt = fp2t_push_point(tri);
-						pt->X = n->point[0];
-						pt->Y = maxy - n->point[1];
-						vtd0_append(contours, pt->X);
-						vtd0_append(contours, pt->Y);
-						n = n->next;
-					} while(n != pl->head);
-					fp2t_add_hole(tri);
-					vtd0_append(contours, HUGE_VAL);
-					vtd0_append(contours, HUGE_VAL);
-				}
-				break;
-			case PCB_PSSH_CIRC:
-				{
-					double a, step = 2*M_PI/segs, r = (double)shp->data.circ.dia / 2.0;
-					int n;
-					for(n = 0, a = 0; n < segs; n++, a += step) {
-						fp2t_point_t *pt = fp2t_push_point(tri);
-						pt->X = pstk->x + shp->data.circ.x + rnd_round(cos(a) * r);
-						pt->Y = maxy - (pstk->y + shp->data.circ.y + rnd_round(sin(a) * r));
-						vtd0_append(contours, pt->X);
-						vtd0_append(contours, pt->Y);
-					}
-					fp2t_add_hole(tri);
-					vtd0_append(contours, HUGE_VAL);
-					vtd0_append(contours, HUGE_VAL);
-				}
-			case PCB_PSSH_HSHADOW: return 0;
-		}
-	}
-
-	if (pa != NULL)
-		rnd_polyarea_free(&pa);
-
-	return segs;
-}
-
-static void add_holes_pstk(fp2t_t *tri, pcb_board_t *pcb, pcb_layer_t *toply, rnd_coord_t maxy, vtd0_t *contours, rnd_hid_attr_val_t *options, pcb_dynf_t df)
-{
-	rnd_rtree_it_t it;
-	rnd_box_t *n;
-
-	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
-		pcb_pstk_t *ps = (pcb_pstk_t *)n;
-		if (!PCB_DFLAG_TEST(&ps->Flags, df)) /* if a padstack is marked, it is on the contour and it should already be subtracted from the contour poly, skip it */
-			pstk_points(pcb, ps, toply, tri, maxy, contours, options);
-	}
-}
-
-static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply, rnd_hid_attr_val_t *options)
-{
-	rnd_rtree_it_t it;
-	rnd_box_t *n;
-	long cnt = 0;
-
-	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
-		pcb_pstk_t *ps = (pcb_pstk_t *)n;
-		cnt += pstk_points(pcb, ps, toply, NULL, 0, NULL, options);
-	}
-
-	return cnt;
-}
-
-static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df, rnd_hid_attr_val_t *options)
-{
-	rnd_layer_id_t lid;
-	long cnt = 0;
-
-	if (!options[HA_cutouts].lng)
-		return 0;
-
-	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
-		pcb_layer_type_t lyt = pcb_layer_flags(pcb, lid);
-		int purpi = pcb_layer_purpose(pcb, lid, NULL);
-		pcb_layer_t *layer = &pcb->Data->Layer[lid];
-		pcb_poly_t *poly;
-		pcb_line_t *line;
-		pcb_arc_t *arc;
-		rnd_rtree_it_t it;
-		
-
-		if (!PCB_LAYER_IS_ROUTE(lyt, purpi)) continue;
-/*		rnd_trace("Outline [%ld]\n", lid);*/
-
-		if (layer->line_tree != NULL)
-		for(line = rnd_rtree_all_first(&it, layer->line_tree); line != NULL; line = rnd_rtree_all_next(&it)) {
-			if (PCB_DFLAG_TEST(&line->Flags, df)) continue; /* object already found - either as outline or as a cutout */
-			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)line, PCB_TOPOLY_FLOATING, df);
-			if (poly != NULL) {
-				vtp0_append(cutouts, poly);
-				cnt += poly_len(poly);
-			}
-			else
-				rnd_message(RND_MSG_ERROR, "Cutout error: need closed loops; cutout omitted\n(Hint: use the wireframe draw mode to see broken connections; use a coarse grid and snap to fix them up!)\n");
-/*			rnd_trace(" line: %ld %d -> %p\n", line->ID, PCB_DFLAG_TEST(&line->Flags, df), poly);*/
-		}
-
-		if (layer->arc_tree != NULL)
-		for(arc = rnd_rtree_all_first(&it, layer->arc_tree); arc != NULL; arc = rnd_rtree_all_next(&it)) {
-			if (PCB_DFLAG_TEST(&arc->Flags, df)) continue; /* object already found - either as outline or as a cutout */
-			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)arc, PCB_TOPOLY_FLOATING, df);
-			vtp0_append(cutouts, poly);
-			cnt += poly_len(poly);
-/*			rnd_trace(" arc: %ld %d -> %p\n", arc->ID, PCB_DFLAG_TEST(&arc->Flags, df), poly);*/
-		}
-	}
-
-	return cnt;
-}
-
-static void add_holes_cutout(fp2t_t *tri, pcb_board_t *pcb, rnd_coord_t maxy, vtp0_t *cutouts, vtd0_t *contours, rnd_hid_attr_val_t *options)
-{
-	long np;
-
-	if (!options[HA_cutouts].lng)
-		return;
-
-	for(np = 0; np < cutouts->used; np++) {
-		pcb_poly_t *poly = cutouts->array[np];
-		int n;
-
-		for(n = 0; n < poly->PointN; n++) {
-			fp2t_point_t *pt = fp2t_push_point(tri);
-			pt->X = poly->Points[n].X;
-			pt->Y = maxy - poly->Points[n].Y;
-			vtd0_append(contours, pt->X);
-			vtd0_append(contours, pt->Y);
-		}
-
-		fp2t_add_hole(tri);
-		vtd0_append(contours, HUGE_VAL);
-		vtd0_append(contours, HUGE_VAL);
-	}
 }
 
 typedef struct stl_facet_s stl_facet_t;
@@ -426,22 +213,19 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	size_t mem_req;
 	void *mem;
 	fp2t_t tri;
-	long cn_start, cn, n, pstk_points, cutout_points;
+	long cn_start, cn, n, cutout_points;
 	rnd_layer_id_t lid = -1;
-	pcb_layer_t *toply;
 	vtd0_t contours = {0};
-	vtp0_t cutouts = {0};
 	long contlen;
 	rnd_vnode_t *vn;
 	rnd_pline_t *pl;
 	int first_vert = 1;
 
+	/* lib_polyhelp would give a less useful message, rather check this here */
 	if ((pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &lid, 1) != 1) && (pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &lid, 1) != 1)) {
 		rnd_message(RND_MSG_ERROR, "A top or bottom copper layer is required for stl export\n");
 		return -1;
 	}
-	toply = pcb_get_layer(PCB->Data, lid);
-
 
 	df = pcb_dynflag_alloc("export_stl_map_contour");
 	pcb_data_dynflag_clear(PCB->Data, df);
@@ -453,7 +237,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 		return -1;
 	}
 
-#ifdef NEW_CUTOUT
+	/* collect cutouts **/
 	{
 		pcb_topoly_cutout_opts_t opts;
 
@@ -463,18 +247,14 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 
 		cutoutpa = pcb_topoly_cutouts_in(PCB, df, brdpoly, &opts);
 	}
-	cutout_points = pstk_points = 0;
+	cutout_points = 0;
 	if (cutoutpa != NULL)
 		cutout_points = pa_len(cutoutpa);
-#else
-	pstk_points = estimate_hole_pts_pstk(PCB, toply, options);
-	cutout_points = estimate_cutout_pts(PCB, &cutouts, df, options);
-#endif
 
 	contlen = pa_len(brdpoly->Clipped);
-	mem_req = fp2t_memory_required(contlen + pstk_points + cutout_points);
+	mem_req = fp2t_memory_required(contlen + cutout_points);
 	mem = calloc(mem_req, 1);
-	if (!fp2t_init(&tri, mem, contlen + pstk_points + cutout_points)) {
+	if (!fp2t_init(&tri, mem, contlen + cutout_points)) {
 		free(mem);
 		pcb_poly_free(brdpoly);
 		pcb_dynflag_free(df);
@@ -502,7 +282,6 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	vtd0_append(&contours, HUGE_VAL);
 	vtd0_append(&contours, HUGE_VAL);
 
-#ifdef NEW_CUTOUT
 	if (cutoutpa != NULL) {
 		rnd_polyarea_t *pa = cutoutpa;
 
@@ -510,7 +289,6 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 			/* consider poly island outline only */
 			pl = pa->contours;
 			vn = pl->head;
-			int C = 0;
 			do {
 				fp2t_point_t *pt = fp2t_push_point(&tri);
 				pt->X = vn->point[0];
@@ -518,7 +296,6 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 				vtd0_append(&contours, pt->X);
 				vtd0_append(&contours, pt->Y);
 				vn = vn->prev;
-				C++;
 			} while(vn != pl->head);
 
 			fp2t_add_hole(&tri);
@@ -528,10 +305,6 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 			pa = pa->f;
 		} while(pa != cutoutpa);
 	}
-#else
-	add_holes_pstk(&tri, PCB, toply, maxy, &contours, options, df);
-	add_holes_cutout(&tri, PCB, maxy, &cutouts, &contours, options);
-#endif
 
 	fp2t_triangulate(&tri);
 
@@ -572,14 +345,8 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 
 	fmt->print_footer(f);
 
-#ifdef NEW_CUTOUT
 	if (cutoutpa != NULL)
 		rnd_polyarea_free(&cutoutpa);
-#else
-	for(n = 0; n < cutouts.used; n++)
-		pcb_poly_free((pcb_poly_t *)cutouts.array[n]);
-	vtp0_uninit(&cutouts);
-#endif
 	vtd0_uninit(&contours);
 	free(mem);
 	pcb_poly_free(brdpoly);
