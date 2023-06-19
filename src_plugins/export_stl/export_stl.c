@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#define NEW_CUTOUT
+
 #include <genvector/vtd0.h>
 #include <librnd/core/actions.h>
 #include <librnd/hid/hid_init.h>
@@ -94,18 +96,24 @@ static rnd_hid_attr_val_t stl_values_[NUM_OPTIONS];
 static rnd_hid_attr_val_t amf_values_[NUM_OPTIONS];
 static rnd_hid_attr_val_t proj_values_[NUM_OPTIONS];
 
-static long pa_len(const rnd_polyarea_t *pa)
+static long pa_len(const rnd_polyarea_t *pa_start)
 {
-	rnd_pline_t *pl;
-	rnd_vnode_t *n;
 	long cnt = 0;
+	const rnd_polyarea_t *pa = pa_start;
 
-	pl = pa->contours;
-	n = pl->head;
 	do {
-		cnt++;
-		n = n->next;
-	} while(n != pl->head);
+		rnd_pline_t *pl = pa->contours; /* consider the main contour only */
+		rnd_vnode_t *n = pl->head;
+int C = 0;
+		do {
+			C++;
+			cnt++;
+			n = n->next;
+		} while(n != pl->head);
+rnd_trace(" PL len %d\n", C);
+		pa = pa->f;
+	} while(pa != pa_start);
+
 	return cnt;
 }
 
@@ -417,6 +425,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 {
 	pcb_dynf_t df;
 	pcb_poly_t *brdpoly;
+	rnd_polyarea_t *cutoutpa;
 	size_t mem_req;
 	void *mem;
 	fp2t_t tri;
@@ -447,8 +456,24 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 		return -1;
 	}
 
+#ifdef NEW_CUTOUT
+	{
+		pcb_topoly_cutout_opts_t opts;
+
+		opts.pstk_omit_slot_poly = !options[HA_slotpoly].lng;
+		opts.pstk_min_drill_dia = options[HA_mindrill].crd;
+		opts.pstk_min_line_thick = options[HA_minline].crd;
+
+		cutoutpa = pcb_topoly_cutouts_in(PCB, df, brdpoly, &opts);
+	}
+	cutout_points = pstk_points = 0;
+	if (cutoutpa != NULL)
+rnd_trace("Cutout len:\n");
+		cutout_points = pa_len(cutoutpa);
+#else
 	pstk_points = estimate_hole_pts_pstk(PCB, toply, options);
 	cutout_points = estimate_cutout_pts(PCB, &cutouts, df, options);
+#endif
 
 	contlen = pa_len(brdpoly->Clipped);
 	mem_req = fp2t_memory_required(contlen + pstk_points + cutout_points);
@@ -481,8 +506,37 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	vtd0_append(&contours, HUGE_VAL);
 	vtd0_append(&contours, HUGE_VAL);
 
+#ifdef NEW_CUTOUT
+	if (cutoutpa != NULL) {
+		rnd_polyarea_t *pa = cutoutpa;
+
+rnd_trace("Cutout GEN:\n");
+		do {
+			/* consider poly island outline only */
+			pl = pa->contours;
+			vn = pl->head;
+			int C = 0;
+			do {
+				fp2t_point_t *pt = fp2t_push_point(&tri);
+				pt->X = vn->point[0];
+				pt->Y = maxy - vn->point[1];
+				vtd0_append(&contours, pt->X);
+				vtd0_append(&contours, pt->Y);
+				vn = vn->prev;
+				C++;
+			} while(vn != pl->head);
+rnd_trace(" PL add %d\n", C);
+			fp2t_add_hole(&tri);
+			vtd0_append(&contours, HUGE_VAL);
+			vtd0_append(&contours, HUGE_VAL);
+
+			pa = pa->f;
+		} while(pa != cutoutpa);
+	}
+#else
 	add_holes_pstk(&tri, PCB, toply, maxy, &contours, options, df);
 	add_holes_cutout(&tri, PCB, maxy, &cutouts, &contours, options);
+#endif
 
 	fp2t_triangulate(&tri);
 
@@ -523,9 +577,14 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 
 	fmt->print_footer(f);
 
+#ifdef NEW_CUTOUT
+	if (cutoutpa != NULL)
+		rnd_polyarea_free(&cutoutpa);
+#else
 	for(n = 0; n < cutouts.used; n++)
 		pcb_poly_free((pcb_poly_t *)cutouts.array[n]);
 	vtp0_uninit(&cutouts);
+#endif
 	vtd0_uninit(&contours);
 	free(mem);
 	pcb_poly_free(brdpoly);
