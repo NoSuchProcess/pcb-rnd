@@ -2027,7 +2027,7 @@
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h conf_core.h
 ../src_plugins/lib_polyhelp/topoly.o: \
- ../src_plugins/lib_polyhelp/topoly.c ../config.h \
+ ../src_plugins/lib_polyhelp/topoly.c ../src_plugins/lib_polyhelp/topoly_cutout.c ../config.h \
  ../src_plugins/lib_polyhelp/topoly.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
