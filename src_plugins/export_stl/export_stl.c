@@ -104,13 +104,10 @@ static long pa_len(const rnd_polyarea_t *pa_start)
 	do {
 		rnd_pline_t *pl = pa->contours; /* consider the main contour only */
 		rnd_vnode_t *n = pl->head;
-int C = 0;
 		do {
-			C++;
 			cnt++;
 			n = n->next;
 		} while(n != pl->head);
-rnd_trace(" PL len %d\n", C);
 		pa = pa->f;
 	} while(pa != pa_start);
 
@@ -468,7 +465,6 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	}
 	cutout_points = pstk_points = 0;
 	if (cutoutpa != NULL)
-rnd_trace("Cutout len:\n");
 		cutout_points = pa_len(cutoutpa);
 #else
 	pstk_points = estimate_hole_pts_pstk(PCB, toply, options);
@@ -510,7 +506,6 @@ rnd_trace("Cutout len:\n");
 	if (cutoutpa != NULL) {
 		rnd_polyarea_t *pa = cutoutpa;
 
-rnd_trace("Cutout GEN:\n");
 		do {
 			/* consider poly island outline only */
 			pl = pa->contours;
@@ -525,7 +520,7 @@ rnd_trace("Cutout GEN:\n");
 				vn = vn->prev;
 				C++;
 			} while(vn != pl->head);
-rnd_trace(" PL add %d\n", C);
+
 			fp2t_add_hole(&tri);
 			vtd0_append(&contours, HUGE_VAL);
 			vtd0_append(&contours, HUGE_VAL);
