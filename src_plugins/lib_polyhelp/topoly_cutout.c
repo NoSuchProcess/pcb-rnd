@@ -94,8 +94,7 @@ static void topoly_cutout_add_layerobjs(pcb_board_t *pcb, rnd_polyarea_t **cutou
 	}
 }
 
-/* Add all padstack based cutouts */
-static void pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, rnd_polyarea_t **cutouts, const pcb_topoly_cutout_opts_t *opts, const rnd_polyarea_t *contour)
+static void topoly_cutout_add_pstk(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, rnd_polyarea_t **cutouts, const pcb_topoly_cutout_opts_t *opts, const rnd_polyarea_t *contour)
 {
 	pcb_pstk_shape_t *shp, tmp;
 
@@ -161,7 +160,8 @@ static void pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, 
 	}
 }
 
-static void add_holes_pstk(pcb_board_t *pcb, rnd_polyarea_t **cutouts, const pcb_topoly_cutout_opts_t *opts, pcb_dynf_t df, const rnd_polyarea_t *contour)
+/* Add all padstack based cutouts */
+static void topoly_cutout_add_pstks(pcb_board_t *pcb, rnd_polyarea_t **cutouts, const pcb_topoly_cutout_opts_t *opts, pcb_dynf_t df, const rnd_polyarea_t *contour)
 {
 	rnd_rtree_it_t it;
 	rnd_box_t *n;
@@ -177,7 +177,7 @@ static void add_holes_pstk(pcb_board_t *pcb, rnd_polyarea_t **cutouts, const pcb
 	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)n;
 		if (!PCB_DFLAG_TEST(&ps->Flags, df)) /* if a padstack is marked, it is on the contour and it should already be subtracted from the contour poly, skip it */
-			pstk_points(pcb, ps, toply, cutouts, opts, contour);
+			topoly_cutout_add_pstk(pcb, ps, toply, cutouts, opts, contour);
 	}
 }
 
@@ -186,7 +186,7 @@ rnd_polyarea_t *pcb_topoly_cutouts_in(pcb_board_t *pcb, pcb_dynf_t df, pcb_poly_
 	rnd_polyarea_t *res = NULL;
 
 	topoly_cutout_add_layerobjs(pcb, &res, df, contour->Clipped);
-	add_holes_pstk(pcb, &res, opts, df, contour->Clipped);
+	topoly_cutout_add_pstks(pcb, &res, opts, df, contour->Clipped);
 
 	return res;
 }
