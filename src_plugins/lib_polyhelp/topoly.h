@@ -36,6 +36,12 @@ typedef enum pcb_topoly_e {
 	PCB_TOPOLY_FLOATING = 2     /* do not add the new polygon on any layer */
 } pcb_topoly_t;
 
+typedef struct pcb_topoly_cutout_opts_s {
+	rnd_coord_t pstk_min_drill_dia;   /* do not export drilled holes smaller than this */
+	rnd_coord_t pstk_min_line_thick;
+	unsigned pstk_omit_slot_poly:1;   /* do not export polygon shaped slots in padstacks */
+} pcb_topoly_cutout_opts_t;
+
 /* Convert a loop of connected objects into a polygon (with no holes); the first
    object is named in start. The _with version uses a caller provided dynamic
    flag that is not cleared within the call so multiple loops can be mapped. */
@@ -52,8 +58,16 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb);
    with df (if df is not -1) */
 pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_dynf_t df);
 
+/* Construct a cutout (multi-siland) polyarea using boundary lines/arcs and
+   padstack holes/slots that are in contour (mapped using
+   pcb_topoly_1st_outline_with() before this call) */
+rnd_polyarea_t *pcb_topoly_cutouts_in(pcb_board_t *pcb, pcb_dynf_t df, pcb_poly_t *contour, const pcb_topoly_cutout_opts_t *opts);
+
+
 /* Construct a polygon of the first line/arc on the outline layer from top-left */
 pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how);
+
+
 
 
 extern const char pcb_acts_topoly[];
