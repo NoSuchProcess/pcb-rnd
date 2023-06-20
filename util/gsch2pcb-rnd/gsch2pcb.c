@@ -35,7 +35,6 @@
 #include <ctype.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/hidlib.h>
-#include "../src/conf_core.h"
 #include <librnd/core/rnd_conf.h>
 #include "../src_3rd/qparse/qparse.h"
 #include "../config.h"
@@ -55,7 +54,7 @@
 
 static const char *want_method_default = "import";
 
-#define CONF_USER_DIR "~/" DOT_PCB_RND
+#define CONF_USER_DIR "~/.gsch2pcb-rnd"
 
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
@@ -181,10 +180,9 @@ static int parse_config(char * config, char * arg)
 	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
 		static int warned = 0;
 		if (!warned) {
-			rnd_message(RND_MSG_WARNING, "WARNING: using elements-dir from %s - this overrides the normal pcb-rnd configured library search paths\n", config);
+			rnd_message(RND_MSG_WARNING, "ERROR: ignoring elements-dir from %s\n", config);
 			warned = 1;
 		}
-		rnd_conf_set(RND_CFR_CLI, "rc/library_search_paths", -1, arg, RND_POL_PREPEND);
 	}
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
 		rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, arg, RND_POL_OVERWRITE);
@@ -395,8 +393,6 @@ int main(int argc, char ** argv)
 
 	rnd_app.conf_userdir_path = CONF_USER_DIR;
 	rnd_app.conf_user_path = rnd_concat(CONF_USER_DIR, "/conf_core.lht", NULL);
-	rnd_app.conf_sysdir_path = PCBCONFDIR;
-	rnd_app.conf_sys_path = rnd_concat(PCBCONFDIR, "/conf_core.lht", NULL);
 
 	exec_prefix = rnd_exec_prefix(argv[0], BINDIR, BINDIR_TO_EXECPREFIX);
 	rnd_hidlib_init1(gsch2pcb_conf_core_init, exec_prefix);
@@ -406,7 +402,6 @@ int main(int argc, char ** argv)
 
 	rnd_file_loaded_init();
 	rnd_conf_init();
-	conf_core_init();
 
 	rnd_conf_set(RND_CFR_CLI, "rc/dup_log_to_stderr", 0, "1", RND_POL_OVERWRITE);
 
@@ -497,9 +492,6 @@ int main(int argc, char ** argv)
 	current_method->go(); /* the traditional, "parse element and edit the pcb file" approach */
 
 	current_method->uninit();
-
-	conf_core_uninit_pre();
-	rnd_hidlib_uninit();
 
 	free_strlist(&schematics);
 	free_strlist(&extra_gnetlist_arg_list);

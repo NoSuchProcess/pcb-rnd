@@ -38,7 +38,7 @@ uniq /local/pcb/OBJS
 print [@
 
 
-FP_OBJS    = @/local/pcb/OBJS@ ../../src/conf_core.o
+FP_OBJS    =
 FP_LDFLAGS = @/local/rnd/LDFLAGS@
 FP_CFLAGS  = @/local/rnd/CFLAGS@
 OBJS = \

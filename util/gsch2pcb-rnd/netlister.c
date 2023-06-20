@@ -29,7 +29,6 @@
 #include <sys/stat.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/conf.h>
-#include "../src/conf_core.h"
 #include "../config.h"
 #include <librnd/core/compat_misc.h>
 #include "gsch2pcb_rnd_conf.h"
