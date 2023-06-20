@@ -24,11 +24,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-/*#include <ctype.h>*/
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include "../src/plug_footprint.h"
 #include <librnd/core/paths.h>
 #include <librnd/core/conf.h>
 #include "../src/conf_core.h"
