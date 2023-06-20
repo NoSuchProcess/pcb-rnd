@@ -1,7 +1,3 @@
-CONF = \
- -c rc/library_search_paths+=$(TRUNK)/footprint \
- -c rc/default_pcb_file=$(TRUNK)/src/default.pcb
-
 GSCH2PCB = $(TRUNK)/util/gsch2pcb-rnd/gsch2pcb-rnd
 
 DIFF = diff -u

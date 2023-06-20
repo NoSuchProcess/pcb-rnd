@@ -5,7 +5,7 @@ include ../Makefile.common
 
 test: FORCE
 	@make clean
-	@$(GSCH2PCB) -m import $(CONF) main.sch > main.log
+	@$(GSCH2PCB) -m import main.sch > main.log
 	@$(DIFF) main.cmd.ref main.cmd
 
 clean:
