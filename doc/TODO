@@ -9,6 +9,7 @@
 	- remove the old scm
 	- remove tests
 	- search the doc and remove
+	- update the pool node on feature removal
 - DOC: pool node on how to use pixmap for breadboading
 + BUG: export_stl: before counting points, merge all the cutout polygons into one to avoid buggy exports due to overlapping/embedded cutouts; see bug_files/TODO/stl_olap.rp [report: keantoken]
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
