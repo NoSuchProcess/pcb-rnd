@@ -1,5 +1,5 @@
-#include "../src_3rd/genlist/gendlist.h"
-#include "../src_3rd/genlist/genadlist.h"
+#include <librnd/src_3rd/genlist/gendlist.h>
+#include <librnd/src_3rd/genlist/genadlist.h>
 
 #define TRUE 1
 #define FALSE 0

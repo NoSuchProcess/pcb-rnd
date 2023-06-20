@@ -24,7 +24,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include "gsch2pcb.h"
-#include "../src_3rd/genvector/vts0.h"
+#include <librnd/src_3rd/genvector/vts0.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
 #include "gsch2pcb_rnd_conf.h"
