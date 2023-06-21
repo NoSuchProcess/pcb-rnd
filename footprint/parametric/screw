@@ -30,6 +30,18 @@
 #@@default:shape circle
 #@@preview_args:shape 3mm,6mm
 
+#@@param:3dshank_descent total length of the shank
+#@@dim:3dshank_descent
+#@@optional:3dshank_descent
+
+#@@param:3dwasher_thick thickness of the washer placed under the head of the screw
+#@@dim:3dwasher_thick
+#@@optional:3dwasher_thick
+
+#@@param:3dwasher_dia diameter of the washer placed under the head of the screw
+#@@dim:3dwasher_dia
+#@@optional:3dwasher_dia
+
 #@@include common_subc.awk
 
 awk -f `dirname $0`/common_subc.awk -f `dirname $0`/screw.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0" -v "genfull=$0"

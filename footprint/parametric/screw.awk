@@ -110,11 +110,20 @@ BEGIN {
 	if (ring == "")
 		ring = head*0.8
 
+
+	if (P["3dshank_descent"] != "")
+		shd = ",shank_descent=" rev_mm(parse_dim(P["3dshank_descent"]));
+
+	if (P["3dwasher_thick"] != "")
+		wsth = ",washer_thickness=" rev_mm(parse_dim(P["3dwasher_thick"]));
+
+	if (P["3dwasher_dia"] != "")
+		wsdia = ",washer_diameter=" rev_mm(parse_dim(P["3dwasher_dia"]));
+
 	SCAT["openscad"]="screw.scad"
-	SCAT["openscad-param"]="hole=" rev_mm(hole) ", head=" rev_mm(head) ", shape=\"" shape_model_name(P["shape"]) "\""
+	SCAT["openscad-param"]="hole=" rev_mm(hole) ", head=" rev_mm(head) ", shape=\"" shape_model_name(P["shape"]) "\""  shd wsth wsdia
 
 	subc_begin("screw:" P["hole"] "," P["head"]"," P["shape"], "S1", 0, -mil(100), 0, SCAT)
-
 
 	proto = subc_proto_create_pin_round(hole, ring)
 	subc_pstk(proto, 0, 0, 0, 1)
