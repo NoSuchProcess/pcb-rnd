@@ -48,12 +48,23 @@ function round_up(num, to)
 	return int(num/to+1)*to
 }
 
+function shape_model_name(shape)
+{
+	if (shape ~ "hex") return "hex"
+	if (shape ~ "slot") return "slot"
+	if (shape ~ "xzn") return "xzn"
+	if (shape ~ "tx") return "torx"
+	if (shape ~ "ph") return "ph"
+
+	return "ph"
+}
+
 BEGIN {
 	help_auto()
 	set_arg(P, "?shape", "circle")
 	proc_args(P, "hole,head,shape,ring", "hole")
 
-	subc_begin("screw:" P["hole"] "," P["head"]"," P["shape"], "S1", 0, -mil(100), 0)
+
 
 	if (P["hole"] ~ "^M") {
 		hole = P["hole"]
@@ -98,6 +109,11 @@ BEGIN {
 
 	if (ring == "")
 		ring = head*0.8
+
+	SCAT["openscad"]="screw.scad"
+	SCAT["openscad-param"]="hole=" rev_mm(hole) ", head=" rev_mm(head) ", shape=\"" shape_model_name(P["shape"]) "\""
+
+	subc_begin("screw:" P["hole"] "," P["head"]"," P["shape"], "S1", 0, -mil(100), 0, SCAT)
 
 
 	proto = subc_proto_create_pin_round(hole, ring)
