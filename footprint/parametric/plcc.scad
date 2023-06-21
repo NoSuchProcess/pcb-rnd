@@ -42,7 +42,6 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
     body_bevel_corner = 1.2;
     module_overhang=11/2;
     plcc_overhang=5/2;
-//    pin_width = 0.7;
 
     pins_per_side = pins/4;
 
@@ -239,22 +238,20 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
                                 pin();
     }
 
-    translate([0,0,0]) {
-        if (body == 2) {
-            translate([0,0,4.5]) {
-                    body();
-                    place_body_pins();
-            }
-        } else if (body == 0){
-            body();
-            place_body_pins();
+    if (body == 2) {
+        translate([0,0,4.5]) {
+                body();
+                place_body_pins();
         }
-        if (body != 0) {
-            socket_body();
-            place_contacts();
-            if (through_hole)
-                place_socket_pins();
-        }
+    } else if (body == 0){
+        body();
+        place_body_pins();
+    }
+    if (body != 0) {
+        socket_body();
+        place_contacts();
+        if (through_hole)
+            place_socket_pins();
     }
 }
 
