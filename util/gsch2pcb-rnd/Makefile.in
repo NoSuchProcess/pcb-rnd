@@ -1,9 +1,5 @@
 put /local/rnd/CFLAGS cc/cflags
-append /local/rnd/CFLAGS [@-I../.. -I@/local/pcb/librnd_prefix@/include/librnd4 -I@/local/pcb/librnd_prefix@/include/librnd4/librnd/src_3rd -I../../src_3rd -I../../src -I../../src_3rd/liblihata @]
-append /local/rnd/CFLAGS {-DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
 append /local/rnd/LDFLAGS cc/ldflags
-append /local/rnd/LDFLAGS ?/target/libs/ldl
-include [@@/local/pcb/librnd_template@/debug.tmpasm@]
 
 print [@
 ROOT=../..
@@ -12,77 +8,28 @@ LIBRND_SHAREDIR=@/local/pcb/librnd_prefix@/share/librnd4
 
 include $(LIBRND_SHAREDIR)/librnd.mak
 
-CFLAGS=@/local/pcb/c89flags@ @/local/rnd/CFLAGS@ @?/local/pcb/librnd_extra_inc@ $(CFLAGS_LIBRND_FUNGW)
-LDFLAGS=-lm @?/local/pcb/librnd_extra_ldf@ @/local/rnd/LDFLAGS@ $(LDFLAGS_LIBRND_FUNGW)
-LDF_LIBRND=-lrnd-hid -lrnd-core -lrnd-3rd
+CFLAGS=@/local/pcb/c89flags@ @/local/rnd/CFLAGS@
+LDFLAGS=
 CC=@cc/cc@
 @]
 
-print [@
-QPARSE=../../src_3rd/qparse/qparse.o
-@]
-
-put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
-put /local/pcb/tmpasm/plugin   {../src_plugins/Plugin.tmpasm}
-put /local/pcb/tmpasm/disable  {../src_plugins/Disable.tmpasm}
-
-put /local/rnd/RULES {}
-put /local/pcb/OBJS {}
-put /local/rnd/LDFLAGS {}
-put /local/rnd/CFLAGS {}
-put /local/pcb/buildin_init_code {}
-put /local/pcb/buildin_init_extern {}
-
-uniq /local/pcb/OBJS
 
 print [@
 
-
-FP_OBJS    =
-FP_LDFLAGS = @/local/rnd/LDFLAGS@
-FP_CFLAGS  = @/local/rnd/CFLAGS@
 OBJS = \
  gsch2pcb.o
 
-all:
-	$(MAKE) revcheck
-	$(MAKE) gsch2pcb-rnd$(LIBRND_EXE)
-
-revcheck:
-	cd ../../scconfig && ./revtest Rev.stamp < Rev.tab
+all: gsch2pcb-rnd$(LIBRND_EXE)
 
 gsch2pcb-rnd$(LIBRND_EXE): $(OBJS)  $(QPARSE) $(FP_OBJS)
-	$(CC) $(OBJS) $(FP_OBJS) $(QPARSE) -o gsch2pcb-rnd$(LIBRND_EXE) $(LDF_LIBRND) $(LDFLAGS) $(FP_LDFLAGS)
+	$(CC) $(OBJS) -o gsch2pcb-rnd$(LIBRND_EXE) $(LDFLAGS)
 
-gsch2pcb.o: gsch2pcb.c ../../config.h
-	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
-
-# TODO: this should be the base lib only
-# run the Makefile in src for the common objects:
-$(FP_OBJS) $(QPARSE):
-	cd ../../src && $(MAKE) util_deps
-
-##### module rules begin #####
-@/local/rnd/RULES@
-##### module rules end #####
-@]
-
-# generate explicit rules for .c -> .o
-put /local/comp/OBJS_C89 /local/pcb/OBJS
-put /local/comp/C89FLAGS {$(CFLAGS)}
-include [@@/local/pcb/librnd_template@/compile.tmpasm@]
-
-print [@
-
-gsch2pcb.o: gsch2pcb_rnd_conf_fields.h
-
-gsch2pcb_rnd_conf_fields.h: gsch2pcb_rnd_conf.h
-	AWK=@/host/fstools/awk@ $(GENCONF) < gsch2pcb_rnd_conf.h > gsch2pcb_rnd_conf_fields.h
+gsch2pcb.o: gsch2pcb.c
+	$(CC) -c $(CFLAGS) gsch2pcb.c -o gsch2pcb.o
 
 install_all:
 	$(SCCBOX) mkdir -p "$(BINDIR)" "$(LIBDIR)"
 	$(SCCBOX) $(HOW) "gsch2pcb-rnd$(LIBRND_EXE)" "$(BINDIR)/gsch2pcb-rnd$(LIBRND_EXE)"
-	$(SCCBOX) $(HOW) "gnet-gsch2pcb-rnd.scm" "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
 
 install:
 	$(MAKE) install_all HOW="install"
@@ -94,7 +41,7 @@ uninstall:
 	$(MAKE) install_all HOW="uninstall"
 
 clean:
-	$(SCCBOX) rm -f -q gsch2pcb-rnd$(LIBRND_EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h
+	$(SCCBOX) rm -f -q gsch2pcb-rnd$(LIBRND_EXE) $(OBJS)
 
 distclean: clean
 
