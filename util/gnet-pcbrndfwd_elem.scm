@@ -17,9 +17,18 @@
 ;;; along with this program; if not, write to the Free Software
 ;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SHOULD NOT BE USED IN NEW SCRIPTS OR COMMAND LINES ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; PCB forward annotation script;
 ;; modified version of pcbrndfwd: do not do the net list, only elements,
 ;; this way nets can be imported in the traditional netlist-way
+;;
+;; Used to be called by gsch2pcb-rnd; it's kept here for compatibility,
+;; just in case an user script is directly calling gnetlist with this
+;; backend.
+;;
 
 (use-modules (ice-9 regex))
 (use-modules (ice-9 format))
