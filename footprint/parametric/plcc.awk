@@ -59,5 +59,5 @@ BEGIN {
 
 
 	SCAT["openscad"]="plcc.scad"
-	SCAT["openscad-param"]="pins=" P["pins"] ", pin_width=" rev_mm(pt) ",pitch=" rev_mm(pitch) ",body=0" ",x_spacing=" rev_mm(S[1]) ",y_spacing=" rev_mm(S[2])
+	SCAT["openscad-param"]="pins=" P["pins"] ", pin_width=" rev_mm(pt) ",contact_pitch=" rev_mm(pitch) ",body=0" ",x_spacing=" rev_mm(S[1]) ",y_spacing=" rev_mm(S[2])
 }
