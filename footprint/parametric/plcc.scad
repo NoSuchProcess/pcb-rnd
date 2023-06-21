@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spacing=16, elevation = 4.57, pin_descent=2.5, through_hole=0, body = 0)
+module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spacing=16, elevation = 4.57, pin_descent=2.5, through_hole=0, pin_width=0.42, body = 0)
 {
     // common sizes 20/,28/7,32=14/18,44/11,52/13,68/17,84/21
     // non square PLCC supported
@@ -42,7 +42,7 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
     body_bevel_corner = 1.2;
     module_overhang=11/2;
     plcc_overhang=5/2;
-    pin_width = 0.7;
+//    pin_width = 0.7;
 
     pins_per_side = pins/4;
 
@@ -97,10 +97,10 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
            [-0.4,2.8],
            [0.4,2.8],
            [0.4,1.3],
-           [0.2,0.9],
-           [0.2,0.0],
-           [-0.2,0.0],
-           [-0.2,0.9],
+           [pin_width/2,0.9],
+           [pin_width/2,0.0],
+           [-pin_width/2,0.0],
+           [-pin_width/2,0.9],
            [-0.4,1.3]]);
                     }
         
