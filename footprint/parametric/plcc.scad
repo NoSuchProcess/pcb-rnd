@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,row_spacing = 16.0, elevation = 4.57, pin_descent=2.5, through_hole=0, body = 0)
+module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spacing=16, elevation = 4.57, pin_descent=2.5, through_hole=0, body = 0)
 {
     // common sizes 20/,28/7,32=14/18,44/11,52/13,68/17,84/21
     // non square PLCC supported
@@ -59,32 +59,32 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,row_spacing = 16.0, eleva
         color([0.3,0.3,0.3])
             intersection() {
                 rotate([90,0,0])
-                    translate([0,0,-row_spacing])
-                        linear_extrude(height= row_spacing*2)
+                    translate([0,0,-y_spacing])
+                        linear_extrude(height= y_spacing*2)
                             polygon([
-                                [row_spacing/2-body_bevel, body_offset],
-                                [row_spacing/2, (elevation-body_offset)/2+body_offset],
-                                [row_spacing/2-body_bevel, elevation],
-                                [-row_spacing/2+body_bevel, elevation],
-                                [-row_spacing/2, (elevation-body_offset)/2+body_offset],
-                                [-row_spacing/2+body_bevel, body_offset]
+                                [x_spacing/2-body_bevel, body_offset],
+                                [x_spacing/2, (elevation-body_offset)/2+body_offset],
+                                [x_spacing/2-body_bevel, elevation],
+                                [-x_spacing/2+body_bevel, elevation],
+                                [-x_spacing/2, (elevation-body_offset)/2+body_offset],
+                                [-x_spacing/2+body_bevel, body_offset]
                         ]);
                 rotate([90,0,0])
                     rotate([0,90,0])
-                        translate([0,0,-row_spacing])
-                            linear_extrude(height= row_spacing*2)
+                        translate([0,0,-x_spacing])
+                            linear_extrude(height= x_spacing*2)
                                 polygon([
-                                    [row_spacing/2-body_bevel, body_offset],
-                                    [row_spacing/2, (elevation-body_offset)/2+body_offset],
-                                    [row_spacing/2, elevation-body_bevel_pin1],
-                                    [row_spacing/2-body_bevel_pin1, elevation],
-                                    [-row_spacing/2+body_bevel, elevation],
-                                    [-row_spacing/2, (elevation-body_offset)/2+body_offset],
-                                    [-row_spacing/2+body_bevel, body_offset]
+                                    [y_spacing/2-body_bevel, body_offset],
+                                    [y_spacing/2, (elevation-body_offset)/2+body_offset],
+                                    [y_spacing/2, elevation-body_bevel_pin1],
+                                    [y_spacing/2-body_bevel_pin1, elevation],
+                                    [-y_spacing/2+body_bevel, elevation],
+                                    [-y_spacing/2, (elevation-body_offset)/2+body_offset],
+                                    [-y_spacing/2+body_bevel, body_offset]
                             ]);
                 rotate([0,0,-45])
-                    translate([sqrt((row_spacing/2)*(row_spacing/2)+(row_spacing/2-body_bevel_corner)*(row_spacing/2-body_bevel_corner))/2,0,0])
-                        cube([3*sqrt((row_spacing/2)*(row_spacing/2)+(row_spacing/2-body_bevel_corner)*(row_spacing/2-body_bevel_corner)),3*sqrt((row_spacing/2)*(row_spacing/2)+(row_spacing/2-body_bevel_corner)*(row_spacing/2-body_bevel_corner)),elevation*2], true);
+                    translate([sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner))/2,0,0])
+                        cube([3*sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner)),3*sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner)),elevation*2], true);
         }
     }        
     
@@ -151,19 +151,19 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,row_spacing = 16.0, eleva
     module place_body_pins() {
         color ([0.8,0.8,0.8]) {
             for(x = [0:contacts_x-1]) {
-                    translate([-(contacts_x-1)/2*contact_pitch+x*contact_pitch,row_spacing/2,0])
+                    translate([-(contacts_x-1)/2*contact_pitch+x*contact_pitch,y_spacing/2,0])
                         rotate([0,0,-90])
                             body_pin();
-                    translate([-(contacts_x-1)/2*contact_pitch+x*contact_pitch,-row_spacing/2,0])
+                    translate([-(contacts_x-1)/2*contact_pitch+x*contact_pitch,-y_spacing/2,0])
                         rotate([0,0,90])
                             body_pin();          
             }            
             
             for(y = [0:contacts_y-1]) {
-                    translate([row_spacing/2,-(contacts_y-1)/2*contact_pitch+y*contact_pitch,0])
+                    translate([x_spacing/2,-(contacts_y-1)/2*contact_pitch+y*contact_pitch,0])
                         rotate([0,0,180])
                             body_pin();
-                    translate([-row_spacing/2,-(contacts_y-1)/2*contact_pitch+y*contact_pitch,0])
+                    translate([-x_spacing/2,-(contacts_y-1)/2*contact_pitch+y*contact_pitch,0])
                         body_pin();
             }            
         }
