@@ -15,7 +15,6 @@
 	-> the problem is that the result is 1.8999999 instead of 1.90000000 due to numerical precision problems
 	-> in rnd_printf try_human_coord() this gets low score due to not ending in a lot of zeros
 	-> the converted value should be rounded if it ends in a 9 after enough digits for 1nm resolution
-+ BUG: openscad export. Copper layer sits at +/- [0,0,0.811], but SMD components are placed at [x,y,0.8], causing copper to intersect with base of SMD components [report: Erich]
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 
 2. For later releases ===============================================================================
