@@ -1,5 +1,0 @@
-GSCH2PCB = $(TRUNK)/util/gsch2pcb-rnd/gsch2pcb-rnd
-
-DIFF = diff -u
-
-FORCE:

@@ -5,7 +5,6 @@ test:
 	cd uniq_name && $(MAKE) all && $(MAKE) test
 	cd propedit && $(MAKE) all && $(MAKE) test
 	cd drc_pstk_hbrk && $(MAKE) all && $(MAKE) test
-#	cd gsch2pcb-rnd && $(MAKE) all && $(MAKE) test
 	cd drc_query && $(MAKE) test
 	cd query && $(MAKE) test
 	cd menu && $(MAKE) test
@@ -23,7 +22,6 @@ clean:
 	cd uniq_name && $(MAKE) clean
 	cd propedit && $(MAKE) clean
 	cd drc_pstk_hbrk && $(MAKE) clean
-#	cd gsch2pcb-rnd && $(MAKE) clean
 	cd drc_query && $(MAKE) clean
 	cd query && $(MAKE) clean
 	cd menu && $(MAKE) clean
