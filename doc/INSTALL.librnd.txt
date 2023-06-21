@@ -46,7 +46,7 @@ Non-standard librnd installation
   This includes:
     - executing pcb-rnd from source (must happen from within src/)
     - executing pcb-rnd after installation
-    - executing any utility, from source or installed (e.g. gsch2pcb-rnd)
+    - executing any utility, from source or installed
     - running make test
     - manually executing any test program 
 
