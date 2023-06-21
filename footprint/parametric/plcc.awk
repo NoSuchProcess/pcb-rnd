@@ -57,4 +57,7 @@ BEGIN {
 	args = args ",?bodysilk=plcc,?silkmark=circle,pinoffs=" int(pins/2+0.5)
 
 
+
+	SCAT["openscad"]="plcc.scad"
+	SCAT["openscad-param"]="pins=" P["pins"] ", pin_width=" rev_mm(pt) ",pitch=" rev_mm(pitch) ",body=0"
 }

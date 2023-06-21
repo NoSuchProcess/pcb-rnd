@@ -98,19 +98,24 @@ BEGIN {
 	help_auto()
 	qf_globals()
 
-	SCAT["openscad"]=P["3dmodel"]
-	if (SCAT["openscad"] == "")
-		SCAT["openscad"]="qfp"
 
 	pinwidth = ",pin_width="  rev_mm(DEFAULT["pad_thickness"] * 0.6)
 
-	elev = parse_dim(P["3delevation"])
-	if (elev > 0)
-		elev = ",size_z=" rev_mm(elev)
-	else
-		elev = ""
+# if the caller did not set up openscad, do the generic setup here
+# (generic works for qfn, qfp and alike, but plcc needs it differently)
+	if (SCAT["openscad-param"] == "") {
+		SCAT["openscad"]=P["3dmodel"]
+		if (SCAT["openscad"] == "")
+			SCAT["openscad"]="qfp"
 
-	SCAT["openscad-param"]="nx=" nx ",ny=" ny ",pitch=" rev_mm(pad_spacing) ",size_x=" rev_mm(x_spacing) ",size_y=" rev_mm(y_spacing) pinwidth elev
+		elev = parse_dim(P["3delevation"])
+		if (elev > 0)
+			elev = ",size_z=" rev_mm(elev)
+		else
+			elev = ""
+
+		SCAT["openscad-param"]="nx=" nx ",ny=" ny ",pitch=" rev_mm(pad_spacing) ",size_x=" rev_mm(x_spacing) ",size_y=" rev_mm(y_spacing) pinwidth elev
+	}
 
 	subc_begin("", "U1", -width/2 - mm(1), -height/2 - mm(2), 0, SCAT)
 
