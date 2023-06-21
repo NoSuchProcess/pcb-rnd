@@ -1,1 +1,0 @@
-void usage(void);

@@ -42,11 +42,7 @@ FP_OBJS    =
 FP_LDFLAGS = @/local/rnd/LDFLAGS@
 FP_CFLAGS  = @/local/rnd/CFLAGS@
 OBJS = \
- gsch2pcb.o \
- help.o \
- netlister.o \
- run.o \
- method_import.o
+ gsch2pcb.o
 
 all:
 	$(MAKE) revcheck
