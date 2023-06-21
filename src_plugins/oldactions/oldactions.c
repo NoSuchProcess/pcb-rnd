@@ -373,7 +373,7 @@ static fgw_error_t pcb_act_ClearOctagon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(RND_MSG_ERROR, "MinClearGap: deprecated feature; download this\n user script and use MinClrGap instead:\nhttp://repo.hu/cgi-bin/edakrill.cgi?cmd=show&krill=igor2/script/pcb-rnd/minclrgap.krill\n");
+	rnd_message(RND_MSG_ERROR, "MinClearGap: deprecated feature; download this\n user script and use MinClrGap instead:\nhttp://repo.hu/cgi-bin/edakrill.cgi?cmd=show&krill=igor2/script/pcb-rnd/minclrgap.krill\nAlternatively consider using polygon-side clearance (the host polygon's enforce_clearance property)\n");
 	return 1;
 }
 
