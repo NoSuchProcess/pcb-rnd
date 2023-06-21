@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module part_screw(hole=3.2, shank_descent = 3, shape="hex",head="button")
+module part_screw(hole=3.2, shank_descent = 3, washer_thickness = 0, washer_diameter = 0, shape="hex",head="button")
 {
 //optional head name for a standard screw: pan, button, cheese, flat-washer, internal-lock-washer
 
@@ -108,9 +108,16 @@ module part_screw(hole=3.2, shank_descent = 3, shape="hex",head="button")
             cylinder(r=hole*0.95/2, h=shank_descent );
     }
 
+    module washer() {
+        if (washer_thickness > 0)
+            cylinder(r=washer_diameter/2, h=washer_thickness);
+    }
+
     color([0.7,0.7,0.7]) {
-        head();
+        translate([0,0,washer_thickness])
+            head();
         shank();
+        washer();
     }
 }
 
