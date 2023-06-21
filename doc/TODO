@@ -16,6 +16,7 @@
 	-> in rnd_printf try_human_coord() this gets low score due to not ending in a lot of zeros
 	-> the converted value should be rounded if it ends in a 9 after enough digits for 1nm resolution
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
+- BUG: librnd4 bug? {w l}, dip, open parameter editor, {f q} in main window -> segfault on auto dialog close [report: Igor2]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
