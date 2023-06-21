@@ -4,10 +4,6 @@
 1. For the upcoming release ===============================================================================
 - gsch2pcb-rnd
 	- make a release in the separate repo
-	- rewrtite util/gsch2pcb-rnd to print a message instead of doing anything
-	- remove the rest of the code
-	- remove the old scm
-	- remove tests
 	- search the doc and remove
 	- update the pool node on feature removal
 - DOC: pool node on how to use pixmap for breadboading
