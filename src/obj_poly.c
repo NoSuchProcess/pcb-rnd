@@ -781,10 +781,15 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 
 	/* poly does not clear other polys */
 	rnd_message(RND_MSG_WARNING,
-		"To change the clearance of objects in a polygon, change \nthe objects, not the polygon.\n"
-		"Alternatively, set the clearpolypoly flag on the polygon to \nallow it to clear other polygons.\n"
-		"Hint: To set a minimum clearance for a group of objects, \nselect them all then :MinClearGap(Selected,=10,mil)\n",
-		"Ok", NULL);
+		"This operation had no visible effect.\n"
+		"If you meant this polygon should clear into other polygons, first set the clearpolypoly flag.\n"
+		"To change the clearance of objects within a polygon, change \nthe objects, not the polygon.\n");
+	rnd_message(RND_MSG_WARNING,
+		"Alternative: Consider using polygon-side clearance\n"
+		"   (host polygon's enforce_clearance property)\n"
+		"Alternative: The user script minclrgap can change clearance value to \nmeet a minimum value on all selected objects\n"
+		"   see: http://repo.hu/cgi-bin/edakrill.cgi?cmd=show&krill=igor2/script/pcb-rnd/minclrgap.krill\n"
+		"\n\n", NULL);
 
 	return NULL;
 }
