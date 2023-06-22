@@ -292,8 +292,9 @@ static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	long new_arcs = 0;
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 
-	for(b = rnd_r_first(pcb->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it))
-		new_arcs += check_pstk(pcb, (pcb_pstk_t *)b);
+	if (pcb->Data->padstack_tree != NULL)
+		for(b = rnd_rtree_all_first(&it, pcb->Data->padstack_tree); b != NULL; b = rnd_rtree_all_next(&it))
+			new_arcs += check_pstk(pcb, (pcb_pstk_t *)b);
 
 	rnd_gui->invalidate_all(rnd_gui);
 
