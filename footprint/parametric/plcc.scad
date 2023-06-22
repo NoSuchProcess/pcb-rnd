@@ -56,34 +56,40 @@ module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y
 
     module body() {
         color([0.3,0.3,0.3])
-            intersection() {
-                rotate([90,0,0])
-                    translate([0,0,-y_spacing])
-                        linear_extrude(height= y_spacing*2)
-                            polygon([
-                                [x_spacing/2-body_bevel, body_offset],
-                                [x_spacing/2, (elevation-body_offset)/2+body_offset],
-                                [x_spacing/2-body_bevel, elevation],
-                                [-x_spacing/2+body_bevel, elevation],
-                                [-x_spacing/2, (elevation-body_offset)/2+body_offset],
-                                [-x_spacing/2+body_bevel, body_offset]
-                        ]);
-                rotate([90,0,0])
-                    rotate([0,90,0])
-                        translate([0,0,-x_spacing])
-                            linear_extrude(height= x_spacing*2)
+            difference() {
+                intersection() {
+                    rotate([90,0,0])
+                        translate([0,0,-y_spacing])
+                            linear_extrude(height= y_spacing*2)
                                 polygon([
-                                    [y_spacing/2-body_bevel, body_offset],
-                                    [y_spacing/2, (elevation-body_offset)/2+body_offset],
-                                    [y_spacing/2, elevation-body_bevel_pin1],
-                                    [y_spacing/2-body_bevel_pin1, elevation],
-                                    [-y_spacing/2+body_bevel, elevation],
-                                    [-y_spacing/2, (elevation-body_offset)/2+body_offset],
-                                    [-y_spacing/2+body_bevel, body_offset]
+                                    [x_spacing/2-body_bevel, body_offset],
+                                    [x_spacing/2, (elevation-body_offset)/2+body_offset],
+                                    [x_spacing/2-body_bevel, elevation],
+                                    [-x_spacing/2+body_bevel, elevation],
+                                    [-x_spacing/2, (elevation-body_offset)/2+body_offset],
+                                    [-x_spacing/2+body_bevel, body_offset]
                             ]);
-                rotate([0,0,-45])
-                    translate([sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner))/2,0,0])
-                        cube([3*sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner)),3*sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner)),elevation*2], true);
+                    rotate([90,0,0])
+                        rotate([0,90,0])
+                            translate([0,0,-x_spacing])
+                                linear_extrude(height= x_spacing*2)
+                                    polygon([
+                                        [y_spacing/2-body_bevel, body_offset],
+                                        [y_spacing/2, (elevation-body_offset)/2+body_offset],
+                                        [y_spacing/2, elevation-body_bevel_pin1],
+                                        [y_spacing/2-body_bevel_pin1, elevation],
+                                        [-y_spacing/2+body_bevel, elevation],
+                                        [-y_spacing/2, (elevation-body_offset)/2+body_offset],
+                                        [-y_spacing/2+body_bevel, body_offset]
+                                ]);
+                    rotate([0,0,-45])
+                        translate([sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner))/2,0,0])
+                            cube([3*sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner)),3*sqrt((y_spacing/2)*(y_spacing/2)+(x_spacing/2-body_bevel_corner)*(x_spacing/2-body_bevel_corner)),elevation*2], true);
+            }
+            translate([0,y_spacing/2-1,elevation-body_bevel_pin1])
+                rotate([-45,0,0])
+                    translate([0,0,0.4])
+                        cylinder(r=0.5, h=elevation);
         }
     }
 
