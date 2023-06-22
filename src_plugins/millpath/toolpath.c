@@ -141,21 +141,25 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 
 	info.xform = &xform;
 
-	for(line = (pcb_line_t *)rnd_r_first(layer->line_tree, &it); line != NULL; line = (pcb_line_t *)rnd_r_next(&it))
-		sub_layer_line(pcb, result, layer, line, centerline);
+	if (layer->line_tree != NULL)
+		for(line = (pcb_line_t *)rnd_rtree_all_first(&it, layer->line_tree); line != NULL; line = (pcb_line_t *)rnd_rtree_all_next(&it))
+			sub_layer_line(pcb, result, layer, line, centerline);
 
-	for(arc = (pcb_arc_t *)rnd_r_first(layer->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)rnd_r_next(&it))
-		sub_layer_arc(pcb, result, layer, arc, centerline);
+	if (layer->arc_tree != NULL)
+		for(arc = (pcb_arc_t *)rnd_rtree_all_first(&it, layer->arc_tree); arc != NULL; arc = (pcb_arc_t *)rnd_rtree_all_next(&it))
+			sub_layer_arc(pcb, result, layer, arc, centerline);
 
-	for(poly = (pcb_poly_t *)rnd_r_first(layer->polygon_tree, &it); poly != NULL; poly = (pcb_poly_t *)rnd_r_next(&it))
-		sub_layer_poly(pcb, result, layer, poly, centerline);
+	if (layer->polygon_tree != NULL)
+		for(poly = (pcb_poly_t *)rnd_rtree_all_first(&it, layer->polygon_tree); poly != NULL; poly = (pcb_poly_t *)rnd_rtree_all_next(&it))
+			sub_layer_poly(pcb, result, layer, poly, centerline);
 
 	slt.pcb = pcb;
 	slt.layer = layer;
 	slt.centerline = centerline;
 	slt.result = result;
-	for(text = (pcb_text_t *)rnd_r_first(layer->text_tree, &it); text != NULL; text = (pcb_text_t *)rnd_r_next(&it))
-		pcb_text_decompose_text(&info, text, sub_layer_text, &slt);
+	if (layer->text_tree != NULL)
+		for(text = (pcb_text_t *)rnd_rtree_all_first(&it, layer->text_tree); text != NULL; text = (pcb_text_t *)rnd_rtree_all_next(&it))
+			pcb_text_decompose_text(&info, text, sub_layer_text, &slt);
 }
 
 
@@ -174,11 +178,13 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 	pcb_pstk_t *ps, ps_tmp;
 	rnd_rtree_it_t it;
 
-	for(ps = (pcb_pstk_t *)rnd_r_first(pcb->Data->padstack_tree, &it); ps != NULL; ps = (pcb_pstk_t *)rnd_r_next(&it)) {
-		memcpy(&ps_tmp, ps, sizeof(ps_tmp));
-		ps_tmp.Clearance = 1;
-		ps_tmp.thermals.used = 0;
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_PSTK, &ps_tmp);
+	if (pcb->Data->padstack_tree != NULL) {
+		for(ps = (pcb_pstk_t *)rnd_rtree_all_first(&it, pcb->Data->padstack_tree); ps != NULL; ps = (pcb_pstk_t *)rnd_rtree_all_next(&it)) {
+			memcpy(&ps_tmp, ps, sizeof(ps_tmp));
+			ps_tmp.Clearance = 1;
+			ps_tmp.thermals.used = 0;
+			pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_PSTK, &ps_tmp);
+		}
 	}
 }
 
@@ -251,11 +257,13 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 			if (l == NULL)
 				continue;
 
-			for(line = (pcb_line_t *)rnd_r_first(l->line_tree, &it); line != NULL; line = (pcb_line_t *)rnd_r_next(&it))
-				rnd_box_bump_box(&otlbb, (rnd_box_t *)line);
+			if (l->line_tree != NULL)
+				for(line = (pcb_line_t *)rnd_rtree_all_first(&it, l->line_tree); line != NULL; line = (pcb_line_t *)rnd_rtree_all_next(&it))
+					rnd_box_bump_box(&otlbb, (rnd_box_t *)line);
 
-			for(arc = (pcb_arc_t *)rnd_r_first(l->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)rnd_r_next(&it))
-				rnd_box_bump_box(&otlbb, (rnd_box_t *)arc);
+			if (l->arc_tree != NULL)
+				for(arc = (pcb_arc_t *)rnd_rtree_all_first(&it, l->arc_tree); arc != NULL; arc = (pcb_arc_t *)rnd_rtree_all_next(&it))
+					rnd_box_bump_box(&otlbb, (rnd_box_t *)arc);
 		}
 		result->fill = pcb_poly_new_from_rectangle(result->res_ply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
 		result->remain = pcb_poly_new_from_rectangle(result->res_remply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
