@@ -188,7 +188,7 @@ module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y
                 }
     }
 
-    module contact() {
+    module socket_contact() {
         pin_thickness=0.65;
         translate([-pin_thickness/2,-side_x/2+module_overhang/4,0.01])
             rotate([90,0,90])
@@ -196,22 +196,22 @@ module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y
                     polygon([[0,module_height+pcb_offset],[module_overhang/4+0.3,module_height+pcb_offset],[module_overhang/2+0.01,(module_height+pcb_offset)/2],[module_overhang/2+0.01,pcb_offset],[module_overhang/4,pcb_offset]]);
     }
 
-    module place_contacts() {
+    module place_socket_contacts() {
         color([0.8,0.8,0.8]) {
             for(i=[0:contacts_x-1]) {
                 translate([(-(contacts_x-1)/2+i)*pitch,(side_x-side_y)/2,0])
-                    contact();
+                    socket_contact();
                 translate([(-(contacts_x-1)/2+i)*pitch,(side_y-side_x)/2,0])
                     rotate([0,0,180])
-                        contact();
+                        socket_contact();
             }
             for(i=[0:contacts_y-1]) {
                 translate([0,(-(contacts_y-1)/2+i)*pitch,0])
                     rotate([0,0,90])
-                        contact();
+                        socket_contact();
                 translate([0,(-(contacts_y-1)/2+i)*pitch,0])
                     rotate([0,0,-90])
-                        contact();
+                        socket_contact();
             }
         }
     }
@@ -249,7 +249,7 @@ module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y
     }
     if (body != 0) {
         socket_body();
-        place_contacts();
+        place_socket_contacts();
         if (through_hole)
             place_socket_pins();
     }
