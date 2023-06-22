@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2020,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -879,40 +879,40 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 	if (flag & PCB_FLAG_WARN)
 		conf_core.temp.rat_warn = rnd_false;
 
-	if (tmask & PCB_OBJ_PSTK)
-		for(n = rnd_r_first(data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it))
+	if ((tmask & PCB_OBJ_PSTK) && (data->padstack_tree != NULL))
+		for(n = rnd_rtree_all_first(&it, data->padstack_tree); n != NULL; n = rnd_rtree_all_next(&it))
 			CHK_CLEAR(n);
 
-	if (tmask & PCB_OBJ_RAT)
-		for(n = rnd_r_first(data->rat_tree, &it); n != NULL; n = rnd_r_next(&it))
+	if ((tmask & PCB_OBJ_RAT) && (data->rat_tree != NULL))
+		for(n = rnd_rtree_all_first(&it, data->rat_tree); n != NULL; n = rnd_rtree_all_next(&it))
 			CHK_CLEAR(n);
 
-	if (tmask & PCB_OBJ_SUBC)
-		for(n = rnd_r_first(data->subc_tree, &it); n != NULL; n = rnd_r_next(&it))
+	if ((tmask & PCB_OBJ_SUBC) && (data->subc_tree != NULL))
+		for(n = rnd_rtree_all_first(&it, data->subc_tree); n != NULL; n = rnd_rtree_all_next(&it))
 			CHK_CLEAR(n);
 
 	if ((tmask & (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT | PCB_OBJ_GFX)) == 0)
 		return cnt; /* do not run the layer loop if no layer object is requested */
 
 	for(li = 0, l = data->Layer; li < data->LayerN; li++,l++) {
-		if (tmask & PCB_OBJ_LINE)
-			for(n = rnd_r_first(l->line_tree, &it); n != NULL; n = rnd_r_next(&it))
+		if ((tmask & PCB_OBJ_LINE) && (l->line_tree != NULL))
+			for(n = rnd_rtree_all_first(&it, l->line_tree); n != NULL; n = rnd_rtree_all_next(&it))
 				CHK_CLEAR(n);
 
-		if (tmask & PCB_OBJ_ARC)
-			for(n = rnd_r_first(l->arc_tree, &it); n != NULL; n = rnd_r_next(&it))
+		if ((tmask & PCB_OBJ_ARC) && (l->arc_tree != NULL))
+			for(n = rnd_rtree_all_first(&it, l->arc_tree); n != NULL; n = rnd_rtree_all_next(&it))
 				CHK_CLEAR(n);
 
-		if (tmask & PCB_OBJ_POLY)
-			for(n = rnd_r_first(l->polygon_tree, &it); n != NULL; n = rnd_r_next(&it))
+		if ((tmask & PCB_OBJ_POLY) && (l->polygon_tree != NULL))
+			for(n = rnd_rtree_all_first(&it, l->polygon_tree); n != NULL; n = rnd_rtree_all_next(&it))
 				CHK_CLEAR(n);
 
-		if (tmask & PCB_OBJ_TEXT)
-			for(n = rnd_r_first(l->text_tree, &it); n != NULL; n = rnd_r_next(&it))
+		if ((tmask & PCB_OBJ_TEXT) && (l->text_tree != NULL))
+			for(n = rnd_rtree_all_first(&it, l->text_tree); n != NULL; n = rnd_rtree_all_next(&it))
 				CHK_CLEAR(n);
 
-		if (tmask & PCB_OBJ_GFX)
-			for(n = rnd_r_first(l->gfx_tree, &it); n != NULL; n = rnd_r_next(&it))
+		if ((tmask & PCB_OBJ_GFX) && (l->gfx_tree != NULL))
+			for(n = rnd_rtree_all_first(&it, l->gfx_tree); n != NULL; n = rnd_rtree_all_next(&it))
 				CHK_CLEAR(n);
 	}
 	return cnt;
