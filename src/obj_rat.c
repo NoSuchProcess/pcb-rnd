@@ -83,7 +83,7 @@ pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 void pcb_rat_free(pcb_rat_t *rat)
 {
 	if ((rat->parent.data != NULL) && (rat->parent.data->rat_tree != NULL))
-		rnd_r_delete_entry(rat->parent.data->rat_tree, (rnd_box_t *)rat);
+		rnd_rtree_delete(rat->parent.data->rat_tree, rat, (rnd_rtree_box_t *)rat);
 	pcb_rat_unreg(rat);
 	free(rat->anchor[0]);
 	free(rat->anchor[1]);
@@ -118,7 +118,7 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, rnd_coord_t X1, rnd_coord_
 	pcb_line_bbox((pcb_line_t *) Line);
 	if (!Data->rat_tree)
 		Data->rat_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(Data->rat_tree, &Line->BoundingBox);
+	rnd_rtree_insert(Data->rat_tree, Line, (rnd_rtree_box_t *)Line);
 
 	if (anchor1 != NULL)
 		Line->anchor[0] = pcb_obj2idpath(anchor1);
@@ -341,7 +341,7 @@ void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 /* moves a rat-line between board and buffer */
 void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 {
-	rnd_r_delete_entry(ctx->buffer.src->rat_tree, (rnd_box_t *) rat);
+	rnd_rtree_delete(ctx->buffer.src->rat_tree, rat, (rnd_rtree_box_t *)rat);
 
 	pcb_rat_unreg(rat);
 	pcb_rat_reg(ctx->buffer.dst, rat);
@@ -350,7 +350,7 @@ void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 
 	if (!ctx->buffer.dst->rat_tree)
 		ctx->buffer.dst->rat_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(ctx->buffer.dst->rat_tree, (rnd_box_t *) rat);
+	rnd_rtree_insert(ctx->buffer.dst->rat_tree, rat, (rnd_rtree_box_t *)rat);
 
 	return rat;
 }
@@ -399,7 +399,7 @@ void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 void *pcb_ratop_destroy(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	if (ctx->remove.destroy_target->rat_tree)
-		rnd_r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
+		rnd_rtree_delete(ctx->remove.destroy_target->rat_tree, Rat, (rnd_rtree_box_t *)Rat);
 
 	pcb_rat_free(Rat);
 	return NULL;
