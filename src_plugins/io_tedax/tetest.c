@@ -131,7 +131,8 @@ int tedax_etest_fsave(pcb_board_t *pcb, const char *etestid, FILE *f)
 	tedax_fprint_escape(f, etestid);
 	fputc('\n', f);
 
-	for(b = rnd_r_first(pcb->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it)) {
+	if (pcb->Data->padstack_tree != NULL)
+	for(b = rnd_rtree_all_first(&it, pcb->Data->padstack_tree); b != NULL; b = rnd_rtree_all_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)b;
 		pcb_subc_t *sc;
 		pcb_net_term_t *t;
