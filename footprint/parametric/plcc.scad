@@ -169,23 +169,22 @@ module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y
     }
 
     module socket_body() {
-        rotate([0,0,-90])
-            color([0.3,0.3,0.3])
-                translate([0,0,module_height/2+pcb_offset])
-                    union() {
-                        translate([0,0,-module_height/2])
-                            linear_extrude(height=module_height)
-                                polygon([[-side_x/2+module_overhang,-side_y/2],[-side_x/2+module_overhang+2.5,-side_y/2],[-side_x/2,-side_y/2+module_overhang+2.5],[-side_x/2,-side_y/2+module_overhang]]);
+        color([0.3,0.3,0.3])
+            translate([0,0,module_height/2+pcb_offset])
+                union() {
+                    translate([0,0,-module_height/2])
+                        linear_extrude(height=module_height)
+                            polygon([[-side_x/2+module_overhang,side_y/2],[-side_x/2+module_overhang+2.5,side_y/2],[-side_x/2,side_y/2-module_overhang-2.5],[-side_x/2,side_y/2-module_overhang]]);
 
-                        difference() {
-                            cube([side_x,side_y,module_height],true);
-                            translate([0,0,1])
-                                cube([contacts_x*pitch+plcc_overhang*2,contacts_y*pitch+plcc_overhang*2,module_height-1],true);
-                            translate([0,0,-module_height])
-                                linear_extrude(height=module_height*3)
-                                    polygon([[-side_x+2,0],[0,-side_y+2],[0,-side_y-2],[-side_x-2,0]]);
-                    }
+                    difference() {
+                        cube([side_x,side_y,module_height],true);
+                        translate([0,0,1])
+                            cube([contacts_x*pitch+plcc_overhang*2,contacts_y*pitch+plcc_overhang*2,module_height-1],true);
+                        translate([0,0,-module_height])
+                            linear_extrude(height=module_height*3)
+                                polygon([[-side_x+2,0],[0,side_y-2],[0,side_y+2],[-side_x-2,0]]);
                 }
+            }
     }
 
     module socket_contact() {
@@ -238,20 +237,26 @@ module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y
                                 socket_pin();
     }
 
-    if (body == 2) {
-        translate([0,0,4.5]) {
-                body();
-                place_body_pins();
-        }
-    } else if (body == 0){
-        body();
-        place_body_pins();
-    }
-    if (body != 0) {
+    module build_socket() {
         socket_body();
         place_socket_contacts();
         if (through_hole)
             place_socket_pins();
+    }        
+
+    module build_plcc_body() {
+        body();
+        place_body_pins();
+    }
+
+    if (body == 2) {
+        translate([0,0,4.5])
+            build_plcc_body(); 
+    } else if (body == 0){
+        build_plcc_body();
+    }
+    if (body != 0) {
+        build_socket();
     }
 }
 
