@@ -155,8 +155,9 @@ static void scad_draw_drills(void)
 
 	fprintf(f, "module %s_drill() {\n", scad_prefix);
 
-	for(obj = rnd_r_first(PCB->Data->padstack_tree, &it); obj != NULL; obj = rnd_r_next(&it))
-		scad_draw_pstk((pcb_pstk_t *)obj);
+	if (PCB->Data->padstack_tree != NULL)
+		for(obj = rnd_rtree_all_first(&it, PCB->Data->padstack_tree); obj != NULL; obj = rnd_rtree_all_next(&it))
+			scad_draw_pstk((pcb_pstk_t *)obj);
 
 	fprintf(f, "}\n");
 }
