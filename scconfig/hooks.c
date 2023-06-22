@@ -35,6 +35,8 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files using bison/flex"},
 	{"enable-byaccic",    "/local/pcb/want_byaccic",      arg_true,      "$enable generating language files using byaccic/ureglex"},
 	{"disable-byaccic",   "/local/pcb/want_byaccic",      arg_false,     "$disable generating language files byaccic/ureglex"},
+	{"enable-polybool",   "/local/pcb/want_polybool",     arg_true,      "$enable the new polygon clipping library"},
+	{"disable-polybool",  "/local/pcb/want_polybool",     arg_false,     "$disable the new polygon clipping library"},
 
 #undef plugin_def
 #undef plugin_header
@@ -104,6 +106,7 @@ int hook_postinit()
 	put("/local/pcb/want_bison", sfalse);
 	put("/local/pcb/want_byaccic", sfalse);
 	put("/local/pcb/want_static", sfalse);
+	put("/local/pcb/want_polybool", sfalse);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 	put("/local/pcb/librnd_prefix", TO_STR(LIBRND_PREFIX));
 
