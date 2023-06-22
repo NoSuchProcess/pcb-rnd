@@ -30,7 +30,7 @@
 //  in any way.
 //
 
-module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spacing=16, elevation = 4.57, pin_descent=2.5, through_hole=0, pin_width=0.42, body = 0)
+module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y_spacing=16, elevation = 4.57, pin_descent=2.5, through_hole=0, pin_width=0.42, body = 0)
 {
     // common sizes 20/,28/7,32=14/18,44/11,52/13,68/17,84/21
     // non square PLCC supported
@@ -51,8 +51,8 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
     contacts_x = pins_per_side - (pins_y-pins_x);
     contacts_y = pins_per_side + (pins_y-pins_x);
 
-    side_x=contacts_x*contact_pitch+module_overhang*2;
-    side_y=contacts_y*contact_pitch+module_overhang*2;
+    side_x=contacts_x*pitch+module_overhang*2;
+    side_y=contacts_y*pitch+module_overhang*2;
 
     module body() {
         color([0.3,0.3,0.3])
@@ -150,19 +150,19 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
     module place_body_pins() {
         color ([0.8,0.8,0.8]) {
             for(x = [0:contacts_x-1]) {
-                    translate([-(contacts_x-1)/2*contact_pitch+x*contact_pitch,y_spacing/2,0])
+                    translate([-(contacts_x-1)/2*pitch+x*pitch,y_spacing/2,0])
                         rotate([0,0,-90])
                             body_pin();
-                    translate([-(contacts_x-1)/2*contact_pitch+x*contact_pitch,-y_spacing/2,0])
+                    translate([-(contacts_x-1)/2*pitch+x*pitch,-y_spacing/2,0])
                         rotate([0,0,90])
                             body_pin();
             }
 
             for(y = [0:contacts_y-1]) {
-                    translate([x_spacing/2,-(contacts_y-1)/2*contact_pitch+y*contact_pitch,0])
+                    translate([x_spacing/2,-(contacts_y-1)/2*pitch+y*pitch,0])
                         rotate([0,0,180])
                             body_pin();
-                    translate([-x_spacing/2,-(contacts_y-1)/2*contact_pitch+y*contact_pitch,0])
+                    translate([-x_spacing/2,-(contacts_y-1)/2*pitch+y*pitch,0])
                         body_pin();
             }
         }
@@ -180,7 +180,7 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
                         difference() {
                             cube([side_x,side_y,module_height],true);
                             translate([0,0,1])
-                                cube([contacts_x*contact_pitch+plcc_overhang*2,contacts_y*contact_pitch+plcc_overhang*2,module_height-1],true);
+                                cube([contacts_x*pitch+plcc_overhang*2,contacts_y*pitch+plcc_overhang*2,module_height-1],true);
                             translate([0,0,-module_height])
                                 linear_extrude(height=module_height*3)
                                     polygon([[-side_x+2,0],[0,-side_y+2],[0,-side_y-2],[-side_x-2,0]]);
@@ -199,17 +199,17 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
     module place_contacts() {
         color([0.8,0.8,0.8]) {
             for(i=[0:contacts_x-1]) {
-                translate([(-(contacts_x-1)/2+i)*contact_pitch,(side_x-side_y)/2,0])
+                translate([(-(contacts_x-1)/2+i)*pitch,(side_x-side_y)/2,0])
                     contact();
-                translate([(-(contacts_x-1)/2+i)*contact_pitch,(side_y-side_x)/2,0])
+                translate([(-(contacts_x-1)/2+i)*pitch,(side_y-side_x)/2,0])
                     rotate([0,0,180])
                         contact();
             }
             for(i=[0:contacts_y-1]) {
-                translate([0,(-(contacts_y-1)/2+i)*contact_pitch,0])
+                translate([0,(-(contacts_y-1)/2+i)*pitch,0])
                     rotate([0,0,90])
                         contact();
-                translate([0,(-(contacts_y-1)/2+i)*contact_pitch,0])
+                translate([0,(-(contacts_y-1)/2+i)*pitch,0])
                     rotate([0,0,-90])
                         contact();
             }
@@ -229,13 +229,13 @@ module part_plcc(pins=44,contact_pitch=1.27,pitch=2.54,x_spacing = 16.0, y_spaci
 //        pins_y = pins_x;
         outer_x = pins_x;
         outer_y = pins_y;
-        translate([-(outer_x-1)/2*pitch,-(outer_y-1)/2*pitch,0])
+        translate([-(outer_x-1)/2*socket_pin_pitch,-(outer_y-1)/2*socket_pin_pitch,0])
             for(x = [0:outer_x-1])
                 for(y = [0:outer_y-1])
                     if(!(x==0 && y==0) && !(x==outer_x-1 && y==0) && !(x==0 && y==outer_y-1) && !(x==outer_x-1 && y==outer_y-1))
                         if(((x<2) || (x>outer_x-3)) || ((y<2) || (y>outer_y-3)))
-                            translate([x*pitch,y*pitch,0])
-                                pin();
+                            translate([x*socket_pin_pitch,y*socket_pin_pitch,0])
+                                socket_pin();
     }
 
     if (body == 2) {
