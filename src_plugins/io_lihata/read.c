@@ -2544,9 +2544,11 @@ static int parse_board(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 		int l;
 		for(l = 0; l < pcb->Data->LayerN; l++) {
 			pcb_layer_t *layer = pcb->Data->Layer + l;
-			for(b = rnd_r_first(layer->polygon_tree, &it); b != NULL; b = rnd_r_next(&it)) {
-				pcb_poly_t *p = (pcb_poly_t *)b;
-				pcb_poly_init_clip(pcb->Data, layer, p);
+			if (layer->polygon_tree != NULL) {
+				for(b = rnd_rtree_all_first(&it, layer->polygon_tree); b != NULL; b = rnd_rtree_all_next(&it)) {
+					pcb_poly_t *p = (pcb_poly_t *)b;
+					pcb_poly_init_clip(pcb->Data, layer, p);
+				}
 			}
 		}
 	}
