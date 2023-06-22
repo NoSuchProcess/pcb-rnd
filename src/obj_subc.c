@@ -1254,11 +1254,10 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	rnd_close_box(&sc->BoundingBox);
 	rnd_close_box(&sc->bbox_naked);
 	if (pcb_data_get_top(Data) != NULL) {
-		int doit = 0;
+		int doit = 1;
 		if (sc->extobj != NULL) { /* ugly corner case: extobj calls may have added the subc to the rtree already, do not add it twice */
 			rnd_rtree_it_t it;
 			rnd_box_t *b;
-			doit = 1;
 			if (Data->subc_tree != NULL) {
 				for(b = rnd_rtree_all_first(&it, Data->subc_tree); b != NULL; b = rnd_rtree_all_next(&it)) {
 					if (b == (rnd_box_t *)sc) {
@@ -1268,7 +1267,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 				}
 			}
 		}
-		if (doit)
+		if (doit && (Data->subc_tree != NULL))
 			rnd_rtree_insert(Data->subc_tree, (void *)sc, (rnd_rtree_box_t *)sc);
 	}
 
