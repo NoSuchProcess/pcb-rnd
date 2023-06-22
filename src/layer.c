@@ -921,7 +921,7 @@ static void layer_del_update_thermals(pcb_board_t *pcb, rnd_layer_id_t old_index
 		return;
 
 	/* thermals are referenced by layer IDs which are going to change now */
-	for(b = rnd_r_first(pcb->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it)) {
+	for(b = rnd_rtree_all_first(&it, pcb->Data->padstack_tree); b != NULL; b = rnd_rtree_all_next(&it)) {
 		int n;
 		pcb_pstk_t *ps = (pcb_pstk_t *)b;
 		for(n = old_index; n < pcb->Data->LayerN-1; n++) {
