@@ -67,8 +67,9 @@ int pcb_layer_swap(pcb_board_t *pcb, rnd_layer_id_t lid1, rnd_layer_id_t lid2)
 	pcb_layer_move_(&pcb->Data->Layer[lid2], &l1tmp);
 
 	/* thermals are referenced by layer IDs which are going to change now */
-	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it))
-		swap_one_thermal((pcb_pstk_t *)n, lid1, lid2, 0);
+	if (pcb->Data->padstack_tree != NULL)
+		for(n = rnd_rtree_all_first(&it, pcb->Data->padstack_tree); n != NULL; n = rnd_rtree_all_next(&it))
+			swap_one_thermal((pcb_pstk_t *)n, lid1, lid2, 0);
 
 	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
 		pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
