@@ -178,7 +178,7 @@ module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y
 
                     difference() {
                         cube([side_x,side_y,module_height],true);
-                        translate([0,0,1])
+                        translate([0,0,1.5])
                             cube([contacts_x*pitch+plcc_overhang*2,contacts_y*pitch+plcc_overhang*2,module_height-1],true);
                         translate([0,0,-module_height])
                             linear_extrude(height=module_height*3)
@@ -250,7 +250,7 @@ module part_plcc(pins=44, pitch=1.27, socket_pin_pitch=2.54, x_spacing = 16.0, y
     }
 
     if (body == 2) {
-        translate([0,0,4.5])
+        translate([0,0,4])
             build_plcc_body(); 
     } else if (body == 0){
         build_plcc_body();
