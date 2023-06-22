@@ -200,7 +200,7 @@ void pcb_add_gfx_on_layer(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 	pcb_gfx_bbox(gfx);
 	if (!Layer->gfx_tree)
 		Layer->gfx_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(Layer->gfx_tree, (rnd_box_t *)gfx);
+	rnd_rtree_insert(Layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 	gfx->type = PCB_OBJ_GFX;
 	PCB_SET_PARENT(gfx, layer, Layer);
 }
@@ -210,7 +210,7 @@ void pcb_add_gfx_on_layer(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 void pcb_gfx_free(pcb_gfx_t *gfx)
 {
 	if ((gfx->parent.layer != NULL) && (gfx->parent.layer->gfx_tree != NULL))
-		rnd_r_delete_entry(gfx->parent.layer->gfx_tree, (rnd_box_t *)gfx);
+		rnd_rtree_delete(gfx->parent.layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 	pcb_attribute_free(&gfx->Attributes);
 	pcb_gfx_unreg(gfx);
 	pcb_obj_common_free((pcb_any_obj_t *)gfx);
@@ -254,7 +254,7 @@ void pcb_gfx_pre(pcb_gfx_t *gfx)
 	if (ly == NULL)
 		return;
 	if (ly->gfx_tree != NULL)
-		rnd_r_delete_entry(ly->gfx_tree, (rnd_box_t *)gfx);
+		rnd_rtree_delete(ly->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 }
 
 void pcb_gfx_post(pcb_gfx_t *gfx)
@@ -264,7 +264,7 @@ void pcb_gfx_post(pcb_gfx_t *gfx)
 	if (ly == NULL)
 		return;
 	if (ly->gfx_tree != NULL)
-		rnd_r_insert_entry(ly->gfx_tree, (rnd_box_t *)gfx);
+		rnd_rtree_insert(ly->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 }
 
 /***** operations *****/
@@ -283,7 +283,7 @@ static int undo_gfx_geo_swap(void *udata)
 	pcb_layer_t *layer = g->gfx->parent.layer;
 
 	if (layer->gfx_tree != NULL)
-		rnd_r_delete_entry(layer->gfx_tree, (rnd_box_t *)g->gfx);
+		rnd_rtree_delete(layer->gfx_tree, g->gfx, (rnd_rtree_box_t *)g->gfx);
 
 	rnd_swap(rnd_coord_t, g->cx, g->gfx->cx);
 	rnd_swap(rnd_coord_t, g->cy, g->gfx->cy);
@@ -297,7 +297,7 @@ static int undo_gfx_geo_swap(void *udata)
 	pcb_gfx_update(g->gfx);
 	pcb_gfx_bbox(g->gfx);
 	if (layer->gfx_tree != NULL)
-		rnd_r_insert_entry(layer->gfx_tree, (rnd_box_t *)g->gfx);
+		rnd_rtree_insert(layer->gfx_tree, g->gfx, (rnd_rtree_box_t *)g->gfx);
 
 	return 0;
 }
@@ -351,7 +351,7 @@ void *pcb_gfxop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_gfx_t *gfx
 		dstly = &ctx->buffer.dst->Layer[lid];
 	}
 
-	rnd_r_delete_entry(srcly->gfx_tree, (rnd_box_t *) gfx);
+	rnd_rtree_delete(srcly->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 
 	pcb_gfx_unreg(gfx);
 	pcb_gfx_reg(dstly, gfx);
@@ -360,7 +360,7 @@ void *pcb_gfxop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_gfx_t *gfx
 
 	if (!dstly->gfx_tree)
 		dstly->gfx_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(dstly->gfx_tree, (rnd_box_t *) gfx);
+	rnd_rtree_insert(dstly->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 
 	return gfx;
 }
@@ -409,23 +409,23 @@ void *pcb_gfxop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx
 
 void *pcb_gfxop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx)
 {
-	rnd_r_delete_entry(Layer->gfx_tree, (rnd_box_t *)gfx);
+	rnd_rtree_delete(Layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 	pcb_gfxop_move_noclip(ctx, Layer, gfx);
-	rnd_r_insert_entry(Layer->gfx_tree, (rnd_box_t *)gfx);
+	rnd_rtree_insert(Layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 	return gfx;
 }
 
 /* moves a gfx between layers; lowlevel routines */
 void *pcb_gfxop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_gfx_t * gfx, pcb_layer_t * Destination)
 {
-	rnd_r_delete_entry(Source->gfx_tree, (rnd_box_t *)gfx);
+	rnd_rtree_delete(Source->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 
 	pcb_gfx_unreg(gfx);
 	pcb_gfx_reg(Destination, gfx);
 
 	if (!Destination->gfx_tree)
 		Destination->gfx_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(Destination->gfx_tree, (rnd_box_t *)gfx);
+	rnd_rtree_insert(Destination->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 
 	return gfx;
 }
@@ -456,7 +456,7 @@ void *pcb_gfxop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_gfx_t *
 /* destroys a gfx from a layer */
 void *pcb_gfxop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx)
 {
-	rnd_r_delete_entry(Layer->gfx_tree, (rnd_box_t *) gfx);
+	rnd_rtree_delete(Layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 
 	pcb_gfx_free(gfx);
 	return NULL;
@@ -497,7 +497,7 @@ void pcb_gfx_rotate90(pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, unsigned Num
 void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina, rnd_angle_t angle)
 {
 	if (layer->gfx_tree != NULL)
-		rnd_r_delete_entry(layer->gfx_tree, (rnd_box_t *) gfx);
+		rnd_rtree_delete(layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 
 	gfx->rot = rnd_normalize_angle(gfx->rot + angle);
 	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->sx, gfx->sy, gfx->xmirror, gfx->ymirror);
@@ -505,7 +505,7 @@ void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord
 	pcb_gfx_bbox(gfx);
 
 	if (layer->gfx_tree != NULL)
-		rnd_r_insert_entry(layer->gfx_tree, (rnd_box_t *) gfx);
+		rnd_rtree_insert(layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 }
 
 void pcb_gfx_mirror(pcb_gfx_t *gfx, rnd_coord_t y_offs, rnd_bool undoable)
@@ -528,13 +528,13 @@ TODO("implement a mirror bit")
 
 void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx)
 {
-	rnd_r_delete_entry(layer->gfx_tree, (rnd_box_t *)gfx);
+	rnd_rtree_delete(layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 	gfx->cx = PCB_SWAP_X(gfx->cx);
 	gfx->cy = PCB_SWAP_Y(gfx->cy);
 	gfx->rot = RND_SWAP_ANGLE(gfx->rot);
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
-	rnd_r_insert_entry(layer->gfx_tree, (rnd_box_t *)gfx);
+	rnd_rtree_insert(layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 }
 
 void pcb_gfx_chg_geo(pcb_gfx_t *gfx, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy,  rnd_angle_t rot, rnd_bool undoable)
@@ -576,10 +576,10 @@ void *pcb_gfxop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx)
 {
 	pcb_gfx_invalidate_erase(gfx);
 	if (Layer->gfx_tree != NULL)
-		rnd_r_delete_entry(Layer->gfx_tree, (rnd_box_t *) gfx);
+		rnd_rtree_delete(Layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 	pcb_gfx_rotate90(gfx, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	if (Layer->gfx_tree != NULL)
-		rnd_r_insert_entry(Layer->gfx_tree, (rnd_box_t *) gfx);
+		rnd_rtree_insert(Layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 	pcb_gfx_invalidate_draw(Layer, gfx);
 	return gfx;
 }
