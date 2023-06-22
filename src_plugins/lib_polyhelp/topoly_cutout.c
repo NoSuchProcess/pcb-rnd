@@ -174,10 +174,12 @@ static void topoly_cutout_add_pstks(pcb_board_t *pcb, rnd_polyarea_t **cutouts, 
 	}
 	toply = pcb_get_layer(pcb->Data, lid);
 
-	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
-		pcb_pstk_t *ps = (pcb_pstk_t *)n;
-		if (!PCB_DFLAG_TEST(&ps->Flags, df)) /* if a padstack is marked, it is on the contour and it should already be subtracted from the contour poly, skip it */
-			topoly_cutout_add_pstk(pcb, ps, toply, cutouts, opts, contour);
+	if (pcb->Data->padstack_tree != NULL) {
+		for(n = rnd_rtree_all_first(&it, pcb->Data->padstack_tree); n != NULL; n = rnd_rtree_all_next(&it)) {
+			pcb_pstk_t *ps = (pcb_pstk_t *)n;
+			if (!PCB_DFLAG_TEST(&ps->Flags, df)) /* if a padstack is marked, it is on the contour and it should already be subtracted from the contour poly, skip it */
+				topoly_cutout_add_pstk(pcb, ps, toply, cutouts, opts, contour);
+		}
 	}
 }
 
