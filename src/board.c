@@ -195,9 +195,9 @@ typedef struct {
 } hole_count_t;
 
 #include "obj_pstk_inlines.h"
-static rnd_r_dir_t hole_counting_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t hole_counting_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	hole_count_t *hcs = (hole_count_t *)cl;
 
@@ -207,7 +207,7 @@ static rnd_r_dir_t hole_counting_callback(const rnd_box_t * b, void *cl)
 		else
 			hcs->nunplated++;
 	}
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 static rnd_r_dir_t slot_counting_callback(const rnd_box_t *b, void *cl)
@@ -229,7 +229,7 @@ void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const r
 {
 	hole_count_t hcs = { 0, 0 };
 
-	rnd_r_search(pcb->Data->padstack_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
+	rnd_rtree_search_any(pcb->Data->padstack_tree, (rnd_rtree_box_t *)within_area, NULL, hole_counting_callback, &hcs, NULL);
 
 	if (plated != NULL)
 		*plated = hcs.nplated;
