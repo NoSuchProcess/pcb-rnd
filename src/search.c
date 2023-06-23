@@ -101,20 +101,20 @@ struct ans_info {
 /* ---------------------------------------------------------------------------
  * searches a padstack
  */
-static rnd_r_dir_t padstack_callback(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t padstack_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct ans_info *i = (struct ans_info *) cl;
-	pcb_pstk_t *ps = (pcb_pstk_t *) box;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	pcb_data_t *pdata;
 
 	TEST_OBJST(i->objst, i->req_flag, g, ps, ps);
 
 	if (!pcb_is_point_in_pstk(PosX, PosY, SearchRadius, ps, NULL))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	if ((i->on_current) && (pcb_pstk_shape_at(PCB, ps, PCB_CURRLAYER(PCB)) == NULL) && (!pcb_pstk_bb_drills(PCB, ps, PCB_CURRLAYER(PCB)->meta.real.grp, NULL)))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	if ((i->on_lyt != 0) && (pcb_pstk_shape(ps, i->on_lyt, 0) == NULL))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	*i->ptr2 = *i->ptr3 = ps;
 	assert(ps->parent_type == PCB_PARENT_DATA);
 	pdata = ps->parent.data;
@@ -122,7 +122,7 @@ static rnd_r_dir_t padstack_callback(const rnd_box_t *box, void *cl)
 		*i->ptr1 = pdata->parent.subc; /* padstack of a subcircuit */
 	else
 		*i->ptr1 = ps; /* padstack on a board (e.g. via) */
-	return RND_R_DIR_CANCEL; /* found, stop searching */
+	return rnd_RTREE_DIR_FOUND_STOP; /* found, stop searching */
 }
 
 static rnd_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_flag, pcb_pstk_t **ps, pcb_pstk_t **Dummy1, pcb_pstk_t **Dummy2, int on_current, pcb_layer_type_t on_lyt)
@@ -141,9 +141,7 @@ static rnd_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_
 	info.on_current = on_current;
 	info.on_lyt = on_lyt;
 
-	if (rnd_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, padstack_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(PCB->Data->padstack_tree, (rnd_rtree_box_t *)&SearchBox, NULL, padstack_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
 /* ---------------------------------------------------------------------------
