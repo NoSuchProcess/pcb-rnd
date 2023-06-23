@@ -589,9 +589,9 @@ rnd_rtree_dir_t pcb_pstk_draw_callback(void *cl, void *obj, const rnd_rtree_box_
 	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-rnd_r_dir_t pcb_pstk_draw_mark_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t pcb_pstk_draw_mark_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	pcb_pstk_proto_t *proto;
 	rnd_coord_t mark, mark2;
 
@@ -605,7 +605,7 @@ rnd_r_dir_t pcb_pstk_draw_mark_callback(const rnd_box_t *b, void *cl)
 
 	mark2 = mark*2;
 	if (mark2 < rnd_render->coord_per_pix)
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	/* draw the cross using xor */
 	set_ps_annot_color(pcb_draw_out.fgGC, ps);
@@ -617,20 +617,20 @@ rnd_r_dir_t pcb_pstk_draw_mark_callback(const rnd_box_t *b, void *cl)
 	else
 		rnd_render->draw_line(pcb_draw_out.fgGC, ps->x-rnd_render->coord_per_pix, ps->y, ps->x+rnd_render->coord_per_pix, ps->y);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-rnd_r_dir_t pcb_pstk_draw_label_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t pcb_pstk_draw_label_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_draw_info_t *info = cl;
-	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	int is_drawn = (ps->draw_stamp == info->draw_stamp);
 
 	/* do not draw any label if the padstack is not visible, to avoid overlapping
 	   term labels of sides: two SMD pads on the two sides, turn off bottom to
 	   see top only */
 	if (!is_drawn)
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
@@ -641,7 +641,7 @@ rnd_r_dir_t pcb_pstk_draw_label_callback(const rnd_box_t *b, void *cl)
 	if (ps->noexport)
 		pcb_obj_noexport_mark(ps, ps->x, ps->y);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 rnd_rtree_dir_t pcb_pstk_draw_hole_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
@@ -877,10 +877,10 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 	}
 
 	if (mark)
-		pcb_pstk_draw_mark_callback((rnd_box_t *)ps, &info);
+		pcb_pstk_draw_mark_callback(&info, (void *)ps, (rnd_rtree_box_t *)ps);
 
 	if (label)
-		pcb_pstk_draw_label_callback((rnd_box_t *)ps, &info);
+		pcb_pstk_draw_label_callback(&info, (void *)ps, (rnd_rtree_box_t *)ps);
 }
 
 

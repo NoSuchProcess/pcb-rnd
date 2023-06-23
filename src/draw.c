@@ -352,12 +352,12 @@ static void pcb_draw_pstks(pcb_draw_info_t *info, rnd_layergrp_id_t group, int i
 
 static void pcb_draw_pstk_marks(pcb_draw_info_t *info)
 {
-	rnd_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_mark_callback, info, NULL);
+	rnd_rtree_search_any(PCB->Data->padstack_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_pstk_draw_mark_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_labels(pcb_draw_info_t *info)
 {
-	rnd_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_label_callback, info, NULL);
+	rnd_rtree_search_any(PCB->Data->padstack_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_pstk_draw_label_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_holes(pcb_draw_info_t *info, rnd_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)

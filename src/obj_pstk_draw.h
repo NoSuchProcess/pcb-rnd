@@ -40,8 +40,8 @@ rnd_rtree_dir_t pcb_pstk_draw_hole_callback(void *cl, void *obj, const rnd_rtree
 rnd_rtree_dir_t pcb_pstk_draw_slot_callback(void *cl, void *obj, const rnd_rtree_box_t *box);
 #endif
 
-rnd_r_dir_t pcb_pstk_draw_mark_callback(const rnd_box_t *b, void *cl);
-rnd_r_dir_t pcb_pstk_draw_label_callback(const rnd_box_t *b, void *cl);
+rnd_rtree_dir_t pcb_pstk_draw_mark_callback(void *cl, void *obj, const rnd_rtree_box_t *box);
+rnd_rtree_dir_t pcb_pstk_draw_label_callback(void *cl, void *obj, const rnd_rtree_box_t *box);
 void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps, rnd_bool vis_side);
 void pcb_pstk_invalidate_erase(pcb_pstk_t *ps);
 void pcb_pstk_invalidate_draw(pcb_pstk_t *ps);

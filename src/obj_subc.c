@@ -2309,8 +2309,8 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 	if (sc->data->padstack_tree != NULL)
 	for(o = rnd_rtree_first(&it, sc->data->padstack_tree, (rnd_rtree_box_t *)drawn_area); o != NULL; o = rnd_rtree_next(&it)) {
 		if (pcb_obj_is_under(o, sc->data)) {
-			pcb_pstk_draw_mark_callback((rnd_box_t *)o, &info);
-			pcb_pstk_draw_label_callback((rnd_box_t *)o, &info);
+			pcb_pstk_draw_mark_callback(&info, (void *)o, (rnd_rtree_box_t *)o);
+			pcb_pstk_draw_label_callback(&info, (void *)o, (rnd_rtree_box_t *)o);
 		}
 	}
 }
