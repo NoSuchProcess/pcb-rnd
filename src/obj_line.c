@@ -456,20 +456,20 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 }
 
 
-static rnd_r_dir_t line_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t line_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	int res;
-	pcb_line_t *line = (pcb_line_t *) b;
+	pcb_line_t *line = (pcb_line_t *)obj;
 	struct line_info *i = (struct line_info *) cl;
 
 	res = can_merge_lines(line, &i->lin, &i->modpts);
 	switch(res) {
-		case PCB_LINMER_NONE:  return RND_R_DIR_NOT_FOUND;
+		case PCB_LINMER_NONE:  return rnd_RTREE_DIR_NOT_FOUND_CONT;
 		case PCB_LINMER_REMPT: i->remove_line = line; longjmp(i->env, 1); break;
 		case PCB_LINMER_SKIP:  i->skip_new = 1; longjmp(i->env, 1); break;
 	}
 
-	return RND_R_DIR_NOT_FOUND; /* should't ever get here */
+	return rnd_RTREE_DIR_NOT_FOUND_CONT; /* should't ever get here */
 }
 
 
@@ -504,7 +504,7 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y
 	 * verify that the layer is on the board first!
 	 */
 	if (setjmp(info.env) == 0) {
-		rnd_r_search(Layer->line_tree, &search, NULL, line_callback, &info, NULL);
+		rnd_rtree_search_any(Layer->line_tree, (rnd_rtree_box_t *)&search, NULL, line_callback, &info, NULL);
 		return pcb_line_new(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 	}
 
@@ -989,9 +989,9 @@ struct via_info {
 	jmp_buf env;
 };
 
-static rnd_r_dir_t moveline_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t moveline_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	struct via_info *i = (struct via_info *) cl;
+	struct via_info *i = (struct via_info *)cl;
 	pcb_pstk_t *ps = pcb_pstk_new(PCB->Data, -1, conf_core.design.via_proto,
 		i->X, i->Y, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 
@@ -1047,7 +1047,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 		info.X = newone->Point1.X;
 		info.Y = newone->Point1.Y;
 		if (setjmp(info.env) == 0)
-			rnd_r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
+			rnd_rtree_search_any(Layer->line_tree, (rnd_rtree_box_t *)&sb, NULL, moveline_callback, &info, NULL);
 	}
 	/* consider via at Point2 */
 	sb.X1 = newone->Point2.X - newone->Thickness / 2;
@@ -1060,7 +1060,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 		info.X = newone->Point2.X;
 		info.Y = newone->Point2.Y;
 		if (setjmp(info.env) == 0)
-			rnd_r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
+			rnd_rtree_search_any(Layer->line_tree, (rnd_rtree_box_t *)&sb, NULL, moveline_callback, &info, NULL);
 	}
 	return newone;
 }
@@ -1085,10 +1085,10 @@ struct rlp_info {
 	pcb_line_t *line;
 	rnd_point_t *point;
 };
-static rnd_r_dir_t remove_point(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t remove_point(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_line_t *line = (pcb_line_t *) b;
-	struct rlp_info *info = (struct rlp_info *) cl;
+	pcb_line_t *line = (pcb_line_t *)obj;
+	struct rlp_info *info = (struct rlp_info *)cl;
 	if (line == info->line)
 		return RND_R_DIR_NOT_FOUND;
 	if ((line->Point1.X == info->point->X)
@@ -1103,7 +1103,7 @@ static rnd_r_dir_t remove_point(const rnd_box_t * b, void *cl)
 		info->point = &line->Point2;
 		longjmp(info->env, 1);
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 /* removes a line point, or a line if the selected point is the end */
@@ -1118,7 +1118,7 @@ void *pcb_lineop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 	info.line = Line;
 	info.point = Point;
 	if (setjmp(info.env) == 0) {
-		rnd_r_search(Layer->line_tree, (const rnd_box_t *) Point, NULL, remove_point, &info, NULL);
+		rnd_rtree_search_any(Layer->line_tree, (const rnd_rtree_box_t *)Point, NULL, remove_point, &info, NULL);
 		return pcb_lineop_remove(ctx, Layer, Line);
 	}
 	pcb_move_obj(PCB_OBJ_LINE_POINT, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);

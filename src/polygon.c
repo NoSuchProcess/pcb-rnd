@@ -1391,10 +1391,10 @@ struct plow_info {
 	pcb_layer_t *layer;
 	pcb_data_t *data;
 	void *user_data;
-	rnd_r_dir_t (*callback)(pcb_data_t *, pcb_layer_t *, pcb_poly_t *, int, void *, void *, void *user_data);
+	rnd_rtree_dir_t (*callback)(pcb_data_t *, pcb_layer_t *, pcb_poly_t *, int, void *, void *, void *user_data);
 };
 
-static rnd_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2, void *user_data)
+static rnd_rtree_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	if (!Polygon->Clipped)
 		return 0;
@@ -1402,65 +1402,65 @@ static rnd_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_
 	case PCB_OBJ_PSTK:
 		SubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	case PCB_OBJ_LINE:
 		SubtractLine((pcb_line_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	case PCB_OBJ_ARC:
 		SubtractArc((pcb_arc_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	case PCB_OBJ_POLY:
 		if (ptr2 != Polygon) {
 			SubtractPolyPoly((pcb_poly_t *) ptr2, Polygon);
 			Polygon->NoHolesValid = 0;
-			return RND_R_DIR_FOUND_CONTINUE;
+			return rnd_RTREE_DIR_FOUND_CONT;
 		}
 		break;
 	case PCB_OBJ_TEXT:
 		SubtractText((pcb_text_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
-static rnd_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2, void *user_data)
+static rnd_rtree_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	switch (type) {
 	case PCB_OBJ_PSTK:
 		UnsubtractPadstack(Data, (pcb_pstk_t *) ptr2, Layer, Polygon);
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	case PCB_OBJ_LINE:
 		UnsubtractLine((pcb_line_t *) ptr2, Layer, Polygon);
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	case PCB_OBJ_ARC:
 		UnsubtractArc((pcb_arc_t *) ptr2, Layer, Polygon);
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	case PCB_OBJ_POLY:
 		if (ptr2 != Polygon) {
 			UnsubtractPolyPoly((pcb_poly_t *) ptr2, Polygon);
-			return RND_R_DIR_FOUND_CONTINUE;
+			return rnd_RTREE_DIR_FOUND_CONT;
 		}
 		break;
 	case PCB_OBJ_TEXT:
 		UnsubtractText((pcb_text_t *) ptr2, Layer, Polygon);
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 int pcb_poly_sub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *obj)
 {
-	if (subtract_plow(Data, Layer, Polygon, type, NULL, obj, NULL) == RND_R_DIR_FOUND_CONTINUE)
+	if (subtract_plow(Data, Layer, Polygon, type, NULL, obj, NULL) & rnd_RTREE_DIR_FOUND)
 		return 0;
 	return -1;
 }
 
 int pcb_poly_unsub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *obj)
 {
-	if (add_plow(Data, Layer, Polygon, type, NULL, obj, NULL) == RND_R_DIR_FOUND_CONTINUE)
+	if (add_plow(Data, Layer, Polygon, type, NULL, obj, NULL) & rnd_RTREE_DIR_FOUND)
 		return 0;
 	return -1;
 }
@@ -1485,7 +1485,7 @@ static rnd_r_dir_t poly_plows_inhibited_cb(pcb_data_t *data, pcb_layer_t *lay, p
 
 
 int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
-	rnd_r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data),
+	rnd_rtree_dir_t (*call_back)(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data),
 	void *user_data)
 {
 	rnd_box_t sb = ((pcb_any_obj_t *) ptr2)->BoundingBox;
