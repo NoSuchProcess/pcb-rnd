@@ -472,9 +472,9 @@ typedef struct {
 	rnd_point_t **Point;
 } ptcb_t;
 
-static rnd_r_dir_t polypoint_callback(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t polypoint_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_poly_t *polygon = (pcb_poly_t *)box;
+	pcb_poly_t *polygon = (pcb_poly_t *)obj;
 	ptcb_t *ctx = (ptcb_t *)cl;
 	double d;
 	pcb_data_t *dt;
@@ -483,11 +483,11 @@ static rnd_r_dir_t polypoint_callback(const rnd_box_t *box, void *cl)
 	if ((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC)) {
 		/* do not find subc part poly points if not explicitly requested */
 		if (!(ctx->Type & PCB_OBJ_SUBC_PART))
-			return RND_R_DIR_NOT_FOUND;
+			return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 		/* don't find subc poly points even as subc part unless we are editing a subc */
 		if (!PCB->loose_subc)
-			return RND_R_DIR_NOT_FOUND;
+			return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	}
 
 	PCB_POLY_POINT_LOOP(polygon);
@@ -502,7 +502,7 @@ static rnd_r_dir_t polypoint_callback(const rnd_box_t *box, void *cl)
 	}
 	PCB_END_LOOP;
 
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, unsigned long req_flag, pcb_layer_t ** Layer, pcb_poly_t ** Polygon, rnd_point_t ** Point)
@@ -516,7 +516,7 @@ static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	ctx.found = rnd_false;;
 	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
-	rnd_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
+	rnd_rtree_search_any(SearchLayer->polygon_tree, (rnd_rtree_box_t *)&SearchBox, NULL, polypoint_callback, &ctx, NULL);
 
 	if (ctx.found)
 		return rnd_true;
