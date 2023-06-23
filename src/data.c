@@ -699,7 +699,7 @@ rnd_rtree_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const r
 						 void *closure, long *num_found, rnd_bool vis_only)
 {
 	rnd_layer_id_t lid;
-	rnd_r_dir_t res = 0;
+	rnd_rtree_dir_t res = 0;
 
 	if (!vis_only || PCB->RatOn)
 		if (types & PCB_OBJ_RAT)  rsearch(data->rat_tree);
