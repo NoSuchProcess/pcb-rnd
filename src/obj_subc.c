@@ -2244,7 +2244,7 @@ static void subc_prev_draw_pstk(const pcb_subc_t *sc, const rnd_box_t *drawn_are
 		if (pcb_obj_is_under(o, sc->data)) {
 			pcb_pstk_draw_callback(info, (void *)o, (rnd_rtree_box_t *)o);
 			if (PCB->hole_on)
-				pcb_pstk_draw_hole_callback((rnd_box_t *)o, info);
+				pcb_pstk_draw_hole_callback(info, (void *)o, (rnd_rtree_box_t *)o);
 		}
 	}
 }

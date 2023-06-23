@@ -371,7 +371,7 @@ static void pcb_draw_pstk_holes(pcb_draw_info_t *info, rnd_layergrp_id_t group, 
 	xform_setup(info, &tmp, NULL);
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.holetype = holetype;
-	rnd_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_hole_callback, info, NULL);
+	rnd_rtree_search_any(PCB->Data->padstack_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_pstk_draw_hole_callback, info, NULL);
 	info->xform = NULL; info->layer = NULL; 
 }
 
@@ -385,7 +385,7 @@ static void pcb_draw_pstk_slots(pcb_draw_info_t *info, rnd_layergrp_id_t group, 
 	xform_setup(info, &tmp, NULL);
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.holetype = holetype;
-	rnd_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_slot_callback, info, NULL);
+	rnd_rtree_search_any(PCB->Data->padstack_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_pstk_draw_slot_callback, info, NULL);
 	info->xform = NULL; info->layer = NULL;
 }
 

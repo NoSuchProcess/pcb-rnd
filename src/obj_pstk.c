@@ -644,44 +644,44 @@ rnd_r_dir_t pcb_pstk_draw_label_callback(const rnd_box_t *b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-rnd_r_dir_t pcb_pstk_draw_hole_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t pcb_pstk_draw_hole_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_draw_info_t *info = cl;
-	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	pcb_pstk_proto_t *proto;
 
 	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
 
 	if (pcb_hidden_floater(ps, info) || pcb_partial_export(ps, info))
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	/* hide subc parts if requested */
 	if (!info->pcb->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* no hole in this layer group */
 	if (info->objcb.pstk.gid >= 0) {
 		if (!pcb_pstk_bb_drills(info->pcb, ps, info->objcb.pstk.gid, &proto))
-			return RND_R_DIR_FOUND_CONTINUE;
+			return rnd_RTREE_DIR_FOUND_CONT;
 	}
 	else
 		proto = pcb_pstk_get_proto(ps);
 
 	/* No hole at all */
 	if ((proto == NULL) || (proto->hdia <= 0))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* hole is plated, but the caller doesn't want plated holes */
 	if (proto->hplated && (!(info->objcb.pstk.holetype & PCB_PHOLE_PLATED)))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* hole is unplated, but the caller doesn't want unplated holes */
 	if (!proto->hplated && (!(info->objcb.pstk.holetype & PCB_PHOLE_UNPLATED)))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* BBvia, but the caller doesn't want BBvias */
 	if (((proto->htop != 0) || (proto->hbottom != 0)) && (!(info->objcb.pstk.holetype & PCB_PHOLE_BB)))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* actual hole */
 	rnd_hid_set_line_width(pcb_draw_out.drillGC, 0);
@@ -699,51 +699,51 @@ rnd_r_dir_t pcb_pstk_draw_hole_callback(const rnd_box_t *b, void *cl)
 		rnd_render->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
 	}
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-rnd_r_dir_t pcb_pstk_draw_slot_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t pcb_pstk_draw_slot_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_draw_info_t *info = cl;
-	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_shape_t *shape;
 
 	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
 
 	if (pcb_hidden_floater(ps, info) || pcb_partial_export(ps, info))
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	/* hide subc parts if requested */
 	if (!info->pcb->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* no slot in this layer group */
 	if (info->objcb.pstk.gid >= 0) {
 		if (!pcb_pstk_bb_drills(info->pcb, ps, info->objcb.pstk.gid, &proto))
-			return RND_R_DIR_FOUND_CONTINUE;
+			return rnd_RTREE_DIR_FOUND_CONT;
 	}
 	else
 		proto = pcb_pstk_get_proto(ps);
 
 	if (proto == NULL)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* No slot at all */
 	if (proto->mech_idx < 0)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* hole is plated, but the caller doesn't want plated holes */
 	if (proto->hplated && (!(info->objcb.pstk.holetype & PCB_PHOLE_PLATED)))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* hole is unplated, but the caller doesn't want unplated holes */
 	if (!proto->hplated && (!(info->objcb.pstk.holetype & PCB_PHOLE_UNPLATED)))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* BBslot, but the caller doesn't want BBslot */
 	if (((proto->htop != 0) || (proto->hbottom != 0)) && (!(info->objcb.pstk.holetype & PCB_PHOLE_BB)))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* actual slot */
 	shape = pcb_pstk_shape(ps, PCB_LYT_MECH, PCB_LYC_AUTO);
@@ -756,7 +756,7 @@ rnd_r_dir_t pcb_pstk_draw_slot_callback(const rnd_box_t *b, void *cl)
 			pcb_pstk_draw_shape_solid(info, pcb_draw_out.drillGC, ps, shape);
 	}
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
@@ -872,8 +872,8 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 	if (draw_hole) {
 		info.objcb.pstk.shape_mask = PCB_LYT_MECH;
 		info.objcb.pstk.is_current = (draw_hole > 1);
-		pcb_pstk_draw_hole_callback((rnd_box_t *)ps, &info);
-		pcb_pstk_draw_slot_callback((rnd_box_t *)ps, &info);
+		pcb_pstk_draw_hole_callback(&info, (void *)ps, (rnd_rtree_box_t *)ps);
+		pcb_pstk_draw_slot_callback(&info, (void *)ps, (rnd_rtree_box_t *)ps);
 	}
 
 	if (mark)
