@@ -156,19 +156,19 @@ struct line_info {
 };
 
 
-static rnd_r_dir_t line_callback(const rnd_box_t * box, void *cl)
+static rnd_rtree_dir_t line_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct line_info *i = (struct line_info *) cl;
-	pcb_line_t *l = (pcb_line_t *) box;
+	pcb_line_t *l = (pcb_line_t *)obj;
 
 	TEST_OBJST(i->objst, i->req_flag, l, l, l);
 
 	if (!pcb_is_point_in_line(PosX, PosY, SearchRadius, (pcb_any_line_t *)l))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	*i->Line = l;
 	*i->Point = (rnd_point_t *) l;
 
-	return RND_R_DIR_CANCEL; /* found what we were looking for */
+	return rnd_RTREE_DIR_FOUND_STOP; /* found what we were looking for */
 }
 
 
@@ -182,10 +182,7 @@ static rnd_bool SearchLineByLocation(unsigned long objst, unsigned long req_flag
 	info.req_flag = req_flag;
 
 	*Layer = SearchLayer;
-	if (rnd_r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
-		return rnd_true;
-
-	return rnd_false;
+	return (rnd_rtree_search_any(SearchLayer->line_tree, (rnd_rtree_box_t *)&SearchBox, NULL, line_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
 static rnd_r_dir_t rat_callback(const rnd_box_t * box, void *cl)
@@ -232,18 +229,18 @@ struct arc_info {
 	double least;
 };
 
-static rnd_r_dir_t arc_callback(const rnd_box_t * box, void *cl)
+static rnd_rtree_dir_t arc_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct arc_info *i = (struct arc_info *) cl;
-	pcb_arc_t *a = (pcb_arc_t *) box;
+	pcb_arc_t *a = (pcb_arc_t *)obj;
 
 	TEST_OBJST(i->objst, i->req_flag, l, a, a);
 
 	if (!pcb_is_point_on_arc(PosX, PosY, SearchRadius, a))
-		return 0;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	*i->Arc = a;
 	*i->Dummy = a;
-	return RND_R_DIR_CANCEL; /* found */
+	return rnd_RTREE_DIR_FOUND_STOP;
 }
 
 
@@ -257,9 +254,7 @@ static rnd_bool SearchArcByLocation(unsigned long objst, unsigned long req_flag,
 	info.req_flag = req_flag;
 
 	*Layer = SearchLayer;
-	if (rnd_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(SearchLayer->arc_tree, (rnd_rtree_box_t *)&SearchBox, NULL, arc_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
 /* ---------------------------------------------------------------------------
@@ -272,10 +267,10 @@ struct gfx_info {
 	int level;
 };
 
-static rnd_r_dir_t gfx_callback(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t gfx_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct gfx_info *i = (struct gfx_info *)cl;
-	pcb_gfx_t *g = (pcb_gfx_t *)box;
+	pcb_gfx_t *g = (pcb_gfx_t *)obj;
 
 	TEST_OBJST(i->objst, i->req_flag, l, g, g);
 
@@ -284,10 +279,10 @@ static rnd_r_dir_t gfx_callback(const rnd_box_t *box, void *cl)
 	if ((i->level > 0) && g->render_under) return 0;
 
 	if (!pcb_is_point_in_gfx(PosX, PosY, SearchRadius, g))
-		return 0;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	*i->Gfx = g;
 	*i->Dummy = g;
-	return RND_R_DIR_CANCEL; /* found */
+	return rnd_RTREE_DIR_FOUND_STOP;
 }
 
 /* level: -1 returns only "render_under", +1 returns only render-above, 0
@@ -303,23 +298,21 @@ static rnd_bool SearchGfxByLocation(unsigned long objst, unsigned long req_flag,
 	info.level = level;
 
 	*Layer = SearchLayer;
-	if (rnd_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfx_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(SearchLayer->gfx_tree, (rnd_rtree_box_t *)&SearchBox, NULL, gfx_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
-static rnd_r_dir_t text_callback(const rnd_box_t * box, void *cl)
+static rnd_rtree_dir_t text_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_text_t *text = (pcb_text_t *) box;
-	struct ans_info *i = (struct ans_info *) cl;
+	pcb_text_t *text = (pcb_text_t *)obj;
+	struct ans_info *i = (struct ans_info *)cl;
 
 	TEST_OBJST(i->objst, i->req_flag, l, text, text);
 
 	if (PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		*i->ptr2 = *i->ptr3 = text;
-		return RND_R_DIR_CANCEL; /* found */
+		return rnd_RTREE_DIR_FOUND_STOP;
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 /* ---------------------------------------------------------------------------
@@ -335,26 +328,24 @@ static rnd_bool SearchTextByLocation(unsigned long objst, unsigned long req_flag
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (rnd_r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(SearchLayer->text_tree, (rnd_rtree_box_t *)&SearchBox, NULL, text_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
-static rnd_r_dir_t polygon_callback(const rnd_box_t * box, void *cl)
+static rnd_rtree_dir_t polygon_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_poly_t *polygon = (pcb_poly_t *) box;
-	struct ans_info *i = (struct ans_info *) cl;
+	pcb_poly_t *polygon = (pcb_poly_t *)obj;
+	struct ans_info *i = (struct ans_info *)cl;
 
 	TEST_OBJST(i->objst, i->req_flag, l, polygon, polygon);
 
 	if (polygon->Clipped == NULL)
-		return RND_R_DIR_NOT_FOUND; /* polygon cleared out of existence */
+		return rnd_RTREE_DIR_NOT_FOUND_CONT; /* polygon cleared out of existence */
 
 	if (pcb_poly_is_point_in_p(PosX, PosY, SearchRadius, polygon)) {
 		*i->ptr2 = *i->ptr3 = polygon;
-		return RND_R_DIR_CANCEL; /* found */
+		return rnd_RTREE_DIR_FOUND_STOP; /* found */
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 
@@ -371,9 +362,7 @@ static rnd_bool SearchPolygonByLocation(unsigned long objst, unsigned long req_f
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (rnd_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(SearchLayer->polygon_tree, (rnd_rtree_box_t *)&SearchBox, NULL, polygon_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
 static rnd_r_dir_t linepoint_callback(const rnd_box_t * b, void *cl)
