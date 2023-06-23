@@ -1438,34 +1438,34 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 	pcb_text_draw_(info, text, min_silk_line, allow_term_gfx, PCB_TXT_TINY_CHEAP);
 }
 
-rnd_r_dir_t pcb_text_draw_callback(const rnd_box_t * b, void *cl)
+rnd_rtree_dir_t pcb_text_draw_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_text_t *text = (pcb_text_t *) b;
+	pcb_text_t *text = (pcb_text_t *)obj;
 	pcb_draw_info_t *info = cl;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
-		return RND_R_DIR_FOUND_CONTINUE;
+	if (pcb_hidden_floater((pcb_any_obj_t*)obj, info) || pcb_partial_export((pcb_any_obj_t*)obj, info))
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	pcb_text_draw(info, text, 0);
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-rnd_r_dir_t pcb_text_draw_term_callback(const rnd_box_t * b, void *cl)
+rnd_rtree_dir_t pcb_text_draw_term_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_text_t *text = (pcb_text_t *) b;
+	pcb_text_t *text = (pcb_text_t *)obj;
 	pcb_draw_info_t *info = cl;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
-		return RND_R_DIR_FOUND_CONTINUE;
+	if (pcb_hidden_floater((pcb_any_obj_t*)obj, info) || pcb_partial_export((pcb_any_obj_t*)obj, info))
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(text->parent_type, &text->parent))
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	pcb_text_draw(info, text, 1);
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 /* erases a text on a layer */

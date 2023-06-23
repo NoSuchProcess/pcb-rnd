@@ -433,7 +433,7 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 		switch(o->type) {
 			case PCB_OBJ_ARC:  pcb_arc_draw_term_callback(info, (void *)b, b); break;
 			case PCB_OBJ_LINE: pcb_line_draw_term_callback(info, (void *)b, b); break;
-			case PCB_OBJ_TEXT: pcb_text_draw_term_callback((rnd_box_t *)b, info); break;
+			case PCB_OBJ_TEXT: pcb_text_draw_term_callback(info, (void *)b, b); break;
 			case PCB_OBJ_POLY: pcb_poly_draw_term_callback(info, (void *)b, b); break;
 			default:
 				assert(!"Don't know how to draw delayed object");
@@ -570,7 +570,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		delayed_terms_enabled = rnd_true;
 		rnd_rtree_search_any(Layer->line_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_line_draw_term_callback, info, NULL);
 		rnd_rtree_search_any(Layer->arc_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_arc_draw_term_callback, info, NULL);
-		rnd_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_term_callback, info, NULL);
+		rnd_rtree_search_any(Layer->text_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_text_draw_term_callback, info, NULL);
 		rnd_rtree_search_any(Layer->gfx_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_gfx_draw_above_callback, info, NULL);
 		delayed_terms_enabled = rnd_false;
 		may_have_delayed = 1;
@@ -578,7 +578,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	else {
 		rnd_rtree_search_any(Layer->line_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_line_draw_callback, info, NULL);
 		rnd_rtree_search_any(Layer->arc_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_arc_draw_callback, info, NULL);
-		rnd_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_callback, info, NULL);
+		rnd_rtree_search_any(Layer->text_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_text_draw_callback, info, NULL);
 		rnd_rtree_search_any(Layer->gfx_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_gfx_draw_above_callback, info, NULL);
 	}
 
@@ -708,7 +708,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_
 		if (Layer->text_tree != NULL)
 			for(o = rnd_rtree_first(&it, Layer->text_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_text_draw_term_callback((rnd_box_t *)o, &info);
+					pcb_text_draw_term_callback(&info, (void *)o, (rnd_rtree_box_t *)o);
 		if (Layer->gfx_tree != NULL)
 			for(o = rnd_rtree_first(&it, Layer->gfx_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if ((pcb_obj_is_under(o, data)) && !(((pcb_gfx_t *)o)->render_under))
@@ -726,7 +726,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_
 		if (Layer->text_tree != NULL)
 			for(o = rnd_rtree_first(&it, Layer->text_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_text_draw_callback((rnd_box_t *)o, &info);
+					pcb_text_draw_callback(&info, (void *)o, (rnd_rtree_box_t *)o);
 		if (Layer->gfx_tree != NULL)
 			for(o = rnd_rtree_first(&it, Layer->gfx_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
