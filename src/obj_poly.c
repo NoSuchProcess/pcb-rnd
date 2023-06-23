@@ -1594,32 +1594,32 @@ static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_
 	pcb_poly_draw_(info, polygon, allow_term_gfx);
 }
 
-rnd_r_dir_t pcb_poly_draw_callback(const rnd_box_t * b, void *cl)
+rnd_rtree_dir_t pcb_poly_draw_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_draw_info_t *i = cl;
-	pcb_poly_t *polygon = (pcb_poly_t *) b;
+	pcb_poly_t *polygon = (pcb_poly_t *)obj;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b, i) || pcb_partial_export((pcb_any_obj_t*)b, i))
-		return RND_R_DIR_FOUND_CONTINUE;
+	if (pcb_hidden_floater((pcb_any_obj_t*)obj, i) || pcb_partial_export((pcb_any_obj_t*)obj, i))
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	if (!polygon->Clipped)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	pcb_poly_draw(i, polygon, 0);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-rnd_r_dir_t pcb_poly_draw_term_callback(const rnd_box_t * b, void *cl)
+rnd_rtree_dir_t pcb_poly_draw_term_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_draw_info_t *i = cl;
-	pcb_poly_t *polygon = (pcb_poly_t *) b;
+	pcb_poly_t *polygon = (pcb_poly_t *)obj;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b, i) || pcb_partial_export((pcb_any_obj_t*)b, i))
-		return RND_R_DIR_FOUND_CONTINUE;
+	if (pcb_hidden_floater((pcb_any_obj_t*)obj, i) || pcb_partial_export((pcb_any_obj_t*)obj, i))
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	if (polygon->Clipped == NULL) {
 		/* if poly is cleared out of existence, it may still have some annotations
@@ -1627,15 +1627,15 @@ rnd_r_dir_t pcb_poly_draw_term_callback(const rnd_box_t * b, void *cl)
 		   only thing affected is the as-drawn contour */
 		if (conf_core.editor.as_drawn_poly)
 			pcb_draw_annotation_add((pcb_any_obj_t *)polygon);
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	}
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	pcb_poly_draw(i, polygon, 1);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 /* erases a polygon on a layer */
