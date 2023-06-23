@@ -61,10 +61,10 @@ struct onpoint_search_info {
 	rnd_coord_t Y;
 };
 
-static rnd_r_dir_t onpoint_line_callback(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t onpoint_line_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *)cl;
-	pcb_line_t *line = (pcb_line_t *)box;
+	pcb_line_t *line = (pcb_line_t *)obj;
 
 #ifdef DEBUG_ONPOINT
 	rnd_trace("onpoint X=%mm Y=%mm    X1=%mm Y1=%mm X2=%mm Y2=%mm\n",
@@ -74,18 +74,18 @@ static rnd_r_dir_t onpoint_line_callback(const rnd_box_t *box, void *cl)
 		vtp0_append(onpoint_objs, line);
 		line->ind_onpoint = 1;
 		pcb_line_invalidate_draw(NULL, line);
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	}
 	else
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
 
-static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t onpoint_arc_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *)cl;
-	pcb_arc_t *arc = (pcb_arc_t *)box;
+	pcb_arc_t *arc = (pcb_arc_t *)obj;
 	rnd_coord_t p1x, p1y, p2x, p2y;
 
 	pcb_arc_get_end(arc, 0, &p1x, &p1y);
@@ -99,10 +99,10 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t *box, void *cl)
 		vtp0_append(onpoint_objs, arc);
 		arc->ind_onpoint = 1;
 		pcb_arc_invalidate_draw(NULL, arc);
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	}
 	else
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 static void draw_line_or_arc(pcb_any_obj_t *o)
@@ -160,8 +160,8 @@ static void onpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_t 
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->meta.real.vis)
 			continue;
-		rnd_r_search(layer->line_tree, &SearchBox, NULL, onpoint_line_callback, &info, NULL);
-		rnd_r_search(layer->arc_tree, &SearchBox, NULL, onpoint_arc_callback, &info, NULL);
+		rnd_rtree_search_any(layer->line_tree, (rnd_rtree_box_t *)&SearchBox, NULL, onpoint_line_callback, &info, NULL);
+		rnd_rtree_search_any(layer->arc_tree, (rnd_rtree_box_t *)&SearchBox, NULL, onpoint_arc_callback, &info, NULL);
 	}
 
 	/* Undraw the old objects */
