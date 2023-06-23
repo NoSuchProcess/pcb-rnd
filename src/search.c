@@ -364,11 +364,11 @@ static rnd_bool SearchPolygonByLocation(unsigned long objst, unsigned long req_f
 	return (rnd_rtree_search_any(SearchLayer->polygon_tree, (rnd_rtree_box_t *)&SearchBox, NULL, polygon_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
-static rnd_r_dir_t linepoint_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t linepoint_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_line_t *line = (pcb_line_t *) b;
+	pcb_line_t *line = (pcb_line_t *) obj;
 	struct line_info *i = (struct line_info *) cl;
-	rnd_r_dir_t ret_val = RND_R_DIR_NOT_FOUND;
+	rnd_rtree_dir_t ret_val = rnd_RTREE_DIR_NOT_FOUND_CONT;
 	double d;
 
 	TEST_OBJST(i->objst, i->req_flag, l, line, line);
@@ -379,7 +379,7 @@ static rnd_r_dir_t linepoint_callback(const rnd_box_t * b, void *cl)
 		i->least = d;
 		*i->Line = line;
 		*i->Point = &line->Point1;
-		ret_val = RND_R_DIR_FOUND_CONTINUE;
+		ret_val = rnd_RTREE_DIR_FOUND_CONT;
 	}
 
 	d = rnd_distance(PosX, PosY, line->Point2.X, line->Point2.Y);
@@ -387,17 +387,17 @@ static rnd_r_dir_t linepoint_callback(const rnd_box_t * b, void *cl)
 		i->least = d;
 		*i->Line = line;
 		*i->Point = &line->Point2;
-		ret_val = RND_R_DIR_FOUND_CONTINUE;
+		ret_val = rnd_RTREE_DIR_FOUND_CONT;
 	}
 	return ret_val;
 }
 
-static rnd_r_dir_t arcpoint_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t arcpoint_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	rnd_box_t ab;
-	pcb_arc_t *arc = (pcb_arc_t *) b;
+	pcb_arc_t *arc = (pcb_arc_t *)obj;
 	struct arc_info *i = (struct arc_info *) cl;
-	rnd_r_dir_t ret_val = RND_R_DIR_NOT_FOUND;
+	rnd_rtree_dir_t ret_val = rnd_RTREE_DIR_NOT_FOUND_CONT;
 	double d;
 
 	TEST_OBJST(i->objst, i->req_flag, l, arc, arc);
@@ -411,7 +411,7 @@ static rnd_r_dir_t arcpoint_callback(const rnd_box_t * b, void *cl)
 		i->least = d;
 		*i->Arc = arc;
 		*i->arc_pt = pcb_arc_start_ptr;
-		ret_val = RND_R_DIR_FOUND_CONTINUE;
+		ret_val = rnd_RTREE_DIR_FOUND_CONT;
 	}
 
 	d = rnd_distance(PosX, PosY, ab.X2, ab.Y2);
@@ -419,7 +419,7 @@ static rnd_r_dir_t arcpoint_callback(const rnd_box_t * b, void *cl)
 		i->least = d;
 		*i->Arc = arc;
 		*i->arc_pt = pcb_arc_end_ptr;
-		ret_val = RND_R_DIR_FOUND_CONTINUE;
+		ret_val = rnd_RTREE_DIR_FOUND_CONT;
 	}
 	return ret_val;
 }
@@ -438,9 +438,7 @@ static rnd_bool SearchLinePointByLocation(unsigned long objst, unsigned long req
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (rnd_r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(SearchLayer->line_tree, (rnd_rtree_box_t *)&SearchBox, NULL, linepoint_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
 /* ---------------------------------------------------------------------------
@@ -457,9 +455,7 @@ static rnd_bool SearchArcPointByLocation(unsigned long objst, unsigned long req_
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (rnd_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arcpoint_callback, &info, NULL))
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(SearchLayer->arc_tree, (rnd_rtree_box_t *)&SearchBox, NULL, arcpoint_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
 /* ---------------------------------------------------------------------------
