@@ -2106,10 +2106,10 @@ do { \
 #include "draw.h"
 
 
-rnd_r_dir_t pcb_draw_subc_mark(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t pcb_draw_subc_mark(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_draw_info_t *info = cl;
-	pcb_subc_t *subc = (pcb_subc_t *) b;
+	pcb_subc_t *subc = (pcb_subc_t *)obj;
 	rnd_box_t *bb = &subc->BoundingBox;
 	int selected, locked;
 	int freq = conf_core.appearance.subc.dash_freq;
@@ -2143,27 +2143,27 @@ rnd_r_dir_t pcb_draw_subc_mark(const rnd_box_t *b, void *cl)
 		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2, freq, rnd_true);
 	}
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-rnd_r_dir_t draw_subc_mark_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t draw_subc_mark_callback(void *cl, void *obj, const rnd_rtree_box_t *b)
 {
 	pcb_draw_info_t *info = cl;
-	pcb_subc_t *subc = (pcb_subc_t *) b;
+	pcb_subc_t *subc = (pcb_subc_t *)obj;
 	pcb_extobj_t *extobj = pcb_extobj_get(subc);
 
 	if ((extobj != NULL) && (extobj->draw_mark != NULL)) {
 		extobj->draw_mark(info, subc);
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	}
 
-	return pcb_draw_subc_mark(b, cl);
+	return pcb_draw_subc_mark(cl, obj, b);
 }
 
-rnd_r_dir_t draw_subc_label_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t draw_subc_label_callback(void *cl, void *obj, const rnd_rtree_box_t *b)
 {
 	pcb_draw_info_t *info = cl;
-	pcb_subc_t *subc = (pcb_subc_t *) b;
+	pcb_subc_t *subc = (pcb_subc_t *)obj;
 	rnd_box_t *bb = &subc->BoundingBox;
 	rnd_coord_t x0, y0, dx, dy;
 	rnd_font_t *font = &PCB->fontkit.dflt;
@@ -2221,7 +2221,7 @@ rnd_r_dir_t draw_subc_label_callback(const rnd_box_t *b, void *cl)
 	else if (subc->refdes != NULL)
 		pcb_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, subc->refdes, 0);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 static int subc_prev_layer_vis(pcb_layer_t *layer)

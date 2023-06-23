@@ -264,7 +264,7 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 
 	if (PCB->SubcOn) {
 		info->objcb.subc.per_side = per_side;
-		rnd_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_mark_callback, info, NULL);
+		rnd_rtree_search_any(PCB->Data->subc_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, draw_subc_mark_callback, info, NULL);
 	}
 
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
@@ -306,7 +306,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, rnd_layergrp_id_t componen
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	if (PCB->SubcOn) {
 		info->objcb.subc.per_side = per_side;
-		rnd_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_label_callback, info, NULL);
+		rnd_rtree_search_any(PCB->Data->subc_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, draw_subc_label_callback, info, NULL);
 	}
 	if (PCB->padstack_mark_on) {
 		rnd_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
