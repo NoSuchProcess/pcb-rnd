@@ -542,12 +542,12 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	/* first draw all gfx that's under other layer objects */
 	if (lflg & PCB_LYT_COPPER) {
 		delayed_terms_enabled = rnd_true;
-		rnd_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_under_callback, info, NULL);
+		rnd_rtree_search_any(Layer->gfx_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_gfx_draw_under_callback, info, NULL);
 		delayed_terms_enabled = rnd_false;
 		may_have_delayed = 1;
 	}
 	else
-		rnd_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_under_callback, info, NULL);
+		rnd_rtree_search_any(Layer->gfx_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_gfx_draw_under_callback, info, NULL);
 
 		/* print the non-clearing polys */
 	if (lflg & PCB_LYT_COPPER) {
@@ -571,7 +571,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		rnd_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_term_callback, info, NULL);
 		rnd_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_term_callback, info, NULL);
 		rnd_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_term_callback, info, NULL);
-		rnd_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_above_callback, info, NULL);
+		rnd_rtree_search_any(Layer->gfx_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_gfx_draw_above_callback, info, NULL);
 		delayed_terms_enabled = rnd_false;
 		may_have_delayed = 1;
 	}
@@ -579,7 +579,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		rnd_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_callback, info, NULL);
 		rnd_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_callback, info, NULL);
 		rnd_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_callback, info, NULL);
-		rnd_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_above_callback, info, NULL);
+		rnd_rtree_search_any(Layer->gfx_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, pcb_gfx_draw_above_callback, info, NULL);
 	}
 
 	if (may_have_delayed)
@@ -675,7 +675,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_
 		if (Layer->gfx_tree != NULL)
 			for(o = rnd_rtree_first(&it, Layer->gfx_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_gfx_draw_under_callback((rnd_box_t *)o, &info);
+					pcb_gfx_draw_under_callback(&info, (void *)o, (rnd_rtree_box_t *)o);
 	}
 
 	/* print the non-clearing polys */
@@ -730,7 +730,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_
 		if (Layer->gfx_tree != NULL)
 			for(o = rnd_rtree_first(&it, Layer->gfx_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_gfx_draw_above_callback((rnd_box_t *)o, &info);
+					pcb_gfx_draw_above_callback(&info, (void *)o, (rnd_rtree_box_t *)o);
 	}
 
 	out:;

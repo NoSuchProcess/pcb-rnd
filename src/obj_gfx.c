@@ -946,19 +946,19 @@ RND_INLINE rnd_r_dir_t pcb_gfx_draw_callback_(pcb_gfx_t *gfx, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-rnd_r_dir_t pcb_gfx_draw_under_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t pcb_gfx_draw_under_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_gfx_t *gfx = (pcb_gfx_t *)b;
+	pcb_gfx_t *gfx = (pcb_gfx_t *)obj;
 	if (!gfx->render_under)
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	return pcb_gfx_draw_callback_(gfx, cl);
 }
 
-rnd_r_dir_t pcb_gfx_draw_above_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t pcb_gfx_draw_above_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_gfx_t *gfx = (pcb_gfx_t *)b;
+	pcb_gfx_t *gfx = (pcb_gfx_t *)obj;
 	if (gfx->render_under)
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	return pcb_gfx_draw_callback_(gfx, cl);
 }
 
