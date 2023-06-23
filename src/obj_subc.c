@@ -2242,7 +2242,7 @@ static void subc_prev_draw_pstk(const pcb_subc_t *sc, const rnd_box_t *drawn_are
 
 	for(o = rnd_rtree_first(&it, sc->data->padstack_tree, (rnd_rtree_box_t *)drawn_area); o != NULL; o = rnd_rtree_next(&it)) {
 		if (pcb_obj_is_under(o, sc->data)) {
-			pcb_pstk_draw_callback((rnd_box_t *)o, info);
+			pcb_pstk_draw_callback(info, (void *)o, (rnd_rtree_box_t *)o);
 			if (PCB->hole_on)
 				pcb_pstk_draw_hole_callback((rnd_box_t *)o, info);
 		}

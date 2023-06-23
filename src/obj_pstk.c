@@ -536,26 +536,26 @@ static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb
 	}
 }
 
-rnd_r_dir_t pcb_pstk_draw_callback(const rnd_box_t *b, void *cl)
+rnd_rtree_dir_t pcb_pstk_draw_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_draw_info_t *info = cl;
-	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	pcb_pstk_shape_t *shape;
 	pcb_layergrp_t *grp = NULL;
 
 	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
-		return RND_R_DIR_FOUND_CONTINUE;
+	if (pcb_hidden_floater((pcb_any_obj_t*)ps, info) || pcb_partial_export((pcb_any_obj_t*)ps, info))
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	if (info->objcb.pstk.gid < 0) {
 		if (info->objcb.pstk.shape_mask != 0)
 			shape = pcb_pstk_shape(ps, info->objcb.pstk.shape_mask, info->objcb.pstk.comb);
 		else
-			return RND_R_DIR_NOT_FOUND;
+			return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	}
 	else {
 		int n;
@@ -564,7 +564,7 @@ rnd_r_dir_t pcb_pstk_draw_callback(const rnd_box_t *b, void *cl)
 		for(n = 0, lid = grp->lid; n < grp->len; n++,lid++) {
 			if (*lid < ps->thermals.used) {
 				if ((ps->thermals.shape[*lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[*lid] & 3) == PCB_THERMAL_NOSHAPE))
-					return RND_R_DIR_NOT_FOUND;
+					return rnd_RTREE_DIR_NOT_FOUND_CONT;
 			}
 		}
 	}
@@ -586,7 +586,7 @@ rnd_r_dir_t pcb_pstk_draw_callback(const rnd_box_t *b, void *cl)
 			pcb_draw_delay_label_add((pcb_any_obj_t *)ps);
 	}
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 rnd_r_dir_t pcb_pstk_draw_mark_callback(const rnd_box_t *b, void *cl)
@@ -847,7 +847,7 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 			if (info.objcb.pstk.shape_mask == PCB_LYT_MECH)
 				draw_hole = 1;
 			else
-				pcb_pstk_draw_callback((rnd_box_t *)ps, &info);
+				pcb_pstk_draw_callback(&info, (void *)ps, (rnd_rtree_box_t *)ps);
 		}
 	}
 
@@ -865,7 +865,7 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 			if (info.objcb.pstk.shape_mask == PCB_LYT_MECH)
 				draw_hole = 2;
 			else
-				pcb_pstk_draw_callback((rnd_box_t *)ps, &info);
+				pcb_pstk_draw_callback(&info, (void *)ps, (rnd_rtree_box_t *)ps);
 		}
 	}
 

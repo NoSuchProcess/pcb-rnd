@@ -345,7 +345,7 @@ static void pcb_draw_pstks(pcb_draw_info_t *info, rnd_layergrp_id_t group, int i
 		info->objcb.pstk.layer1 = NULL;
 
 	if (!info->xform->check_planes)
-		rnd_r_search(info->pcb->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_callback, info, NULL);
+		rnd_rtree_search_any(info->pcb->Data->padstack_tree, (const rnd_rtree_box_t *)info->drawn_area, NULL, pcb_pstk_draw_callback, info, NULL);
 
 	info->xform = NULL; info->layer = NULL;
 }
