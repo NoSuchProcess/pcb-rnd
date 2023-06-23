@@ -1240,34 +1240,34 @@ static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_g
 	pcb_arc_draw_(info, arc, allow_term_gfx);
 }
 
-rnd_r_dir_t pcb_arc_draw_callback(const rnd_box_t * b, void *cl)
+rnd_rtree_dir_t pcb_arc_draw_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_arc_t *arc = (pcb_arc_t *)b;
+	pcb_arc_t *arc = (pcb_arc_t *)obj;
 	pcb_draw_info_t *info = cl;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
-		return RND_R_DIR_FOUND_CONTINUE;
+	if (pcb_hidden_floater((pcb_any_obj_t*)obj, info) || pcb_partial_export((pcb_any_obj_t*)obj, info))
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	pcb_arc_draw(info, arc, 0);
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-rnd_r_dir_t pcb_arc_draw_term_callback(const rnd_box_t * b, void *cl)
+rnd_rtree_dir_t pcb_arc_draw_term_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_arc_t *arc = (pcb_arc_t *)b;
+	pcb_arc_t *arc = (pcb_arc_t *)obj;
 	pcb_draw_info_t *info = cl;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
-		return RND_R_DIR_FOUND_CONTINUE;
+	if (pcb_hidden_floater((pcb_any_obj_t*)obj, info) || pcb_partial_export((pcb_any_obj_t*)obj, info))
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	pcb_arc_draw(info, arc, 1);
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 /* erases an arc on a layer */
