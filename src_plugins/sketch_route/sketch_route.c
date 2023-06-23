@@ -654,16 +654,16 @@ struct search_info {
 	sketch_t *sk;
 };
 
-static rnd_r_dir_t r_search_cb(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t r_search_cb(void *cl, void *obj_, const rnd_rtree_box_t *box)
 {
-	pcb_any_obj_t *obj = (pcb_any_obj_t *) box;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)obj_;
 	struct search_info *i = (struct search_info *) cl;
 	point_t *point;
 
 	if (obj->type == PCB_OBJ_PSTK) {
 		pcb_pstk_t *pstk = (pcb_pstk_t *) obj;
 		if (pcb_pstk_shape_at(PCB, pstk, i->layer) == NULL)
-			return RND_R_DIR_NOT_FOUND;
+			return rnd_RTREE_DIR_NOT_FOUND_CONT;
 		point = cdt_insert_point(i->sk->cdt, pstk->x, -pstk->y);
 		pointdata_create(point, obj);
 	}
@@ -686,7 +686,7 @@ static rnd_r_dir_t r_search_cb(const rnd_box_t *box, void *cl)
 			htpp_insert(&i->sk->terminals, obj, point);
 	}
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
@@ -712,11 +712,11 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	bbox.X1 = PCB->hidlib.dwg.X1; bbox.Y1 = PCB->hidlib.dwg.Y1; bbox.X2 = PCB->hidlib.dwg.X2; bbox.Y2 = PCB->hidlib.dwg.Y2;
 	info.layer = layer;
 	info.sk = sk;
-	rnd_r_search(PCB->Data->padstack_tree, &bbox, NULL, r_search_cb, &info, NULL);
-	rnd_r_search(layer->line_tree, &bbox, NULL, r_search_cb, &info, NULL);
-	rnd_r_search(layer->text_tree, &bbox, NULL, r_search_cb, &info, NULL);
-	rnd_r_search(layer->polygon_tree, &bbox, NULL, r_search_cb, &info, NULL);
-	rnd_r_search(layer->arc_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	rnd_rtree_search_any(PCB->Data->padstack_tree, (rnd_rtree_box_t *)&bbox, NULL, r_search_cb, &info, NULL);
+	rnd_rtree_search_any(layer->line_tree, (rnd_rtree_box_t *)&bbox, NULL, r_search_cb, &info, NULL);
+	rnd_rtree_search_any(layer->text_tree, (rnd_rtree_box_t *)&bbox, NULL, r_search_cb, &info, NULL);
+	rnd_rtree_search_any(layer->polygon_tree, (rnd_rtree_box_t *)&bbox, NULL, r_search_cb, &info, NULL);
+	rnd_rtree_search_any(layer->arc_tree, (rnd_rtree_box_t *)&bbox, NULL, r_search_cb, &info, NULL);
 
 	rnd_snprintf(name, sizeof(name), "%s: CDT", layer->name);
 	sk->ui_layer_cdt = pcb_uilayer_alloc(PCB, pcb_sketch_route_cookie, name, &layer->meta.real.color);
