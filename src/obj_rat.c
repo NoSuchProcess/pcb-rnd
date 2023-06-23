@@ -416,9 +416,9 @@ void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 }
 
 /*** draw ***/
-rnd_r_dir_t pcb_rat_draw_callback(const rnd_box_t * b, void *cl)
+rnd_rtree_dir_t pcb_rat_draw_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_rat_t *rat = (pcb_rat_t *) b;
+	pcb_rat_t *rat = (pcb_rat_t *)obj;
 	pcb_draw_info_t *info = cl;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
@@ -447,7 +447,7 @@ rnd_r_dir_t pcb_rat_draw_callback(const rnd_box_t * b, void *cl)
 	}
 	else
 		pcb_line_draw_(info, (pcb_line_t *) rat, 0);
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 void pcb_rat_invalidate_erase(pcb_rat_t *Rat)
