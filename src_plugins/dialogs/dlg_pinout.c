@@ -81,7 +81,7 @@ static void pinout_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, r
 	}
 }
 
-static rnd_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, void *box)
+static rnd_rtree_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, void *box)
 {
 	pinout_ctx_t *ctx = closure;
 	rnd_hid_attr_val_t val;

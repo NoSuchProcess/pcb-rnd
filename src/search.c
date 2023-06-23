@@ -1932,11 +1932,11 @@ int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_c
 	return pcb_lines_intersect_at(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2, NULL, NULL);
 }
 
-rnd_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const rnd_box_t *query_box, rnd_r_dir_t (*cb_)(void *closure, pcb_any_obj_t *obj, void *box), void *closure)
+rnd_rtree_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const rnd_box_t *query_box, rnd_rtree_dir_t (*cb_)(void *closure, pcb_any_obj_t *obj, void *box), void *closure)
 {
 	pcb_layer_t *ly;
 	rnd_layer_id_t lid;
-	rnd_r_dir_t res;
+	rnd_rtree_dir_t res;
 	const rnd_rtree_box_t *query = (const rnd_rtree_box_t *)query_box;
 	rnd_rtree_dir_t (*cb)(void *, void *, const rnd_rtree_box_t *) = (rnd_rtree_dir_t(*)(void *, void *, const rnd_rtree_box_t *))cb_;
 
