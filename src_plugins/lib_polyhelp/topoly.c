@@ -60,15 +60,15 @@ typedef struct {
 	pcb_dynf_t mark;
 } next_conn_t;
 
-static rnd_r_dir_t next_conn_found_arc(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t next_conn_found_arc(void *cl, void *obj_, const rnd_rtree_box_t *box)
 {
 	rnd_coord_t ex, ey;
 	next_conn_t *ctx = cl;
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)obj_;
 	int n;
 
 	if (PCB_DFLAG_TEST(&obj->Flags, ctx->mark))
-		return RND_R_DIR_NOT_FOUND; /* object already mapped */
+		return rnd_RTREE_DIR_NOT_FOUND_CONT; /* object already mapped */
 
 	for(n = 0; n < 2; n++) {
 		pcb_arc_get_end((pcb_arc_t *)obj, n, &ex, &ey);
@@ -77,28 +77,28 @@ static rnd_r_dir_t next_conn_found_arc(const rnd_box_t *box, void *cl)
 			vtp0_append(ctx->list, obj);
 			PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 			ctx->result = obj;
-			return RND_R_DIR_FOUND_CONTINUE;
+			return rnd_RTREE_DIR_FOUND_CONT;
 		}
 	}
 
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
-static rnd_r_dir_t next_conn_found_line(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t next_conn_found_line(void *cl, void *obj_, const rnd_rtree_box_t *box)
 {
 	next_conn_t *ctx = cl;
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)obj_;
 	pcb_line_t *l = (pcb_line_t *)box;
 
 	if (PCB_DFLAG_TEST(&obj->Flags, ctx->mark))
-		return RND_R_DIR_NOT_FOUND; /* object already mapped */
+		return rnd_RTREE_DIR_NOT_FOUND_CONT; /* object already mapped */
 
 	if (NEAR(ctx->tx, l->Point1.X, ctx->ty, l->Point1.Y)) {
 		vti0_append(ctx->endlist, 0);
 		vtp0_append(ctx->list, obj);
 		PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 		ctx->result = obj;
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;;
 	}
 
 	if (NEAR(ctx->tx, l->Point2.X, ctx->ty, l->Point2.Y)) {
@@ -106,10 +106,10 @@ static rnd_r_dir_t next_conn_found_line(const rnd_box_t *box, void *cl)
 		vtp0_append(ctx->list, obj);
 		PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 		ctx->result = obj;
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 	}
 
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *curr, pcb_dynf_t df)
@@ -142,7 +142,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 
 	for(n = 0; n < 2; n++) {
 		rnd_box_t region;
-		int len;
+		long len;
 
 		region.X1 = cx[n]-1;
 		region.Y1 = cy[n]-1;
@@ -151,7 +151,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 		ctx.tx = cx[n];
 		ctx.ty = cy[n];
 
-		rnd_r_search(curr->parent.layer->arc_tree, &region, NULL, next_conn_found_arc, &ctx, &len);
+		rnd_rtree_search_any(curr->parent.layer->arc_tree, (rnd_rtree_box_t *)&region, NULL, next_conn_found_arc, &ctx, &len);
 		if (len > 1) {
 			rnd_message(RND_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
 			return NULL;
@@ -159,7 +159,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 		if (ctx.result != NULL)
 			return ctx.result;
 
-		rnd_r_search(curr->parent.layer->line_tree, &region, NULL, next_conn_found_line, &ctx, &len);
+		rnd_rtree_search_any(curr->parent.layer->line_tree, (rnd_rtree_box_t *)&region, NULL, next_conn_found_line, &ctx, &len);
 		if (len > 1) {
 			rnd_message(RND_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
 			return NULL;
@@ -303,12 +303,12 @@ typedef struct {
 } pstk_on_outline_t;
 
 /* rtree callback on pline segment crossing padstack bbox */
-static rnd_r_dir_t pcb_topoly_check_pstk_on_pline_cb(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t pcb_topoly_check_pstk_on_pline_cb(void *cl, void *obj_, const rnd_rtree_box_t *box)
 {
 	pstk_on_outline_t *ctx = cl;
 	pcb_find_t fctx = {0};
 	pcb_line_t line = {0};
-	rnd_vnode_t *vn = rnd_pline_seg2vnode((void *)box);
+	rnd_vnode_t *vn = rnd_pline_seg2vnode((void *)obj_);
 
 	line.Point1.X = vn->point[0]; line.Point1.Y = vn->point[1];
 	line.Point2.X = vn->next->point[0]; line.Point2.Y = vn->next->point[1];
@@ -318,28 +318,28 @@ static rnd_r_dir_t pcb_topoly_check_pstk_on_pline_cb(const rnd_box_t *box, void 
 		vtp0_append(&ctx->pstks, ctx->ps);
 	}
 
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 /* rtree callback on generated polygon overlapping padstack */
-static rnd_r_dir_t pcb_topoly_check_pstk_on_outline_cb(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t pcb_topoly_check_pstk_on_outline_cb(void *cl, void *obj_, const rnd_rtree_box_t *box)
 {
 	pstk_on_outline_t *ctx = cl;
-	pcb_pstk_t *ps = (pcb_pstk_t *)box;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj_;
 	pcb_pstk_shape_t holetmp;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_mech_or_hole_(ps, proto, &holetmp);
 
 	if (shape == NULL)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	ctx->ps = ps;
 	ctx->shape = shape;
-	rnd_r_search(ctx->poly->Clipped->contours->tree, &ps->bbox_naked, NULL, pcb_topoly_check_pstk_on_pline_cb, ctx, NULL);
+	rnd_rtree_search_any(ctx->poly->Clipped->contours->tree, (rnd_rtree_box_t *)&ps->bbox_naked, NULL, pcb_topoly_check_pstk_on_pline_cb, ctx, NULL);
 	ctx->ps = NULL;
 	ctx->shape = NULL;
 
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 #define check(x, y, obj) \
@@ -421,7 +421,7 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 	vtp0_init(&pctx.pstks);
 
 	/* map: first search (and mark) all offending padstacks */
-	rnd_r_search(pcb->Data->padstack_tree, &poly->bbox_naked, NULL, pcb_topoly_check_pstk_on_outline_cb, &pctx, NULL);
+	rnd_rtree_search_any(pcb->Data->padstack_tree, (rnd_rtree_box_t *)&poly->bbox_naked, NULL, pcb_topoly_check_pstk_on_outline_cb, &pctx, NULL);
 
 	/* apply: subtract all padstacks found while mapping */
 	for(n = 0; n < pctx.pstks.used; n++) {

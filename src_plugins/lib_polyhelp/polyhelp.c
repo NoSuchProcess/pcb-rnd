@@ -251,10 +251,10 @@ typedef struct {
 	rnd_coord_t coord[1];
 } intersect_t;
 
-static rnd_r_dir_t pcb_cploy_hatch_edge_hor(const rnd_box_t *region, void *cl)
+static rnd_rtree_dir_t pcb_cploy_hatch_edge_hor(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	intersect_t *is = (intersect_t *)cl;
-	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)region;
+	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)obj;
 
 	if (e->y1 != e->y2) {
 		/* consider only non-horizontal edges */
@@ -267,13 +267,13 @@ static rnd_r_dir_t pcb_cploy_hatch_edge_hor(const rnd_box_t *region, void *cl)
 		is->used++;
 	}
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-static rnd_r_dir_t pcb_cploy_hatch_edge_ver(const rnd_box_t *region, void *cl)
+static rnd_rtree_dir_t pcb_cploy_hatch_edge_ver(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	intersect_t *is = (intersect_t *)cl;
-	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)region;
+	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)obj;
 
 	if (e->x1 != e->x2) {
 		/* consider only non-vertical edges */
@@ -286,7 +286,7 @@ static rnd_r_dir_t pcb_cploy_hatch_edge_ver(const rnd_box_t *region, void *cl)
 		is->used++;
 	}
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 static int coord_cmp(const void *p1, const void *p2)
@@ -323,7 +323,7 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_
 
 			is->used = 0;
 			is->at = y;
-			rnd_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_hor, is, NULL);
+			rnd_rtree_search_any(etr->edge_tree, (rnd_rtree_box_t *)&scan, NULL, pcb_cploy_hatch_edge_hor, is, NULL);
 			qsort(is->coord, is->used, sizeof(rnd_coord_t), coord_cmp);
 			for(n = 1; n < is->used; n+=2) /* call the callback for the odd scan lines */
 				cb(ctx, is->coord[n-1], y, is->coord[n], y);
@@ -341,7 +341,7 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_
 
 			is->used = 0;
 			is->at = x;
-			rnd_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_ver, is, NULL);
+			rnd_rtree_search_any(etr->edge_tree, (rnd_rtree_box_t *)&scan, NULL, pcb_cploy_hatch_edge_ver, is, NULL);
 			qsort(is->coord, is->used, sizeof(rnd_coord_t), coord_cmp);
 			for(n = 1; n < is->used; n+=2) /* call the callback for the odd scan lines */
 				cb(ctx, x, is->coord[n-1], x, is->coord[n]);
