@@ -588,9 +588,9 @@ static rnd_bool SearchGfxPointByLocation(unsigned long Type, unsigned long objst
 }
 
 
-static rnd_r_dir_t subc_callback(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t subc_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_subc_t *subc = (pcb_subc_t *) box;
+	pcb_subc_t *subc = (pcb_subc_t *)obj;
 	struct ans_info *i = (struct ans_info *) cl;
 	double newarea;
 	int subc_on_bottom = 0, front;
@@ -606,17 +606,17 @@ static rnd_r_dir_t subc_callback(const rnd_box_t *box, void *cl)
 			/* extended objects are special case: only the origin should be clickable
 			   to avoid problems with large extended objects that cover the board */
 			if ((PosX < ox) || (PosX > ox + PCB_SUBC_AUX_UNIT) || (PosY < oy) || (PosY > oy + PCB_SUBC_AUX_UNIT))
-				return RND_R_DIR_NOT_FOUND;
+				return rnd_RTREE_DIR_NOT_FOUND_CONT;
 		}
 		/* use the subcircuit with the smallest bounding box */
 		newarea = (subc->BoundingBox.X2 - subc->BoundingBox.X1) * (double) (subc->BoundingBox.Y2 - subc->BoundingBox.Y1);
 		if (newarea < i->area) {
 			i->area = newarea;
 			*i->ptr1 = *i->ptr2 = *i->ptr3 = subc;
-			return RND_R_DIR_FOUND_CONTINUE;
+			return rnd_RTREE_DIR_FOUND_CONT;
 		}
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 
@@ -638,9 +638,7 @@ SearchSubcByLocation(unsigned long objst, unsigned long req_flag, pcb_subc_t **s
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (rnd_r_search(PCB->Data->subc_tree, &SearchBox, NULL, subc_callback, &info, NULL))
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(PCB->Data->subc_tree, (rnd_rtree_box_t *)&SearchBox, NULL, subc_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
 /* find the first floater on any layer */
