@@ -186,9 +186,9 @@ static rnd_bool SearchLineByLocation(unsigned long objst, unsigned long req_flag
 	return (rnd_rtree_search_any(SearchLayer->line_tree, (rnd_rtree_box_t *)&SearchBox, NULL, line_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
-static rnd_r_dir_t rat_callback(const rnd_box_t * box, void *cl)
+static rnd_rtree_dir_t rat_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_line_t *line = (pcb_line_t *) box;
+	pcb_line_t *line = (pcb_line_t *)obj;
 	struct ans_info *i = (struct ans_info *) cl;
 
 	TEST_OBJST(i->objst, i->req_flag, l, line, line);
@@ -197,9 +197,9 @@ static rnd_r_dir_t rat_callback(const rnd_box_t * box, void *cl)
 			(rnd_distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
 			 line->Thickness * 2 + SearchRadius) : pcb_is_point_on_line(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
-		return RND_R_DIR_CANCEL;
+		return rnd_RTREE_DIR_FOUND_STOP;
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 /* ---------------------------------------------------------------------------
@@ -215,9 +215,7 @@ static rnd_bool SearchRatLineByLocation(unsigned long objst, unsigned long req_f
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (rnd_r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
-		return rnd_true;
-	return rnd_false;
+	return (rnd_rtree_search_any(PCB->Data->rat_tree, (rnd_rtree_box_t *)&SearchBox, NULL, rat_callback, &info, NULL) & rnd_RTREE_DIR_FOUND);
 }
 
 /* ---------------------------------------------------------------------------
