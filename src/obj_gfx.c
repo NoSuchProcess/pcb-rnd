@@ -932,18 +932,18 @@ void pcb_gfx_draw(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 	pcb_gfx_draw_(info, gfx, allow_term_gfx);
 }
 
-RND_INLINE rnd_r_dir_t pcb_gfx_draw_callback_(pcb_gfx_t *gfx, void *cl)
+RND_INLINE rnd_rtree_dir_t pcb_gfx_draw_callback_(pcb_gfx_t *gfx, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)gfx, info) || pcb_partial_export((pcb_any_obj_t*)gfx, info))
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(gfx->parent_type, &gfx->parent))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	pcb_gfx_draw(info, gfx, 0);
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 rnd_rtree_dir_t pcb_gfx_draw_under_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
