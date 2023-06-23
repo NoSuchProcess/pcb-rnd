@@ -38,7 +38,6 @@
 rnd_rtree_dir_t pcb_pstk_draw_callback(void *cl, void *obj, const rnd_rtree_box_t *box);
 rnd_rtree_dir_t pcb_pstk_draw_hole_callback(void *cl, void *obj, const rnd_rtree_box_t *box);
 rnd_rtree_dir_t pcb_pstk_draw_slot_callback(void *cl, void *obj, const rnd_rtree_box_t *box);
-rnd_r_dir_t pcb_pstk_clear_callback(const rnd_box_t *b, void *cl);
 #endif
 
 rnd_r_dir_t pcb_pstk_draw_mark_callback(const rnd_box_t *b, void *cl);
