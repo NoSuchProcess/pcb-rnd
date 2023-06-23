@@ -688,14 +688,14 @@ void pcb_data_clip_polys(pcb_data_t *data)
 
 #define rsearch(tree) \
 	do { \
-		rnd_r_dir_t tmp = rnd_r_search(tree, starting_region, region_in_search, rectangle_in_region, closure, num_found); \
-		if (tmp == RND_R_DIR_CANCEL) return tmp; \
+		rnd_rtree_dir_t tmp = rnd_rtree_search_any(tree, starting_region, region_in_search, rectangle_in_region, closure, num_found); \
+		if (tmp == rnd_RTREE_DIR_STOP) return tmp; \
 		res |= tmp; \
 	} while(0);
 
-rnd_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_box_t *starting_region,
-						 rnd_r_dir_t (*region_in_search) (const rnd_box_t *region, void *cl),
-						 rnd_r_dir_t (*rectangle_in_region) (const rnd_box_t *box, void *cl),
+rnd_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_rtree_box_t *starting_region,
+						 rnd_rtree_dir_t (*region_in_search)(void *cl, void *obj, const rnd_rtree_box_t *region),
+						 rnd_rtree_dir_t (*rectangle_in_region)(void *cl, void *obj, const rnd_rtree_box_t *box),
 						 void *closure, int *num_found, rnd_bool vis_only)
 {
 	rnd_layer_id_t lid;

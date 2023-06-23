@@ -431,20 +431,20 @@ typedef struct {
 	rnd_bool invert;
 } select_ctx_t;
 
-static rnd_r_dir_t pcb_select_block_cb(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t pcb_select_block_cb(void *cl, void *obj_, const rnd_rtree_box_t *box)
 {
 	select_ctx_t *ctx = cl;
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)obj_;
 
 	if (!ctx->invert && (PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj) == ctx->flag)) /* cheap check on the flag: don't do anything if the flag is already right */
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* do not let locked object selected, but allow deselection */
 	if ((PCB_FLAG_TEST(PCB_FLAG_LOCK, obj) == rnd_true) && (ctx->flag))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	if (!pcb_obj_near_box(obj, &ctx->box)) /* detailed box matching */
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	pcb_undo_add_obj_to_flag((void *)obj);
 	pcb_draw_obj(obj);
@@ -453,7 +453,7 @@ static rnd_r_dir_t pcb_select_block_cb(const rnd_box_t *box, void *cl)
 	else
 		PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, ctx->flag, obj);
 	pcb_extobj_sync_floater_flags(ctx->pcb, obj, 1, 1);
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 /* ----------------------------------------------------------------------
@@ -474,7 +474,7 @@ rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool flag, rnd_b
 
 	fix_box_dir(Box, 1);
 
-	return pcb_data_r_search(pcb->Data, PCB_OBJ_ANY, Box, NULL, pcb_select_block_cb, &ctx, NULL, vis_only) == RND_R_DIR_FOUND_CONTINUE;
+	return pcb_data_r_search(pcb->Data, PCB_OBJ_ANY, (rnd_rtree_box_t *)Box, NULL, pcb_select_block_cb, &ctx, NULL, vis_only) & rnd_RTREE_DIR_FOUND;
 }
 
 /* ----------------------------------------------------------------------
