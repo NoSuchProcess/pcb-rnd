@@ -537,9 +537,9 @@ typedef struct {
 	rnd_point_t **Point;
 } gfxptcb_t;
 
-static rnd_r_dir_t gfxpoint_callback(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t gfxpoint_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_gfx_t *gfx = (pcb_gfx_t *)box;
+	pcb_gfx_t *gfx = (pcb_gfx_t *)obj;
 	gfxptcb_t *ctx = (gfxptcb_t *)cl;
 	double d;
 	pcb_data_t *dt;
@@ -549,11 +549,11 @@ static rnd_r_dir_t gfxpoint_callback(const rnd_box_t *box, void *cl)
 	if ((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC)) {
 		/* do not find subc part poly points if not explicitly requested */
 		if (!(ctx->Type & PCB_OBJ_SUBC_PART))
-			return RND_R_DIR_NOT_FOUND;
+			return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 		/* don't find subc poly points even as subc part unless we are editing a subc */
 		if (!PCB->loose_subc)
-			return RND_R_DIR_NOT_FOUND;
+			return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	}
 
 	for(n = 0; n < 4; n++) {
@@ -566,7 +566,7 @@ static rnd_r_dir_t gfxpoint_callback(const rnd_box_t *box, void *cl)
 		}
 	}
 
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 static rnd_bool SearchGfxPointByLocation(unsigned long Type, unsigned long objst, unsigned long req_flag, pcb_layer_t **Layer, pcb_gfx_t **gfx, rnd_point_t **Point)
@@ -580,7 +580,7 @@ static rnd_bool SearchGfxPointByLocation(unsigned long Type, unsigned long objst
 	ctx.found = rnd_false;;
 	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
-	rnd_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfxpoint_callback, &ctx, NULL);
+	rnd_rtree_search_any(SearchLayer->gfx_tree, (rnd_rtree_box_t *)&SearchBox, NULL, gfxpoint_callback, &ctx, NULL);
 
 	if (ctx.found)
 		return rnd_true;
