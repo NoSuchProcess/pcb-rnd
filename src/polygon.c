@@ -1466,14 +1466,14 @@ int pcb_poly_unsub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon
 }
 
 
-static rnd_r_dir_t plow_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t plow_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct plow_info *plow = (struct plow_info *) cl;
-	pcb_poly_t *polygon = (pcb_poly_t *) b;
+	pcb_poly_t *polygon = (pcb_poly_t *)obj;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon))
 		return plow->callback(plow->data, plow->layer, polygon, plow->type, plow->ptr1, plow->ptr2, plow->user_data);
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 /* poly plows while clipping inhibit is on: mark any potentail polygon dirty */
@@ -1489,7 +1489,8 @@ int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 	void *user_data)
 {
 	rnd_box_t sb = ((pcb_any_obj_t *) ptr2)->BoundingBox;
-	int r = 0, seen;
+	int r = 0;
+	long seen;
 	struct plow_info info;
 	pcb_board_t *pcb;
 
@@ -1546,7 +1547,7 @@ int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 		PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(PCB, pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
 		{
 			info.layer = layer;
-			rnd_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+			rnd_rtree_search_any(layer->polygon_tree, (rnd_rtree_box_t *)&sb, NULL, plow_callback, &info, &seen);
 			r += seen;
 		}
 		PCB_END_LOOP;
