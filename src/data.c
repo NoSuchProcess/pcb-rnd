@@ -693,10 +693,10 @@ void pcb_data_clip_polys(pcb_data_t *data)
 		res |= tmp; \
 	} while(0);
 
-rnd_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_rtree_box_t *starting_region,
+rnd_rtree_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_rtree_box_t *starting_region,
 						 rnd_rtree_dir_t (*region_in_search)(void *cl, void *obj, const rnd_rtree_box_t *region),
 						 rnd_rtree_dir_t (*rectangle_in_region)(void *cl, void *obj, const rnd_rtree_box_t *box),
-						 void *closure, int *num_found, rnd_bool vis_only)
+						 void *closure, long *num_found, rnd_bool vis_only)
 {
 	rnd_layer_id_t lid;
 	rnd_r_dir_t res = 0;
