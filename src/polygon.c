@@ -558,9 +558,9 @@ do { \
 		return RND_R_DIR_FOUND_CONTINUE; \
 } while(0)
 
-static rnd_r_dir_t padstack_sub_callback(const rnd_box_t *b, void *cl)
+static rnd_rtree_dir_t padstack_sub_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	struct cpInfo *info = (struct cpInfo *)cl;
 	pcb_poly_t *polygon;
 	rnd_polyarea_t *np;
@@ -568,19 +568,19 @@ static rnd_r_dir_t padstack_sub_callback(const rnd_box_t *b, void *cl)
 	rnd_layer_id_t i;
 
 	/* don't subtract the object that was put back! */
-	if (b == info->other)
-		return RND_R_DIR_NOT_FOUND;
+	if (obj == info->other)
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	polygon = info->polygon;
 
 	/* ps->Clearance == 0 doesn't mean no clearance because of the per shape clearances */
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	i = pcb_layer_id(info->data, info->layer);
 
 	np = pcb_thermal_area_pstk(pcb_data_get_top(info->data), ps, i, polygon);
 	if (np == 0)
-		return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_FOUND_CONT;
 
 	info->batch_size++;
 	POLY_CLIP_PROG();
@@ -591,28 +591,28 @@ static rnd_r_dir_t padstack_sub_callback(const rnd_box_t *b, void *cl)
 	if (info->batch_size == SUBTRACT_PADSTACK_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-static rnd_r_dir_t arc_sub_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t arc_sub_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_arc_t *arc = (pcb_arc_t *) b;
+	pcb_arc_t *arc = (pcb_arc_t *)obj;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_poly_t *polygon;
 
 	/* don't subtract the object that was put back! */
-	if (b == info->other)
-		return RND_R_DIR_NOT_FOUND;
+	if (obj == info->other)
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	if (!PCB_NONPOLY_HAS_CLEARANCE(arc))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	POLY_CLIP_PROG();
 
 	polygon = info->polygon;
 
 	if (SubtractArc(arc, polygon) < 0)
-		return RND_R_DIR_NOT_FOUND;
-	return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 /* quick create a polygon area from a line, knowing the coords and width */
@@ -755,9 +755,9 @@ static int UnsubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	return 0;
 }
 
-static rnd_r_dir_t poly_sub_callback(const rnd_box_t *b, void *cl)
+static rnd_rtree_dir_t poly_sub_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_poly_t *subpoly = (pcb_poly_t *)b;
+	pcb_poly_t *subpoly = (pcb_poly_t *)obj;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_poly_t *polygon;
 
@@ -765,42 +765,42 @@ static rnd_r_dir_t poly_sub_callback(const rnd_box_t *b, void *cl)
 
 	/* don't do clearance in itself */
 	if (subpoly == polygon)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	/* don't subtract the object that was put back! */
-	if (b == info->other)
-		return RND_R_DIR_NOT_FOUND;
+	if (obj == info->other)
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	if (!PCB_POLY_HAS_CLEARANCE(subpoly))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	POLY_CLIP_PROG();
 
 	if (SubtractPolyPoly(subpoly, polygon) < 0)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-static rnd_r_dir_t line_sub_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t line_sub_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_line_t *line = (pcb_line_t *) b;
+	pcb_line_t *line = (pcb_line_t *)obj;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_poly_t *polygon;
 	rnd_polyarea_t *np;
 	rnd_polyarea_t *merged;
 
 	/* don't subtract the object that was put back! */
-	if (b == info->other)
-		return RND_R_DIR_NOT_FOUND;
+	if (obj == info->other)
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	if (!PCB_NONPOLY_HAS_CLEARANCE(line))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	polygon = info->polygon;
 
 	POLY_CLIP_PROG();
 
 	np = line_clearance_poly(-1, NULL, line, polygon);
 	if (!np)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	rnd_polyarea_boolean_free(info->accumulate, np, &merged, RND_PBO_UNITE);
 	info->accumulate = merged;
@@ -809,27 +809,27 @@ static rnd_r_dir_t line_sub_callback(const rnd_box_t * b, void *cl)
 	if (info->batch_size == SUBTRACT_LINE_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
-static rnd_r_dir_t text_sub_callback(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t text_sub_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_text_t *text = (pcb_text_t *) b;
+	pcb_text_t *text = (pcb_text_t *)obj;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_poly_t *polygon;
 
 	/* don't subtract the object that was put back! */
-	if (b == info->other)
-		return RND_R_DIR_NOT_FOUND;
+	if (obj == info->other)
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
 	POLY_CLIP_PROG();
 
 	polygon = info->polygon;
 	if (SubtractText(text, polygon) < 0)
-		return RND_R_DIR_NOT_FOUND;
-	return RND_R_DIR_FOUND_CONTINUE;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 /* To avoid re-clipping the whole poly when an object is removed:
@@ -849,7 +849,7 @@ we have put back our clearance in step  2, it will remove some copper.
 static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const rnd_box_t *here, rnd_coord_t expand, int noop)
 {
 	rnd_cardinal_t r = 0;
-	int seen;
+	long seen;
 	rnd_box_t region;
 	struct cpInfo info;
 	rnd_layergrp_id_t group;
@@ -888,20 +888,20 @@ static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t
 		info.accumulate = NULL;
 		info.batch_size = 0;
 
-		rnd_r_search(Data->padstack_tree, &region, NULL, padstack_sub_callback, &info, &seen);
+		rnd_rtree_search_any(Data->padstack_tree, (rnd_rtree_box_t *)&region, NULL, padstack_sub_callback, &info, &seen);
 		subtract_accumulated(&info, polygon);
 		r += seen;
 
 		PCB_COPPER_GROUP_LOOP(Data, group);
 		{
-			rnd_r_search(layer->line_tree, &region, NULL, line_sub_callback, &info, &seen);
+			rnd_rtree_search_any(layer->line_tree, (rnd_rtree_box_t *)&region, NULL, line_sub_callback, &info, &seen);
 			r += seen;
 			subtract_accumulated(&info, polygon);
-			rnd_r_search(layer->arc_tree, &region, NULL, arc_sub_callback, &info, &seen);
+			rnd_rtree_search_any(layer->arc_tree, (rnd_rtree_box_t *)&region, NULL, arc_sub_callback, &info, &seen);
 			r += seen;
-			rnd_r_search(layer->text_tree, &region, NULL, text_sub_callback, &info, &seen);
+			rnd_rtree_search_any(layer->text_tree, (rnd_rtree_box_t *)&region, NULL, text_sub_callback, &info, &seen);
 			r += seen;
-			rnd_r_search(layer->polygon_tree, &region, NULL, poly_sub_callback, &info, &seen);
+			rnd_rtree_search_any(layer->polygon_tree, (rnd_rtree_box_t *)&region, NULL, poly_sub_callback, &info, &seen);
 			r += seen;
 		}
 		PCB_END_LOOP;
@@ -1477,10 +1477,10 @@ static rnd_r_dir_t plow_callback(const rnd_box_t * b, void *cl)
 }
 
 /* poly plows while clipping inhibit is on: mark any potentail polygon dirty */
-static rnd_r_dir_t poly_plows_inhibited_cb(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data)
+static rnd_rtree_dir_t poly_plows_inhibited_cb(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	poly->clip_dirty = 1;
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 
