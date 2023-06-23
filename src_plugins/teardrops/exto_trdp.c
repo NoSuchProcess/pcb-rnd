@@ -64,15 +64,15 @@ static void trdp_clear(pcb_subc_t *subc)
 	}
 }
 
-static rnd_r_dir_t trdp_pstk_cb(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t trdp_pstk_cb(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	teardrop_t *tr = cl;
-	pcb_pstk_t *ps = (pcb_pstk_t *)box;
+	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 
 	if (teardrops_init_pstk(tr, ps, tr->line->parent.layer) == 0)
 		teardrop_line(tr, tr->line);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 /* create new teardrops on a line endpoint */
@@ -102,7 +102,7 @@ static void trdp_gen_line_pt(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t *lin
 	spot.X2 = x + 10;
 	spot.Y2 = y + 10;
 
-	rnd_r_search(pcb->Data->padstack_tree, &spot, NULL, trdp_pstk_cb, &t, NULL);
+	rnd_rtree_search_any(pcb->Data->padstack_tree, (rnd_rtree_box_t *)&spot, NULL, trdp_pstk_cb, &t, NULL);
 
 	if (t.new_arcs > 0) {
 		*jx = t.jx;

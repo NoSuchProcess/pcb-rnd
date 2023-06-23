@@ -245,15 +245,15 @@ static int teardrops_init_pstk(teardrop_t *tr, pcb_pstk_t *ps, pcb_layer_t *l)
 	return 0;
 }
 
-static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
+static rnd_rtree_dir_t check_line_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	teardrop_t *tr = cl;
-	pcb_line_t *line = (pcb_line_t *)box;
+	pcb_line_t *line = (pcb_line_t *)obj;
 
 	tr->flags = line->Flags;
 
 	teardrop_line(tr, line);
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 static long check_pstk(pcb_board_t *pcb, pcb_pstk_t *ps)
@@ -280,7 +280,7 @@ static long check_pstk(pcb_board_t *pcb, pcb_pstk_t *ps)
 		spot.X2 = t.px + 10;
 		spot.Y2 = t.py + 10;
 
-		rnd_r_search(l->line_tree, &spot, NULL, check_line_callback, &t, NULL);
+		rnd_rtree_search_any(l->line_tree, (rnd_rtree_box_t *)&spot, NULL, check_line_callback, &t, NULL);
 	}
 	return t.new_arcs;
 }
