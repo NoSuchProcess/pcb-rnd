@@ -88,7 +88,7 @@ do { \
 } while(0)
 
 #define TEST_OBJST(objst, req_flag, locality, obj, locked_obj) \
-	TEST_OBJST_(objst, req_flag, locality, obj, locked_obj, return RND_R_DIR_NOT_FOUND)
+	TEST_OBJST_(objst, req_flag, locality, obj, locked_obj, return rnd_RTREE_DIR_NOT_FOUND_CONT)
 
 struct ans_info {
 	void **ptr1, **ptr2, **ptr3;

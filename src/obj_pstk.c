@@ -543,7 +543,7 @@ rnd_rtree_dir_t pcb_pstk_draw_callback(void *cl, void *obj, const rnd_rtree_box_
 	pcb_pstk_shape_t *shape;
 	pcb_layergrp_t *grp = NULL;
 
-	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
+	pcb_obj_noexport(info, ps, return rnd_RTREE_DIR_NOT_FOUND_CONT);
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)ps, info) || pcb_partial_export((pcb_any_obj_t*)ps, info))
 		return rnd_RTREE_DIR_FOUND_CONT;
@@ -650,7 +650,7 @@ rnd_rtree_dir_t pcb_pstk_draw_hole_callback(void *cl, void *obj, const rnd_rtree
 	pcb_pstk_t *ps = (pcb_pstk_t *)obj;
 	pcb_pstk_proto_t *proto;
 
-	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
+	pcb_obj_noexport(info, ps, return rnd_RTREE_DIR_NOT_FOUND_CONT);
 
 	if (pcb_hidden_floater(ps, info) || pcb_partial_export(ps, info))
 		return rnd_RTREE_DIR_FOUND_CONT;
@@ -709,7 +709,7 @@ rnd_rtree_dir_t pcb_pstk_draw_slot_callback(void *cl, void *obj, const rnd_rtree
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_shape_t *shape;
 
-	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
+	pcb_obj_noexport(info, ps, return rnd_RTREE_DIR_NOT_FOUND_CONT);
 
 	if (pcb_hidden_floater(ps, info) || pcb_partial_export(ps, info))
 		return rnd_RTREE_DIR_FOUND_CONT;

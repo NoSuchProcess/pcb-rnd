@@ -1090,7 +1090,7 @@ static rnd_rtree_dir_t remove_point(void *cl, void *obj, const rnd_rtree_box_t *
 	pcb_line_t *line = (pcb_line_t *)obj;
 	struct rlp_info *info = (struct rlp_info *)cl;
 	if (line == info->line)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	if ((line->Point1.X == info->point->X)
 			&& (line->Point1.Y == info->point->Y)) {
 		info->line = line;

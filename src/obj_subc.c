@@ -2096,7 +2096,7 @@ do { \
 		int on_bottom; \
 		if (pcb_subc_get_side(subc, &on_bottom) == 0) { \
 			if ((!!on_bottom) != (!!conf_core.editor.show_solder_side)) \
-				return RND_R_DIR_FOUND_CONTINUE; \
+				return rnd_RTREE_DIR_NOT_FOUND_CONT; \
 		} \
 	} \
 } while(0)
