@@ -62,7 +62,7 @@ void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, ps);
 
 	if (!ctx->buffer.dst->padstack_tree)
-		ctx->buffer.dst->padstack_tree = rnd_r_create_tree();
+		rnd_rtree_init(ctx->buffer.dst->padstack_tree = malloc(sizeof(rnd_rtree_t)));
 
 	rnd_rtree_insert(ctx->buffer.dst->padstack_tree, ps, (rnd_rtree_box_t *)ps);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_PSTK, NULL, ps);
