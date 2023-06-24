@@ -348,7 +348,7 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_arc_bbox(Arc);
 	if (!Layer->arc_tree)
-		Layer->arc_tree = rnd_r_create_tree();
+		rnd_rtree_init(Layer->arc_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Layer->arc_tree, Arc, (rnd_rtree_box_t *)Arc);
 	Arc->type = PCB_OBJ_ARC;
 	PCB_SET_PARENT(Arc, layer, Layer);
@@ -542,7 +542,7 @@ void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_arc_t *arc
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, arc);
 
 	if (!dstly->arc_tree)
-		dstly->arc_tree = rnd_r_create_tree();
+		rnd_rtree_init(dstly->arc_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(dstly->arc_tree, arc, (rnd_rtree_box_t *)arc);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_ARC, dstly, arc);
 
@@ -780,7 +780,7 @@ void *pcb_arcop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_ar
 	pcb_arc_reg(Destination, arc);
 
 	if (!Destination->arc_tree)
-		Destination->arc_tree = rnd_r_create_tree();
+		rnd_rtree_init(Destination->arc_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Destination->arc_tree, arc, (rnd_rtree_box_t *)arc);
 
 	return arc;

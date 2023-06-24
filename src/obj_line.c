@@ -568,7 +568,7 @@ void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_bbox(Line);
 	if (!Layer->line_tree)
-		Layer->line_tree = rnd_r_create_tree();
+		rnd_rtree_init(Layer->line_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Layer->line_tree, Line, (rnd_rtree_box_t *)Line);
 	Line->parent.layer = Layer;
 	Line->parent_type = PCB_PARENT_LAYER;
@@ -740,7 +740,7 @@ void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_line_t *l
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, line);
 
 	if (!dstly->line_tree)
-		dstly->line_tree = rnd_r_create_tree();
+		rnd_rtree_init(dstly->line_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(dstly->line_tree, line, (rnd_rtree_box_t *)line);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_LINE, dstly, line);
 
@@ -975,7 +975,7 @@ void *pcb_lineop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_l
 	pcb_line_reg(Destination, line);
 
 	if (!Destination->line_tree)
-		Destination->line_tree = rnd_r_create_tree();
+		rnd_rtree_init(Destination->line_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Destination->line_tree, line, (rnd_rtree_box_t *)line);
 
 	return line;
