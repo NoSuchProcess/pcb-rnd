@@ -1123,7 +1123,7 @@ void io_pcb_element_fin(pcb_data_t *Data)
 	pcb_subc_bbox(yysubc);
 	if (Data->subc_tree == NULL)
 		rnd_rtree_init(Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
-	rnd_r_insert_entry(Data->subc_tree, (rnd_box_t *)yysubc);
+	rnd_rtree_insert(Data->subc_tree, yysubc, (rnd_rtree_box_t *)yysubc);
 }
 
 static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)

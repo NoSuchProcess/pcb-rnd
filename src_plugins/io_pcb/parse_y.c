@@ -2475,7 +2475,7 @@ yyreduce:
 				    pcb_poly_bbox(Polygon);
 				    if (!Layer->polygon_tree)
 				      rnd_rtree_init(Layer->polygon_tree = malloc(sizeof(rnd_rtree_t)));
-				    rnd_r_insert_entry(Layer->polygon_tree, (rnd_box_t *) Polygon);
+				    rnd_rtree_insert(Layer->polygon_tree, Polygon, (rnd_rtree_box_t *)Polygon);
 				  }
 			}
 #line 2482 "parse_y.c" /* yacc.c:1652  */
