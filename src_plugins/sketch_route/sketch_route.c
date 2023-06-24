@@ -707,7 +707,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	sk->ewires.elem_copy = NULL;
 	vtewire_init(&sk->ewires);
 
-	sk->spoke_tree = rnd_r_create_tree();
+	rnd_rtree_init(sk->spoke_tree = malloc(sizeof(rnd_rtree_t)));
 
 	bbox.X1 = PCB->hidlib.dwg.X1; bbox.Y1 = PCB->hidlib.dwg.Y1; bbox.X2 = PCB->hidlib.dwg.X2; bbox.Y2 = PCB->hidlib.dwg.Y2;
 	info.layer = layer;
