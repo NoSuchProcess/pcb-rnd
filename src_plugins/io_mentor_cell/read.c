@@ -1077,7 +1077,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 
 		if (dt->subc_tree == NULL)
 			rnd_rtree_init(dt->subc_tree = malloc(sizeof(rnd_rtree_t)));
-		rnd_r_insert_entry(dt->subc_tree, (rnd_box_t *)subc);
+		rnd_rtree_insert(dt->subc_tree, subc, (rnd_rtree_box_t *)subc);
 
 		pcb_subc_rebind(ctx->pcb, subc);
 	}
