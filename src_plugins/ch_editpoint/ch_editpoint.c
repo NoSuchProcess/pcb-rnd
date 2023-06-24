@@ -63,22 +63,22 @@ static const char pcb_ch_editpoint_cookie[] = "ch_editpoint plugin";
 static vtp0_t editpoint_raw[2];
 static vtp0_t *editpoint_objs = &editpoint_raw[0], *old_editpoint_objs = &editpoint_raw[1];
 
-static rnd_r_dir_t editpoint_callback(const rnd_box_t *box, void *cl)
+static rnd_rtree_dir_t editpoint_callback(void *cl, void *obj_, const rnd_rtree_box_t *box)
 {
 	pcb_crosshair_t *crosshair = cl;
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)obj_;
 
 	switch(obj->type) {
-		case PCB_OBJ_LINE: if (!pcb_is_point_on_line(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_line_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
-		case PCB_OBJ_ARC:  if (!pcb_is_point_on_arc(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_arc_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
-		case PCB_OBJ_POLY: if (!pcb_poly_is_point_in_p(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_poly_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
-		case PCB_OBJ_PSTK: if (!pcb_is_point_in_pstk(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_pstk_t *)obj, NULL)) return RND_R_DIR_FOUND_CONTINUE; break;
+		case PCB_OBJ_LINE: if (!pcb_is_point_on_line(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_line_t *)obj)) return rnd_RTREE_DIR_FOUND_CONT; break;
+		case PCB_OBJ_ARC:  if (!pcb_is_point_on_arc(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_arc_t *)obj)) return rnd_RTREE_DIR_FOUND_CONT; break;
+		case PCB_OBJ_POLY: if (!pcb_poly_is_point_in_p(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_poly_t *)obj)) return rnd_RTREE_DIR_FOUND_CONT; break;
+		case PCB_OBJ_PSTK: if (!pcb_is_point_in_pstk(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_pstk_t *)obj, NULL)) return rnd_RTREE_DIR_FOUND_CONT; break;
 		default: break;
 	}
 
 	vtp0_append(editpoint_objs, obj);
 	obj->ind_editpoint = 1;
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 static void *editpoint_find(vtp0_t *vect, pcb_any_obj_t *obj_ptr)
@@ -141,11 +141,11 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->meta.real.vis)
 			continue;
-		rnd_r_search(layer->line_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
-		rnd_r_search(layer->arc_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
-		rnd_r_search(layer->polygon_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
+		rnd_rtree_search_any(layer->line_tree, (rnd_rtree_box_t *)&SearchBox, NULL, editpoint_callback, crosshair, NULL);
+		rnd_rtree_search_any(layer->arc_tree, (rnd_rtree_box_t *)&SearchBox, NULL, editpoint_callback, crosshair, NULL);
+		rnd_rtree_search_any(layer->polygon_tree, (rnd_rtree_box_t *)&SearchBox, NULL, editpoint_callback, crosshair, NULL);
 	}
-	rnd_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
+	rnd_rtree_search_any(PCB->Data->padstack_tree, (rnd_rtree_box_t *)&SearchBox, NULL, editpoint_callback, crosshair, NULL);
 
 /* Undraw the old objects */
 	redraw = editpoint_undraw();
