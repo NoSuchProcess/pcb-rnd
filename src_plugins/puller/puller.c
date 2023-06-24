@@ -628,7 +628,7 @@ static rnd_rtree_dir_t find_pair_line_callback(void *cl, void *obj, const rnd_rt
 	FindPairCallbackStruct *fpcs = (FindPairCallbackStruct *) cl;
 
 	if (line == fpcs->me)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 #ifdef CHECK_LINE_PT_NEG
 	if (line->Point1.X < 0)
 		abort1();
