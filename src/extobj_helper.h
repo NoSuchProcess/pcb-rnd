@@ -119,7 +119,7 @@ RND_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 		pcb_subc_rebind(pcb, subc);
 		pcb_subc_bind_globals(pcb, subc);
 		if (!dst->subc_tree)
-			dst->subc_tree = rnd_r_create_tree();
+			rnd_rtree_init(dst->subc_tree = malloc(sizeof(rnd_rtree_t)));
 		rnd_rtree_insert(dst->subc_tree, subc, (rnd_rtree_box_t *)subc);
 	}
 
