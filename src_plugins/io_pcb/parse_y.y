@@ -813,7 +813,7 @@ polygon_format
 				  {
 				    pcb_poly_bbox(Polygon);
 				    if (!Layer->polygon_tree)
-				      Layer->polygon_tree = rnd_r_create_tree();
+				      rnd_rtree_init(Layer->polygon_tree = malloc(sizeof(rnd_rtree_t)));
 				    rnd_r_insert_entry(Layer->polygon_tree, (rnd_box_t *) Polygon);
 				  }
 			}

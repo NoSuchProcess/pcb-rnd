@@ -1078,7 +1078,7 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 	pcb_text_t *txt;
 	pcb_subc_reg(Data, sc);
 	if (Data->padstack_tree == NULL)
-		Data->padstack_tree = rnd_r_create_tree();
+		rnd_rtree_init(Data->padstack_tree = malloc(sizeof(rnd_rtree_t)));
 	sc->data->padstack_tree = Data->padstack_tree;
 
 	yysubc_ox = 0;
@@ -1122,7 +1122,7 @@ void io_pcb_element_fin(pcb_data_t *Data)
 
 	pcb_subc_bbox(yysubc);
 	if (Data->subc_tree == NULL)
-		Data->subc_tree = rnd_r_create_tree();
+		rnd_rtree_init(Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_r_insert_entry(Data->subc_tree, (rnd_box_t *)yysubc);
 }
 
