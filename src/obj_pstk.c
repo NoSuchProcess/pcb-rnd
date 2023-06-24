@@ -151,7 +151,7 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 {
 	pcb_pstk_bbox(ps);
 	if (!data->padstack_tree)
-		data->padstack_tree = rnd_r_create_tree();
+		rnd_rtree_init(data->padstack_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(data->padstack_tree, ps, (rnd_rtree_box_t *)ps);
 	PCB_SET_PARENT(ps, data, data);
 }
