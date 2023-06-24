@@ -1579,7 +1579,7 @@ static int parse_element(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht
 
 	if (dt->subc_tree == NULL)
 		rnd_rtree_init(dt->subc_tree = malloc(sizeof(rnd_rtree_t)));
-	rnd_r_insert_entry(dt->subc_tree, (rnd_box_t *)subc);
+	rnd_rtree_insert(dt->subc_tree, subc, (rnd_rtree_box_t *)subc);
 
 	pcb_subc_rebind(pcb, subc);
 
@@ -1619,7 +1619,7 @@ static int parse_subc(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht_no
 
 	if (!dt->subc_tree)
 		rnd_rtree_init(dt->subc_tree = malloc(sizeof(rnd_rtree_t)));
-	rnd_r_insert_entry(dt->subc_tree, (rnd_box_t *)sc);
+	rnd_rtree_insert(dt->subc_tree, sc, (rnd_rtree_box_t *)sc);
 
 	if (subc_out != NULL)
 		*subc_out = sc;
