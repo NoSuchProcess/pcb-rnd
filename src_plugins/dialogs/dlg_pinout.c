@@ -102,7 +102,7 @@ static rnd_rtree_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj,
 			}
 		}
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 static rnd_bool pinout_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
