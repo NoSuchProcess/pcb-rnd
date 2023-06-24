@@ -241,7 +241,8 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord
 
 void pcb_cpoly_edgetree_destroy(pcb_cpoly_edgetree_t *etr)
 {
-	rnd_r_destroy_tree(&etr->edge_tree);
+	rnd_rtree_uninit(etr->edge_tree);
+	free(etr->edge_tree);
 	free(etr);
 }
 
