@@ -522,8 +522,12 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 		/* free k-d tree memory */
 		rnd_r_free_tree_data(rt_s, free);
 		rnd_r_free_tree_data(rt_c, free);
-		rnd_r_destroy_tree(&rt_s);
-		rnd_r_destroy_tree(&rt_c);
+		rnd_rtree_uninit(rt_s);
+		rnd_rtree_uninit(rt_c);
+		free(rt_s);
+		free(rt_c);
+		rt_s = NULL;
+		rt_c = NULL;
 	}
 	/* penalize total area used by this layout */
 	{
