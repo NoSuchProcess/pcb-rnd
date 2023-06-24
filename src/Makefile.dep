@@ -124,7 +124,8 @@
  obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  layer.h move.h netlist.h remove.h operation.h rotate.h obj_rat.h \
- obj_term.h obj_pstk_inlines.h data.h thermal.h data_it.h
+ obj_term.h obj_pstk_inlines.h data.h thermal.h data_it.h \
+ ../src_plugins/autoplace/../autoroute/r_legacy.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h ../src_plugins/autoroute/autoroute.h board.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
@@ -146,10 +147,11 @@
  ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
  polygon.h remove.h operation.h obj_pinvia_therm.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h layer.h obj_line_draw.h draw.h \
- obj_pstk_draw.h obj_pstk_inlines.h data.h thermal.h
+ obj_pstk_draw.h obj_pstk_inlines.h data.h thermal.h \
+ ../src_plugins/autoroute/r_legacy.h
 ../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
  ../config.h box_dir.h ../src_plugins/autoroute/mtspace.h \
- ../src_plugins/autoroute/vector.h
+ ../src_plugins/autoroute/vector.h ../src_plugins/autoroute/r_legacy.h
 ../src_plugins/autoroute/vector.o: ../src_plugins/autoroute/vector.c \
  ../config.h ../src_plugins/autoroute/vector.h
 ../src_plugins/cam/cam.o: ../src_plugins/cam/cam.c ../config.h board.h \
@@ -2027,7 +2029,7 @@
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h conf_core.h
 ../src_plugins/lib_polyhelp/topoly.o: \
- ../src_plugins/lib_polyhelp/topoly.c ../src_plugins/lib_polyhelp/topoly_cutout.c ../config.h \
+ ../src_plugins/lib_polyhelp/topoly.c ../config.h \
  ../src_plugins/lib_polyhelp/topoly.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
@@ -2038,7 +2040,8 @@
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h obj_arc.h obj_line.h obj_poly.h obj_poly_draw.h draw.h \
  obj_pstk_inlines.h data.h thermal.h operation.h find.h polygon.h \
- search.h funchash_core.h funchash_core_list.h
+ search.h funchash_core.h funchash_core_list.h \
+ ../src_plugins/lib_polyhelp/topoly_cutout.c
 ../src_plugins/lib_polyhelp/triangulate.o: \
  ../src_plugins/lib_polyhelp/triangulate.c ../config.h \
  ../src_plugins/lib_polyhelp/triangulate.h \
@@ -2979,7 +2982,8 @@ idpath.o: idpath.c ../config.h idpath.h obj_common.h flag.h globalconst.h \
  layer_grp.h rats_patch.h data.h crosshair.h route.h buffer.h \
  obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer_ui.h
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer_ui.h \
+ obj_subc_parent.h
 insert.o: insert.c ../config.h conf_core.h globalconst.h board.h \
  vtroutestyle.h attrib.h global_typedefs.h layer.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
