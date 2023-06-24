@@ -69,16 +69,16 @@ static void altium_post_poly_thermal_obj(pcb_board_t *pcb, pcb_poly_t *poly, pcb
 	pcb_chg_obj_thermal(obj->type, obj, obj, obj, t, pcb_layer2id(pcb->Data, poly->parent.layer));
 }
 
-static rnd_r_dir_t altium_poly_therm(const rnd_box_t *b, void *cl)
+static rnd_rtree_dir_t altium_poly_therm(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	ppr_t *ppr = cl;
-	pcb_any_obj_t *o = (pcb_any_obj_t *)b;
+	pcb_any_obj_t *o = (pcb_any_obj_t *)obj;
 	long netid = io_altium_obj2netid(ppr->rctx, o);
 
 	if (netid == ppr->netid)
 		altium_post_poly_thermal_obj(ppr->pcb, ppr->poly, o, ppr->t);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 
@@ -93,7 +93,7 @@ static void altium_post_poly_thermal_netname(void *rctx, pcb_board_t *pcb, pcb_p
 	ppr.t = t;
 	ppr.uctx = uctx;
 
-	rnd_r_search(poly->parent.layer->line_tree, &poly->BoundingBox, NULL, altium_poly_therm, &ppr, NULL);
-	rnd_r_search(poly->parent.layer->arc_tree,  &poly->BoundingBox, NULL, altium_poly_therm, &ppr, NULL);
-	rnd_r_search(pcb->Data->padstack_tree,      &poly->BoundingBox, NULL, altium_poly_therm, &ppr, NULL);
+	rnd_rtree_search_any(poly->parent.layer->line_tree, (rnd_rtree_box_t *)&poly->BoundingBox, NULL, altium_poly_therm, &ppr, NULL);
+	rnd_rtree_search_any(poly->parent.layer->arc_tree,  (rnd_rtree_box_t *)&poly->BoundingBox, NULL, altium_poly_therm, &ppr, NULL);
+	rnd_rtree_search_any(pcb->Data->padstack_tree,      (rnd_rtree_box_t *)&poly->BoundingBox, NULL, altium_poly_therm, &ppr, NULL);
 }
