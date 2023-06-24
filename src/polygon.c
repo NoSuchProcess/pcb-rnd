@@ -555,7 +555,7 @@ do { \
 	if (pcb_poly_clip_prog != NULL) \
 		pcb_poly_clip_prog(pcb_poly_clip_prog_ctx); \
 	if (pcb_poly_clip_noop) \
-		return RND_R_DIR_FOUND_CONTINUE; \
+		return rnd_RTREE_DIR_FOUND_CONT; \
 } while(0)
 
 static rnd_rtree_dir_t padstack_sub_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
