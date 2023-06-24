@@ -50,51 +50,51 @@ typedef struct {
 	rnd_coord_t r;
 } overlap_t;
 
-static rnd_r_dir_t overlap(const rnd_box_t *box, void *closure)
+static rnd_rtree_dir_t overlap(void *cl, void *obj_, const rnd_rtree_box_t *box)
 {
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
-	overlap_t *ovl = (overlap_t *)closure;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)obj_;
+	overlap_t *ovl = (overlap_t *)cl;
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
 			if (pcb_is_point_in_line(ovl->x, ovl->y, ovl->r, (pcb_any_line_t *)obj))
-				return RND_R_DIR_CANCEL;
+				return rnd_RTREE_DIR_FOUND_STOP;
 			break;
 		case PCB_OBJ_ARC:
 			if (pcb_is_point_on_arc(ovl->x, ovl->y, ovl->r, (pcb_arc_t *)obj))
-				return RND_R_DIR_CANCEL;
+				return rnd_RTREE_DIR_FOUND_STOP;
 			break;
 		case PCB_OBJ_TEXT:
 			if (pcb_is_point_in_box(ovl->x, ovl->y, &obj->bbox_naked, ovl->r))
-				return RND_R_DIR_CANCEL;
+				return rnd_RTREE_DIR_FOUND_STOP;
 			break;
 		case PCB_OBJ_POLY:
 			if (pcb_poly_is_point_in_p(ovl->x, ovl->y, ovl->r, (pcb_poly_t *)obj))
-				return RND_R_DIR_CANCEL;
+				return rnd_RTREE_DIR_FOUND_STOP;
 			break;
 		default: break;
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 TODO("move this to search.[ch]")
 /* Search for object(s) on a specific layer */
-static rnd_r_dir_t pcb_search_on_layer(pcb_layer_t *layer, const rnd_box_t *bbox, rnd_r_dir_t (*cb)(const rnd_box_t *box, void *closure), void *closure)
+static rnd_rtree_dir_t pcb_search_on_layer(pcb_layer_t *layer, const rnd_rtree_box_t *bbox, rnd_rtree_dir_t (*cb)(void *cl, void *obj, const rnd_rtree_box_t *box), void *closure)
 {
-	rnd_r_dir_t res, fin = 0;
+	rnd_rtree_dir_t res, fin = 0;
 
-	if ((res = rnd_r_search(layer->line_tree, bbox, NULL, cb, closure, NULL)) == RND_R_DIR_CANCEL)
+	if ((res = rnd_rtree_search_any(layer->line_tree, bbox, NULL, cb, closure, NULL)) & rnd_RTREE_DIR_FOUND)
 		return res;
 	fin |= res;
 
-	if ((res = rnd_r_search(layer->arc_tree, bbox, NULL, cb, closure, NULL)) == RND_R_DIR_CANCEL)
+	if ((res = rnd_rtree_search_any(layer->arc_tree, bbox, NULL, cb, closure, NULL))  & rnd_RTREE_DIR_FOUND)
 		return res;
 	fin |= res;
 
-	if ((res = rnd_r_search(layer->polygon_tree, bbox, NULL, cb, closure, NULL)) == RND_R_DIR_CANCEL)
+	if ((res = rnd_rtree_search_any(layer->polygon_tree, bbox, NULL, cb, closure, NULL)) & rnd_RTREE_DIR_FOUND)
 		return res;
 	fin |= res;
 
-	if ((res = rnd_r_search(layer->text_tree, bbox, NULL, cb, closure, NULL)) == RND_R_DIR_CANCEL)
+	if ((res = rnd_rtree_search_any(layer->text_tree, bbox, NULL, cb, closure, NULL)) & rnd_RTREE_DIR_FOUND)
 		return res;
 	fin |= res;
 
@@ -121,7 +121,7 @@ static void acompnet_mesh_addpt(pcb_meshgraph_t *gr, pcb_layer_t *layer, double 
 	bbox.Y1 = y - ovl.r;
 	bbox.Y2 = y + ovl.r;
 
-	if (pcb_search_on_layer(layer, &bbox, overlap, &ovl) == RND_R_DIR_NOT_FOUND) {
+	if (!(pcb_search_on_layer(layer, (rnd_rtree_box_t *)&bbox, overlap, &ovl) & rnd_RTREE_DIR_FOUND)) {
 		bbox.X1 = x;
 		bbox.X2 = x+1;
 		bbox.Y1 = y;
