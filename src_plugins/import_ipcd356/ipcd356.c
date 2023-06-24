@@ -430,7 +430,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_subc_reg(PCB->Data, sc);
 			pcb_subc_bbox(sc);
 			if (PCB->Data->subc_tree == NULL)
-				PCB->Data->subc_tree = rnd_r_create_tree();
+				rnd_rtree_init(PCB->Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 			rnd_r_insert_entry(PCB->Data->subc_tree, (rnd_box_t *)sc);
 			pcb_subc_rebind(PCB, sc);
 		}
