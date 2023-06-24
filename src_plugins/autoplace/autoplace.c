@@ -69,6 +69,7 @@
 #include "board.h"
 #include "data_it.h"
 #include <genvector/vtp0.h>
+#include "../autoroute/r_legacy.h"
 
 #define EXPANDRECTXY(r1, x1, y1, x2, y2) { \
   r1->X1=MIN(r1->X1, x1); r1->Y1=MIN(r1->Y1, y1); \
@@ -479,9 +480,9 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 		PCB_END_LOOP;
 
 		rnd_rtree_init(rt_s = malloc(sizeof(rnd_rtree_t)));
-		rnd_r_insert_array(rt_s, (const rnd_box_t **) seboxes.array, vtp0_len(&seboxes));
+		r_insert_array(rt_s, (const rnd_box_t **) seboxes.array, vtp0_len(&seboxes));
 		rnd_rtree_init(rt_c = malloc(sizeof(rnd_rtree_t)));
-		rnd_r_insert_array(rt_c, (const rnd_box_t **) ceboxes.array, vtp0_len(&ceboxes));
+		r_insert_array(rt_c, (const rnd_box_t **) ceboxes.array, vtp0_len(&ceboxes));
 		vtp0_uninit(&seboxes);
 		vtp0_uninit(&ceboxes);
 		/* now, for each subcircuit, find its neighbor on all four sides */
@@ -520,8 +521,8 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 			PCB_END_LOOP;
 		}
 		/* free k-d tree memory */
-		rnd_r_free_tree_data(rt_s, free);
-		rnd_r_free_tree_data(rt_c, free);
+		r_free_tree_data(rt_s, free);
+		r_free_tree_data(rt_c, free);
 		rnd_rtree_uninit(rt_s);
 		rnd_rtree_uninit(rt_c);
 		free(rt_s);
