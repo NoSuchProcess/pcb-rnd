@@ -1065,7 +1065,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t 
 	/* bind the via rtree so that vias added in this subc show up on the board */
 	if (pcb != NULL) {
 		if (pcb->Data->padstack_tree == NULL)
-			pcb->Data->padstack_tree = rnd_r_create_tree();
+			rnd_rtree_init(pcb->Data->padstack_tree = malloc(sizeof(rnd_rtree_t)));
 		sc->data->padstack_tree = pcb->Data->padstack_tree;
 	}
 
@@ -1115,7 +1115,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t 
 
 	if (pcb != NULL) {
 		if (!dst->subc_tree)
-			dst->subc_tree = rnd_r_create_tree();
+			rnd_rtree_init(dst->subc_tree = malloc(sizeof(rnd_rtree_t)));
 		rnd_rtree_insert(dst->subc_tree, sc, (rnd_rtree_box_t *)sc);
 	}
 
@@ -1174,7 +1174,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		if (Data->subc_tree != NULL)
 			rnd_rtree_delete(Data->subc_tree, sc, (rnd_rtree_box_t *)sc);
 		else
-			Data->subc_tree = rnd_r_create_tree();
+			rnd_rtree_init(Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 	}
 
 	/* for calculating the new bounding box on the fly */
@@ -1534,7 +1534,7 @@ static int subc_bind_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb)
 
 	if ((dst != NULL) && (dst_is_pcb)) {
 		if (dst->padstack_tree == NULL)
-			dst->padstack_tree = rnd_r_create_tree();
+			rnd_rtree_init(dst->padstack_tree = malloc(sizeof(rnd_rtree_t)));
 		sc->data->padstack_tree = dst->padstack_tree;
 		chg++;
 	}
@@ -1608,7 +1608,7 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 	if (dst_is_pcb) {
 		if (ctx->buffer.dst->subc_tree == NULL)
-			ctx->buffer.dst->subc_tree = rnd_r_create_tree();
+			rnd_rtree_init(ctx->buffer.dst->subc_tree = malloc(sizeof(rnd_rtree_t)));
 		rnd_rtree_insert(ctx->buffer.dst->subc_tree, sc, (rnd_rtree_box_t *)sc);
 	}
 
@@ -1628,11 +1628,11 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 			}
 			else {
 				/* need to create the trees so that move and other ops work */
-				if (sl->line_tree == NULL) sl->line_tree = rnd_r_create_tree();
-				if (sl->arc_tree == NULL) sl->arc_tree = rnd_r_create_tree();
-				if (sl->text_tree == NULL) sl->text_tree = rnd_r_create_tree();
-				if (sl->polygon_tree == NULL) sl->polygon_tree = rnd_r_create_tree();
-				if (sl->gfx_tree == NULL) sl->gfx_tree = rnd_r_create_tree();
+				if (sl->line_tree == NULL)    rnd_rtree_init(sl->line_tree = malloc(sizeof(rnd_rtree_t)));
+				if (sl->arc_tree == NULL)     rnd_rtree_init(sl->arc_tree = malloc(sizeof(rnd_rtree_t)));
+				if (sl->text_tree == NULL)    rnd_rtree_init(sl->text_tree = malloc(sizeof(rnd_rtree_t)));
+				if (sl->polygon_tree == NULL) rnd_rtree_init(sl->polygon_tree = malloc(sizeof(rnd_rtree_t)));
+				if (sl->gfx_tree == NULL)     rnd_rtree_init(sl->gfx_tree = malloc(sizeof(rnd_rtree_t)));
 				if (!(sl->meta.bound.type & PCB_LYT_VIRTUAL))
 					rnd_message(RND_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
 			}
@@ -1740,11 +1740,11 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 				continue;
 
 			/* make sure all trees exist on the dest layer - if these are the first objects there we may need to create them */
-			if (dl->line_tree == NULL) dl->line_tree = rnd_r_create_tree();
-			if (dl->arc_tree == NULL) dl->arc_tree = rnd_r_create_tree();
-			if (dl->text_tree == NULL) dl->text_tree = rnd_r_create_tree();
-			if (dl->polygon_tree == NULL) dl->polygon_tree = rnd_r_create_tree();
-			if (dl->gfx_tree == NULL) dl->gfx_tree = rnd_r_create_tree();
+			if (dl->line_tree == NULL)    rnd_rtree_init(dl->line_tree = malloc(sizeof(rnd_rtree_t)));
+			if (dl->arc_tree == NULL)     rnd_rtree_init(dl->arc_tree = malloc(sizeof(rnd_rtree_t)));
+			if (dl->text_tree == NULL)    rnd_rtree_init(dl->text_tree = malloc(sizeof(rnd_rtree_t)));
+			if (dl->polygon_tree == NULL) rnd_rtree_init(dl->polygon_tree = malloc(sizeof(rnd_rtree_t)));
+			if (dl->gfx_tree == NULL)     rnd_rtree_init(dl->gfx_tree = malloc(sizeof(rnd_rtree_t)));
 		}
 
 		if (subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1, 0) > 0)
@@ -1760,7 +1760,7 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc)
 {
 	if (pcb->Data->padstack_tree == NULL)
-		pcb->Data->padstack_tree = rnd_r_create_tree();
+		rnd_rtree_init(pcb->Data->padstack_tree = malloc(sizeof(rnd_rtree_t)));
 	subc->data->padstack_tree = pcb->Data->padstack_tree;
 TODO("subc: subc-in-subc: bind subc rtree")
 }
