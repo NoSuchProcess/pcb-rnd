@@ -1194,7 +1194,7 @@ static int altium_finalize_subcs(rctx_t *rctx)
 	for(e = htip_first(&rctx->comps); e != NULL; e = htip_next(&rctx->comps, e)) {
 		pcb_subc_t *sc = e->value;
 		pcb_subc_bbox(sc);
-		rnd_r_insert_entry(rctx->pcb->Data->subc_tree, (rnd_box_t *)sc);
+		rnd_rtree_insert(rctx->pcb->Data->subc_tree, sc, (rnd_rtree_box_t *)sc);
 		pcb_subc_rebind(rctx->pcb, sc);
 	}
 
