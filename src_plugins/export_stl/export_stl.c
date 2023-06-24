@@ -36,7 +36,6 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/poly/rtree.h>
-#include <librnd/poly/rtree2_compat.h>
 #include "data.h"
 #include "funchash_core.h"
 #include "layer.h"
