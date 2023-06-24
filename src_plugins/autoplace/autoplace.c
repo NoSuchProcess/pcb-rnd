@@ -478,9 +478,9 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 		}
 		PCB_END_LOOP;
 
-		rt_s = rnd_r_create_tree();
+		rnd_rtree_init(rt_s = malloc(sizeof(rnd_rtree_t)));
 		rnd_r_insert_array(rt_s, (const rnd_box_t **) seboxes.array, vtp0_len(&seboxes));
-		rt_c = rnd_r_create_tree();
+		rnd_rtree_init(rt_c = malloc(sizeof(rnd_rtree_t)));
 		rnd_r_insert_array(rt_c, (const rnd_box_t **) ceboxes.array, vtp0_len(&ceboxes));
 		vtp0_uninit(&seboxes);
 		vtp0_uninit(&ceboxes);
