@@ -219,10 +219,10 @@ struct r_neighbor_info {
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
 }
 /* helper methods for __r_find_neighbor */
-static rnd_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_box_t * region, void *cl)
+static rnd_rtree_dir_t __r_find_neighbor_reg_in_sea(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
-	rnd_box_t query = *region;
+	rnd_box_t query = *(rnd_box_t *)box;
 	RND_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
 	 *  \            /               |__| query rect.
@@ -231,14 +231,14 @@ static rnd_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_box_t * region, void *
 	 *   trap.x1    trap.x2   sides at 45-degree angle
 	 */
 	if ((query.Y2 > ni->trap.Y1) && (query.Y1 < ni->trap.Y2) && (query.X2 + ni->trap.Y2 > ni->trap.X1 + query.Y1) && (query.X1 + query.Y1 < ni->trap.X2 + ni->trap.Y2))
-		return RND_R_DIR_FOUND_CONTINUE;
-	return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_FOUND_CONT;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
-static rnd_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_box_t * box, void *cl)
+static rnd_rtree_dir_t __r_find_neighbor_rect_in_reg(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
-	rnd_box_t query = *box;
+	rnd_box_t query = *(rnd_box_t *)box;
 	int r;
 	RND_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
@@ -252,9 +252,9 @@ static rnd_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_box_t * box, void *cl
 	r = r && (query.Y2 <= ni->trap.Y2);
 	if (r) {
 		ni->trap.Y1 = query.Y2;
-		ni->neighbor = box;
+		ni->neighbor = (rnd_box_t *)box;
 	}
-	return r ? RND_R_DIR_FOUND_CONTINUE : RND_R_DIR_NOT_FOUND;
+	return r ? rnd_RTREE_DIR_FOUND_CONT : rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the
@@ -279,7 +279,7 @@ static const rnd_box_t *r_find_neighbor(rnd_rtree_t * rtree, const rnd_box_t * b
 	ni.trap.Y2 = ni.trap.Y1;
 	ni.trap.Y1 = bbox.Y1;
 	/* do the search! */
-	rnd_r_search(rtree, NULL, __r_find_neighbor_reg_in_sea, __r_find_neighbor_rect_in_reg, &ni, NULL);
+	rnd_rtree_search_any(rtree, NULL, __r_find_neighbor_reg_in_sea, __r_find_neighbor_rect_in_reg, &ni, NULL);
 	return ni.neighbor;
 }
 
