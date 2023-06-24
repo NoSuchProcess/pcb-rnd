@@ -664,19 +664,19 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 		rnd_message(RND_MSG_INFO, "The two arms of the net are:\n");
 		rnd_rtree_delete(ly->line_tree, l, (rnd_rtree_box_t *)l);
 		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
-		rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
+		rnd_rtree_insert(ly->line_tree, l, (rnd_rtree_box_t *)l);
 		report_net_length_(res, argc, argv, x, y);
 		rnd_rtree_delete(ly->line_tree, l, (rnd_rtree_box_t *)l);
 		l->Point1.X = ox; l->Point1.Y = oy;
-		rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
+		rnd_rtree_insert(ly->line_tree, l, (rnd_rtree_box_t *)l);
 
 		rnd_rtree_delete(ly->line_tree, l, (rnd_rtree_box_t *)l);
 		ox = l->Point2.X; oy = l->Point2.Y; l->Point2.X = x; l->Point2.Y = y;
-		rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
+		rnd_rtree_insert(ly->line_tree, l, (rnd_rtree_box_t *)l);
 		report_net_length_(res, argc, argv, x, y);
 		rnd_rtree_delete(ly->line_tree, l, (rnd_rtree_box_t *)l);
 		l->Point2.X = ox; l->Point2.Y = oy;
-		rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
+		rnd_rtree_insert(ly->line_tree, l, (rnd_rtree_box_t *)l);
 
 		PCB_FLAG_SET(PCB_FLAG_SELECTED, l);
 
