@@ -58,6 +58,7 @@
 #include <librnd/core/misc_util.h>
 #include "report_conf.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/src_3rd/genrtree/genrtree_debug.h>
 #include "layer.h"
 #include "layer_ui.h"
 #include "obj_term.h"
@@ -79,6 +80,16 @@ static const char pcb_acts_Report[] =
 static const char pcb_acth_Report[] = "Produce various report.";
 
 #define USER_UNITMASK (rnd_conf.editor.grid_unit->allow)
+
+static void r_print_obj(FILE *f, void *obj)
+{
+	fprintf(f, "<obj %p>\n", obj);
+}
+
+static void r_dump_tree(rnd_rtree_t *root, int unused)
+{
+	rnd_rtree_dump_text(stdout, root, r_print_obj);
+}
 
 
 typedef struct rdialog_ctx_s {
@@ -194,7 +205,7 @@ static void report_pstk(gds_t *dst, pcb_pstk_t *ps)
 
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
-		rnd_r_dump_tree(PCB->Data->padstack_tree, 0);
+		r_dump_tree(PCB->Data->padstack_tree, 0);
 #endif
 	proto = pcb_pstk_get_proto(ps);
 
@@ -212,7 +223,7 @@ static void report_line(gds_t *dst, pcb_line_t *line)
 {
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
-		rnd_r_dump_tree(line->parent.layer->line_tree, 0);
+		r_dump_tree(line->parent.layer->line_tree, 0);
 #endif
 	rnd_append_printf(dst, "%m+LINE ID# %ld;  Flags:%s\n"
 		"FirstPoint(X,Y)  = %$mD, ID = %ld.\n"
@@ -235,7 +246,7 @@ static void report_rat(gds_t *dst, pcb_rat_t *line)
 	char *anchor1 = "n/a", *anchor2 = "n/a";
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
-		rnd_r_dump_tree(PCB->Data->rat_tree, 0);
+		r_dump_tree(PCB->Data->rat_tree, 0);
 #endif
 	rnd_append_printf(dst, "%m+RAT-LINE ID# %ld;  Flags:%s\n"
 		"FirstPoint(X,Y)  = %$mD; ID = %ld; "
@@ -260,7 +271,7 @@ static void report_arc(gds_t *dst, pcb_arc_t *arc)
 	rnd_box_t box;
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
-		rnd_r_dump_tree(arc->parent.layer->arc_tree, 0);
+		r_dump_tree(arc->parent.layer->arc_tree, 0);
 #endif
 	pcb_arc_get_end(arc, 0, &box.X1, &box.Y1);
 	pcb_arc_get_end(arc, 1, &box.X2, &box.Y2);
@@ -291,7 +302,7 @@ static void report_poly(gds_t *dst, pcb_poly_t *poly)
 
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
-		rnd_r_dump_tree(poly->parent.layer->polygon_tree, 0);
+		r_dump_tree(poly->parent.layer->polygon_tree, 0);
 #endif
 
 	aunit = rnd_conf.editor.grid_unit->suffix;
@@ -328,7 +339,7 @@ static void report_subc(gds_t *dst, pcb_subc_t *subc)
 {
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
-		rnd_r_dump_tree(PCB->Data->subc_tree, 0);
+		r_dump_tree(PCB->Data->subc_tree, 0);
 #endif
 	rnd_append_printf(dst, "%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
@@ -347,7 +358,7 @@ static void report_text(gds_t *dst, pcb_text_t *text)
 {
 #ifndef NDEBUG
 		if (rnd_gui->shift_is_pressed(rnd_gui))
-			rnd_r_dump_tree(text->parent.layer->text_tree, 0);
+			r_dump_tree(text->parent.layer->text_tree, 0);
 #endif
 
 	rnd_append_printf(dst, "%m+TEXT ID# %ld;  Flags:%s\n"
@@ -365,7 +376,7 @@ static void report_gfx(gds_t *dst, pcb_gfx_t *gfx)
 {
 #ifndef NDEBUG
 		if (rnd_gui->shift_is_pressed(rnd_gui))
-			rnd_r_dump_tree(gfx->parent.layer->gfx_tree, 0);
+			r_dump_tree(gfx->parent.layer->gfx_tree, 0);
 #endif
 
 	rnd_append_printf(dst, "%m+GFX ID# %ld;  Flags:%s\n"
