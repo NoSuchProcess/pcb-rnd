@@ -64,16 +64,16 @@ void pcb_dlcr_post_poly_thermal_obj(pcb_board_t *pcb, pcb_poly_t *poly, pcb_any_
 	pcb_chg_obj_thermal(obj->type, obj, obj, obj, t, pcb_layer2id(pcb->Data, poly->parent.layer));
 }
 
-static rnd_r_dir_t ppr_poly_therm(const rnd_box_t *b, void *cl)
+static rnd_rtree_dir_t ppr_poly_therm(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	ppr_t *ppr = cl;
-	pcb_any_obj_t *o = (pcb_any_obj_t *)b;
+	pcb_any_obj_t *o = (pcb_any_obj_t *)obj;
 	const char *vnn = ppr->obj_netname(ppr->uctx, o);
 
 	if ((vnn != NULL) && (strcmp(vnn, ppr->netname) == 0))
 		pcb_dlcr_post_poly_thermal_obj(ppr->pcb, ppr->poly, o, ppr->t);
 
-	return RND_R_DIR_FOUND_CONTINUE;
+	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
 
@@ -88,7 +88,7 @@ void pcb_dlcr_post_poly_thermal_netname(pcb_board_t *pcb, pcb_poly_t *poly, cons
 	ppr.obj_netname = obj_netname;
 	ppr.uctx = uctx;
 
-	rnd_r_search(poly->parent.layer->line_tree, &poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
-	rnd_r_search(poly->parent.layer->arc_tree,  &poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
-	rnd_r_search(pcb->Data->padstack_tree,      &poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
+	rnd_rtree_search_any(poly->parent.layer->line_tree, (rnd_rtree_box_t *)&poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
+	rnd_rtree_search_any(poly->parent.layer->arc_tree,  (rnd_rtree_box_t *)&poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
+	rnd_rtree_search_any(pcb->Data->padstack_tree,      (rnd_rtree_box_t *)&poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
 }
