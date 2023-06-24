@@ -20,7 +20,7 @@ void spoke_init(spoke_t *sp, spoke_dir_t dir, point_t *p)
 void spoke_uninit(spoke_t *sp)
 {
 	/* TODO:
-	rnd_r_delete_entry(spoke_tree, &pd->spokes[i]);
+	rnd_rtree_delete_entry(spoke_tree, &pd->spokes[i]);
 	*/
 	vtp0_uninit(&sp->slots);
 }
