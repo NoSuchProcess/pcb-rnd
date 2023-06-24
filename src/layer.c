@@ -1191,11 +1191,11 @@ rnd_layer_id_t pcb_layer2id(pcb_data_t *data, pcb_layer_t *ly)
 void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 {
 	/* we can't link non-existing trees - make sure src does have the trees initialized */
-	if (src->line_tree == NULL) src->line_tree = rnd_r_create_tree();
-	if (src->arc_tree == NULL) src->arc_tree = rnd_r_create_tree();
-	if (src->text_tree == NULL) src->text_tree = rnd_r_create_tree();
-	if (src->polygon_tree == NULL) src->polygon_tree = rnd_r_create_tree();
-	if (src->gfx_tree == NULL) src->gfx_tree = rnd_r_create_tree();
+	if (src->line_tree == NULL) rnd_rtree_init(src->line_tree = malloc(sizeof(rnd_rtree_t)));
+	if (src->arc_tree == NULL) rnd_rtree_init(src->arc_tree = malloc(sizeof(rnd_rtree_t)));
+	if (src->text_tree == NULL) rnd_rtree_init(src->text_tree = malloc(sizeof(rnd_rtree_t)));
+	if (src->polygon_tree == NULL) rnd_rtree_init(src->polygon_tree = malloc(sizeof(rnd_rtree_t)));
+	if (src->gfx_tree == NULL) rnd_rtree_init(src->gfx_tree = malloc(sizeof(rnd_rtree_t)));
 
 	dst->line_tree = src->line_tree;
 	dst->arc_tree = src->arc_tree;
