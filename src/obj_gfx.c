@@ -199,7 +199,7 @@ void pcb_add_gfx_on_layer(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 {
 	pcb_gfx_bbox(gfx);
 	if (!Layer->gfx_tree)
-		Layer->gfx_tree = rnd_r_create_tree();
+		rnd_rtree_init(Layer->gfx_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 	gfx->type = PCB_OBJ_GFX;
 	PCB_SET_PARENT(gfx, layer, Layer);
@@ -359,7 +359,7 @@ void *pcb_gfxop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_gfx_t *gfx
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, gfx);
 
 	if (!dstly->gfx_tree)
-		dstly->gfx_tree = rnd_r_create_tree();
+		rnd_rtree_init(dstly->gfx_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(dstly->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 
 	return gfx;
@@ -424,7 +424,7 @@ void *pcb_gfxop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_gf
 	pcb_gfx_reg(Destination, gfx);
 
 	if (!Destination->gfx_tree)
-		Destination->gfx_tree = rnd_r_create_tree();
+		rnd_rtree_init(Destination->gfx_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Destination->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
 
 	return gfx;
