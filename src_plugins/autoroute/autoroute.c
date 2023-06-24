@@ -1226,7 +1226,9 @@ void DestroyRouteData(routedata_t ** rd)
 	int i;
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		rnd_r_free_tree_data((*rd)->layergrouptree[i], free);
-		rnd_r_destroy_tree(&(*rd)->layergrouptree[i]);
+		rnd_rtree_uninit((*rd)->layergrouptree[i]);
+		free((*rd)->layergrouptree[i]);
+		(*rd)->layergrouptree[i] = NULL;
 	}
 	if (AutoRouteParameters.use_vias)
 		mtspace_destroy(&(*rd)->mtspace);
@@ -4041,7 +4043,9 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 	}
 	touch_conflicts(NULL, 1);
 	rnd_heap_destroy(&s.workheap);
-	rnd_r_destroy_tree(&targets);
+	rnd_rtree_uninit(targets);
+	free(targets);
+	targets = NULL;
 	assert(vector_is_empty(edge_vec));
 	vector_destroy(&edge_vec);
 

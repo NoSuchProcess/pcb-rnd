@@ -120,9 +120,13 @@ void mtspace_destroy(mtspace_t ** mtspacep)
 	rnd_r_free_tree_data((*mtspacep)->ftree, free);
 	rnd_r_free_tree_data((*mtspacep)->etree, free);
 	rnd_r_free_tree_data((*mtspacep)->otree, free);
-	rnd_r_destroy_tree(&(*mtspacep)->ftree);
-	rnd_r_destroy_tree(&(*mtspacep)->etree);
-	rnd_r_destroy_tree(&(*mtspacep)->otree);
+
+	rnd_rtree_uninit((*mtspacep)->ftree);
+	rnd_rtree_uninit((*mtspacep)->etree);
+	rnd_rtree_uninit((*mtspacep)->otree);
+	free((*mtspacep)->ftree);
+	free((*mtspacep)->etree);
+	free((*mtspacep)->otree);
 	free(*mtspacep);
 	*mtspacep = NULL;
 }
