@@ -38,7 +38,6 @@
 #include <librnd/core/plugins.h>
 #include <librnd/hid/tool.h>
 #include <librnd/poly/rtree.h>
-#include <librnd/poly/rtree2_compat.h>
 #include <librnd/core/rnd_conf.h>
 #include "tool_logic.h"
 #include "board.h"
