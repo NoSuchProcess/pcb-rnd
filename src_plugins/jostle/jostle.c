@@ -339,10 +339,10 @@ struct info {
 };
 
 /* Process lines that intersect our 'brush'. */
-static rnd_r_dir_t jostle_callback(const rnd_box_t * targ, void *private)
+static rnd_rtree_dir_t jostle_callback(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
-	pcb_line_t *line = (pcb_line_t *) targ;
-	struct info *info = private;
+	pcb_line_t *line = (pcb_line_t *)obj;
+	struct info *info = cl;
 	rnd_polyarea_t *lp, *copy, *tmp, *n, *smallest = NULL;
 	rnd_vector_t p;
 	int inside = 0, side, r;
@@ -475,7 +475,7 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_coord_t via_dia = pcb_pstk_pen_dia(PCB);
 	float value = via_dia + (conf_core.design.bloat + 1) * 2 + 50;
 	struct info info;
-	int found;
+	long found;
 
 	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, jostle, value = fgw_keyword(&argv[1]));
 
@@ -495,7 +495,7 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_fprintf(stderr, "search (%ms,%ms)->(%ms,%ms):\n", info.box.X1, info.box.Y1, info.box.X2, info.box.Y2);
 		info.line = NULL;
 		info.smallest = NULL;
-		rnd_r_search(info.layer->line_tree, &info.box, NULL, jostle_callback, &info, &found);
+		rnd_rtree_search_any(info.layer->line_tree, (rnd_rtree_box_t *)&info.box, NULL, jostle_callback, &info, &found);
 		if (found) {
 			expand = NULL;
 			MakeBypassingLines(info.smallest, info.layer, info.line, info.side, &expand);
