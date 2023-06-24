@@ -571,7 +571,7 @@ static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, pcb_board_t *pcb, pcb_data_t *data
 
 	if (data != NULL) {
 		if (!data->padstack_tree)
-			data->padstack_tree = rnd_r_create_tree();
+			rnd_rtree_init(data->padstack_tree = malloc(sizeof(rnd_rtree_t)));
 		bctx->subc->data->padstack_tree = data->padstack_tree;
 	}
 
