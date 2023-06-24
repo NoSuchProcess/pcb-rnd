@@ -36,7 +36,6 @@
 #include <librnd/core/plugins.h>
 #include <librnd/hid/tool.h>
 #include <librnd/poly/rtree.h>
-#include <librnd/poly/rtree2_compat.h>
 #include <librnd/hid/hid_menu.h>
 #include <librnd/core/rnd_conf.h>
 #include <librnd/core/hidlib.h>
