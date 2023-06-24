@@ -215,7 +215,7 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord
 
 	res->alloced = alloced;
 	res->used = 0;
-	res->edge_tree = rnd_r_create_tree();
+	rnd_rtree_init(res->edge_tree = malloc(sizeof(rnd_rtree_t)));
 	res->bbox.X1 = res->bbox.Y1 = RND_MAX_COORD;
 	res->bbox.X2 = res->bbox.Y2 = -RND_MAX_COORD;
 
