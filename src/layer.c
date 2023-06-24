@@ -183,6 +183,8 @@ void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable)
 	layer->Attributes.post_change = layer_post_change;
 }
 
+#define RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
+
 rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 {
 	/* if any local list is non-empty, the layer is non-empty */
@@ -194,11 +196,11 @@ rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 	/* if the layer is locally empty, it might be a board layer that has
 	   objects from subcircuits so also check the rtrees */
 	return
-		RND_RTREE_EMPTY(layer->line_tree) && 
-		RND_RTREE_EMPTY(layer->arc_tree) && 
-		RND_RTREE_EMPTY(layer->gfx_tree) && 
-		RND_RTREE_EMPTY(layer->polygon_tree) && 
-		RND_RTREE_EMPTY(layer->text_tree);
+		RTREE_EMPTY(layer->line_tree) &&
+		RTREE_EMPTY(layer->arc_tree) &&
+		RTREE_EMPTY(layer->gfx_tree) &&
+		RTREE_EMPTY(layer->polygon_tree) &&
+		RTREE_EMPTY(layer->text_tree);
 }
 
 static rnd_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer)
