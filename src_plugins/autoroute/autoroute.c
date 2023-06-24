@@ -1195,7 +1195,7 @@ static routedata_t *CreateRouteData()
 	/* create r-trees from pointer lists */
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		/* create the r-tree */
-		rd->layergrouptree[i] = rnd_r_create_tree();
+		rnd_rtree_init(rd->layergrouptree[i] = malloc(sizeof(rnd_rtree_t)));
 		rnd_r_insert_array(rd->layergrouptree[i], (const rnd_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]));
 	}
 
@@ -3725,7 +3725,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 #endif
 	}
 	PCB_END_LOOP;
-	targets = rnd_r_create_tree();
+	rnd_rtree_init(targets = malloc(sizeof(rnd_rtree_t)));
 	rnd_r_insert_array(targets, (const rnd_box_t **)target_list, i);
 	assert(i <= num_targets);
 	free(target_list);

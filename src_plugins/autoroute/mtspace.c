@@ -106,9 +106,9 @@ mtspace_t *mtspace_create(void)
 
 	/* create mtspace data structure */
 	mtspace = (mtspace_t *) malloc(sizeof(*mtspace));
-	mtspace->ftree = rnd_r_create_tree();
-	mtspace->etree = rnd_r_create_tree();
-	mtspace->otree = rnd_r_create_tree();
+	rnd_rtree_init(mtspace->ftree = malloc(sizeof(rnd_rtree_t)));
+	rnd_rtree_init(mtspace->etree = malloc(sizeof(rnd_rtree_t)));
+	rnd_rtree_init(mtspace->otree = malloc(sizeof(rnd_rtree_t)));
 	/* done! */
 	return mtspace;
 }
