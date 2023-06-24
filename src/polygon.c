@@ -1798,7 +1798,7 @@ pcb_poly_t *pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t 
 		pcb_poly_init_clip(Destination, Layer, Polygon);
 		pcb_poly_bbox(Polygon);
 		if (!Layer->polygon_tree)
-			Layer->polygon_tree = rnd_r_create_tree();
+			rnd_rtree_init(Layer->polygon_tree = malloc(sizeof(rnd_rtree_t)));
 		rnd_rtree_insert(Layer->polygon_tree, Polygon, (rnd_rtree_box_t *)Polygon);
 
 		pcb_poly_invalidate_draw(Layer, Polygon);
