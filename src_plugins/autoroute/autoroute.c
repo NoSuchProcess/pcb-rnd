@@ -90,6 +90,8 @@
 #include "obj_pstk_draw.h"
 #include "obj_pstk_inlines.h"
 
+#include "r_legacy.h"
+
 #define autoroute_therm_style 4
 
 /* #defines to enable some debugging output */
@@ -1196,7 +1198,7 @@ static routedata_t *CreateRouteData()
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		/* create the r-tree */
 		rnd_rtree_init(rd->layergrouptree[i] = malloc(sizeof(rnd_rtree_t)));
-		rnd_r_insert_array(rd->layergrouptree[i], (const rnd_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]));
+		r_insert_array(rd->layergrouptree[i], (const rnd_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]));
 	}
 
 	if (AutoRouteParameters.use_vias) {
@@ -1225,7 +1227,7 @@ void DestroyRouteData(routedata_t ** rd)
 {
 	int i;
 	for (i = 0; i < pcb_max_group(PCB); i++) {
-		rnd_r_free_tree_data((*rd)->layergrouptree[i], free);
+		r_free_tree_data((*rd)->layergrouptree[i], free);
 		rnd_rtree_uninit((*rd)->layergrouptree[i]);
 		free((*rd)->layergrouptree[i]);
 		(*rd)->layergrouptree[i] = NULL;
@@ -3728,7 +3730,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 	}
 	PCB_END_LOOP;
 	rnd_rtree_init(targets = malloc(sizeof(rnd_rtree_t)));
-	rnd_r_insert_array(targets, (const rnd_box_t **)target_list, i);
+	r_insert_array(targets, (const rnd_box_t **)target_list, i);
 	assert(i <= num_targets);
 	free(target_list);
 

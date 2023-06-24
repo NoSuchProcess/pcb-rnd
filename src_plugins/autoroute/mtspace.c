@@ -55,6 +55,8 @@
 #include "vector.h"
 #include <librnd/poly/rtree2_compat.h>
 
+#include "r_legacy.h"
+
 /* mtspace data structures are built on r-trees. */
 
 typedef struct mtspacebox {
@@ -117,9 +119,9 @@ mtspace_t *mtspace_create(void)
 void mtspace_destroy(mtspace_t ** mtspacep)
 {
 	assert(mtspacep);
-	rnd_r_free_tree_data((*mtspacep)->ftree, free);
-	rnd_r_free_tree_data((*mtspacep)->etree, free);
-	rnd_r_free_tree_data((*mtspacep)->otree, free);
+	r_free_tree_data((*mtspacep)->ftree, free);
+	r_free_tree_data((*mtspacep)->etree, free);
+	r_free_tree_data((*mtspacep)->otree, free);
 
 	rnd_rtree_uninit((*mtspacep)->ftree);
 	rnd_rtree_uninit((*mtspacep)->etree);
