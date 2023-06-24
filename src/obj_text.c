@@ -322,7 +322,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, rnd_font_t *PCB
 	/* calculate size of the bounding box */
 	pcb_text_bbox(PCBFont, text);
 	if (!Layer->text_tree)
-		Layer->text_tree = rnd_r_create_tree();
+		rnd_rtree_init(Layer->text_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Layer->text_tree, text, (rnd_rtree_box_t *)text);
 }
 
@@ -558,7 +558,7 @@ void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *t
 	pcb_text_reg(dstly, text);
 
 	if (!dstly->text_tree)
-		dstly->text_tree = rnd_r_create_tree();
+		rnd_rtree_init(dstly->text_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(dstly->text_tree, text, (rnd_rtree_box_t *)text);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_TEXT, dstly, text);
 
@@ -794,7 +794,7 @@ void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_t
 	/* re-calculate the bounding box (it could be mirrored now) */
 	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 	if (!Destination->text_tree)
-		Destination->text_tree = rnd_r_create_tree();
+		rnd_rtree_init(Destination->text_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Destination->text_tree, text, (rnd_rtree_box_t *)text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Destination, text);
 
