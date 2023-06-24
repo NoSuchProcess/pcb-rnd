@@ -1189,7 +1189,7 @@ static int altium_finalize_subcs(rctx_t *rctx)
 	htip_entry_t *e;
 
 	if (rctx->pcb->Data->subc_tree == NULL)
-		rctx->pcb->Data->subc_tree = rnd_r_create_tree();
+		rnd_rtree_init(rctx->pcb->Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 
 	for(e = htip_first(&rctx->comps); e != NULL; e = htip_next(&rctx->comps, e)) {
 		pcb_subc_t *sc = e->value;
