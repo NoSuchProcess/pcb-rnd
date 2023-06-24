@@ -92,8 +92,11 @@ static void sketch_update_cdt_layer(sketch_t *sk)
 	pcb_layer_t *l = sk->ui_layer_cdt;
 
 	list_map0(&l->Line, pcb_line_t, pcb_line_free);
-	if (l->line_tree)
-		rnd_r_destroy_tree(&l->line_tree);
+	if (l->line_tree) {
+		rnd_rtree_uninit(l->line_tree);
+		free(l->line_tree);
+		l->line_tree = NULL;
+	}
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
 		pcb_line_new(l, e->endp[0]->pos.x, -e->endp[0]->pos.y, e->endp[1]->pos.x, -e->endp[1]->pos.y, 1, 0, pcb_no_flags());
 	VTEDGE_FOREACH_END();
@@ -106,8 +109,11 @@ static void sketch_update_erbs_layer(sketch_t *sk)
 	int i;
 
 	list_map0(&l->Line, pcb_line_t, pcb_line_free);
-	if (l->line_tree)
-		rnd_r_destroy_tree(&l->line_tree);
+	if (l->line_tree) {
+		rnd_rtree_uninit(l->line_tree);
+		free(l->line_tree);
+		l->line_tree = NULL;
+	}
 
 	VTEWIRE_FOREACH(ew, &sk->ewires)
 		ewire_point_t *ewp = &ew->points.array[0];
@@ -749,7 +755,11 @@ static void sketch_uninit(sketch_t *sk)
 	vtwire_uninit(&sk->wires);
 	vtewire_uninit(&sk->ewires);
 	htpp_uninit(&sk->terminals);
-	rnd_r_destroy_tree(&sk->spoke_tree);
+
+	rnd_rtree_uninit(sk->spoke_tree);
+	free(sk->spoke_tree);
+	sk->spoke_tree = NULL;
+
 	pcb_uilayer_free(sk->ui_layer_cdt);
 	pcb_uilayer_free(sk->ui_layer_erbs);
 }
