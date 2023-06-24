@@ -1058,7 +1058,7 @@ TODO("this does not handle return -1")
 	}
 	pcb_subc_bbox(new_module);
 	if (st->pcb->Data->subc_tree == NULL)
-		st->pcb->Data->subc_tree = rnd_r_create_tree();
+		rnd_rtree_init(st->pcb->Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)new_module);
 	pcb_subc_rebind(st->pcb, new_module);
 
