@@ -1179,7 +1179,7 @@ static routedata_t *CreateRouteData()
 		vtp0_init(&layergroupboxes[i]);
 		PCB_COPPER_GROUP_LOOP(PCB->Data, i);
 		{
-			if (!RND_RTREE_EMPTY(layer->line_tree) || !RND_RTREE_EMPTY(layer->arc_tree))
+			if (!RTREE_EMPTY(layer->line_tree) || !RTREE_EMPTY(layer->arc_tree))
 				usedGroup[i] = rnd_true;
 			else
 				usedGroup[i] = rnd_false;

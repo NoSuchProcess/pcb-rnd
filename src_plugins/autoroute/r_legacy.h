@@ -1,6 +1,8 @@
 /* Recurring legacy rtree operations for autoroute and autoplace
    DO NOT USE IN NEW CODE */
 
+#define RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
+
 RND_INLINE void r_free_tree_data(rnd_rtree_t *rtree, void (*free)(void *ptr))
 {
 	rnd_rtree_it_t it;
