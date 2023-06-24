@@ -195,7 +195,7 @@ static int dimension_gen(pcb_subc_t *subc)
 	}
 	else { /* modify the floater if it exists */
 		if (ly->line_tree != NULL)
-			rnd_r_delete_entry(ly->line_tree, (rnd_box_t *)flt);
+			rnd_rtree_delete(ly->line_tree, flt, (rnd_rtree_box_t *)flt);
 
 		flt->Point1.X = x1 + arrx * dim->dx; flt->Point1.Y = y1 + arrx * dim->dy;
 		flt->Point2.X = x2 - arrx * dim->dx; flt->Point2.Y = y2 - arrx * dim->dy;
