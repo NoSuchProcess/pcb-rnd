@@ -134,19 +134,19 @@ struct mts_info {
 	jmp_buf env;
 };
 
-static rnd_r_dir_t mts_remove_one(const rnd_box_t * b, void *cl)
+static rnd_rtree_dir_t mts_remove_one(void *cl, void *obj, const rnd_rtree_box_t *box_)
 {
 	struct mts_info *info = (struct mts_info *) cl;
-	mtspacebox_t *box = (mtspacebox_t *) b;
+	mtspacebox_t *box = (mtspacebox_t *)box_;
 
 	/* there can be duplicate boxes, we just remove one */
 	/* the info box is pre-bloated, so just check equality */
-	if (b->X1 == info->box.X1 && b->X2 == info->box.X2 &&
-			b->Y1 == info->box.Y1 && b->Y2 == info->box.Y2 && box->clearance == info->clearance) {
-		rnd_r_delete_entry_free_data(info->tree, (rnd_box_t *)b, free);
+	if (box_->x1 == info->box.X1 && box_->x2 == info->box.X2 &&
+			box_->y1 == info->box.Y1 && box_->y2 == info->box.Y2 && box->clearance == info->clearance) {
+		rnd_r_delete_entry_free_data(info->tree, (rnd_box_t *)box_, free);
 		longjmp(info->env, 1);
 	}
-	return RND_R_DIR_NOT_FOUND;
+	return rnd_RTREE_DIR_NOT_FOUND_CONT;
 }
 
 rnd_rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
@@ -179,7 +179,7 @@ void mtspace_remove(mtspace_t * mtspace, const rnd_box_t * box, mtspace_type_t w
 	cl.tree = which_tree(mtspace, which);
 	small_search = rnd_box_center(box);
 	if (setjmp(cl.env) == 0) {
-		rnd_r_search(cl.tree, &small_search, NULL, mts_remove_one, &cl, NULL);
+		rnd_rtree_search_any(cl.tree, (rnd_rtree_box_t *)&small_search, NULL, mts_remove_one, &cl, NULL);
 		assert(0);									/* didn't find it?? */
 	}
 }
@@ -214,7 +214,7 @@ RND_INLINE void append(struct query_closure *qc, rnd_box_t * newone)
  * First check if it does intersect, then break it into
  * overlaping regions that don't intersect this box.
  */
-static rnd_r_dir_t query_one(const rnd_box_t * box, void *cl)
+static rnd_rtree_dir_t query_one(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	struct query_closure *qc = (struct query_closure *) cl;
 	mtspacebox_t *mtsb = (mtspacebox_t *) box;
@@ -239,7 +239,7 @@ static rnd_r_dir_t query_one(const rnd_box_t * box, void *cl)
 	 * then we didn't actually touch this box */
 	if (qc->cbox->X1 + shrink >= mtsb->box.X2 ||
 			qc->cbox->X2 - shrink <= mtsb->box.X1 || qc->cbox->Y1 + shrink >= mtsb->box.Y2 || qc->cbox->Y2 - shrink <= mtsb->box.Y1)
-		return RND_R_DIR_NOT_FOUND;
+		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 	/* ok, we do touch this box, now create up to 4 boxes that don't */
 	if (mtsb->box.Y1 > qc->cbox->Y1 + shrink) {	/* top region exists */
 		rnd_coord_t Y1 = qc->cbox->Y1;
@@ -303,7 +303,7 @@ static rnd_r_dir_t query_one(const rnd_box_t * box, void *cl)
 	else
 		free(qc->cbox);							/* done with this one */
 	longjmp(qc->env, 1);
-	return RND_R_DIR_FOUND_CONTINUE;											/* never reached */
+	return rnd_RTREE_DIR_FOUND_CONT; /* never reached */
 }
 
 /* qloop takes a vector (or heap) of regions to check (checking) if they don't intersect
@@ -317,14 +317,14 @@ static rnd_r_dir_t query_one(const rnd_box_t * box, void *cl)
 static void qloop(struct query_closure *qc, rnd_rtree_t * tree, heap_or_vector res, rnd_bool is_vec)
 {
 	rnd_box_t *cbox;
-	int n;
+	long n;
 
 	while (!(qc->desired ? rnd_heap_is_empty(qc->checking.h) : vector_is_empty(qc->checking.v))) {
 		cbox = qc->desired ? (rnd_box_t *) rnd_heap_remove_smallest(qc->checking.h) : (rnd_box_t *) vector_remove_last(qc->checking.v);
 		if (setjmp(qc->env) == 0) {
 			assert(rnd_box_is_good(cbox));
 			qc->cbox = cbox;
-			rnd_r_search(tree, cbox, NULL, query_one, qc, &n);
+			rnd_rtree_search_any(tree, (rnd_rtree_box_t *)cbox, NULL, query_one, qc, &n);
 			assert(n == 0);
 			/* nothing intersected with this tree, put it in the result vector */
 			if (is_vec)
