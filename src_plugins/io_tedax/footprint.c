@@ -675,7 +675,7 @@ pcb_subc_t *tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_siz
 
 	if (!data->subc_tree)
 		rnd_rtree_init(data->subc_tree = malloc(sizeof(rnd_rtree_t)));
-	rnd_r_insert_entry(data->subc_tree, (rnd_box_t *)sc);
+	rnd_rtree_insert(data->subc_tree, sc, (rnd_rtree_box_t *)sc);
 
 	return sc;
 }
