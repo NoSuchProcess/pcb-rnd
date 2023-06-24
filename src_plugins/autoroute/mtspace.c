@@ -53,7 +53,6 @@
 #include "box_dir.h"
 #include "mtspace.h"
 #include "vector.h"
-#include <librnd/poly/rtree2_compat.h>
 
 #include "r_legacy.h"
 
