@@ -4098,7 +4098,9 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		assert(!rb->flags.homeless);
 		if (rb->conflicts_with && rb->parent.expansion_area->conflicts_with != rb->conflicts_with)
 			vector_destroy(&rb->conflicts_with);
-		rnd_r_delete_entry_free_data(rd->layergrouptree[rb->group], &rb->box, free);
+
+		if (rnd_rtree_delete(rd->layergrouptree[rb->group], &rb->box, (rnd_rtree_box_t *)&rb->box) == 0)
+			free(&rb->box);
 	}
 	vector_destroy(&area_vec);
 	/* clean up; remove all 'source', 'target', and 'nobloat' flags */
@@ -4297,9 +4299,6 @@ struct routeall_status RouteAll(routedata_t * rd)
 				LIST_LOOP(net, same_net, p);
 				p->flags.is_bad = 0;
 				if (!p->flags.fixed) {
-#ifndef NDEBUG
-					rnd_bool del;
-#endif
 					assert(!p->flags.homeless);
 					if (rip) {
 						RemoveFromNet(p, NET);
@@ -4313,13 +4312,8 @@ struct routeall_status RouteAll(routedata_t * rd)
 					if (rip) {
 						if (conf_core.editor.live_routing)
 							ripout_livedraw_obj(p);
-#ifndef NDEBUG
-						del =
-#endif
-							rnd_r_delete_entry_free_data(rd->layergrouptree[p->group], &p->box, free);
-#ifndef NDEBUG
-						assert(del);
-#endif
+					if (rnd_rtree_delete(rd->layergrouptree[p->group], &p->box, (rnd_rtree_box_t *)&p->box) == 0)
+						free(&p->box);
 					}
 					else {
 						p->flags.is_odd = AutoRouteParameters.is_odd;

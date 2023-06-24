@@ -147,7 +147,10 @@ static rnd_rtree_dir_t mts_remove_one(void *cl, void *obj, const rnd_rtree_box_t
 	/* the info box is pre-bloated, so just check equality */
 	if (box_->x1 == info->box.X1 && box_->x2 == info->box.X2 &&
 			box_->y1 == info->box.Y1 && box_->y2 == info->box.Y2 && box->clearance == info->clearance) {
-		rnd_r_delete_entry_free_data(info->tree, (rnd_box_t *)box_, free);
+
+		if (rnd_rtree_delete(info->tree, (void *)box_, (rnd_rtree_box_t *)box_) == 0)
+			free((void *)box_);
+
 		longjmp(info->env, 1);
 	}
 	return rnd_RTREE_DIR_NOT_FOUND_CONT;
