@@ -477,7 +477,7 @@ static void hyp_subc_fin(pcb_subc_t *subc)
 {
 	pcb_subc_bbox(subc);
 	if (hyp_dest->subc_tree == NULL)
-		hyp_dest->subc_tree = rnd_r_create_tree();
+		rnd_rtree_init(hyp_dest->subc_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_r_insert_entry(hyp_dest->subc_tree, (rnd_box_t *)subc);
 	pcb_subc_rebind(hyp_dest->parent.board, subc);
 }
