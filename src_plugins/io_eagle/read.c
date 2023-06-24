@@ -1384,7 +1384,7 @@ TODO("subc: revise this: are we loading an instance here? do we need to place it
 	if (st->pcb != NULL) {
 		if (st->pcb->Data->subc_tree == NULL)
 			rnd_rtree_init(st->pcb->Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
-		rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
+		rnd_rtree_insert(st->pcb->Data->subc_tree, subc, (rnd_rtree_box_t *)subc);
 		pcb_subc_rebind(st->pcb, subc);
 	}
 
