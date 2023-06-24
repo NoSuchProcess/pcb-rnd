@@ -1383,7 +1383,7 @@ static int eagle_read_package(read_state_t *st, trnode_t *n)
 TODO("subc: revise this: are we loading an instance here? do we need to place it? do not even bump if not!")
 	if (st->pcb != NULL) {
 		if (st->pcb->Data->subc_tree == NULL)
-			st->pcb->Data->subc_tree = rnd_r_create_tree();
+			rnd_rtree_init(st->pcb->Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 		rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
 		pcb_subc_rebind(st->pcb, subc);
 	}
