@@ -202,7 +202,7 @@ static int dimension_gen(pcb_subc_t *subc)
 
 		pcb_line_bbox(flt);
 		if (ly->line_tree != NULL)
-			rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)flt);
+			rnd_rtree_insert(ly->line_tree, flt, (rnd_rtree_box_t *)flt);
 	}
 
 	/* guide lines */
