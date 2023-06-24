@@ -60,6 +60,9 @@ conf_draw_fab_t conf_draw_fab;
 #define DRILL_MARK_SIZE	RND_MIL_TO_COORD(16)
 #define FAB_LINE_W      RND_MIL_TO_COORD(8)
 
+#define RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
+
+
 static void fab_line(rnd_hid_gc_t gc, int x1, int y1, int x2, int y2)
 {
 	rnd_render->draw_line(gc, x1, y1, x2, y2);
@@ -301,7 +304,7 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 		pcb_layer_t *l = &PCB->Data->Layer[i];
 		pcb_layer_type_t flags = pcb_layer_flags(PCB, i);
 		int purpi = pcb_layer_purpose(PCB, i, NULL);
-		if (PCB_LAYER_IS_ROUTE(flags, purpi) && (!RND_RTREE_EMPTY(l->line_tree) || !RND_RTREE_EMPTY(l->arc_tree))) {
+		if (PCB_LAYER_IS_ROUTE(flags, purpi) && (!RTREE_EMPTY(l->line_tree) || !RTREE_EMPTY(l->arc_tree))) {
 			draw_fab_layer(info, gc, e, l, found);
 			found = 1;
 		}
