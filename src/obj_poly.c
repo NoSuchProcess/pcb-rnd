@@ -548,7 +548,7 @@ void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon)
 {
 	pcb_poly_bbox(polygon);
 	if (!Layer->polygon_tree)
-		Layer->polygon_tree = rnd_r_create_tree();
+		rnd_rtree_init(Layer->polygon_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Layer->polygon_tree, polygon, (rnd_rtree_box_t *)polygon);
 	PCB_SET_PARENT(polygon, layer, Layer);
 	pcb_poly_clear_from_poly(Layer->parent.data, PCB_OBJ_POLY, Layer, polygon);
@@ -706,7 +706,7 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t 
 	 * skeleton polygon object, which won't have correct bounds.
 	 */
 	if (!layer->polygon_tree)
-		layer->polygon_tree = rnd_r_create_tree();
+		rnd_rtree_init(layer->polygon_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(layer->polygon_tree, polygon, (rnd_rtree_box_t *)polygon);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, polygon);
@@ -739,7 +739,7 @@ void *pcb_polyop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_poly_t *p
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, polygon);
 
 	if (!dstly->polygon_tree)
-		dstly->polygon_tree = rnd_r_create_tree();
+		rnd_rtree_init(dstly->polygon_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(dstly->polygon_tree, polygon, (rnd_rtree_box_t *)polygon);
 
 	pcb_poly_ppclear(polygon);
@@ -1023,7 +1023,7 @@ void *pcb_polyop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_p
 	pcb_poly_reg(Destination, polygon);
 
 	if (!Destination->polygon_tree)
-		Destination->polygon_tree = rnd_r_create_tree();
+		rnd_rtree_init(Destination->polygon_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Destination->polygon_tree, polygon, (rnd_rtree_box_t *)polygon);
 
 	pcb_poly_ppclear(polygon);
@@ -1228,7 +1228,7 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	pcb_poly_copy(polygon, Polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	pcb_poly_copy_meta(polygon, Polygon);
 	if (!Layer->polygon_tree)
-		Layer->polygon_tree = rnd_r_create_tree();
+		rnd_rtree_init(Layer->polygon_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(Layer->polygon_tree, polygon, (rnd_rtree_box_t *)polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, polygon);
 	pcb_poly_invalidate_draw(Layer, polygon);
