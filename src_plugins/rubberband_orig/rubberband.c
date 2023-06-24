@@ -1297,10 +1297,10 @@ static void rbe_rotate90(rnd_design_t *hidlib, void *user_data, int argc, rnd_ev
 		pcb_line_invalidate_erase(ptr->Line);
 		if (ptr->Layer) {
 			pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
-			rnd_r_delete_entry(ptr->Layer->line_tree, (rnd_box_t *) ptr->Line);
+			rnd_rtree_delete(ptr->Layer->line_tree, ptr->Line, (rnd_rtree_box_t *)ptr->Line);
 		}
 		else
-			rnd_r_delete_entry(PCB->Data->rat_tree, (rnd_box_t *) ptr->Line);
+			rnd_rtree_delete(PCB->Data->rat_tree, ptr->Line, (rnd_rtree_box_t *)ptr->Line);
 
 		if (dindex1 >= 0)
 			pcb_point_rotate90(&ptr->Line->Point1, cx, cy, steps);
