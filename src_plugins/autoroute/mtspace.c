@@ -172,7 +172,7 @@ rnd_rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
 void mtspace_add(mtspace_t * mtspace, const rnd_box_t * box, mtspace_type_t which, rnd_coord_t clearance)
 {
 	mtspacebox_t *filler = mtspace_create_box(box, clearance);
-	rnd_r_insert_entry(which_tree(mtspace, which), (const rnd_box_t *) filler);
+	rnd_rtree_insert(which_tree(mtspace, which), filler, (rnd_rtree_box_t *)filler);
 }
 
 /* remove a space-filler from the empty space representation. */
