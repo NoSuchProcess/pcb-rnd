@@ -1017,7 +1017,7 @@ static int kicad_parse_target(read_state_t *st, gsxl_node_t *subtree)
 	pcb_subc_bbox(subc);
 	if (st->pcb != NULL) {
 		if (st->pcb->Data->subc_tree == NULL)
-			st->pcb->Data->subc_tree = rnd_r_create_tree();
+			rnd_rtree_init(st->pcb->Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 		rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
 		pcb_subc_rebind(st->pcb, subc);
 	}
@@ -2498,7 +2498,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	pcb_subc_bbox(subc);
 	if (st->pcb != NULL) {
 		if (st->pcb->Data->subc_tree == NULL)
-			st->pcb->Data->subc_tree = rnd_r_create_tree();
+			rnd_rtree_init(st->pcb->Data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 		rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
 		pcb_subc_rebind(st->pcb, subc);
 	}
