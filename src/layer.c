@@ -152,16 +152,31 @@ void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable)
 	}
 	list_map0(&layer->Polygon, pcb_poly_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_poly_free));
 	if (!layer->is_bound) {
-		if (layer->line_tree)
-			rnd_r_destroy_tree(&layer->line_tree);
-		if (layer->arc_tree)
-			rnd_r_destroy_tree(&layer->arc_tree);
-		if (layer->text_tree)
-			rnd_r_destroy_tree(&layer->text_tree);
-		if (layer->polygon_tree)
-			rnd_r_destroy_tree(&layer->polygon_tree);
-		if (layer->gfx_tree)
-			rnd_r_destroy_tree(&layer->gfx_tree);
+		if (layer->line_tree) {
+			rnd_rtree_uninit(layer->line_tree);
+			free(layer->line_tree);
+			layer->line_tree = NULL;
+			}
+		if (layer->arc_tree) {
+			rnd_rtree_uninit(layer->arc_tree);
+			free(layer->arc_tree);
+			layer->arc_tree = NULL;
+		}
+		if (layer->text_tree) {
+			rnd_rtree_uninit(layer->text_tree);
+			free(layer->text_tree);
+			layer->text_tree = NULL;
+		}
+		if (layer->polygon_tree) {
+			rnd_rtree_uninit(layer->polygon_tree);
+			free(layer->polygon_tree);
+			layer->polygon_tree = NULL;
+		}
+		if (layer->gfx_tree){
+			rnd_rtree_uninit(layer->gfx_tree);
+			free(layer->gfx_tree);
+			layer->gfx_tree = NULL;
+		}
 	}
 	free((char *)layer->name);
 	memset(layer, 0, sizeof(pcb_layer_t));

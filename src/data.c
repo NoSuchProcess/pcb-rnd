@@ -187,12 +187,21 @@ void pcb_data_uninit(pcb_data_t *data)
 		pcb_layer_free_fields(layer, 0);
 
 	if (!is_subc) {
-		if (data->subc_tree)
-			rnd_r_destroy_tree(&data->subc_tree);
-		if (data->padstack_tree)
-			rnd_r_destroy_tree(&data->padstack_tree);
-		if (data->rat_tree)
-			rnd_r_destroy_tree(&data->rat_tree);
+		if (data->subc_tree) {
+			rnd_rtree_uninit(data->subc_tree);
+			free(data->subc_tree);
+			data->subc_tree = NULL;
+		}
+		if (data->padstack_tree) {
+			rnd_rtree_uninit(data->padstack_tree);
+			free(data->padstack_tree);
+			data->padstack_tree = NULL;
+		}
+		if (data->rat_tree) {
+			rnd_rtree_uninit(data->rat_tree);
+			free(data->rat_tree);
+			data->rat_tree = NULL;
+		}
 	}
 
 	for (layer = data->Layer, i = 0; i < PCB_MAX_LAYER; layer++, i++)
