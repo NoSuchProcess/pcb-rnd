@@ -53,7 +53,7 @@ static rnd_hid_attr_val_t bom2_values[NUM_OPTIONS];
 static const char *bom2_filename;
 
 typedef pcb_subc_t bom_obj_t;
-#include "lib_bom.h"
+#include "../../src_3rd/rnd_inclib/lib_bom/lib_bom.h"
 
 static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
@@ -180,7 +180,7 @@ static int bom2_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return rnd_hid_parse_command_line(argc, argv);
 }
 
-#include "lib_bom.c"
+#include "../../src_3rd/rnd_inclib/lib_bom/lib_bom.c"
 
 rnd_hid_t bom2_hid;
 
