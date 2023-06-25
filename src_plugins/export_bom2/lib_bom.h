@@ -23,8 +23,13 @@ static vts0_t bom_fmt_ids;   /* array of strdup'd short name (ID) of each format
 static void bom_fmt_init(void);
 static void bom_fmt_uninit(void);
 
+/* (re)build bom_fmt_* arrays from the config list; call this before
+   initializing plugin format options enum */
 static void bom_build_fmts(const rnd_conflist_t *templates);
 
+/* Choose one of the templates by name (tid) from the config list and
+   load fields of templ with the relevant template strings; call this
+   before starting an export for a specific format */
 static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templates, const char *tid);
 
 
