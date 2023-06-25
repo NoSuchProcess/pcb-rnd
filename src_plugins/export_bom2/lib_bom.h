@@ -25,8 +25,6 @@ static void bom_fmt_uninit(void);
 
 static void bom_build_fmts(const rnd_conflist_t *templates);
 
-static void bom_gather_templates(const rnd_conflist_t *templates);
-
 static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templates, const char *tid);
 
 

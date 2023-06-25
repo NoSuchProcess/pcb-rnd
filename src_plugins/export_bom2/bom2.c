@@ -137,8 +137,6 @@ static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_va
 	char **tid;
 	pcb_cam_t cam;
 
-	bom_gather_templates(&conf_bom2.plugins.export_bom2.templates);
-
 	if (!options) {
 		bom2_get_export_options(hid, 0, design, appspec);
 		options = bom2_values;

@@ -54,30 +54,6 @@ static void bom_build_fmts(const rnd_conflist_t *templates)
 	}
 }
 
-static void bom_gather_templates(const rnd_conflist_t *templates)
-{
-	rnd_conf_listitem_t *i;
-	int n;
-
-	rnd_conf_loop_list(templates, i, n) {
-		char buff[256], *id, *sect;
-		int nl = strlen(i->name);
-		if (nl > sizeof(buff)-1) {
-			rnd_message(RND_MSG_ERROR, "export_bom2: ignoring template '%s': name too long\n", i->name);
-			continue;
-		}
-		memcpy(buff, i->name, nl+1);
-		id = buff;
-		sect = strchr(id, '.');
-		if (sect == NULL) {
-			rnd_message(RND_MSG_ERROR, "export_bom2: ignoring template '%s': does not have a .section suffix\n", i->name);
-			continue;
-		}
-		*sect = '\0';
-		sect++;
-	}
-}
-
 static const char *get_templ(const rnd_conflist_t *templates, const char *tid, const char *type)
 {
 	char path[MAX_TEMP_NAME_LEN + 16];
