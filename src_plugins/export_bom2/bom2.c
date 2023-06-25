@@ -8,6 +8,9 @@
 #include <string.h>
 #include <time.h>
 #include <genvector/vts0.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
+#include <genht/ht_utils.h>
 
 #include <librnd/core/math_helper.h>
 #include "build_run.h"
@@ -150,10 +153,9 @@ static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, r
 
 typedef struct {
 	char utcTime[64];
-	char *name, *descr, *value;
+	char *name, *footprint, *value;
 	pcb_subc_t *subc;
-	rnd_cardinal_t count;
-	int origin_score;
+	long count;
 	gds_t tmp;
 } subst_ctx_t;
 
@@ -196,10 +198,22 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		return 0;
 	}
 
+	if (strncmp(*input, "names%", 6) == 0) {
+		*input += 6;
+		gds_append_str(s, ctx->name);
+		return 0;
+	}
+
+	if (strncmp(*input, "count%", 6) == 0) {
+		*input += 6;
+		rnd_append_printf(s, "%ld", ctx->count);
+		return 0;
+	}
+
 	if (strncmp(*input, "subc.", 5) == 0) {
 		*input += 5;
 
-		/* elem attribute print:
+		/* subc attribute print:
 		    subc.a.attribute            - print the attribute if exists, "n/a" if not
 		    subc.a.attribute|unk        - print the attribute if exists, unk if not
 		    subc.a.attribute?yes        - print yes if attribute is true, "n/a" if not
@@ -283,12 +297,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "footprint%", 10) == 0) {
 			*input += 10;
-			gds_append_str(s, ctx->descr);
+			gds_append_str(s, ctx->footprint);
 			return 0;
 		}
 		if (strncmp(*input, "footprint_%", 11) == 0) {
 			*input += 11;
-			append_clean(s, ctx->descr);
+			append_clean(s, ctx->footprint);
 			return 0;
 		}
 		if (strncmp(*input, "value%", 6) == 0) {
@@ -314,6 +328,13 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 	}
 }
 
+static char *render_templ(subst_ctx_t *ctx, const char *templ)
+{
+	if (templ != NULL)
+		return rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
+	return NULL;
+}
+
 
 static const char *bom2_xform_get_attr(subst_ctx_t *ctx, pcb_subc_t *subc, const char *key)
 {
@@ -337,11 +358,27 @@ typedef struct {
 	const char *header, *item, *footer, *subc2id;
 } template_t;
 
+typedef struct {
+	pcb_subc_t *subc; /* one of the subcircuits picked randomly, for the attributes */
+	char *id, *value, *footprint;
+	gds_t refdes_list;
+	long cnt;
+} item_t;
+
+static int item_cmp(const void *item1, const void *item2)
+{
+	const item_t * const *i1 = item1;
+	const item_t * const *i2 = item2;
+	return strcmp((*i1)->id, (*i2)->id);
+}
 
 static int PrintBOM(const template_t *templ, const char *format_name)
 {
 	FILE *fp;
-	subst_ctx_t ctx;
+	subst_ctx_t ctx = {0};
+	htsp_t tbl;
+	vtp0_t arr = {0};
+	long n;
 
 	fp = rnd_fopen_askovr(&PCB->hidlib, bom2_filename, "w", NULL);
 	if (!fp) {
@@ -349,24 +386,83 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 		return 1;
 	}
 
-	ctx.count = 0;
 	gds_init(&ctx.tmp);
 
 	rnd_print_utc(ctx.utcTime, sizeof(ctx.utcTime), 0);
 
 	fprintf_templ(fp, &ctx, templ->header);
 
-	/* For each subcircuit calculate an ID and count recurring IDs in a hash table */
+	htsp_init(&tbl, strhash, strkeyeq);
+
+	/* For each subcircuit calculate an ID and count recurring IDs in a hash table and an array (for sorting) */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-/*subc*/
+		char *id, *freeme;
+		item_t *i;
+		const char *refdes = RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes"));
+
+		ctx.subc = subc;
+		ctx.name = (char *)RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes"));
+		ctx.footprint = (char *)RND_UNKNOWN(pcb_subc_name(subc, "export_bom2::footprint"));
+		ctx.value = (char *)RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value"));
+
+		id = freeme = render_templ(&ctx, templ->subc2id);
+		i = htsp_get(&tbl, id);
+		if (i == NULL) {
+			i = malloc(sizeof(item_t));
+			i->id = id;
+
+			i->value = rnd_strdup(ctx.value);
+			i->footprint = rnd_strdup(ctx.footprint);
+			i->subc = subc;
+			i->cnt = 1;
+			gds_init(&i->refdes_list);
+
+			htsp_set(&tbl, id, i);
+			vtp0_append(&arr, i);
+			freeme = NULL;
+		}
+		else {
+			i->cnt++;
+			gds_append(&i->refdes_list, ' ' );
+		}
+
+		gds_append_str(&i->refdes_list, refdes);
+		rnd_trace("id='%s' %ld\n", id, i->cnt);
+
+		free(freeme);
 	}
 	PCB_END_LOOP;
+
+	/* clean up and sort the array */
+	ctx.subc = NULL;
+	qsort(arr.array, arr.used, sizeof(item_t *), item_cmp);
+
+	/* produce the actual output from the sorted array */
+	for(n = 0; n < arr.used; n++) {
+		item_t *i = arr.array[n];
+		ctx.subc = i->subc;
+		ctx.footprint = i->footprint;
+		ctx.value = i->value;
+		ctx.name = i->refdes_list.array;
+		ctx.count = i->cnt;
+		fprintf_templ(fp, &ctx, templ->item);
+	}
 
 	fprintf_templ(fp, &ctx, templ->footer);
 
 	fclose(fp);
 	gds_uninit(&ctx.tmp);
+
+	genht_uninit_deep(htsp, &tbl, {
+		item_t *i = htent->value;
+		free(i->id);
+		free(i->value);
+		free(i->footprint);
+		gds_uninit(&i->refdes_list);
+		free(i);
+	});
+	vtp0_uninit(&arr);
 
 	return 0;
 }
