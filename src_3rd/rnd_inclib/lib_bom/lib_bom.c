@@ -311,7 +311,6 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 	}
 
 	gds_append_str(&i->name_list, name);
-	rnd_trace("id='%s' %ld\n", id, i->cnt);
 
 	free(freeme);
 }
