@@ -59,17 +59,17 @@ static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, r
 	const char *val = bom2_values[HA_bom2file].str;
 
 	/* load all formats from the config */
-	fmt_names.used = 0;
-	fmt_ids.used = 0;
+	bom_fmt_names.used = 0;
+	bom_fmt_ids.used = 0;
 
-	build_fmts(&conf_bom2.plugins.export_bom2.templates);
+	bom_build_fmts(&conf_bom2.plugins.export_bom2.templates);
 
-	if (fmt_names.used == 0) {
+	if (bom_fmt_names.used == 0) {
 		rnd_message(RND_MSG_ERROR, "export_bom2: can not set up export options: no template available\n");
 		return NULL;
 	}
 
-	bom2_options[HA_format].enumerations = (const char **)fmt_names.array;
+	bom2_options[HA_format].enumerations = (const char **)bom_fmt_names.array;
 
 	/* set default filename */
 	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
@@ -80,7 +80,7 @@ static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, r
 	return bom2_options;
 }
 
-static const char *subst_user(subst_ctx_t *ctx, const char *key)
+static const char *subst_user(bom_subst_ctx_t *ctx, const char *key)
 {
 	if (strcmp(key, "author") == 0) return pcb_author();
 	if (strcmp(key, "title") == 0) return RND_UNKNOWN(PCB->hidlib.name);
@@ -105,10 +105,10 @@ static const char *subst_user(subst_ctx_t *ctx, const char *key)
 	return NULL;
 }
 
-static int print_bom(const template_t *templ)
+static int print_bom(const bom_template_t *templ)
 {
 	FILE *f;
-	subst_ctx_t ctx = {0};
+	bom_subst_ctx_t ctx = {0};
 
 	f = rnd_fopen_askovr(&PCB->hidlib, bom2_filename, "w", NULL);
 	if (f == NULL) {
@@ -135,11 +135,11 @@ static int print_bom(const template_t *templ)
 
 static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
-	template_t templ = {0};
+	bom_template_t templ = {0};
 	char **tid;
 	pcb_cam_t cam;
 
-	gather_templates();
+	bom_gather_templates();
 
 	if (!options) {
 		bom2_get_export_options(hid, 0, design, appspec);
@@ -152,7 +152,7 @@ static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_va
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &bom2_filename);
 
-	tid = vts0_get(&fmt_ids, options[HA_format].lng, 0);
+	tid = vts0_get(&bom_fmt_ids, options[HA_format].lng, 0);
 	if ((tid == NULL) || (*tid == NULL)) {
 		rnd_message(RND_MSG_ERROR, "export_bom2: invalid template selected\n");
 		return;
@@ -195,9 +195,9 @@ void pplg_uninit_export_bom2(void)
 	rnd_export_remove_opts_by_cookie(bom2_cookie);
 	rnd_conf_unreg_file(CONF_FN, export_bom2_conf_internal);
 	rnd_conf_unreg_fields("plugins/export_bom2/");
-	free_fmts();
-	vts0_uninit(&fmt_names);
-	vts0_uninit(&fmt_ids);
+	bom_free_fmts();
+	vts0_uninit(&bom_fmt_names);
+	vts0_uninit(&bom_fmt_ids);
 	rnd_hid_remove_hid(&bom2_hid);
 }
 
@@ -230,7 +230,7 @@ int pplg_init_export_bom2(void)
 	rnd_hid_register_hid(&bom2_hid);
 	rnd_hid_load_defaults(&bom2_hid, bom2_options, NUM_OPTIONS);
 
-	vts0_init(&fmt_names);
-	vts0_init(&fmt_ids);
+	vts0_init(&bom_fmt_names);
+	vts0_init(&bom_fmt_ids);
 	return 0;
 }

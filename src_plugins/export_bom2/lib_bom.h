@@ -10,20 +10,20 @@
 #include <librnd/core/compat_misc.h>
 
 /*** formats & templates ***/
-typedef struct {
+typedef struct bom_template_s {
 	const char *header, *item, *footer, *sort_id;
 	const char *needs_escape; /* list of characters that need escaping */
 	const char *escape; /* escape character */
-} template_t;
+} bom_template_t;
 
-static vts0_t fmt_names; /* array of const char * long name of each format, pointing into the conf database */
-static vts0_t fmt_ids;   /* array of strdup'd short name (ID) of each format */
+static vts0_t bom_fmt_names; /* array of const char * long name of each format, pointing into the conf database */
+static vts0_t bom_fmt_ids;   /* array of strdup'd short name (ID) of each format */
 
-static void build_fmts(const rnd_conflist_t *templates);
+static void bom_build_fmts(const rnd_conflist_t *templates);
 
-static void free_fmts(void);
-static void gather_templates(void);
-static void bom_init_template(template_t *templ, const char *tid);
+static void bom_free_fmts(void);
+static void bom_gather_templates(void);
+static void bom_init_template(bom_template_t *templ, const char *tid);
 
 
 
@@ -40,13 +40,13 @@ typedef struct {
 	/* print/sort state */
 	htsp_t tbl;
 	vtp0_t arr;
-	const template_t *templ;
+	const bom_template_t *templ;
 	FILE *f;
-} subst_ctx_t;
+} bom_subst_ctx_t;
 
 /* Export a file; call begin, then loop over all items and call _add, then call
    _all and _end. */
-static void bom_print_begin(subst_ctx_t *ctx, FILE *f, const template_t *templ); /* init ctx, print header */
-static void bom_print_add(subst_ctx_t *ctx, pcb_subc_t *subc, const char *name); /* add an app_item */
-static void bom_print_all(subst_ctx_t *ctx); /* sort and print all items */
-static void bom_print_end(subst_ctx_t *ctx); /* print footer and uninit ctx */
+static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ); /* init ctx, print header */
+static void bom_print_add(bom_subst_ctx_t *ctx, pcb_subc_t *subc, const char *name); /* add an app_item */
+static void bom_print_all(bom_subst_ctx_t *ctx); /* sort and print all items */
+static void bom_print_end(bom_subst_ctx_t *ctx); /* print footer and uninit ctx */

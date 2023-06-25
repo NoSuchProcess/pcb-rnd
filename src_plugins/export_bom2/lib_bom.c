@@ -1,21 +1,21 @@
 
 /*** formats ***/
 
-static void free_fmts(void)
+static void bom_free_fmts(void)
 {
 	int n;
-	for(n = 0; n < fmt_ids.used; n++) {
-		free(fmt_ids.array[n]);
-		fmt_ids.array[n] = NULL;
+	for(n = 0; n < bom_fmt_ids.used; n++) {
+		free(bom_fmt_ids.array[n]);
+		bom_fmt_ids.array[n] = NULL;
 	}
 }
 
-static void build_fmts(const rnd_conflist_t *templates)
+static void bom_build_fmts(const rnd_conflist_t *templates)
 {
 	rnd_conf_listitem_t *li;
 	int idx;
 
-	free_fmts();
+	bom_free_fmts();
 
 	rnd_conf_loop_list(templates, li, idx) {
 		char id[MAX_TEMP_NAME_LEN];
@@ -35,12 +35,12 @@ static void build_fmts(const rnd_conflist_t *templates)
 		}
 		memcpy(id, li->name, len);
 		id[len] = '\0';
-		vts0_append(&fmt_names, (char *)li->payload);
-		vts0_append(&fmt_ids, rnd_strdup(id));
+		vts0_append(&bom_fmt_names, (char *)li->payload);
+		vts0_append(&bom_fmt_ids, rnd_strdup(id));
 	}
 }
 
-static void gather_templates(void)
+static void bom_gather_templates(void)
 {
 	rnd_conf_listitem_t *i;
 	int n;
@@ -77,7 +77,7 @@ static const char *get_templ(const char *tid, const char *type)
 	return NULL;
 }
 
-static void bom_init_template(template_t *templ, const char *tid)
+static void bom_init_template(bom_template_t *templ, const char *tid)
 {
 	templ->header       = get_templ(tid, "header");
 	templ->item         = get_templ(tid, "item");
@@ -96,7 +96,7 @@ typedef struct bom_item_s {
 	long cnt;
 } bom_item_t;
 
-static void append_clean(subst_ctx_t *ctx, int escape, gds_t *dst, const char *text)
+static void append_clean(bom_subst_ctx_t *ctx, int escape, gds_t *dst, const char *text)
 {
 	const char *s;
 
@@ -138,7 +138,7 @@ static int is_val_true(const char *val)
 
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
-	subst_ctx_t *ctx = ctx_;
+	bom_subst_ctx_t *ctx = ctx_;
 	int escape = 0, ternary = 0;
 	char aname[1024], unk_buf[1024], *nope = NULL;
 	char tmp[32];
@@ -228,7 +228,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	return 0;
 }
 
-static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
+static void fprintf_templ(FILE *f, bom_subst_ctx_t *ctx, const char *templ)
 {
 	if (templ != NULL) {
 		char *tmp = rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
@@ -237,7 +237,7 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 	}
 }
 
-static char *render_templ(subst_ctx_t *ctx, const char *templ)
+static char *render_templ(bom_subst_ctx_t *ctx, const char *templ)
 {
 	if (templ != NULL)
 		return rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
@@ -251,7 +251,7 @@ static int item_cmp(const void *item1, const void *item2)
 	return strcmp((*i1)->id, (*i2)->id);
 }
 
-static void bom_print_begin(subst_ctx_t *ctx, FILE *f, const template_t *templ)
+static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ)
 {
 	gds_init(&ctx->tmp);
 
@@ -268,7 +268,7 @@ static void bom_print_begin(subst_ctx_t *ctx, FILE *f, const template_t *templ)
 	ctx->f = f;
 }
 
-static void bom_print_add(subst_ctx_t *ctx, pcb_subc_t *subc, const char *name)
+static void bom_print_add(bom_subst_ctx_t *ctx, pcb_subc_t *subc, const char *name)
 {
 	char *id, *freeme;
 	bom_item_t *i;
@@ -300,7 +300,7 @@ static void bom_print_add(subst_ctx_t *ctx, pcb_subc_t *subc, const char *name)
 	free(freeme);
 }
 
-static void bom_print_all(subst_ctx_t *ctx)
+static void bom_print_all(bom_subst_ctx_t *ctx)
 {
 	long n;
 
@@ -318,7 +318,7 @@ static void bom_print_all(subst_ctx_t *ctx)
 	}
 }
 
-static void bom_print_end(subst_ctx_t *ctx)
+static void bom_print_end(bom_subst_ctx_t *ctx)
 {
 	fprintf_templ(ctx->f, ctx, ctx->templ->footer);
 
