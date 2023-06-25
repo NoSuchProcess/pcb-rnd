@@ -10,5 +10,4 @@ $fmt-feature-w pick&place file for the TM220/TM240 device
 $fmt-feature-w KiCad .pos file
 $package export
 default buildin
-dep export_bom
 autoload 1
