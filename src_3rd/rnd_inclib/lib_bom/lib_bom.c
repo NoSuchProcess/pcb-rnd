@@ -62,14 +62,14 @@ static void bom_build_fmts(const rnd_conflist_t *templates)
 		int len;
 
 		if (sep == NULL) {
-			rnd_message(RND_MSG_ERROR, "export_bom: ignoring invalid template name (missing period): '%s'\n", li->name);
+			rnd_message(RND_MSG_ERROR, "lib_bom: ignoring invalid template name (missing period): '%s'\n", li->name);
 			continue;
 		}
 		if (strcmp(sep+1, "name") != 0)
 			continue;
 		len = sep - li->name;
 		if (len > sizeof(id)-1) {
-			rnd_message(RND_MSG_ERROR, "export_bom: ignoring invalid template name (too long): '%s'\n", li->name);
+			rnd_message(RND_MSG_ERROR, "lib_bom: ignoring invalid template name (too long): '%s'\n", li->name);
 			continue;
 		}
 		memcpy(id, li->name, len);
