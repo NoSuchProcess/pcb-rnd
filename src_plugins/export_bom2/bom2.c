@@ -132,16 +132,32 @@ typedef struct {
 	pcb_subc_t *subc;
 	long count;
 	gds_t tmp;
+	const char *needs_escape; /* list of characters that need escaping */
+	const char *escape; /* escape character or NULL for replacing with _*/
 } subst_ctx_t;
 
-static void append_clean(gds_t *dst, const char *text)
+static void append_clean(subst_ctx_t *ctx, gds_t *dst, const char *text)
 {
 	const char *s;
-	for(s = text; *s != '\0'; s++)
-		if (isalnum(*s) || (*s == '.') || (*s == '-') || (*s == '+'))
-			gds_append(dst, *s);
-		else
-			gds_append(dst, '_');
+	for(s = text; *s != '\0'; s++) {
+		switch(*s) {
+			case '\n': gds_append_str(dst, "\\n"); break;
+			case '\r': gds_append_str(dst, "\\r"); break;
+			case '\t': gds_append_str(dst, "\\t"); break;
+			default:
+				if ((ctx->needs_escape != NULL) && (strchr(ctx->needs_escape, *s) != NULL)) {
+					if ((ctx->escape != NULL) && (*ctx->escape != '\0')) {
+						gds_append(dst, *ctx->escape);
+						gds_append(dst, *s);
+					}
+					else
+						gds_append(dst, '_');
+				}
+				else
+					gds_append(dst, *s);
+				break;
+		}
+	}
 }
 
 static int is_val_true(const char *val)
@@ -257,17 +273,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			val = pcb_attribute_get(&ctx->subc->Attributes, aname);
 			if (val == NULL)
 				val = unk;
-			gds_append_str(s, val);
+			append_clean(ctx, s, val);
 			return 0;
 		}
 		if (strncmp(*input, "refdes%", 7) == 0) {
-			*input += 7;
-			gds_append_str(s, ctx->name);
-			return 0;
-		}
-		if (strncmp(*input, "refdes_%", 8) == 0) {
 			*input += 8;
-			append_clean(s, ctx->name);
+			append_clean(ctx, s, ctx->name);
 			return 0;
 		}
 		if (strncmp(*input, "prefix%", 7) == 0) {
@@ -280,23 +291,13 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 
 		if (strncmp(*input, "footprint%", 10) == 0) {
-			*input += 10;
-			gds_append_str(s, ctx->footprint);
-			return 0;
-		}
-		if (strncmp(*input, "footprint_%", 11) == 0) {
 			*input += 11;
-			append_clean(s, ctx->footprint);
+			append_clean(ctx, s, ctx->footprint);
 			return 0;
 		}
 		if (strncmp(*input, "value%", 6) == 0) {
-			*input += 6;
-			gds_append_str(s, ctx->value);
-			return 0;
-		}
-		if (strncmp(*input, "value_%", 7) == 0) {
 			*input += 7;
-			append_clean(s, ctx->value);
+			append_clean(ctx, s, ctx->value);
 			return 0;
 		}
 	}
@@ -321,6 +322,8 @@ static char *render_templ(subst_ctx_t *ctx, const char *templ)
 
 typedef struct {
 	const char *header, *item, *footer, *subc2id;
+	const char *needs_escape; /* list of characters that need escaping */
+	const char *escape; /* escape character */
 } template_t;
 
 typedef struct {
@@ -359,6 +362,9 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 
 	htsp_init(&tbl, strhash, strkeyeq);
 
+	ctx.escape = templ->escape;
+	ctx.needs_escape = templ->needs_escape;
+
 	/* For each subcircuit calculate an ID and count recurring IDs in a hash table and an array (for sorting) */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
@@ -389,7 +395,7 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 		}
 		else {
 			i->cnt++;
-			gds_append(&i->refdes_list, ' ' );
+			gds_append(&i->refdes_list, ' ');
 		}
 
 		gds_append_str(&i->refdes_list, refdes);
@@ -496,10 +502,12 @@ static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_va
 		rnd_message(RND_MSG_ERROR, "export_bom2: invalid template selected\n");
 		return;
 	}
-	templ.header   = get_templ(*tid, "header");
-	templ.item    = get_templ(*tid, "item");
-	templ.footer  = get_templ(*tid, "footer");
-	templ.subc2id = get_templ(*tid, "subc2id");
+	templ.header       = get_templ(*tid, "header");
+	templ.item         = get_templ(*tid, "item");
+	templ.footer       = get_templ(*tid, "footer");
+	templ.subc2id      = get_templ(*tid, "subc2id");
+	templ.escape       = get_templ(*tid, "escape");
+	templ.needs_escape = get_templ(*tid, "needs_escape");
 
 	PrintBOM(&templ, options[HA_format].str);
 	pcb_cam_end(&cam);
