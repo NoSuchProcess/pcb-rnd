@@ -8,6 +8,20 @@ static void bom_free_fmts(void)
 		free(bom_fmt_ids.array[n]);
 		bom_fmt_ids.array[n] = NULL;
 	}
+	bom_fmt_names.used = 0;
+	bom_fmt_ids.used = 0;
+}
+
+static void bom_fmt_init(void)
+{
+	vts0_init(&bom_fmt_names);
+	vts0_init(&bom_fmt_ids);
+}
+
+static void bom_fmt_uninit(void)
+{
+	vts0_uninit(&bom_fmt_names);
+	vts0_uninit(&bom_fmt_ids);
 }
 
 static void bom_build_fmts(const rnd_conflist_t *templates)

@@ -19,9 +19,12 @@ typedef struct bom_template_s {
 static vts0_t bom_fmt_names; /* array of const char * long name of each format, pointing into the conf database */
 static vts0_t bom_fmt_ids;   /* array of strdup'd short name (ID) of each format */
 
+/* Call these once on plugin init/uninit */
+static void bom_fmt_init(void);
+static void bom_fmt_uninit(void);
+
 static void bom_build_fmts(const rnd_conflist_t *templates);
 
-static void bom_free_fmts(void);
 static void bom_gather_templates(void);
 static void bom_init_template(bom_template_t *templ, const char *tid);
 

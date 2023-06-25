@@ -59,9 +59,6 @@ static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, r
 	const char *val = bom2_values[HA_bom2file].str;
 
 	/* load all formats from the config */
-	bom_fmt_names.used = 0;
-	bom_fmt_ids.used = 0;
-
 	bom_build_fmts(&conf_bom2.plugins.export_bom2.templates);
 
 	if (bom_fmt_names.used == 0) {
@@ -195,9 +192,7 @@ void pplg_uninit_export_bom2(void)
 	rnd_export_remove_opts_by_cookie(bom2_cookie);
 	rnd_conf_unreg_file(CONF_FN, export_bom2_conf_internal);
 	rnd_conf_unreg_fields("plugins/export_bom2/");
-	bom_free_fmts();
-	vts0_uninit(&bom_fmt_names);
-	vts0_uninit(&bom_fmt_ids);
+	bom_fmt_uninit();
 	rnd_hid_remove_hid(&bom2_hid);
 }
 
@@ -230,7 +225,6 @@ int pplg_init_export_bom2(void)
 	rnd_hid_register_hid(&bom2_hid);
 	rnd_hid_load_defaults(&bom2_hid, bom2_options, NUM_OPTIONS);
 
-	vts0_init(&bom_fmt_names);
-	vts0_init(&bom_fmt_ids);
+	bom_fmt_init();
 	return 0;
 }
