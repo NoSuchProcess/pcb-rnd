@@ -165,11 +165,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		escape = 1;
 	}
 
-	/* subc attribute print:
+	/* field print operators, e.g. for subc.a attribute:
 	    subc.a.attribute            - print the attribute if exists, "n/a" if not
 	    subc.a.attribute|unk        - print the attribute if exists, unk if not
 	    subc.a.attribute?yes        - print yes if attribute is true, "n/a" if not
 	    subc.a.attribute?yes:nope   - print yes if attribute is true, nope if not
+	  (subc.a.attribute, unk,yes and nope are arbitrary strings in the template)
 	*/
 	end = strpbrk(*input, "?|%");
 	len = end - *input;
