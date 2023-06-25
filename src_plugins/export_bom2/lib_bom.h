@@ -11,7 +11,7 @@
 
 /*** formats & templates ***/
 typedef struct {
-	const char *header, *item, *footer, *subc2id;
+	const char *header, *item, *footer, *sort_id;
 	const char *needs_escape; /* list of characters that need escaping */
 	const char *escape; /* escape character */
 } template_t;
