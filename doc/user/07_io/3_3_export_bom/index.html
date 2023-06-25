@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h1 nopdf="yes"> pcb-rnd - user manual </h1>
+<h2 nopdf="yes"> 7.3 Export plugins </h2>
+<h3> 7.3.3 export_bom </h3>
+<p>
+Export_bom is a configurable template based export plugin that prints
+the BoM (Bill of Materials) list in a text file. The plugin classifies
+subcircuits by a templatable ID and count how many instances of each ID
+has on the board. The output contains an optional file header, then an optional
+block (typically a single line) for each unique ID and an optional file
+footer.
+<p>
+In pseudo-code:
+<pre>
+print header_template
+foreach <i>subc</i> in subcircuits {
+	id = template_render(subc, sort_id_template)
+	items[id]++
+}
+sort(items[] by id)
+foreach i in items[] {
+	print item_template_for_i
+}
+print footer_template
+</pre>
+<p>
+
+<h4> 7.3.3.1 Template configuration </h4>
+<p>
+Each bom export format has an user assigned <i>NAME</i> (which is the short name of the format).
+There is a list of strings in the config tree under plugins/export_xy/templates;
+each item is named as <i>NAME</i>.<i>something</i> where <i>something</i> is:
+<ul>
+	<lI> <i>NAME</i>.name: the long name of the format (as shown on the UI); mandatory
+	<li> <i>NAME</i>.header: header template, printed once when the output file is opened; optional
+	<li> <i>NAME</i>.footer: footer template, printed once when the output file is finished; optional
+	<li> <i>NAME</i>.sort_id: used to render the "ID" string for each subcircuit; two subcircuits with matched ID are taken as the same type of component and is counted as a repetion (one item group); at the end items are alphabetically sorted by this ID
+	<li> <i>NAME</i>.item: renders an output block (typically a single line) for an item group
+	<li> <i>NAME</i>.footer: terminal template, printed once for each terminal within each subcircuit; optional
+	<li> <i>NAME</i>.needs_escape: list all characters (as a string) that require escaping when printed with the "escape." prefix (see below)
+	<li> <i>NAME</i>.escape: if specified, the first character of this string is used as the escape character; if not specified, offending characters are not escaped but replaced with an underscore
+</ul>
+<p>
+Templates are text strings; they are printed as is, keeping all newlines and
+whitespace. Portions in between % signs are substituted, depending on the
+context.
+
+<h4> 7.3.3.2. Substitution keywords </h4>
+<p>
+<table border=1>
+	<tr><th> keyword                   <th> description
+	<tr><td> %UTC%                     <td> current date and time in UTC
+	<tr><td> %author%                  <td> board author
+	<tr><td> %title%                   <td> board title
+	<tr><td> %count%                   <td> integer value, number of subcircuits in the current item group
+	<tr><td> %subc.a.KEY%              <td> take a subcircuit (randomly) from the current item group and print its attribute value of the attribute whose name matches KEY; print empty string for non-existing attributes (but this can be controlled by the | suffix operator)
+	<tr><td> %subc.prefix%             <td> print the sequence of left side alhpanumeric characters of subc.a.refdes; e.g. "R" for "R14" and "CONN" for "CONN1"; typically <i>sort_id</i> starts with this so that the output us sorted by "component type" (as deduced from refdes prefix) first
+</table>
+<p>
+Any of these may get an escape. prefix, , e.g. %escape.author% will print
+the author with characters escaped. That means the resulting string
+is checked for <i>needs_escape</i> character and are escaped using the
+<i>escape</i> character. For example if the template contains:
+<pre>
+value="%subc.a.value%"
+</pre>
+<p>
+and <i>needs_escape</i> contains the double quote character and <i>escape</i>
+is a backslash and the subc's value attribute is <b>1/4" bolt</b>, the following
+string is printed:
+<pre>
+value="1/4\" bolt"
+</pre>
+<p>
+Or if <i>escape</i> is not specified:
+<pre>
+value="1/4_ bolt"
+</pre>
+<p>
+Any substitution (e.g. "%foo%") may get an optional suffix operator:
+<table border=1>
+	<tr><td> %foo|unk%          <td> same as %foo% but print "unk" if <i>foo</i> evaluated to empty
+	<tr><td> %foo?yes%          <td> same as %foo% but print "yes" if the value of <i>foo</i> represents true, "n/a" otherwise
+	<tr><td> %foo?yes:nope%     <td> same as %foo% but print "yes" if the value of <i>foo</i> represents true, "nope" otherwise
+</table>
+<p>
+For example %subc.a.hand_solder?hand solder:reflow% will look at the
+valueof the subcircuit's <i>hand_solder</i> attribute; if it's true, yes, on or
+1, "hand solder" is printed, else "reflow" is printed.
+
+<h4> 7.3.3.3. Notes on sort_id </h4>
+<p>
+When subcircuits are first iterated, they are sorted into item groups by
+their <i>sort_id</i> template. For each item group, only one subcircuit is
+remembered, and only one block of info is printed.
+<p>
+In practice this means:
+<ul>
+	<li> <i>sort_id</i> affects which subcircuits are counted as one group
+	<li> <i>sort_id</i> determines the order of output
+	<li> <i>sort_id</i> shall contain every subcircuit attribute the <i>item</i> template is going to print
+</ul>
+<p>
+The last is a requirement because if there is an attribute, e.g. foo, and
+there are two subcircuits with different foo values and <i>sort_id</i>
+does not contain %subc.a.foo%, the two subcircuits may end up in the same item
+group. Then if <i>item</i> contains %subc.a.foo%, it can print only one value,
+so it will choose one of the two randomly.
+<p>
+However if %subc.a.foo% is on the <i>sort_id</i> template, the two
+subcircuits will yield different ID which means they never end up in the
+same item group. This also means any item group will have only one value for
+subc.a.foo in this case, so printing %subc.a.foo% from item will be
+deterministic.
+
+
+
