@@ -5,5 +5,5 @@
 # Title: pads with different geometry - PCB BOM
 # Quantity, Description, Value, RefDes
 # --------------------------------------------
-1,"Standard SMT resistor, capacitor etc","1206",R1 
-1,"SMT transistor, 5 pins","SOT325",U1 
+1,"Standard SMT resistor, capacitor etc","1206",R1
+1,"SMT transistor, 5 pins","SOT325",U1

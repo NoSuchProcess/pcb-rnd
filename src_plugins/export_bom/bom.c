@@ -1,25 +1,17 @@
-/* Print bill of materials file is which can be used for checking stock
-   and purchasing needed materials. */
-
 #include "config.h"
 #include "conf_core.h"
+#include <librnd/core/rnd_conf.h>
 
-#include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
-#include <genvector/vts0.h>
 
 #include "build_run.h"
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include <librnd/core/error.h>
-#include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
+#include "bom_conf.h"
 
 #include <librnd/hid/hid.h>
 #include <librnd/hid/hid_nogui.h>
@@ -27,24 +19,31 @@
 #include "hid_cam.h"
 #include <librnd/hid/hid_init.h>
 
-const char *bom_cookie = "bom HID";
+#include "../src_plugins/export_bom/conf_internal.c"
 
-static const rnd_export_opt_t bom_options[] = {
-/* %start-doc options "8 BOM Creation"
-@ftable @code
-@item --bomfile <string>
-Name of the BOM output file.
-@end ftable
-%end-doc
-*/
-	{"bomfile", "Name of the BOM output file",
+#define CONF_FN "export_bom.conf"
+
+conf_bom_t conf_bom;
+
+const char *bom_cookie = "BOM2 HID";
+
+/* Maximum length of a template name (in the config file, in the enum) */
+#define MAX_TEMP_NAME_LEN 128
+
+
+/* This one can not be const because format enumeration is loaded run-time */
+static rnd_export_opt_t bom_options[] = {
+	{"bomfile", "Name of the BoM output file",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_bomfile 0
 
+	{"format", "file format (template)",
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, NULL},
+#define HA_format 1
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 1
-
+#define HA_cam 2
 };
 
 #define NUM_OPTIONS (sizeof(bom_options)/sizeof(bom_options[0]))
@@ -53,17 +52,24 @@ static rnd_hid_attr_val_t bom_values[NUM_OPTIONS];
 
 static const char *bom_filename;
 
-typedef struct pcb_bom_list_s {
-	char *descr;
-	char *value;
-	int num;
-	vts0_t refdes;
-	struct pcb_bom_list_s *next;
-} pcb_bom_list_t;
+typedef pcb_subc_t bom_obj_t;
+#include "../../src_3rd/rnd_inclib/lib_bom/lib_bom.h"
 
 static const rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val = bom_values[HA_bomfile].str;
+
+	/* load all formats from the config */
+	bom_build_fmts(&conf_bom.plugins.export_bom.templates);
+
+	if (bom_fmt_names.used == 0) {
+		rnd_message(RND_MSG_ERROR, "export_bom: can not set up export options: no template available\n");
+		return NULL;
+	}
+
+	bom_options[HA_format].enumerations = (const char **)bom_fmt_names.array;
+
+	/* set default filename */
 	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(dsg->loadname, &bom_values[HA_bomfile], ".bom");
 
@@ -72,160 +78,63 @@ static const rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n, rn
 	return bom_options;
 }
 
-char *pcb_bom_clean_str(const char *in)
+static const char *subst_user(bom_subst_ctx_t *ctx, const char *key)
 {
-	char *out;
-	int i;
+	if (strcmp(key, "author") == 0) return pcb_author();
+	if (strcmp(key, "title") == 0) return RND_UNKNOWN(PCB->hidlib.name);
+	if (strncmp(key, "subc.", 5) == 0) {
+		key += 5;
 
-	if ((out = malloc((strlen(in) + 1) * sizeof(char))) == NULL) {
-		fprintf(stderr, "Error:  pcb_bom_clean_str() malloc() failed\n");
-		exit(1);
-	}
+		if (strncmp(key, "a.", 2) == 0) return pcb_attribute_get(&ctx->obj->Attributes, key+2);
+		else if (strcmp(key, "name") == 0) return ctx->name;
+		if (strcmp(key, "prefix") == 0) {
+			static char tmp[256]; /* this is safe: caller will make a copy right after we return */
+			char *o = tmp;
+			const char *t;
+			int n = 0;
 
-	/* copy over in to out with some character conversions.
-	   Go all the way to then end to get the terminating \0 */
-	for (i = 0; i <= strlen(in); i++) {
-		switch (in[i]) {
-		case '"':
-			out[i] = '\'';
-			break;
-		default:
-			out[i] = in[i];
+			for(t = ctx->name; isalpha(*t) && (n < sizeof(tmp)-1); t++,n++,o++)
+				*o = *t;
+			*o = '\0';
+			return tmp;
 		}
 	}
 
-	return out;
+	return NULL;
 }
 
-
-static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bom_list_t * bom)
+static int print_bom(const bom_template_t *templ)
 {
-	pcb_bom_list_t *newlist, *cur, *prev = NULL;
+	FILE *f;
+	bom_subst_ctx_t ctx = {0};
 
-	if (bom == NULL) {
-		/* this is the first subcircuit so automatically create an entry */
-		if ((newlist = malloc(sizeof(pcb_bom_list_t))) == NULL) {
-			fprintf(stderr, "malloc() failed in bom_insert()\n");
-			exit(1);
-		}
-
-		newlist->next = NULL;
-		newlist->descr = rnd_strdup(descr);
-		newlist->value = rnd_strdup(value);
-		newlist->num = 1;
-		vts0_init(&newlist->refdes);
-		vts0_append(&newlist->refdes, rnd_strdup(refdes));
-		return newlist;
-	}
-
-	/* search and see if we already have used one of these components */
-	cur = bom;
-	while(cur != NULL) {
-		if ((RND_NSTRCMP(descr, cur->descr) == 0) && (RND_NSTRCMP(value, cur->value) == 0)) {
-			cur->num++;
-			vts0_append(&cur->refdes, rnd_strdup(refdes));
-			break;
-		}
-		prev = cur;
-		cur = cur->next;
-	}
-
-	if (cur == NULL) {
-		if ((newlist = malloc(sizeof(pcb_bom_list_t))) == NULL) {
-			fprintf(stderr, "malloc() failed in bom_insert()\n");
-			exit(1);
-		}
-
-		prev->next = newlist;
-
-		newlist->next = NULL;
-		newlist->descr = rnd_strdup(descr);
-		newlist->value = rnd_strdup(value);
-		newlist->num = 1;
-		vts0_init(&newlist->refdes);
-		vts0_append(&newlist->refdes, rnd_strdup(refdes));
-	}
-
-	return bom;
-}
-
-/* If fp is not NULL then print out the bill of materials contained in
-   bom. Either way, free all memory which has been allocated for bom. */
-static void print_and_free(FILE * fp, pcb_bom_list_t *bom)
-{
-	pcb_bom_list_t *lastb;
-	char *descr, *value;
-	long n;
-
-	while (bom != NULL) {
-		if (fp) {
-			descr = pcb_bom_clean_str(bom->descr);
-			value = pcb_bom_clean_str(bom->value);
-			fprintf(fp, "%d,\"%s\",\"%s\",", bom->num, descr, value);
-			free(descr);
-			free(value);
-		}
-
-		for(n = 0; n < bom->refdes.used; n++) {
-			char *refdes = bom->refdes.array[n];
-			if (fp)
-				fprintf(fp, "%s ", refdes);
-			free(refdes);
-		}
-		vts0_uninit(&bom->refdes);
-		if (fp)
-			fprintf(fp, "\n");
-		lastb = bom;
-		bom = bom->next;
-		free(lastb);
-	}
-}
-
-static int bom_print(void)
-{
-	char utcTime[64];
-	FILE *fp;
-	pcb_bom_list_t *bom = NULL;
-
-	rnd_print_utc(utcTime, sizeof(utcTime), 0);
-
-	PCB_SUBC_LOOP(PCB->Data);
-	{
-		if (subc->extobj != NULL) continue;
-
-		/* insert this component into the bill of materials list */
-		bom = bom_insert((char *) RND_UNKNOWN(subc->refdes),
-			(char *) RND_UNKNOWN(pcb_subc_name(subc, "bom::footprint")),
-			(char *) RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")),
-			bom);
-	}
-	PCB_END_LOOP;
-
-	fp = rnd_fopen_askovr(&PCB->hidlib, bom_filename, "w", NULL);
-	if (!fp) {
+	f = rnd_fopen_askovr(&PCB->hidlib, bom_filename, "w", NULL);
+	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Cannot open file %s for writing\n", bom_filename);
-		print_and_free(NULL, bom);
 		return 1;
 	}
 
-	fprintf(fp, "# $Id");
-	fprintf(fp, "$\n");
-	fprintf(fp, "# PcbBOM Version 1.0\n");
-	fprintf(fp, "# Date: %s\n", utcTime);
-	fprintf(fp, "# Author: %s\n", pcb_author());
-	fprintf(fp, "# Title: %s - PCB BOM\n", RND_UNKNOWN(PCB->hidlib.name));
-	fprintf(fp, "# Quantity, Description, Value, RefDes\n");
-	fprintf(fp, "# --------------------------------------------\n");
+	bom_print_begin(&ctx, f, templ);
 
-	print_and_free(fp, bom);
+	/* For each subcircuit calculate an ID and count recurring IDs in a hash table and an array (for sorting) */
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		const char *refdes = RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes"));
+		bom_print_add(&ctx, subc, refdes);
+	}
+	PCB_END_LOOP;
 
-	fclose(fp);
+	bom_print_all(&ctx);
+	bom_print_end(&ctx);
+	fclose(f);
 
 	return 0;
 }
 
 static void bom_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
+	bom_template_t templ = {0};
+	char **tid;
 	pcb_cam_t cam;
 
 	if (!options) {
@@ -239,24 +148,39 @@ static void bom_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &bom_filename);
 
-	bom_print();
+	tid = vts0_get(&bom_fmt_ids, options[HA_format].lng, 0);
+	if ((tid == NULL) || (*tid == NULL)) {
+		rnd_message(RND_MSG_ERROR, "export_bom: invalid template selected\n");
+		return;
+	}
+
+	bom_init_template(&templ, &conf_bom.plugins.export_bom.templates, *tid);
+	print_bom(&templ);
 	pcb_cam_end(&cam);
 }
 
 static int bom_usage(rnd_hid_t *hid, const char *topic)
 {
-	fprintf(stderr, "\nbom exporter command line arguments:\n\n");
+	int n;
+	fprintf(stderr, "\nBOM exporter command line arguments:\n\n");
+	bom_get_export_options(hid, &n, NULL, NULL);
 	rnd_hid_usage(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x bom [bom_options] foo.pcb\n\n");
 	return 0;
 }
 
-
 static int bom_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts2(hid, bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
+
+	/* when called from the export() command this field may be uninitialized yet */
+	if (bom_options[HA_format].enumerations == NULL)
+		bom_get_export_options(hid, NULL, NULL, NULL);
+
 	return rnd_hid_parse_command_line(argc, argv);
 }
+
+#include "../../src_3rd/rnd_inclib/lib_bom/lib_bom.c"
 
 rnd_hid_t bom_hid;
 
@@ -265,6 +189,9 @@ int pplg_check_ver_export_bom(int ver_needed) { return 0; }
 void pplg_uninit_export_bom(void)
 {
 	rnd_export_remove_opts_by_cookie(bom_cookie);
+	rnd_conf_unreg_file(CONF_FN, export_bom_conf_internal);
+	rnd_conf_unreg_fields("plugins/export_bom/");
+	bom_fmt_uninit();
 	rnd_hid_remove_hid(&bom_hid);
 }
 
@@ -272,13 +199,19 @@ int pplg_init_export_bom(void)
 {
 	RND_API_CHK_VER;
 
+	rnd_conf_reg_file(CONF_FN, export_bom_conf_internal);
+
 	memset(&bom_hid, 0, sizeof(rnd_hid_t));
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_bom, field,isarray,type_name,cpath,cname,desc,flags);
+#include "bom_conf_fields.h"
 
 	rnd_hid_nogui_init(&bom_hid);
 
 	bom_hid.struct_size = sizeof(rnd_hid_t);
 	bom_hid.name = "bom";
-	bom_hid.description = "Exports a Bill of Materials";
+	bom_hid.description = "Exports a BoM (Bill of Material) using templates";
 	bom_hid.exporter = 1;
 
 	bom_hid.get_export_options = bom_get_export_options;
@@ -291,5 +224,6 @@ int pplg_init_export_bom(void)
 	rnd_hid_register_hid(&bom_hid);
 	rnd_hid_load_defaults(&bom_hid, bom_options, NUM_OPTIONS);
 
+	bom_fmt_init();
 	return 0;
 }

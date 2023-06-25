@@ -22,7 +22,6 @@ include {../src_plugins/draw_fontsel/Plug.tmpasm}
 include {../src_plugins/drc_query/Plug.tmpasm}
 include {../src_plugins/expfeat/Plug.tmpasm}
 include {../src_plugins/export_bom/Plug.tmpasm}
-include {../src_plugins/export_bom2/Plug.tmpasm}
 include {../src_plugins/export_c_draw/Plug.tmpasm}
 include {../src_plugins/export_debug/Plug.tmpasm}
 include {../src_plugins/export_dxf/Plug.tmpasm}

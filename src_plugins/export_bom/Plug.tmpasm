@@ -1,5 +1,8 @@
 put /local/rnd/mod {export_bom}
 put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_bom/bom.o @]
+put /local/rnd/mod/CONF {$(PLUGDIR)/export_bom/bom_conf.h}
+put /local/rnd/mod/CONFFILE {export_bom.conf}
+put /local/rnd/mod/CONFVAR {export_bom_conf_internal}
 
 switch /local/module/export_bom/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

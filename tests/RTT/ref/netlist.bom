@@ -5,4 +5,4 @@
 # Title: board with minimal netlist - PCB BOM
 # Quantity, Description, Value, RefDes
 # --------------------------------------------
-1,"dip(4)","4*300",U1 
+1,"dip(4)","4*300",U1

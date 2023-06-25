@@ -5,4 +5,4 @@
 # Title: pins with different shapes - PCB BOM
 # Quantity, Description, Value, RefDes
 # --------------------------------------------
-2,"dip(2)","2*300",U1 U2 
+2,"dip(2)","2*300",U1 U2

@@ -40,8 +40,6 @@
 
 conf_xy_t conf_xy;
 
-extern char *pcb_bom_clean_str(const char *in);
-
 const char *xy_cookie = "XY HID";
 
 /* Maximum length of a template name (in the config file, in the enum) */
@@ -87,6 +85,31 @@ Unit of XY dimensions. Defaults to mil.
 #define NUM_OPTIONS (sizeof(xy_options)/sizeof(xy_options[0]))
 
 static rnd_hid_attr_val_t xy_values[NUM_OPTIONS];
+
+static char *pcb_bom_clean_str(const char *in)
+{
+	char *out;
+	int i;
+
+	if ((out = malloc((strlen(in) + 1) * sizeof(char))) == NULL) {
+		fprintf(stderr, "Error:  pcb_bom_clean_str() malloc() failed\n");
+		exit(1);
+	}
+
+	/* copy over in to out with some character conversions.
+	   Go all the way to then end to get the terminating \0 */
+	for (i = 0; i <= strlen(in); i++) {
+		switch (in[i]) {
+		case '"':
+			out[i] = '\'';
+			break;
+		default:
+			out[i] = in[i];
+		}
+	}
+
+	return out;
+}
 
 static const char *xy_filename;
 static const rnd_unit_t *xy_unit;

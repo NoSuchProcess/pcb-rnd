@@ -37,14 +37,14 @@ static void bom_build_fmts(const rnd_conflist_t *templates)
 		int len;
 
 		if (sep == NULL) {
-			rnd_message(RND_MSG_ERROR, "export_bom2: ignoring invalid template name (missing period): '%s'\n", li->name);
+			rnd_message(RND_MSG_ERROR, "export_bom: ignoring invalid template name (missing period): '%s'\n", li->name);
 			continue;
 		}
 		if (strcmp(sep+1, "name") != 0)
 			continue;
 		len = sep - li->name;
 		if (len > sizeof(id)-1) {
-			rnd_message(RND_MSG_ERROR, "export_bom2: ignoring invalid template name (too long): '%s'\n", li->name);
+			rnd_message(RND_MSG_ERROR, "export_bom: ignoring invalid template name (too long): '%s'\n", li->name);
 			continue;
 		}
 		memcpy(id, li->name, len);
@@ -151,7 +151,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	end = strpbrk(*input, "?|%");
 	len = end - *input;
 	if (len >= sizeof(aname) - 1) {
-		rnd_message(RND_MSG_ERROR, "bom2 tempalte error: attribute name '%s' too long\n", *input);
+		rnd_message(RND_MSG_ERROR, "bom tempalte error: attribute name '%s' too long\n", *input);
 		return 1;
 	}
 	memcpy(aname, *input, len);
@@ -161,7 +161,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		end = strchr(*input, '%');
 		len = end - *input;
 		if (len >= sizeof(unk_buf) - 1) {
-			rnd_message(RND_MSG_ERROR, "bom2 tempalte error: elem atribute '|unknown' field '%s' too long\n", *input);
+			rnd_message(RND_MSG_ERROR, "bom tempalte error: elem atribute '|unknown' field '%s' too long\n", *input);
 			return 1;
 		}
 		memcpy(unk_buf, *input, len);
@@ -175,7 +175,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		end = strchr(*input, '%');
 		len = end - *input;
 		if (len >= sizeof(unk_buf) - 1) {
-			rnd_message(RND_MSG_ERROR, "bom2 tempalte error: elem atribute trenary field '%s' too long\n", *input);
+			rnd_message(RND_MSG_ERROR, "bom tempalte error: elem atribute trenary field '%s' too long\n", *input);
 			return 1;
 		}
 
