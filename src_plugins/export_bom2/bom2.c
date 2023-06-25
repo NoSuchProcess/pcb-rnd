@@ -130,7 +130,7 @@ static const char *subst_user(subst_ctx_t *ctx, const char *key)
 	return NULL;
 }
 
-static int PrintBOM(const template_t *templ, const char *format_name)
+static int print_bom(const template_t *templ, const char *format_name)
 {
 	FILE *f;
 	subst_ctx_t ctx = {0};
@@ -184,7 +184,7 @@ static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_va
 	}
 
 	bom_init_template(&templ, *tid);
-	PrintBOM(&templ, options[HA_format].str);
+	print_bom(&templ, options[HA_format].str);
 	pcb_cam_end(&cam);
 }
 
