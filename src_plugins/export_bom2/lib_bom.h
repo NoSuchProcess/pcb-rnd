@@ -6,6 +6,8 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 #include <genht/ht_utils.h>
+#include <librnd/core/rnd_printf.h>
+#include <librnd/core/compat_misc.h>
 
 /*** formats & templates ***/
 typedef struct {
@@ -16,6 +18,8 @@ typedef struct {
 
 static vts0_t fmt_names; /* array of const char * long name of each format, pointing into the conf database */
 static vts0_t fmt_ids;   /* array of strdup'd short name (ID) of each format */
+
+static void build_fmts(const rnd_conflist_t *templates);
 
 static void free_fmts(void);
 static void gather_templates(void);

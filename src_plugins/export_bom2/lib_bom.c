@@ -10,6 +10,36 @@ static void free_fmts(void)
 	}
 }
 
+static void build_fmts(const rnd_conflist_t *templates)
+{
+	rnd_conf_listitem_t *li;
+	int idx;
+
+	free_fmts();
+
+	rnd_conf_loop_list(templates, li, idx) {
+		char id[MAX_TEMP_NAME_LEN];
+		const char *sep = strchr(li->name, '.');
+		int len;
+
+		if (sep == NULL) {
+			rnd_message(RND_MSG_ERROR, "export_bom2: ignoring invalid template name (missing period): '%s'\n", li->name);
+			continue;
+		}
+		if (strcmp(sep+1, "name") != 0)
+			continue;
+		len = sep - li->name;
+		if (len > sizeof(id)-1) {
+			rnd_message(RND_MSG_ERROR, "export_bom2: ignoring invalid template name (too long): '%s'\n", li->name);
+			continue;
+		}
+		memcpy(id, li->name, len);
+		id[len] = '\0';
+		vts0_append(&fmt_names, (char *)li->payload);
+		vts0_append(&fmt_ids, rnd_strdup(id));
+	}
+}
+
 static void gather_templates(void)
 {
 	rnd_conf_listitem_t *i;
