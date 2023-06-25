@@ -176,44 +176,59 @@ static int is_val_true(const char *val)
 	return 0;
 }
 
+static const char *subst_user(subst_ctx_t *ctx, const char **input)
+{
+	static char tmp[256];
+
+	if (strncmp(*input, "UTC%", 4) == 0) {
+		*input += 4;
+		return ctx->utcTime;
+	}
+	if (strncmp(*input, "author%", 7) == 0) {
+		*input += 7;
+		return pcb_author();
+	}
+	if (strncmp(*input, "title%", 6) == 0) {
+		*input += 6;
+		return RND_UNKNOWN(PCB->hidlib.name);
+	}
+	if (strncmp(*input, "names%", 6) == 0) {
+		*input += 6;
+		return ctx->name;
+	}
+
+	if (strncmp(*input, "count%", 6) == 0) {
+		*input += 6;
+		sprintf(tmp, "%ld", ctx->count);
+		return tmp;
+	}
+
+	return NULL;
+}
+
+static const char *subst_attr(subst_ctx_t *ctx, const char *aname)
+{
+	return pcb_attribute_get(&ctx->subc->Attributes, aname);
+}
+
+
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
 	subst_ctx_t *ctx = ctx_;
 	int escape = 0;
+	const char *str;
 
 	if (strncmp(*input, "escape.", 7) == 0) {
 		*input += 7;
 		escape = 1;
 	}
 
-
-	if (strncmp(*input, "UTC%", 4) == 0) {
-		*input += 4;
-		append_clean(ctx, escape, s, ctx->utcTime);
-		return 0;
-	}
-	if (strncmp(*input, "author%", 7) == 0) {
-		*input += 7;
-		append_clean(ctx, escape, s, pcb_author());
-		return 0;
-	}
-	if (strncmp(*input, "title%", 6) == 0) {
-		*input += 6;
-		append_clean(ctx, escape, s, RND_UNKNOWN(PCB->hidlib.name));
+	str = subst_user(ctx, input);
+	if (str != NULL) {
+		append_clean(ctx, escape, s, str);
 		return 0;
 	}
 
-	if (strncmp(*input, "names%", 6) == 0) {
-		*input += 6;
-		append_clean(ctx, escape, s, ctx->name);
-		return 0;
-	}
-
-	if (strncmp(*input, "count%", 6) == 0) {
-		*input += 6;
-		rnd_append_printf(s, "%ld", ctx->count);
-		return 0;
-	}
 
 	if (strncmp(*input, "subc.", 5) == 0) {
 		*input += 5;
@@ -272,7 +287,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 				else /* only '?' is given, no ':' */
 					nope = "n/a";
 
-				val = pcb_attribute_get(&ctx->subc->Attributes, aname);
+				val = subst_attr(ctx, aname);
 				if (is_val_true(val))
 					append_clean(ctx, escape, s, unk_buf);
 				else
@@ -284,13 +299,13 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 				*input = end;
 			(*input)++;
 
-			val = pcb_attribute_get(&ctx->subc->Attributes, aname);
+			val = subst_attr(ctx, aname);
 			if (val == NULL)
 				val = unk;
 			append_clean(ctx, escape, s, val);
 			return 0;
 		}
-		if (strncmp(*input, "refdes%", 7) == 0) {
+		if (strncmp(*input, "name%", 7) == 0) {
 			*input += 8;
 			append_clean(ctx, escape, s, ctx->name);
 			return 0;
