@@ -89,6 +89,13 @@ static void bom_init_template(template_t *templ, const char *tid)
 
 /*** subst ***/
 
+typedef struct bom_item_s {
+	pcb_subc_t *subc; /* one of the subcircuits picked randomly, for the attributes */
+	char *id; /* key for sorting */
+	gds_t refdes_list;
+	long cnt;
+} bom_item_t;
+
 static void append_clean(subst_ctx_t *ctx, int escape, gds_t *dst, const char *text)
 {
 	const char *s;
@@ -239,8 +246,8 @@ static char *render_templ(subst_ctx_t *ctx, const char *templ)
 
 static int item_cmp(const void *item1, const void *item2)
 {
-	const item_t * const *i1 = item1;
-	const item_t * const *i2 = item2;
+	const bom_item_t * const *i1 = item1;
+	const bom_item_t * const *i2 = item2;
 	return strcmp((*i1)->id, (*i2)->id);
 }
 
@@ -264,7 +271,7 @@ static void bom_print_begin(subst_ctx_t *ctx, FILE *f, const template_t *templ)
 static void bom_print_add(subst_ctx_t *ctx, pcb_subc_t *subc, const char *name)
 {
 	char *id, *freeme;
-	item_t *i;
+	bom_item_t *i;
 
 	ctx->subc = subc;
 	ctx->name = (char *)name;
@@ -272,7 +279,7 @@ static void bom_print_add(subst_ctx_t *ctx, pcb_subc_t *subc, const char *name)
 	id = freeme = render_templ(ctx, ctx->templ->subc2id);
 	i = htsp_get(&ctx->tbl, id);
 	if (i == NULL) {
-		i = malloc(sizeof(item_t));
+		i = malloc(sizeof(bom_item_t));
 		i->id = id;
 		i->subc = subc;
 		i->cnt = 1;
@@ -299,11 +306,11 @@ static void bom_print_all(subst_ctx_t *ctx)
 
 	/* clean up and sort the array */
 	ctx->subc = NULL;
-	qsort(ctx->arr.array, ctx->arr.used, sizeof(item_t *), item_cmp);
+	qsort(ctx->arr.array, ctx->arr.used, sizeof(bom_item_t *), item_cmp);
 
 	/* produce the actual output from the sorted array */
 	for(n = 0; n < ctx->arr.used; n++) {
-		item_t *i = ctx->arr.array[n];
+		bom_item_t *i = ctx->arr.array[n];
 		ctx->subc = i->subc;
 		ctx->name = i->refdes_list.array;
 		ctx->count = i->cnt;
@@ -318,7 +325,7 @@ static void bom_print_end(subst_ctx_t *ctx)
 	gds_uninit(&ctx->tmp);
 
 	genht_uninit_deep(htsp, &ctx->tbl, {
-		item_t *i = htent->value;
+		bom_item_t *i = htent->value;
 		free(i->id);
 		gds_uninit(&i->refdes_list);
 		free(i);

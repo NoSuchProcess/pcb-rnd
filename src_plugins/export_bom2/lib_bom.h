@@ -44,15 +44,6 @@ typedef struct {
 	FILE *f;
 } subst_ctx_t;
 
-
-typedef struct {
-	pcb_subc_t *subc; /* one of the subcircuits picked randomly, for the attributes */
-	char *id; /* key for sorting */
-	gds_t refdes_list;
-	long cnt;
-} item_t;
-
-
 /* Export a file; call begin, then loop over all items and call _add, then call
    _all and _end. */
 static void bom_print_begin(subst_ctx_t *ctx, FILE *f, const template_t *templ); /* init ctx, print header */
