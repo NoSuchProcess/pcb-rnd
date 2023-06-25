@@ -63,17 +63,8 @@ static rnd_export_opt_t bom2_options[] = {
 static rnd_hid_attr_val_t bom2_values[NUM_OPTIONS];
 
 static const char *bom2_filename;
-vts0_t fmt_names; /* array of const char * long name of each format, pointing into the conf database */
-vts0_t fmt_ids;   /* array of strdup'd short name (ID) of each format */
 
-static void free_fmts(void)
-{
-	int n;
-	for(n = 0; n < fmt_ids.used; n++) {
-		free(fmt_ids.array[n]);
-		fmt_ids.array[n] = NULL;
-	}
-}
+#include "lib_bom.h"
 
 static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
@@ -124,58 +115,6 @@ static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, r
 	return bom2_options;
 }
 
-
-
-typedef struct {
-	char utcTime[64];
-	char *name;
-	pcb_subc_t *subc;
-	long count;
-	gds_t tmp;
-	const char *needs_escape; /* list of characters that need escaping */
-	const char *escape; /* escape character or NULL for replacing with _*/
-} subst_ctx_t;
-
-static void append_clean(subst_ctx_t *ctx, int escape, gds_t *dst, const char *text)
-{
-	const char *s;
-
-	if (!escape) {
-		gds_append_str(dst, text);
-		return;
-	}
-
-	for(s = text; *s != '\0'; s++) {
-		switch(*s) {
-			case '\n': gds_append_str(dst, "\\n"); break;
-			case '\r': gds_append_str(dst, "\\r"); break;
-			case '\t': gds_append_str(dst, "\\t"); break;
-			default:
-				if ((ctx->needs_escape != NULL) && (strchr(ctx->needs_escape, *s) != NULL)) {
-					if ((ctx->escape != NULL) && (*ctx->escape != '\0')) {
-						gds_append(dst, *ctx->escape);
-						gds_append(dst, *s);
-					}
-					else
-						gds_append(dst, '_');
-				}
-				else
-					gds_append(dst, *s);
-				break;
-		}
-	}
-}
-
-static int is_val_true(const char *val)
-{
-	if (val == NULL) return 0;
-	if (strcmp(val, "yes") == 0) return 1;
-	if (strcmp(val, "on") == 0) return 1;
-	if (strcmp(val, "true") == 0) return 1;
-	if (strcmp(val, "1") == 0) return 1;
-	return 0;
-}
-
 static const char *subst_attr(subst_ctx_t *ctx, const char *aname)
 {
 	return pcb_attribute_get(&ctx->subc->Attributes, aname);
@@ -209,127 +148,6 @@ static const char *subst_user(subst_ctx_t *ctx, const char *key)
 	}
 
 	return NULL;
-}
-
-static int subst_cb(void *ctx_, gds_t *s, const char **input)
-{
-	subst_ctx_t *ctx = ctx_;
-	int escape = 0, ternary = 0;
-	char aname[1024], unk_buf[1024], *nope = NULL;
-	const char *str, *end;
-	const char *unk = ""; /* what to print on empty/NULL string if there's no ? or | in the template */
-	long len;
-
-	if (strncmp(*input, "escape.", 7) == 0) {
-		*input += 7;
-		escape = 1;
-	}
-
-	/* subc attribute print:
-	    subc.a.attribute            - print the attribute if exists, "n/a" if not
-	    subc.a.attribute|unk        - print the attribute if exists, unk if not
-	    subc.a.attribute?yes        - print yes if attribute is true, "n/a" if not
-	    subc.a.attribute?yes:nope   - print yes if attribute is true, nope if not
-	*/
-	end = strpbrk(*input, "?|%");
-	len = end - *input;
-	if (len >= sizeof(aname) - 1) {
-		rnd_message(RND_MSG_ERROR, "bom2 tempalte error: attribute name '%s' too long\n", *input);
-		return 1;
-	}
-	memcpy(aname, *input, len);
-	aname[len] = '\0';
-	if (*end == '|') { /* "or unknown" */
-		*input = end+1;
-		end = strchr(*input, '%');
-		len = end - *input;
-		if (len >= sizeof(unk_buf) - 1) {
-			rnd_message(RND_MSG_ERROR, "bom2 tempalte error: elem atribute '|unknown' field '%s' too long\n", *input);
-			return 1;
-		}
-		memcpy(unk_buf, *input, len);
-		unk_buf[len] = '\0';
-		unk = unk_buf;
-		*input = end+1;
-	}
-	else if (*end == '?') { /* trenary */
-		*input = end+1;
-		ternary = 1;
-		end = strchr(*input, '%');
-		len = end - *input;
-		if (len >= sizeof(unk_buf) - 1) {
-			rnd_message(RND_MSG_ERROR, "bom2 tempalte error: elem atribute trenary field '%s' too long\n", *input);
-			return 1;
-		}
-
-		memcpy(unk_buf, *input, len);
-		unk_buf[len] = '\0';
-		*input = end+1;
-
-		nope = strchr(unk_buf, ':');
-		if (nope != NULL) {
-			*nope = '\0';
-			nope++;
-		}
-		else /* only '?' is given, no ':' */
-			nope = "n/a";
-	}
-	else /* plain '%' */
-		*input = end+1;
-
-	/* get the actual string */
-	str = subst_user(ctx, aname);
-
-	/* render output */
-	if (ternary) {
-		if (is_val_true(str))
-			append_clean(ctx, escape, s, unk_buf);
-		else
-			append_clean(ctx, escape, s, nope);
-		return 0;
-	}
-
-	if ((str == NULL) || (*str == '\0'))
-		str = unk;
-	append_clean(ctx, escape, s, str);
-
-	return 0;
-}
-
-static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
-{
-	if (templ != NULL) {
-		char *tmp = rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
-		fprintf(f, "%s", tmp);
-		free(tmp);
-	}
-}
-
-static char *render_templ(subst_ctx_t *ctx, const char *templ)
-{
-	if (templ != NULL)
-		return rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
-	return NULL;
-}
-
-typedef struct {
-	const char *header, *item, *footer, *subc2id;
-	const char *needs_escape; /* list of characters that need escaping */
-	const char *escape; /* escape character */
-} template_t;
-
-typedef struct {
-	pcb_subc_t *subc; /* one of the subcircuits picked randomly, for the attributes */
-	char *id; /* key for sorting */
-	gds_t refdes_list;
-	long cnt;
-} item_t;
-
-static int item_cmp(const void *item1, const void *item2)
-{
-	const item_t * const *i1 = item1;
-	const item_t * const *i2 = item2;
-	return strcmp((*i1)->id, (*i2)->id);
 }
 
 static int PrintBOM(const template_t *templ, const char *format_name)
@@ -421,43 +239,6 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 	return 0;
 }
 
-static void gather_templates(void)
-{
-	rnd_conf_listitem_t *i;
-	int n;
-
-	rnd_conf_loop_list(&conf_bom2.plugins.export_bom2.templates, i, n) {
-		char buff[256], *id, *sect;
-		int nl = strlen(i->name);
-		if (nl > sizeof(buff)-1) {
-			rnd_message(RND_MSG_ERROR, "export_bom2: ignoring template '%s': name too long\n", i->name);
-			continue;
-		}
-		memcpy(buff, i->name, nl+1);
-		id = buff;
-		sect = strchr(id, '.');
-		if (sect == NULL) {
-			rnd_message(RND_MSG_ERROR, "export_bom2: ignoring template '%s': does not have a .section suffix\n", i->name);
-			continue;
-		}
-		*sect = '\0';
-		sect++;
-	}
-}
-
-static const char *get_templ(const char *tid, const char *type)
-{
-	char path[MAX_TEMP_NAME_LEN + 16];
-	rnd_conf_listitem_t *li;
-	int idx;
-
-	sprintf(path, "%s.%s", tid, type); /* safe: tid's length is checked before it was put in the vector, type is hardwired in code and is never longer than a few chars */
-	rnd_conf_loop_list(&conf_bom2.plugins.export_bom2.templates, li, idx)
-		if (strcmp(li->name, path) == 0)
-			return li->payload;
-	return NULL;
-}
-
 static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	template_t templ;
@@ -517,6 +298,8 @@ static int bom2_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return rnd_hid_parse_command_line(argc, argv);
 }
 
+#include "lib_bom.c"
+
 rnd_hid_t bom2_hid;
 
 int pplg_check_ver_export_bom2(int ver_needed) { return 0; }
@@ -531,7 +314,6 @@ void pplg_uninit_export_bom2(void)
 	vts0_uninit(&fmt_ids);
 	rnd_hid_remove_hid(&bom2_hid);
 }
-
 
 int pplg_init_export_bom2(void)
 {
