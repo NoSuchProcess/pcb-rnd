@@ -82,7 +82,7 @@ static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templ
 typedef struct bom_item_s {
 	bom_obj_t *obj; /* one of the objects picked randomly, for the attributes */
 	char *id; /* key for sorting */
-	gds_t refdes_list;
+	gds_t name_list;
 	long cnt;
 } bom_item_t;
 
@@ -274,7 +274,7 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 		i->id = id;
 		i->obj = obj;
 		i->cnt = 1;
-		gds_init(&i->refdes_list);
+		gds_init(&i->name_list);
 
 		htsp_set(&ctx->tbl, id, i);
 		vtp0_append(&ctx->arr, i);
@@ -282,10 +282,10 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 	}
 	else {
 		i->cnt++;
-		gds_append(&i->refdes_list, ' ');
+		gds_append(&i->name_list, ' ');
 	}
 
-	gds_append_str(&i->refdes_list, name);
+	gds_append_str(&i->name_list, name);
 	rnd_trace("id='%s' %ld\n", id, i->cnt);
 
 	free(freeme);
@@ -303,7 +303,7 @@ static void bom_print_all(bom_subst_ctx_t *ctx)
 	for(n = 0; n < ctx->arr.used; n++) {
 		bom_item_t *i = ctx->arr.array[n];
 		ctx->obj = i->obj;
-		ctx->name = i->refdes_list.array;
+		ctx->name = i->name_list.array;
 		ctx->count = i->cnt;
 		fprintf_templ(ctx->f, ctx, ctx->templ->item);
 	}
@@ -318,7 +318,7 @@ static void bom_print_end(bom_subst_ctx_t *ctx)
 	genht_uninit_deep(htsp, &ctx->tbl, {
 		bom_item_t *i = htent->value;
 		free(i->id);
-		gds_uninit(&i->refdes_list);
+		gds_uninit(&i->name_list);
 		free(i);
 	});
 	vtp0_uninit(&ctx->arr);
