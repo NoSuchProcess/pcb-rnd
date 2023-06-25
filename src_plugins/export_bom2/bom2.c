@@ -176,150 +176,124 @@ static int is_val_true(const char *val)
 	return 0;
 }
 
-static const char *subst_user(subst_ctx_t *ctx, const char **input)
-{
-	static char tmp[256];
-
-	if (strncmp(*input, "UTC%", 4) == 0) {
-		*input += 4;
-		return ctx->utcTime;
-	}
-	if (strncmp(*input, "author%", 7) == 0) {
-		*input += 7;
-		return pcb_author();
-	}
-	if (strncmp(*input, "title%", 6) == 0) {
-		*input += 6;
-		return RND_UNKNOWN(PCB->hidlib.name);
-	}
-	if (strncmp(*input, "names%", 6) == 0) {
-		*input += 6;
-		return ctx->name;
-	}
-
-	if (strncmp(*input, "count%", 6) == 0) {
-		*input += 6;
-		sprintf(tmp, "%ld", ctx->count);
-		return tmp;
-	}
-
-	return NULL;
-}
-
 static const char *subst_attr(subst_ctx_t *ctx, const char *aname)
 {
 	return pcb_attribute_get(&ctx->subc->Attributes, aname);
 }
 
+static const char *subst_user(subst_ctx_t *ctx, const char *key)
+{
+	static char tmp[256];
+
+	if (strcmp(key, "UTC") == 0) return ctx->utcTime;
+	if (strcmp(key, "author") == 0) return pcb_author();
+	if (strcmp(key, "title") == 0) return RND_UNKNOWN(PCB->hidlib.name);
+	if (strcmp(key, "names") == 0) return ctx->name;
+	if (strcmp(key, "count") == 0) { sprintf(tmp, "%ld", ctx->count); return tmp; }
+
+	if (strncmp(key, "subc.", 5) == 0) {
+		key += 5;
+
+		if (strncmp(key, "a.", 2) == 0) return subst_attr(ctx, key+2);
+		else if (strcmp(key, "name") == 0) return ctx->name;
+		if (strcmp(key, "prefix") == 0) {
+			char *o = tmp;
+			const char *t;
+			int n = 0;
+
+			for(t = ctx->name; isalpha(*t) && (n < sizeof(tmp)-1); t++,n++,o++)
+				*o = *t;
+			*o = '\0';
+			return tmp;
+		}
+	}
+
+	return NULL;
+}
 
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
 	subst_ctx_t *ctx = ctx_;
-	int escape = 0;
-	const char *str;
+	int escape = 0, ternary = 0;
+	char aname[1024], unk_buf[1024], *nope = NULL;
+	const char *str, *end;
+	const char *unk = ""; /* what to print on empty/NULL string if there's no ? or | in the template */
+	long len;
 
 	if (strncmp(*input, "escape.", 7) == 0) {
 		*input += 7;
 		escape = 1;
 	}
 
-	str = subst_user(ctx, input);
-	if (str != NULL) {
-		append_clean(ctx, escape, s, str);
+	/* subc attribute print:
+	    subc.a.attribute            - print the attribute if exists, "n/a" if not
+	    subc.a.attribute|unk        - print the attribute if exists, unk if not
+	    subc.a.attribute?yes        - print yes if attribute is true, "n/a" if not
+	    subc.a.attribute?yes:nope   - print yes if attribute is true, nope if not
+	*/
+	end = strpbrk(*input, "?|%");
+	len = end - *input;
+	if (len >= sizeof(aname) - 1) {
+		rnd_message(RND_MSG_ERROR, "bom2 tempalte error: attribute name '%s' too long\n", *input);
+		return 1;
+	}
+	memcpy(aname, *input, len);
+	aname[len] = '\0';
+	if (*end == '|') { /* "or unknown" */
+		*input = end+1;
+		end = strchr(*input, '%');
+		len = end - *input;
+		if (len >= sizeof(unk_buf) - 1) {
+			rnd_message(RND_MSG_ERROR, "bom2 tempalte error: elem atribute '|unknown' field '%s' too long\n", *input);
+			return 1;
+		}
+		memcpy(unk_buf, *input, len);
+		unk_buf[len] = '\0';
+		unk = unk_buf;
+		*input = end+1;
+	}
+	else if (*end == '?') { /* trenary */
+		*input = end+1;
+		ternary = 1;
+		end = strchr(*input, '%');
+		len = end - *input;
+		if (len >= sizeof(unk_buf) - 1) {
+			rnd_message(RND_MSG_ERROR, "bom2 tempalte error: elem atribute trenary field '%s' too long\n", *input);
+			return 1;
+		}
+
+		memcpy(unk_buf, *input, len);
+		unk_buf[len] = '\0';
+		*input = end+1;
+
+		nope = strchr(unk_buf, ':');
+		if (nope != NULL) {
+			*nope = '\0';
+			nope++;
+		}
+		else /* only '?' is given, no ':' */
+			nope = "n/a";
+	}
+	else /* plain '%' */
+		*input = end+1;
+
+	/* get the actual string */
+	str = subst_user(ctx, aname);
+
+	/* render output */
+	if (ternary) {
+		if (is_val_true(str))
+			append_clean(ctx, escape, s, unk_buf);
+		else
+			append_clean(ctx, escape, s, nope);
 		return 0;
 	}
 
+	if ((str == NULL) || (*str == '\0'))
+		str = unk;
+	append_clean(ctx, escape, s, str);
 
-	if (strncmp(*input, "subc.", 5) == 0) {
-		*input += 5;
-
-		/* subc attribute print:
-		    subc.a.attribute            - print the attribute if exists, "n/a" if not
-		    subc.a.attribute|unk        - print the attribute if exists, unk if not
-		    subc.a.attribute?yes        - print yes if attribute is true, "n/a" if not
-		    subc.a.attribute?yes:nope   - print yes if attribute is true, nope if not
-		*/
-		if (strncmp(*input, "a.", 2) == 0) {
-			char aname[256], unk_buf[256], *nope;
-			const char *val, *end, *unk = "n/a";
-			long len;
-			
-			*input += 2;
-			end = strpbrk(*input, "?|%");
-			len = end - *input;
-			if (len >= sizeof(aname) - 1) {
-				rnd_message(RND_MSG_ERROR, "bom2 tempalte error: attribute name '%s' too long\n", *input);
-				return 1;
-			}
-			memcpy(aname, *input, len);
-			aname[len] = '\0';
-			if (*end == '|') { /* "or unknown" */
-				*input = end+1;
-				end = strchr(*input, '%');
-				len = end - *input;
-				if (len >= sizeof(unk_buf) - 1) {
-					rnd_message(RND_MSG_ERROR, "bom2 tempalte error: elem atribute '|unknown' field '%s' too long\n", *input);
-					return 1;
-				}
-				memcpy(unk_buf, *input, len);
-				unk_buf[len] = '\0';
-				unk = unk_buf;
-				*input = end;
-			}
-			else if (*end == '?') { /* trenary */
-				*input = end+1;
-				end = strchr(*input, '%');
-				len = end - *input;
-				if (len >= sizeof(unk_buf) - 1) {
-					rnd_message(RND_MSG_ERROR, "bom2 tempalte error: elem atribute trenary field '%s' too long\n", *input);
-					return 1;
-				}
-
-				memcpy(unk_buf, *input, len);
-				unk_buf[len] = '\0';
-				*input = end+1;
-
-				nope = strchr(unk_buf, ':');
-				if (nope != NULL) {
-					*nope = '\0';
-					nope++;
-				}
-				else /* only '?' is given, no ':' */
-					nope = "n/a";
-
-				val = subst_attr(ctx, aname);
-				if (is_val_true(val))
-					append_clean(ctx, escape, s, unk_buf);
-				else
-					append_clean(ctx, escape, s, nope);
-
-				return 0;
-			}
-			else
-				*input = end;
-			(*input)++;
-
-			val = subst_attr(ctx, aname);
-			if (val == NULL)
-				val = unk;
-			append_clean(ctx, escape, s, val);
-			return 0;
-		}
-		if (strncmp(*input, "name%", 5) == 0) {
-			*input += 5;
-			append_clean(ctx, escape, s, ctx->name);
-			return 0;
-		}
-		if (strncmp(*input, "prefix%", 7) == 0) {
-			const char *t;
-			*input += 7;
-
-			for(t = ctx->name; isalpha(*t); t++)
-				gds_append(s, *t);
-			return 0;
-		}
-	}
-	return -1;
+	return 0;
 }
 
 static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
