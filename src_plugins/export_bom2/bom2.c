@@ -241,12 +241,9 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 
 static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
-	template_t templ;
+	template_t templ = {0};
 	char **tid;
 	pcb_cam_t cam;
-
-	memset(&templ, 0, sizeof(templ));
-
 
 	gather_templates();
 
@@ -266,13 +263,8 @@ static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_va
 		rnd_message(RND_MSG_ERROR, "export_bom2: invalid template selected\n");
 		return;
 	}
-	templ.header       = get_templ(*tid, "header");
-	templ.item         = get_templ(*tid, "item");
-	templ.footer       = get_templ(*tid, "footer");
-	templ.subc2id      = get_templ(*tid, "subc2id");
-	templ.escape       = get_templ(*tid, "escape");
-	templ.needs_escape = get_templ(*tid, "needs_escape");
 
+	bom_init_template(&templ, *tid);
 	PrintBOM(&templ, options[HA_format].str);
 	pcb_cam_end(&cam);
 }

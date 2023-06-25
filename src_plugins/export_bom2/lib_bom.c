@@ -47,6 +47,16 @@ static const char *get_templ(const char *tid, const char *type)
 	return NULL;
 }
 
+static void bom_init_template(template_t *templ, const char *tid)
+{
+	templ->header       = get_templ(tid, "header");
+	templ->item         = get_templ(tid, "item");
+	templ->footer       = get_templ(tid, "footer");
+	templ->subc2id      = get_templ(tid, "subc2id");
+	templ->escape       = get_templ(tid, "escape");
+	templ->needs_escape = get_templ(tid, "needs_escape");
+}
+
 /*** subst ***/
 
 static void append_clean(subst_ctx_t *ctx, int escape, gds_t *dst, const char *text)
