@@ -128,7 +128,7 @@ static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, r
 
 typedef struct {
 	char utcTime[64];
-	char *name, *footprint, *value;
+	char *name;
 	pcb_subc_t *subc;
 	long count;
 	gds_t tmp;
@@ -301,17 +301,6 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 
 			for(t = ctx->name; isalpha(*t); t++)
 				gds_append(s, *t);
-			return 0;
-		}
-
-		if (strncmp(*input, "footprint%", 10) == 0) {
-			*input += 11;
-			append_clean(ctx, escape, s, ctx->footprint);
-			return 0;
-		}
-		if (strncmp(*input, "value%", 6) == 0) {
-			*input += 7;
-			append_clean(ctx, escape, s, ctx->value);
 			return 0;
 		}
 	}
