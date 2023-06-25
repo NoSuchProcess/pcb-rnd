@@ -136,7 +136,7 @@ static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_va
 	char **tid;
 	pcb_cam_t cam;
 
-	bom_gather_templates();
+	bom_gather_templates(&conf_bom2.plugins.export_bom2.templates);
 
 	if (!options) {
 		bom2_get_export_options(hid, 0, design, appspec);
@@ -155,7 +155,7 @@ static void bom2_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_va
 		return;
 	}
 
-	bom_init_template(&templ, *tid);
+	bom_init_template(&templ, &conf_bom2.plugins.export_bom2.templates, *tid);
 	print_bom(&templ);
 	pcb_cam_end(&cam);
 }

@@ -54,12 +54,12 @@ static void bom_build_fmts(const rnd_conflist_t *templates)
 	}
 }
 
-static void bom_gather_templates(void)
+static void bom_gather_templates(const rnd_conflist_t *templates)
 {
 	rnd_conf_listitem_t *i;
 	int n;
 
-	rnd_conf_loop_list(&conf_bom2.plugins.export_bom2.templates, i, n) {
+	rnd_conf_loop_list(templates, i, n) {
 		char buff[256], *id, *sect;
 		int nl = strlen(i->name);
 		if (nl > sizeof(buff)-1) {
@@ -78,27 +78,27 @@ static void bom_gather_templates(void)
 	}
 }
 
-static const char *get_templ(const char *tid, const char *type)
+static const char *get_templ(const rnd_conflist_t *templates, const char *tid, const char *type)
 {
 	char path[MAX_TEMP_NAME_LEN + 16];
 	rnd_conf_listitem_t *li;
 	int idx;
 
 	sprintf(path, "%s.%s", tid, type); /* safe: tid's length is checked before it was put in the vector, type is hardwired in code and is never longer than a few chars */
-	rnd_conf_loop_list(&conf_bom2.plugins.export_bom2.templates, li, idx)
+	rnd_conf_loop_list(templates, li, idx)
 		if (strcmp(li->name, path) == 0)
 			return li->payload;
 	return NULL;
 }
 
-static void bom_init_template(bom_template_t *templ, const char *tid)
+static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templates, const char *tid)
 {
-	templ->header       = get_templ(tid, "header");
-	templ->item         = get_templ(tid, "item");
-	templ->footer       = get_templ(tid, "footer");
-	templ->sort_id      = get_templ(tid, "sort_id");
-	templ->escape       = get_templ(tid, "escape");
-	templ->needs_escape = get_templ(tid, "needs_escape");
+	templ->header       = get_templ(templates, tid, "header");
+	templ->item         = get_templ(templates, tid, "item");
+	templ->footer       = get_templ(templates, tid, "footer");
+	templ->sort_id      = get_templ(templates, tid, "sort_id");
+	templ->escape       = get_templ(templates, tid, "escape");
+	templ->needs_escape = get_templ(templates, tid, "needs_escape");
 }
 
 /*** subst ***/
