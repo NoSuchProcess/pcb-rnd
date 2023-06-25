@@ -1,3 +1,12 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <time.h>
+#include <genvector/vts0.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
+#include <genht/ht_utils.h>
+
 /*** formats & templates ***/
 typedef struct {
 	const char *header, *item, *footer, *subc2id;

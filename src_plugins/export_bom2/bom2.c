@@ -2,17 +2,8 @@
 #include "conf_core.h"
 #include <librnd/core/rnd_conf.h>
 
-#include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <genvector/vts0.h>
-#include <genht/htsp.h>
-#include <genht/hash.h>
-#include <genht/ht_utils.h>
 
-#include <librnd/core/math_helper.h>
 #include "build_run.h"
 #include "board.h"
 #include "data.h"
@@ -21,7 +12,6 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/rotate.h>
 #include <librnd/core/safe_fs.h>
 #include "bom2_conf.h"
 
