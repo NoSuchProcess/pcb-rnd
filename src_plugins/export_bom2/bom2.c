@@ -66,31 +66,6 @@ static const char *bom2_filename;
 vts0_t fmt_names; /* array of const char * long name of each format, pointing into the conf database */
 vts0_t fmt_ids;   /* array of strdup'd short name (ID) of each format */
 
-static char *pcb_bom_clean_str(const char *in)
-{
-	char *out, *so;
-	const char *si;
-	long len = strlen(in);
-
-	if ((out = malloc((len + 1) * sizeof(char))) == NULL) {
-		fprintf(stderr, "Error: pcb_bom_clean_str(): malloc() failed\n");
-		exit(1);
-	}
-
-	for(si = in, so = out; *si != '\0'; si++, so++) {
-		switch(*si) {
-		case '"':
-			*so = '\'';
-			break;
-		default:
-			*so = *si;
-		}
-	}
-	*so = '\0';
-
-	return out;
-}
-
 static void free_fmts(void)
 {
 	int n;
