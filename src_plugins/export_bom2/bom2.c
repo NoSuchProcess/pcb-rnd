@@ -105,27 +105,17 @@ static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, r
 	return bom2_options;
 }
 
-static const char *subst_attr(subst_ctx_t *ctx, const char *aname)
-{
-	return pcb_attribute_get(&ctx->subc->Attributes, aname);
-}
-
 static const char *subst_user(subst_ctx_t *ctx, const char *key)
 {
-	static char tmp[256];
-
-	if (strcmp(key, "UTC") == 0) return ctx->utcTime;
 	if (strcmp(key, "author") == 0) return pcb_author();
 	if (strcmp(key, "title") == 0) return RND_UNKNOWN(PCB->hidlib.name);
-	if (strcmp(key, "names") == 0) return ctx->name;
-	if (strcmp(key, "count") == 0) { sprintf(tmp, "%ld", ctx->count); return tmp; }
-
 	if (strncmp(key, "subc.", 5) == 0) {
 		key += 5;
 
-		if (strncmp(key, "a.", 2) == 0) return subst_attr(ctx, key+2);
+		if (strncmp(key, "a.", 2) == 0) return pcb_attribute_get(&ctx->subc->Attributes, key+2);
 		else if (strcmp(key, "name") == 0) return ctx->name;
 		if (strcmp(key, "prefix") == 0) {
+			static char tmp[256]; /* this is safe: caller will make a copy right after we return */
 			char *o = tmp;
 			const char *t;
 			int n = 0;

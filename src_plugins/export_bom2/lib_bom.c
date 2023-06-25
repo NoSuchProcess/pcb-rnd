@@ -104,6 +104,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	subst_ctx_t *ctx = ctx_;
 	int escape = 0, ternary = 0;
 	char aname[1024], unk_buf[1024], *nope = NULL;
+	char tmp[32];
 	const char *str, *end;
 	const char *unk = ""; /* what to print on empty/NULL string if there's no ? or | in the template */
 	long len;
@@ -165,8 +166,14 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	else /* plain '%' */
 		*input = end+1;
 
-	/* get the actual string */
-	str = subst_user(ctx, aname);
+	/* get the actual string; first a few generic ones then the app-specific callback */
+	if (strcmp(aname, "count") == 0) {
+		sprintf(tmp, "%ld", ctx->count);
+		str = tmp;
+	}
+	else if (strcmp(aname, "UTC") == 0) str = ctx->utcTime;
+	else if (strcmp(aname, "names") == 0) str = ctx->name;
+	else str = subst_user(ctx, aname);
 
 	/* render output */
 	if (ternary) {
