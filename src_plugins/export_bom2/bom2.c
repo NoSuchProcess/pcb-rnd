@@ -295,6 +295,15 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			append_clean(s, ctx->name);
 			return 0;
 		}
+		if (strncmp(*input, "prefix%", 7) == 0) {
+			const char *t;
+			*input += 7;
+
+			for(t = ctx->name; isalpha(*t); t++)
+				gds_append(s, *t);
+			return 0;
+		}
+
 		if (strncmp(*input, "footprint%", 10) == 0) {
 			*input += 10;
 			gds_append_str(s, ctx->footprint);
@@ -402,7 +411,7 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 		const char *refdes = RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes"));
 
 		ctx.subc = subc;
-		ctx.name = (char *)RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes"));
+		ctx.name = (char *)refdes;
 		ctx.footprint = (char *)RND_UNKNOWN(pcb_subc_name(subc, "export_bom2::footprint"));
 		ctx.value = (char *)RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value"));
 
