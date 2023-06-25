@@ -104,7 +104,7 @@ static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templ
 /*** subst ***/
 
 typedef struct bom_item_s {
-	pcb_subc_t *subc; /* one of the subcircuits picked randomly, for the attributes */
+	bom_obj_t *obj; /* one of the objects picked randomly, for the attributes */
 	char *id; /* key for sorting */
 	gds_t refdes_list;
 	long cnt;
@@ -282,12 +282,12 @@ static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t 
 	ctx->f = f;
 }
 
-static void bom_print_add(bom_subst_ctx_t *ctx, pcb_subc_t *subc, const char *name)
+static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name)
 {
 	char *id, *freeme;
 	bom_item_t *i;
 
-	ctx->subc = subc;
+	ctx->obj = obj;
 	ctx->name = (char *)name;
 
 	id = freeme = render_templ(ctx, ctx->templ->sort_id);
@@ -295,7 +295,7 @@ static void bom_print_add(bom_subst_ctx_t *ctx, pcb_subc_t *subc, const char *na
 	if (i == NULL) {
 		i = malloc(sizeof(bom_item_t));
 		i->id = id;
-		i->subc = subc;
+		i->obj = obj;
 		i->cnt = 1;
 		gds_init(&i->refdes_list);
 
@@ -319,13 +319,13 @@ static void bom_print_all(bom_subst_ctx_t *ctx)
 	long n;
 
 	/* clean up and sort the array */
-	ctx->subc = NULL;
+	ctx->obj = NULL;
 	qsort(ctx->arr.array, ctx->arr.used, sizeof(bom_item_t *), item_cmp);
 
 	/* produce the actual output from the sorted array */
 	for(n = 0; n < ctx->arr.used; n++) {
 		bom_item_t *i = ctx->arr.array[n];
-		ctx->subc = i->subc;
+		ctx->obj = i->obj;
 		ctx->name = i->refdes_list.array;
 		ctx->count = i->cnt;
 		fprintf_templ(ctx->f, ctx, ctx->templ->item);

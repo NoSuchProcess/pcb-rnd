@@ -52,6 +52,7 @@ static rnd_hid_attr_val_t bom2_values[NUM_OPTIONS];
 
 static const char *bom2_filename;
 
+typedef pcb_subc_t bom_obj_t;
 #include "lib_bom.h"
 
 static const rnd_export_opt_t *bom2_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
@@ -84,7 +85,7 @@ static const char *subst_user(bom_subst_ctx_t *ctx, const char *key)
 	if (strncmp(key, "subc.", 5) == 0) {
 		key += 5;
 
-		if (strncmp(key, "a.", 2) == 0) return pcb_attribute_get(&ctx->subc->Attributes, key+2);
+		if (strncmp(key, "a.", 2) == 0) return pcb_attribute_get(&ctx->obj->Attributes, key+2);
 		else if (strcmp(key, "name") == 0) return ctx->name;
 		if (strcmp(key, "prefix") == 0) {
 			static char tmp[256]; /* this is safe: caller will make a copy right after we return */

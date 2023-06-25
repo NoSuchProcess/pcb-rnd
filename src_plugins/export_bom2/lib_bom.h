@@ -31,10 +31,15 @@ static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templ
 
 
 /*** subst ***/
+
+/* The caller needs to typedef bom_obj_t to the app-specific object type that
+   is used as input for bom listings */
+
+
 typedef struct {
 	char utcTime[64];
 	char *name;
-	pcb_subc_t *subc;
+	bom_obj_t *obj;
 	long count;
 	gds_t tmp;
 	const char *needs_escape; /* list of characters that need escaping */
@@ -50,6 +55,6 @@ typedef struct {
 /* Export a file; call begin, then loop over all items and call _add, then call
    _all and _end. */
 static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ); /* init ctx, print header */
-static void bom_print_add(bom_subst_ctx_t *ctx, pcb_subc_t *subc, const char *name); /* add an app_item */
+static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name); /* add an app_item */
 static void bom_print_all(bom_subst_ctx_t *ctx); /* sort and print all items */
 static void bom_print_end(bom_subst_ctx_t *ctx); /* print footer and uninit ctx */
