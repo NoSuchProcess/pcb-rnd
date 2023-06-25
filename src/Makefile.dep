@@ -486,7 +486,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h change.h board.h \
  vtroutestyle.h rats_patch.h undo.h ../src_3rd/libuundo/uundo.h \
  undo_old.h
-../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
+../src_plugins/export_bom2/bom2.o: ../src_plugins/export_bom2/bom2.c \
  ../config.h conf_core.h globalconst.h build_run.h board.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
  obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h \
@@ -494,7 +494,12 @@
  layer_grp.h rats_patch.h board.h data.h crosshair.h route.h buffer.h \
  obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h hid_cam.h
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
+ obj_pstk_inlines.h thermal.h operation.h obj_subc_op.h layer.h netlist.h \
+ operation.h ../src_plugins/export_bom2/bom2_conf.h hid_cam.h \
+ ../src_plugins/lib_compat_help/elem_rot.h \
+ ../src_plugins/export_bom2/conf_internal.c \
+ ../src_plugins/export_bom2/bom2_conf_fields.h
 ../src_plugins/export_c_draw/export_c_draw.o: \
  ../src_plugins/export_c_draw/export_c_draw.c ../config.h conf_core.h \
  globalconst.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \

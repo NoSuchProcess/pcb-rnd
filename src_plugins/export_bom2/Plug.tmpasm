@@ -1,0 +1,11 @@
+put /local/rnd/mod {export_bom2}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_bom2/bom2.o @]
+put /local/rnd/mod/CONF {$(PLUGDIR)/export_bom2/bom2_conf.h}
+put /local/rnd/mod/CONFFILE {export_bom2.conf}
+put /local/rnd/mod/CONFVAR {export_bom2_conf_internal}
+
+switch /local/module/export_bom2/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

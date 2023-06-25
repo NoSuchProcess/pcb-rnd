@@ -1,0 +1,9 @@
+$class export
+$short Bill of Materials export
+$long Export BoM (Bill of Materials) with configurable templates
+$state works
+$fmt-native no
+$fmt-feature-w bom (Bill of Materials, text, templated)
+$package export
+default buildin
+autoload 1
