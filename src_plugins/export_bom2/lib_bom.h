@@ -23,6 +23,12 @@ typedef struct {
 	gds_t tmp;
 	const char *needs_escape; /* list of characters that need escaping */
 	const char *escape; /* escape character or NULL for replacing with _*/
+
+	/* print/sort state */
+	htsp_t tbl;
+	vtp0_t arr;
+	const template_t *templ;
+	FILE *f;
 } subst_ctx_t;
 
 
@@ -34,8 +40,9 @@ typedef struct {
 } item_t;
 
 
-static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ);
-static char *render_templ(subst_ctx_t *ctx, const char *templ);
-
-/* temporary */
-static int item_cmp(const void *item1, const void *item2);
+/* Export a file; call begin, then loop over all items and call _add, then call
+   _all and _end. */
+static void bom_print_begin(subst_ctx_t *ctx, FILE *f, const template_t *templ); /* init ctx, print header */
+static void bom_print_add(subst_ctx_t *ctx, pcb_subc_t *subc, const char *name); /* add an app_item */
+static void bom_print_all(subst_ctx_t *ctx); /* sort and print all items */
+static void bom_print_end(subst_ctx_t *ctx); /* print footer and uninit ctx */

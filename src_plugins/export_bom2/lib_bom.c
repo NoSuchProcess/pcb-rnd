@@ -206,3 +206,86 @@ static int item_cmp(const void *item1, const void *item2)
 	const item_t * const *i2 = item2;
 	return strcmp((*i1)->id, (*i2)->id);
 }
+
+static void bom_print_begin(subst_ctx_t *ctx, FILE *f, const template_t *templ)
+{
+	gds_init(&ctx->tmp);
+
+	rnd_print_utc(ctx->utcTime, sizeof(ctx->utcTime), 0);
+
+	fprintf_templ(f, ctx, templ->header);
+
+	htsp_init(&ctx->tbl, strhash, strkeyeq);
+	vtp0_init(&ctx->arr);
+
+	ctx->escape = templ->escape;
+	ctx->needs_escape = templ->needs_escape;
+	ctx->templ = templ;
+	ctx->f = f;
+}
+
+static void bom_print_add(subst_ctx_t *ctx, pcb_subc_t *subc, const char *name)
+{
+	char *id, *freeme;
+	item_t *i;
+
+	ctx->subc = subc;
+	ctx->name = (char *)name;
+
+	id = freeme = render_templ(ctx, ctx->templ->subc2id);
+	i = htsp_get(&ctx->tbl, id);
+	if (i == NULL) {
+		i = malloc(sizeof(item_t));
+		i->id = id;
+		i->subc = subc;
+		i->cnt = 1;
+		gds_init(&i->refdes_list);
+
+		htsp_set(&ctx->tbl, id, i);
+		vtp0_append(&ctx->arr, i);
+		freeme = NULL;
+	}
+	else {
+		i->cnt++;
+		gds_append(&i->refdes_list, ' ');
+	}
+
+	gds_append_str(&i->refdes_list, name);
+	rnd_trace("id='%s' %ld\n", id, i->cnt);
+
+	free(freeme);
+}
+
+static void bom_print_all(subst_ctx_t *ctx)
+{
+	long n;
+
+	/* clean up and sort the array */
+	ctx->subc = NULL;
+	qsort(ctx->arr.array, ctx->arr.used, sizeof(item_t *), item_cmp);
+
+	/* produce the actual output from the sorted array */
+	for(n = 0; n < ctx->arr.used; n++) {
+		item_t *i = ctx->arr.array[n];
+		ctx->subc = i->subc;
+		ctx->name = i->refdes_list.array;
+		ctx->count = i->cnt;
+		fprintf_templ(ctx->f, ctx, ctx->templ->item);
+	}
+}
+
+static void bom_print_end(subst_ctx_t *ctx)
+{
+	fprintf_templ(ctx->f, ctx, ctx->templ->footer);
+
+	gds_uninit(&ctx->tmp);
+
+	genht_uninit_deep(htsp, &ctx->tbl, {
+		item_t *i = htent->value;
+		free(i->id);
+		gds_uninit(&i->refdes_list);
+		free(i);
+	});
+	vtp0_uninit(&ctx->arr);
+}
+

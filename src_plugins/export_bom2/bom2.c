@@ -152,89 +152,28 @@ static const char *subst_user(subst_ctx_t *ctx, const char *key)
 
 static int PrintBOM(const template_t *templ, const char *format_name)
 {
-	FILE *fp;
+	FILE *f;
 	subst_ctx_t ctx = {0};
-	htsp_t tbl;
-	vtp0_t arr = {0};
-	long n;
 
-	fp = rnd_fopen_askovr(&PCB->hidlib, bom2_filename, "w", NULL);
-	if (!fp) {
+	f = rnd_fopen_askovr(&PCB->hidlib, bom2_filename, "w", NULL);
+	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Cannot open file %s for writing\n", bom2_filename);
 		return 1;
 	}
 
-	gds_init(&ctx.tmp);
-
-	rnd_print_utc(ctx.utcTime, sizeof(ctx.utcTime), 0);
-
-	fprintf_templ(fp, &ctx, templ->header);
-
-	htsp_init(&tbl, strhash, strkeyeq);
-
-	ctx.escape = templ->escape;
-	ctx.needs_escape = templ->needs_escape;
+	bom_print_begin(&ctx, f, templ);
 
 	/* For each subcircuit calculate an ID and count recurring IDs in a hash table and an array (for sorting) */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		char *id, *freeme;
-		item_t *i;
 		const char *refdes = RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes"));
-
-		ctx.subc = subc;
-		ctx.name = (char *)refdes;
-
-		id = freeme = render_templ(&ctx, templ->subc2id);
-		i = htsp_get(&tbl, id);
-		if (i == NULL) {
-			i = malloc(sizeof(item_t));
-			i->id = id;
-			i->subc = subc;
-			i->cnt = 1;
-			gds_init(&i->refdes_list);
-
-			htsp_set(&tbl, id, i);
-			vtp0_append(&arr, i);
-			freeme = NULL;
-		}
-		else {
-			i->cnt++;
-			gds_append(&i->refdes_list, ' ');
-		}
-
-		gds_append_str(&i->refdes_list, refdes);
-		rnd_trace("id='%s' %ld\n", id, i->cnt);
-
-		free(freeme);
+		bom_print_add(&ctx, subc, refdes);
 	}
 	PCB_END_LOOP;
 
-	/* clean up and sort the array */
-	ctx.subc = NULL;
-	qsort(arr.array, arr.used, sizeof(item_t *), item_cmp);
-
-	/* produce the actual output from the sorted array */
-	for(n = 0; n < arr.used; n++) {
-		item_t *i = arr.array[n];
-		ctx.subc = i->subc;
-		ctx.name = i->refdes_list.array;
-		ctx.count = i->cnt;
-		fprintf_templ(fp, &ctx, templ->item);
-	}
-
-	fprintf_templ(fp, &ctx, templ->footer);
-
-	fclose(fp);
-	gds_uninit(&ctx.tmp);
-
-	genht_uninit_deep(htsp, &tbl, {
-		item_t *i = htent->value;
-		free(i->id);
-		gds_uninit(&i->refdes_list);
-		free(i);
-	});
-	vtp0_uninit(&arr);
+	bom_print_all(&ctx);
+	bom_print_end(&ctx);
+	fclose(f);
 
 	return 0;
 }
