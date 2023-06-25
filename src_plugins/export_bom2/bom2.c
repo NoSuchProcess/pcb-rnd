@@ -328,7 +328,7 @@ typedef struct {
 
 typedef struct {
 	pcb_subc_t *subc; /* one of the subcircuits picked randomly, for the attributes */
-	char *id, *value, *footprint;
+	char *id; /* key for sorting */
 	gds_t refdes_list;
 	long cnt;
 } item_t;
@@ -374,17 +374,12 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 
 		ctx.subc = subc;
 		ctx.name = (char *)refdes;
-		ctx.footprint = (char *)RND_UNKNOWN(pcb_subc_name(subc, "export_bom2::footprint"));
-		ctx.value = (char *)RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value"));
 
 		id = freeme = render_templ(&ctx, templ->subc2id);
 		i = htsp_get(&tbl, id);
 		if (i == NULL) {
 			i = malloc(sizeof(item_t));
 			i->id = id;
-
-			i->value = rnd_strdup(ctx.value);
-			i->footprint = rnd_strdup(ctx.footprint);
 			i->subc = subc;
 			i->cnt = 1;
 			gds_init(&i->refdes_list);
@@ -413,8 +408,6 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 	for(n = 0; n < arr.used; n++) {
 		item_t *i = arr.array[n];
 		ctx.subc = i->subc;
-		ctx.footprint = i->footprint;
-		ctx.value = i->value;
 		ctx.name = i->refdes_list.array;
 		ctx.count = i->cnt;
 		fprintf_templ(fp, &ctx, templ->item);
@@ -428,8 +421,6 @@ static int PrintBOM(const template_t *templ, const char *format_name)
 	genht_uninit_deep(htsp, &tbl, {
 		item_t *i = htent->value;
 		free(i->id);
-		free(i->value);
-		free(i->footprint);
 		gds_uninit(&i->refdes_list);
 		free(i);
 	});
