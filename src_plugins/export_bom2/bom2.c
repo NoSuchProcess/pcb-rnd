@@ -305,8 +305,8 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			append_clean(ctx, escape, s, val);
 			return 0;
 		}
-		if (strncmp(*input, "name%", 7) == 0) {
-			*input += 8;
+		if (strncmp(*input, "name%", 5) == 0) {
+			*input += 5;
 			append_clean(ctx, escape, s, ctx->name);
 			return 0;
 		}
