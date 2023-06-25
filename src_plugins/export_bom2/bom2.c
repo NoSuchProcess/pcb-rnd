@@ -136,9 +136,15 @@ typedef struct {
 	const char *escape; /* escape character or NULL for replacing with _*/
 } subst_ctx_t;
 
-static void append_clean(subst_ctx_t *ctx, gds_t *dst, const char *text)
+static void append_clean(subst_ctx_t *ctx, int escape, gds_t *dst, const char *text)
 {
 	const char *s;
+
+	if (!escape) {
+		gds_append_str(dst, text);
+		return;
+	}
+
 	for(s = text; *s != '\0'; s++) {
 		switch(*s) {
 			case '\n': gds_append_str(dst, "\\n"); break;
@@ -173,25 +179,33 @@ static int is_val_true(const char *val)
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
 	subst_ctx_t *ctx = ctx_;
+	int escape = 0;
+
+	if (strncmp(*input, "escape.", 7) == 0) {
+		*input += 7;
+		escape = 1;
+	}
+
+
 	if (strncmp(*input, "UTC%", 4) == 0) {
 		*input += 4;
-		gds_append_str(s, ctx->utcTime);
+		append_clean(ctx, escape, s, ctx->utcTime);
 		return 0;
 	}
 	if (strncmp(*input, "author%", 7) == 0) {
 		*input += 7;
-		gds_append_str(s, pcb_author());
+		append_clean(ctx, escape, s, pcb_author());
 		return 0;
 	}
 	if (strncmp(*input, "title%", 6) == 0) {
 		*input += 6;
-		gds_append_str(s, RND_UNKNOWN(PCB->hidlib.name));
+		append_clean(ctx, escape, s, RND_UNKNOWN(PCB->hidlib.name));
 		return 0;
 	}
 
 	if (strncmp(*input, "names%", 6) == 0) {
 		*input += 6;
-		gds_append_str(s, ctx->name);
+		append_clean(ctx, escape, s, ctx->name);
 		return 0;
 	}
 
@@ -260,9 +274,9 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 
 				val = pcb_attribute_get(&ctx->subc->Attributes, aname);
 				if (is_val_true(val))
-					gds_append_str(s, unk_buf);
+					append_clean(ctx, escape, s, unk_buf);
 				else
-					gds_append_str(s, nope);
+					append_clean(ctx, escape, s, nope);
 
 				return 0;
 			}
@@ -273,12 +287,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			val = pcb_attribute_get(&ctx->subc->Attributes, aname);
 			if (val == NULL)
 				val = unk;
-			append_clean(ctx, s, val);
+			append_clean(ctx, escape, s, val);
 			return 0;
 		}
 		if (strncmp(*input, "refdes%", 7) == 0) {
 			*input += 8;
-			append_clean(ctx, s, ctx->name);
+			append_clean(ctx, escape, s, ctx->name);
 			return 0;
 		}
 		if (strncmp(*input, "prefix%", 7) == 0) {
@@ -292,12 +306,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 
 		if (strncmp(*input, "footprint%", 10) == 0) {
 			*input += 11;
-			append_clean(ctx, s, ctx->footprint);
+			append_clean(ctx, escape, s, ctx->footprint);
 			return 0;
 		}
 		if (strncmp(*input, "value%", 6) == 0) {
 			*input += 7;
-			append_clean(ctx, s, ctx->value);
+			append_clean(ctx, escape, s, ctx->value);
 			return 0;
 		}
 	}
