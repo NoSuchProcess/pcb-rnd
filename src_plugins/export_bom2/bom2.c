@@ -344,25 +344,6 @@ static char *render_templ(subst_ctx_t *ctx, const char *templ)
 	return NULL;
 }
 
-
-static const char *bom2_xform_get_attr(subst_ctx_t *ctx, pcb_subc_t *subc, const char *key)
-{
-	ctx->tmp.used = 0;
-	gds_append_str(&ctx->tmp, "bom2::");
-
-	gds_append_str(&ctx->tmp, key);
-	return pcb_attribute_get(&subc->Attributes, ctx->tmp.array);
-}
-
-static void bom2_xform_by_subc_attrs(subst_ctx_t *ctx, pcb_subc_t *subc)
-{
-	const char *sval;
-
-	sval = bom2_xform_get_attr(ctx, subc, "TODO");
-	if (sval != NULL) {
-	}
-}
-
 typedef struct {
 	const char *header, *item, *footer, *subc2id;
 } template_t;
