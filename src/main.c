@@ -110,7 +110,7 @@ static rnd_conf_ignore_t conf_ignores[] = {
 	{"design/groups", 13, 1, NULL},
 	{"design/default_layer_name", 25, 1, NULL},
 
-	/* Do not war for this special case: drc rules create the nodes later */
+	/* Do not warn for this special case: drc rules create the nodes later */
 	{"design/drc/", 11, 1, NULL},
 
 	{NULL, 0, 0}
