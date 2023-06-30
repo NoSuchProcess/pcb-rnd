@@ -46,6 +46,8 @@ each item is named as <i>NAME</i>.<i>something</i> where <i>something</i> is:
 	<li> <i>NAME</i>.footer: terminal template, printed once for each terminal within each subcircuit; optional
 	<li> <i>NAME</i>.needs_escape: list all characters (as a string) that require escaping when printed with the "escape." prefix (see below)
 	<li> <i>NAME</i>.escape: if specified, the first character of this string is used as the escape character; if not specified, offending characters are not escaped but replaced with an underscore
+	<li> <i>NAME</i>.skip_if_empty: if specified, for each item to be added the template is rendered and if the result is empty, the item is ignored
+	<li> <i>NAME</i>.skip_if_nonempty: if specified, for each item to be added the template is rendered and if the result is not empty, the item is ignored
 </ul>
 <p>
 Templates are text strings; they are printed as is, keeping all newlines and
