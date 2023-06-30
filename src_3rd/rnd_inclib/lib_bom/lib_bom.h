@@ -40,6 +40,7 @@ typedef struct bom_template_s {
 	const char *header, *item, *footer, *sort_id;
 	const char *needs_escape; /* list of characters that need escaping */
 	const char *escape; /* escape character */
+	const char *skip_if_empty; /* if this template is not empty: render the template for each item and do not include the item if the rendered string is empty */
 } bom_template_t;
 
 static vts0_t bom_fmt_names; /* array of const char * long name of each format, pointing into the conf database */

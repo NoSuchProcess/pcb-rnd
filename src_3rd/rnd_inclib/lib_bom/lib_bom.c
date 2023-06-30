@@ -100,6 +100,7 @@ static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templ
 	templ->sort_id      = get_templ(templates, tid, "sort_id");
 	templ->escape       = get_templ(templates, tid, "escape");
 	templ->needs_escape = get_templ(templates, tid, "needs_escape");
+	templ->skip_if_empty= get_templ(templates, tid, "skip_if_empty");
 }
 
 /*** subst ***/
@@ -291,6 +292,20 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 
 	ctx->obj = obj;
 	ctx->name = (char *)name;
+
+	if ((ctx->templ->skip_if_empty != NULL) && (*ctx->templ->skip_if_empty != '\0')) {
+		int do_skip = 0;
+		char *skip = render_templ(ctx, ctx->templ->skip_if_empty);
+		if (skip != NULL) {
+			while(isspace(*skip)) skip++;
+			if (*skip == '\0')
+				do_skip = 1;
+		}
+		free(skip);
+
+		if (do_skip)
+			return;
+	}
 
 	id = freeme = render_templ(ctx, ctx->templ->sort_id);
 	i = htsp_get(&ctx->tbl, id);
