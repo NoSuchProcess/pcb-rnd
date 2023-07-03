@@ -732,6 +732,12 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 	}
 }
 
+static char *sprintf_templ(subst_ctx_t *ctx, const char *templ)
+{
+	return rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
+}
+
+
 static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty, rnd_coord_t *bottom_dstx, rnd_coord_t *bottom_dsty, int atrans)
 {
 	rnd_coord_t x = *dstx, y = *dsty, tx = 0, ty = 0;
@@ -825,7 +831,7 @@ static void xy_xform_by_subc_attrs(subst_ctx_t *ctx, pcb_subc_t *subc)
 }
 
 typedef struct {
-	const char *hdr, *subc, *term, *foot;
+	const char *hdr, *subc, *term, *foot, *skip_if_nonempty;
 } template_t;
 
 
@@ -854,7 +860,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	{
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
-		int bott;
+		int bott, skip = 0;
 
 		if (subc->extobj != NULL) continue;
 
@@ -890,7 +896,15 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.prpad_cx, &ctx.prpad_cy);
 		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy, &ctx.bottom_pad_cx, &ctx.bottom_pad_cy, 0);
 
-		fprintf_templ(fp, &ctx, templ->subc);
+		if ((templ->skip_if_nonempty != NULL) && (*templ->skip_if_nonempty != '\0')) {
+			char *s = sprintf_templ(&ctx, templ->skip_if_nonempty);
+			if ((s != NULL) && (*s != '\0'))
+				skip = 1;
+			free(s);
+		}
+
+		if (!skip)
+			fprintf_templ(fp, &ctx, templ->subc);
 
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 			if (o->term != NULL) {
@@ -994,6 +1008,7 @@ static void xy_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_
 	templ.hdr  = get_templ(*tid, "hdr");
 	templ.subc = get_templ(*tid, "subc");
 	templ.term = get_templ(*tid, "term");
+	templ.skip_if_nonempty = get_templ(*tid, "skip_if_nonempty");
 
 	PrintXY(&templ, options[HA_format].str);
 	pcb_cam_end(&cam);
