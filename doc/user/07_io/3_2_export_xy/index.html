@@ -35,6 +35,7 @@ each item is named as <i>ID</i>.<i>something</i> where <i>something</i> is:
 <ul>
 	<lI> <i>ID</i>.name: the long name of the format (as shown on the UI); mandatory
 	<li> <i>ID</i>.hdr: header template, printed once when the output file is opened; optional
+	<li> <i>ID</i>.skip_if_nonempty: rendered into memory before each subc; if the value is not empty, the subc is skipped (not included in the output); useful for implementing dnp
 	<li> <i>ID</i>.subc: subcircuit template, printed once when a subcircuit is entered; optional
 	<li> <i>ID</i>.term: terminal template, printed once for each terminal within each subcircuit; optional
 </ul>
