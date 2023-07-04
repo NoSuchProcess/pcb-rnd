@@ -8,7 +8,6 @@ Active user wishes:
 		- change or remove network attribute
 		- add new subcircuit
 		- add new net
-	W11: sch-rnd: build options in netlist export (maybe different views with a filter plugin?) [Erich]
 	W13: sch-rnd: alternate MCU/CPU pin functions [report: Wojciech]
 	W14: pcb-rnd: subc-in-subc from hierarchic design ml=pcb-rnd@5920 [report: Vuokko]
 	W15: HPGL export (maybe a HPGL import plugin in camv-rnd for verification) [report: Erich]
@@ -24,3 +23,4 @@ User wishes fulfilled:
 	W6:  GUI access to object attributes: gtk editor, find/select by attrib [James]
 	W7: programmable drc (star grounding is implemented with intconn) [James]
 	W8: gl support [Erich, Evan]
+	W11: sch-rnd: build options in netlist export ->stances [Erich]
