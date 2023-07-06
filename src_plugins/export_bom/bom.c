@@ -119,8 +119,10 @@ static int print_bom(const bom_template_t *templ)
 	/* For each subcircuit calculate an ID and count recurring IDs in a hash table and an array (for sorting) */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		const char *refdes = RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes"));
-		bom_print_add(&ctx, subc, refdes);
+		if (subc->extobj == NULL) {
+			const char *refdes = RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes"));
+			bom_print_add(&ctx, subc, refdes);
+		}
 	}
 	PCB_END_LOOP;
 
