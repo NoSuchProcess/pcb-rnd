@@ -58,6 +58,7 @@
 
 3. Long term ===============================================================================
 - multi: merge sch-rnd r4718 for proper multiboard support later
+- BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter bwloe 0805, where the vectors are larger than the fp [report: aron]
 - poly lib rewrite:
 	- BUG: bug_files/Poly_rewrite/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 	- BUG: bug_files/Poly_rewrite/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
