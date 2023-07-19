@@ -353,7 +353,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_inhibit_dec();
 
 	/* Inform the rest about the board change (layer stack, size) */
-	rnd_event(&pcb->hidlib, RND_EVENT_DESIGN_SET_CURRENT, NULL);
+	rnd_event(&pcb->hidlib, RND_EVENT_DESIGN_SET_CURRENT, "p", NULL);
 	rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	font2editor_new(pcb, font, lfont, lorig, lwidth, lsilk);
