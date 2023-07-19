@@ -82,6 +82,12 @@ static rnd_font_t *pcb_font_(pcb_board_t *pcb, rnd_font_id_t id, int fallback, i
 {
 	if (id <= 0) {
 		do_default:;
+		
+		if (unlink) { /* can not unlink the default/system font, rather copy it; called from the font editor */
+			rnd_font_t *f = calloc(sizeof(rnd_font_t), 1);
+			rnd_font_copy(f, &pcb->fontkit.dflt);
+			return f;
+		}
 		return &pcb->fontkit.dflt;
 	}
 
