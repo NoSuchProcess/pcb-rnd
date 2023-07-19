@@ -1229,16 +1229,20 @@ static void font_draw_atom_user_cb(void *cb_ctx, const rnd_glyph_atom_t *a)
 				rnd_point_t *p;
 				pcb_poly_t po = {0};
 				rnd_point_t pt[MAX_SIMPLE_POLY_POINTS];
-				int n, half = a->poly.pts.used/2;
+				if (a->poly.pts.used < MAX_SIMPLE_POLY_POINTS) {
+					int n, half = a->poly.pts.used/2;
 
-				po.type = PCB_OBJ_POLY;
-				po.PointN = half;
-				po.Points = pt;
-				for(n = 0, p = po.Points; n < half; n++,p++) {
-					p->X = a->poly.pts.array[n];
-					p->Y = a->poly.pts.array[n+half];
+					po.type = PCB_OBJ_POLY;
+					po.PointN = half;
+					po.Points = pt;
+					for(n = 0, p = po.Points; n < half; n++,p++) {
+						p->X = a->poly.pts.array[n];
+						p->Y = a->poly.pts.array[n+half];
+					}
+					ctx->cb(ctx->cb_ctx, (pcb_any_obj_t *)&po);
 				}
-				ctx->cb(ctx->cb_ctx, (pcb_any_obj_t *)&po);
+				else
+					rnd_message(RND_MSG_ERROR, "Can't render glyph atom: simple poly with too many points %d >= %d\n", a->poly.pts.used, MAX_SIMPLE_POLY_POINTS);
 			}
 			break;
 	}
