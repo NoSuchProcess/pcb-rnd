@@ -51,6 +51,8 @@ static const char *ttf_cookie = "ttf importer";
 
 #include "menu_internal.c"
 
+#define MAX_SIMPLE_POLY_POINTS 256
+
 static void str_init(pcb_ttf_stroke_t *s)
 {
 	rnd_trace("stroke init\n");
@@ -121,7 +123,7 @@ static void poly_flush(pcb_ttf_stroke_t *str)
 	str->contour = NULL;
 }
 
-static void ttf_poly_emit(rnd_pline_t *pl, void *ctx)
+static void ttf_poly_emit_small(rnd_pline_t *pl, void *ctx)
 {
 	long n;
 	rnd_vnode_t *v;
@@ -129,13 +131,83 @@ static void ttf_poly_emit(rnd_pline_t *pl, void *ctx)
 	rnd_glyph_poly_t *p = rnd_font_new_poly_in_glyph(str->glyph, pl->Count);
 	rnd_coord_t *px = &p->pts.array[0], *py = &p->pts.array[pl->Count];
 
-rnd_trace(" emit: %d\n", pl->Count);
+
+rnd_trace("  emit small: %d\n", pl->Count);
 
 	for(n = 0, v = pl->head; n < pl->Count; n++, v = v->next, px++, py++) {
 		*px = v->point[0];
 		*py = v->point[1];
 	}
 }
+
+static void ttf_poly_emit_pa(rnd_polyarea_t *pa, void *ctx);
+
+/* Emit a polyline converting it into a simplepoly; simplepoly has a limitation
+   on max number of points; when pl is larger than that, slice it in halves
+   recursively until the pieces are small enough */
+static void ttf_poly_emit(rnd_pline_t *pl, void *ctx)
+{
+	if (pl->Count >= MAX_SIMPLE_POLY_POINTS) {
+		rnd_polyarea_t *pa_in = rnd_polyarea_create(), *pa1, *pa2, *half;
+		rnd_coord_t bbsx, bbsy;
+
+rnd_trace(" emit: count %ld too large, need to split\n", pl->Count);
+
+		/* pa_in is our input polyarea that has pl */
+		rnd_poly_contour_copy(&pa_in->contours, pl);
+
+		/* draw a rectangle that spans half the bounding box, cutting perpendicular
+		   to the longer edge */
+		bbsx = pl->xmax - pl->xmin;
+		bbsy = pl->ymax - pl->ymin;
+		if (bbsy >= bbsx) {
+			rnd_coord_t margin = bbsy/16;
+			half = rnd_poly_from_rect(pl->xmin-margin, pl->xmax+margin, pl->ymin-margin, (pl->ymin + pl->ymax)/2);
+		}
+		else {
+			rnd_coord_t margin = bbsx/16;
+			half = rnd_poly_from_rect(pl->xmin-margin, (pl->xmin + pl->xmax)/2, pl->ymin-margin, pl->ymax+margin);
+		}
+
+		/* calculate each half */
+		if (rnd_polyarea_boolean(pa_in, half, &pa2, RND_PBO_SUB) == 0) {
+rnd_trace(" emit sub\n");
+			ttf_poly_emit_pa(pa2, ctx);
+			rnd_polyarea_free(&pa2);
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "ttf_poly_emit(): failed to cut large poly in half (sub)\n");
+
+		if (rnd_polyarea_boolean(pa_in, half, &pa1, RND_PBO_ISECT) == 0) {
+rnd_trace(" emit isc\n");
+			ttf_poly_emit_pa(pa1, ctx);
+			rnd_polyarea_free(&pa1);
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "ttf_poly_emit(): failed to cut large poly in half (isect)\n");
+
+
+		rnd_polyarea_free(&pa_in);
+		rnd_polyarea_free(&half);
+	}
+	else
+		ttf_poly_emit_small(pl, ctx);
+}
+
+/* Emit all plines of a polyarea; recurse back to the large-poly-slicer because
+   a half polyline can still be too large for a simplepoly */
+static void ttf_poly_emit_pa(rnd_polyarea_t *pa_in, void *ctx)
+{
+	rnd_polyarea_t *pa = pa_in;
+	rnd_pline_t *pl;
+
+	do {
+		for(pl = pa->contours; pl != NULL; pl = pl->next)
+			ttf_poly_emit(pl, ctx);
+		pa = pa->f;
+	} while(pa != pa_in);
+}
+
 
 static void poly_apply(pcb_ttf_stroke_t *str)
 {
