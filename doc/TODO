@@ -22,7 +22,7 @@
 - BUG: start pcb-rnd, load layout intconn.rp in bug_files/TODO. {c r}. connect R1-2 to SW1-3 with a trace to complete layout. {c r}. Short warning results because of virtual "unknown" net, presumably arising from intconn between pins 1/2, 3/4 in SW1 [report: Erich].
 - BUG: start pcb-rnd, {w l}, type acy(300), then select layout window with cursor, hover over layout { b m u }, place resistor. Pads have moved a long way away. [report: Erich]
 - BUG: start pcb-rnd, {w l}, type acy(300), then select layout window with cursor, hover over layout { b m l}, { b m u }, place resistor. Square pad has moved a long way away. [report: Erich]
-
+- BUG: start pcb-rnd, {w l}, click on tube() parametric footprint from edakrill revision 1355. place footprint with default values, keeping library window open. click on tube() in library window again, segfault ensues. Backtrace in bug_files/TODO [report: Erich]  
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
