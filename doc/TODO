@@ -17,7 +17,6 @@
 	-> the converted value should be rounded if it ends in a 9 after enough digits for 1nm resolution
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 - BUG: librnd4 bug? {w l}, dip, open parameter editor, {f q} in main window -> segfault on auto dialog close [report: Igor2]
-+ BUG: start pcb-rnd, draw top or bottom copper rectangle, draw plated or unplated slot line within it. select slot and rectangle, then convert to padstack. The rectangular padstack with slot does not appear on the layout as a wire frame when in the buffer, unlike rect SMD pads, square PTH pins, etc. Click to place padstack from the buffer. {esc} select new padstack, copy to buffer - no wireframe visible. using gtk gl GUI. [report: Erich]
 - BUG: start pcb-rnd passing it a subcircuit to edit, i.e. pcb-rnd foo.rf, once subcircuit displayed, then {f r}. Footprint is rendered outside of layout area, and sometimes is far enough away it cannot be selected with cursor [report: Erich]
 - BUG: start pcb-rnd, {w l}, type acy(300), then select layout window with cursor, hover over layout { b m u }, place resistor. Pads have moved a long way away. [report: Erich]
 - BUG: start pcb-rnd, {w l}, type acy(300), then select layout window with cursor, hover over layout { b m l}, { b m u }, place resistor. Square pad has moved a long way away. [report: Erich]
