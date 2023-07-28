@@ -785,9 +785,9 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
 		rnd_render->draw_arc(gc, ps->x, ps->y, proto->hdia/2, proto->hdia/2, 0, 360);
 	}
 	else {
-		shape = pcb_pstk_shape(ps, PCB_LYT_MECH, PCB_LYC_AUTO);
-		if (shape != NULL)
-			pcb_pstk_draw_shape_thin(info, gc, ps, shape);
+		pcb_pstk_shape_t *mech_shape = pcb_pstk_shape(ps, PCB_LYT_MECH, PCB_LYC_AUTO);
+		if ((mech_shape != NULL) && (mech_shape != shape))
+			pcb_pstk_draw_shape_thin(info, gc, ps, mech_shape);
 	}
 }
 
