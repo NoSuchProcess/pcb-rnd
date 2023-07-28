@@ -246,7 +246,7 @@ static int library_param_build(library_param_ctx_t *ctx, library_ent_t *l, FILE 
 			free(name);
 			free(help);
 			name = rnd_strdup(col);
-			help = rnd_strdup(arg);
+			help = rnd_strdup(arg == NULL ? "" : arg);
 			curr_type = RND_HATT_STRING; /* assume string until a dim or enum overrides that */
 		}
 		else if (strncmp(cmd, "default:", 6) == 0) {
