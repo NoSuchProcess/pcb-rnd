@@ -772,10 +772,20 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
 		if (shape == NULL)
 			shape = pcb_pstk_shape_gid(pcb, ps, gid, PCB_LYC_SUB, NULL);
 	}
-	else { /* no pcb means buffer - take the first shape, whichever layer it is for */
-		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
-		if ((ts != NULL)  && (ts->len > 0))
-			shape = ts->shape;
+	else { /* no pcb means buffer  */
+		pcb_pstk_tshape_t *ts;
+
+		/* try a copper shape first */
+		shape = pcb_pstk_shape(ps, PCB_LYT_COPPER | PCB_LYT_TOP, 0);
+		if (shape == NULL)
+			shape = pcb_pstk_shape(ps, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0);
+
+		/* fallback: take the first shape, whichever layer it is for */
+		if (shape == NULL) {
+			ts = pcb_pstk_get_tshape(ps);
+			if ((ts != NULL) && (ts->len > 0))
+				shape = ts->shape;
+		}
 	}
 
 	if (shape != NULL)
