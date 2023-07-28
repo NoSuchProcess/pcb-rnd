@@ -686,7 +686,7 @@ function subc_pstk(proto, x, y, rot, termid, name, clearance,      s)
 	s = s "     ha:attributes {" NL
 	s = s "      term = " termid NL
 	if (name != "")
-		s = s "      name = 1" NL
+		s = s "      name = " name NL
 	s = s "     }" NL
 	s = s "     li:thermal { }" NL
 	s = s "     ha:flags { clearline = 1; }" NL
