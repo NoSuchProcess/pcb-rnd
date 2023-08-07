@@ -15,6 +15,7 @@
 - BUG: start pcb-rnd with tube.awk available. { w l }, type tube in text box, select tube() with cursor once, note wireframe and render of default tube footprint. click on tube() again with cursor to launch GUI editing window. use decrement button once on radius paramater, and see wireframe render change drastically. Only after modifying radius, hole, pin_size and outline_r will render behave again. [report: Erich]
 - BUG: see bug_files slotscad.rp. load layout, export openscad. slots in padstacks are exported, but isolated plated and unplated slots are not exported. [report: Erich]
 - BUG: see bug_files smiley.rf. Start pcb-rnd, import subc to layout, select smiley.rf, place on layout, "Couldn't bind layer top-mask of subcircuit while placing it" appears in message log. [report: Erich]
+- FEATURE: enable features to be generated on negative draw layers, i.e. top-mask, by common_subc.awk [report: Erich] 
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
