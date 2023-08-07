@@ -7,9 +7,9 @@
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	-> happens when subc is removed from pcb_removelist
 	-> subc line is probably added but not removed from pcb_removelist's rtrees
-- BUG: polygon coord human readable coord error: bug_files/TODO/humancrd.pcb  [report: Erich]
++ BUG: polygon coord human readable coord error: bug_files/TODO/humancrd.pcb  [report: Erich]
 	-> original recipe: switch to mm units. select 0.01 grid size. Draw polygon from (1.9,1.9) to (10.95,1.9) to (10.95,7.3) to (1.9,2.3. Save layout. Inspect lihata .rp to find contour: { 74.80314961mil; 74.80314961mil },{ 431.1023622mil; 74.80314961mil },{ 431.1023622mil; 287.4015748mil },{ 74.80314961mil; 90.5511811mil }. Additional examples 218.50393701mil vs 5.55mm, and 143.7007874mil vs 3.65mm
-	-> this is a librnd bug, numerical error
+	-> NOTE: this is a librnd bug, numerical error -> svn up in librnd!
 	-> in librnd trunk/tests/rnd_printf/prcli, run: ./prcli "%.08\$\$mH" 1900000
 	-> the problem is that the result is 1.8999999 instead of 1.90000000 due to numerical precision problems
 	-> in rnd_printf try_human_coord() this gets low score due to not ending in a lot of zeros
