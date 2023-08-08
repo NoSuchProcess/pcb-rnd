@@ -128,25 +128,29 @@ Name of the file to be exported to. Can contain a path.
 	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_drill 6
 
+	{"cutout", "enable line/arc cutouts and slots",
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
+#define HA_cutout 7
+
 	{"fs", "if greater than zero, set $fs to this value and $fa to 1; arc length of curve approximation in mm",
 	 RND_HATT_REAL, 0, 10, {0, 0, 0}, 0},
-#define HA_fs 7
+#define HA_fs 8
 
 	{"copper-color", "color values to use for top and bottom copper, in r,g,b,a (each component is a number between 0 and 1, alpha is optional)",
 	 RND_HATT_STRING, 0, 0, {0, "1,0.4,0.2", 0}, 0},
-#define HA_copper_color 8
+#define HA_copper_color 9
 
 	{"silk-color", "color values to use for top and bottom silk layers, in r,g,b,a (each component is a number between 0 and 1, alpha is optional)",
 	 RND_HATT_STRING, 0, 0, {0, "0,0,0", 0}, 0},
-#define HA_silk_color 9
+#define HA_silk_color 10
 
 	{"mask-color", "color values to use for top and bottom mask layers, in r,g,b,a (each component is a number between 0 and 1, alpha is optional)",
 	 RND_HATT_STRING, 0, 0, {0, "0,0.7,0,0.5", 0}, 0},
-#define HA_mask_color 10
+#define HA_mask_color 11
 
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 11
+#define HA_cam 12
 
 };
 

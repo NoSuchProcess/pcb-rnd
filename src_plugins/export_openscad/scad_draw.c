@@ -231,7 +231,7 @@ static void scad_draw_finish(rnd_hid_attr_val_t *options, rnd_coord_t ox, rnd_co
 	if (options[HA_drill].lng)
 		fprintf(f, "					%s_drill();\n", scad_prefix);
 
-	if (1) {
+	if ((options[HA_cutout].lng)) {
 		fprintf(f, "					translate([0,0,-4])\n");
 		fprintf(f, "						linear_extrude(height=8)\n");
 		fprintf(f, "							%s_cutouts();\n", scad_prefix);
