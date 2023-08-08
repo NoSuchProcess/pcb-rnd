@@ -49,6 +49,9 @@ do { \
 	pcb_poly_free(src); \
 } while(0)
 
+#define PCB_LAYER_IS_SLOT(lyt, purpi) (((lyt) & (PCB_LYT_MECH)) && (((purpi) == F_uroute) || ((purpi) == F_proute)))
+
+
 
 /* Add all layer-object-drawn cutouts (lines, arcs, etc) */
 static void topoly_cutout_add_layerobjs(pcb_board_t *pcb, rnd_polyarea_t **cutouts, pcb_dynf_t df, const rnd_polyarea_t *contour)
@@ -71,24 +74,41 @@ static void topoly_cutout_add_layerobjs(pcb_board_t *pcb, rnd_polyarea_t **cutou
 		if (layer->line_tree != NULL) {
 			for(line = rnd_rtree_all_first(&it, layer->line_tree); line != NULL; line = rnd_rtree_all_next(&it)) {
 				if (PCB_DFLAG_TEST(&line->Flags, df)) continue; /* object already found - either as outline or as a cutout */
-				poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)line, PCB_TOPOLY_FLOATING, df);
-				if (poly != NULL)
+
+				if (PCB_LAYER_IS_SLOT(lyt, purpi)) {
+					/* slot layer: go with per object cutout */
+					rnd_polyarea_t *pa = pcb_poly_from_pcb_line(line, line->Thickness);
+					CUTOUT_ADD_PA(cutouts, pa, contour);
+				}
+				else {
+					/* boundary layer: go with centerline poly of closed loops */
+					poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)line, PCB_TOPOLY_FLOATING, df);
+					if (poly != NULL)
 					CUTOUT_ADD_POLY(cutouts, poly, contour);
-				else
-					rnd_message(RND_MSG_ERROR, "Cutout error: need closed loops; cutout omitted\n(Hint: use the wireframe draw mode to see broken connections; use a coarse grid and snap to fix them up!)\n");
+					else
+						rnd_message(RND_MSG_ERROR, "Cutout error: need closed loops; cutout omitted\n(Hint: use the wireframe draw mode to see broken connections; use a coarse grid and snap to fix them up!)\n");
 /*rnd_trace(" line: %ld %d -> %p\n", line->ID, PCB_DFLAG_TEST(&line->Flags, df), poly);*/
+				}
 			}
 		}
 
 		if (layer->arc_tree != NULL) {
 			for(arc = rnd_rtree_all_first(&it, layer->arc_tree); arc != NULL; arc = rnd_rtree_all_next(&it)) {
 				if (PCB_DFLAG_TEST(&arc->Flags, df)) continue; /* object already found - either as outline or as a cutout */
-				poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)arc, PCB_TOPOLY_FLOATING, df);
-				if (poly != NULL)
-					CUTOUT_ADD_POLY(cutouts, poly, contour);
-				else
-					rnd_message(RND_MSG_ERROR, "Cutout error: need closed loops; cutout omitted\n(Hint: use the wireframe draw mode to see broken connections; use a coarse grid and snap to fix them up!)\n");
+
+				if (PCB_LAYER_IS_SLOT(lyt, purpi)) {
+					/* slot layer: go with per object cutout */
+					rnd_polyarea_t *pa = pcb_poly_from_pcb_arc(arc, arc->Thickness);
+					CUTOUT_ADD_PA(cutouts, pa, contour);
+				}
+				else {
+					poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)arc, PCB_TOPOLY_FLOATING, df);
+					if (poly != NULL)
+						CUTOUT_ADD_POLY(cutouts, poly, contour);
+					else
+						rnd_message(RND_MSG_ERROR, "Cutout error: need closed loops; cutout omitted\n(Hint: use the wireframe draw mode to see broken connections; use a coarse grid and snap to fix them up!)\n");
 /*rnd_trace(" arc: %ld %d -> %p\n", arc->ID, PCB_DFLAG_TEST(&arc->Flags, df), poly);*/
+				}
 			}
 		}
 	}
@@ -188,7 +208,8 @@ rnd_polyarea_t *pcb_topoly_cutouts_in(pcb_board_t *pcb, pcb_dynf_t df, pcb_poly_
 	rnd_polyarea_t *res = NULL;
 
 	topoly_cutout_add_layerobjs(pcb, &res, df, contour->Clipped);
-	topoly_cutout_add_pstks(pcb, &res, opts, df, contour->Clipped);
+	if (!opts->omit_pstks)
+		topoly_cutout_add_pstks(pcb, &res, opts, df, contour->Clipped);
 
 	return res;
 }

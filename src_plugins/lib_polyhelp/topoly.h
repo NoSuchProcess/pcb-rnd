@@ -40,6 +40,7 @@ typedef struct pcb_topoly_cutout_opts_s {
 	rnd_coord_t pstk_min_drill_dia;   /* do not export drilled holes smaller than this */
 	rnd_coord_t pstk_min_line_thick;
 	unsigned pstk_omit_slot_poly:1;   /* do not export polygon shaped slots in padstacks */
+	unsigned omit_pstks:1;            /* ignore padstacks */
 } pcb_topoly_cutout_opts_t;
 
 /* Convert a loop of connected objects into a polygon (with no holes); the first
