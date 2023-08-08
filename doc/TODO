@@ -13,7 +13,8 @@
 - BUG: start pcb-rnd, {w l}, type acy(300), then select layout window with cursor, hover over layout { b m u }, place resistor. Pads have moved a long way away. [report: Erich]
 - BUG: start pcb-rnd, {w l}, type acy(300), then select layout window with cursor, hover over layout { b m l}, { b m u }, place resistor. Square pad has moved a long way away. [report: Erich]
 - BUG: start pcb-rnd with tube.awk available. { w l }, type tube in text box, select tube() with cursor once, note wireframe and render of default tube footprint. click on tube() again with cursor to launch GUI editing window. use decrement button once on radius paramater, and see wireframe render change drastically. Only after modifying radius, hole, pin_size and outline_r will render behave again. [report: Erich]
-- BUG: see bug_files slotscad.rp. load layout, export openscad. slots in padstacks are exported, but isolated plated and unplated slots are not exported. [report: Erich]
++ BUG: see bug_files slotscad.rp. load layout, export openscad. slots in padstacks are exported, but isolated plated and unplated slots are not exported. [report: Erich]
+	-> for details see 7.2.6.1 in: http://www.repo.hu/projects/pcb-rnd/user/07_io/3_1_export_openscad/index.html
 - BUG: see bug_files smiley.rf. Start pcb-rnd, import subc to layout, select smiley.rf, place on layout, "Couldn't bind layer top-mask of subcircuit while placing it" appears in message log. [report: Erich]
 - FEATURE: enable features to be generated on negative draw layers, i.e. top-mask, by common_subc.awk [report: Erich] 
 - BUG: start pcb-rnd with bug_files subc-resize.rf, i.e. pcb-rnd subc-resize.rf &, and in terminal, manually edit subc-resize and increase dimension of polygon vertex from 1000 to 3000. In pcb-rnd, click reload when change to file is recognised by pcb-rnd. Now, using { z e } fails because reloaded file has not had extents updated. [report: Erich]
