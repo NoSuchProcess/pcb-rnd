@@ -102,3 +102,26 @@ the center point of the object is at 0;0.
 <p>
 If there are multiple openscad-origin objects present on the board, one is
 picked randomly.
+
+<h4> 7.2.1.6 outline and cutouts </h4>
+<p>
+Board outline is either implicit or explicitly drawn on a boundary layer.
+In the second case, the outline is the centerline of the <i>first closed</i>
+loop of lines and arcs drawn on a boundary or mech layer. A closed loop means
+the endpoints of objects must match (using a reasonably large grid and object
+snap makes that easy) and there are no other overlaps or junctions. The first
+loop means the loop that contains the top-left boundary object in top view.
+That means if the drawing has multiple islands (boards) drawn, only the top-left
+island is exported.
+<p>
+When cutouts are enabled (on by default), any further layer objects on boundary
+layers ("outline" layers and "slot" layers; corresponding layer group
+types: boundary and mech) that are within the outline loop are considered. Only
+line and arc objects participate. Objects on the boundary ("outline") layer
+are assumed to be centerline-specified cutouts, line/arc thickness ignored.
+Objects on mech ("slot") layers are exported as cutouts with polygon
+approximation of their true shape (with thickness and typically round end cap).
+<p>
+Drilled holes and slots of padstacks are always exported.
+<p>
+There is no difference in rendering of plated and unplated holes/slots/cutouts.
