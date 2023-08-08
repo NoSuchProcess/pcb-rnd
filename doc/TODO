@@ -16,7 +16,9 @@
 + BUG: see bug_files slotscad.rp. load layout, export openscad. slots in padstacks are exported, but isolated plated and unplated slots are not exported. [report: Erich]
 	-> for details see 7.2.6.1 in: http://www.repo.hu/projects/pcb-rnd/user/07_io/3_1_export_openscad/index.html
 - BUG: see bug_files smiley.rf. Start pcb-rnd, import subc to layout, select smiley.rf, place on layout, "Couldn't bind layer top-mask of subcircuit while placing it" appears in message log. [report: Erich]
-- FEATURE: enable features to be generated on negative draw layers, i.e. top-mask, by common_subc.awk [report: Erich] 
++ FEATURE: enable features to be generated on negative draw layers, i.e. top-mask, by common_subc.awk [report: Erich] 
+	-> call layer_setup() with the layer name, see comments for that func in common_subc.awk
+	-> must include in your footprint's doc: the footprint will depend on pcb-rnd >=3.1.2, it will fail with syntax error with older versions [of common_subc.awk]
 - BUG: start pcb-rnd with bug_files subc-resize.rf, i.e. pcb-rnd subc-resize.rf &, and in terminal, manually edit subc-resize and increase dimension of polygon vertex from 1000 to 3000. In pcb-rnd, click reload when change to file is recognised by pcb-rnd. Now, using { z e } fails because reloaded file has not had extents updated. [report: Erich]
 
 2. For later releases ===============================================================================
