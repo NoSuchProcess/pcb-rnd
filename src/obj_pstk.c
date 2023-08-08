@@ -1220,7 +1220,7 @@ static int undo_pstk_mirror_swap(void *udata)
 
 	/* if mirror center is not 0, also move, to emulate that the mirror took
 	   place around that point */
-	if (((g->y_offs != 0) || (ps->y != 0)) && (g->y_offs != PCB_PSTK_DONT_MIRROR_COORDS)) {
+	if (g->y_offs != PCB_PSTK_DONT_MIRROR_COORDS) {
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_erase(ps);
 		if (ps->parent.data->padstack_tree != NULL)
