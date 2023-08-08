@@ -82,13 +82,24 @@ static void scad_draw_primitives(void)
 
 static int scad_draw_outline(void)
 {
-	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
+	pcb_dynf_t df;
+	pcb_poly_t *poly;
+	rnd_polyarea_t *cutoutpa;
 	int n;
+	pcb_topoly_cutout_opts_t opts = {0};
 
-	if (poly == NULL)
+	opts.omit_pstks = 1;
+
+	df = pcb_dynflag_alloc("export_stl_map_contour");
+	pcb_data_dynflag_clear(PCB->Data, df);
+	poly = pcb_topoly_1st_outline_with(PCB, PCB_TOPOLY_FLOATING, df);
+	if (poly == NULL) {
+		pcb_dynflag_free(df);
 		return -1;
+	}
 
 	fprintf(f, "module %s_outline() {\n", scad_prefix);
+	fprintf(f, "	// board outer contour\n");
 	fprintf(f, "	polygon([\n\t\t");
 	/* we need the as-drawn polygon and we know there are no holes */
 	for(n = 0; n < poly->PointN; n++)
@@ -96,7 +107,38 @@ static int scad_draw_outline(void)
 	fprintf(f, "	]);\n");
 	fprintf(f, "}\n");
 
+
+	fprintf(f, "module %s_cutouts() {\n", scad_prefix);
+	fprintf(f, "	// board inner cutouts (non-padstacks)\n");
+
+	cutoutpa = pcb_topoly_cutouts_in(PCB, df, poly, &opts);
+	if (cutoutpa != NULL) {
+		rnd_polyarea_t *pa = cutoutpa;
+		rnd_vnode_t *vn;
+		rnd_pline_t *pl;
+
+		do {
+			/* consider poly island outline only */
+			pl = pa->contours;
+			vn = pl->head;
+
+			fprintf(f, "	polygon([\n\t\t");
+			do {
+				rnd_fprintf(f, "[%mm,%mm]%s", TRX_(vn->point[0]), TRY_(vn->point[1]), (vn->prev != pl->head) ? "," : "\n");
+				vn = vn->prev;
+			} while(vn != pl->head);
+			fprintf(f, "	]);\n");
+
+
+/*			fp2t_add_hole(&tri);*/
+			pa = pa->f;
+		} while(pa != cutoutpa);
+	}
+
+	fprintf(f, "}\n");
+
 	pcb_poly_free(poly);
+	pcb_dynflag_free(df);
 	return 0;
 }
 
@@ -188,6 +230,13 @@ static void scad_draw_finish(rnd_hid_attr_val_t *options, rnd_coord_t ox, rnd_co
 	fprintf(f, "					%s_board_main();\n", scad_prefix);
 	if (options[HA_drill].lng)
 		fprintf(f, "					%s_drill();\n", scad_prefix);
+
+	if (1) {
+		fprintf(f, "					translate([0,0,-4])\n");
+		fprintf(f, "						linear_extrude(height=8)\n");
+		fprintf(f, "							%s_cutouts();\n", scad_prefix);
+	}
+
 	fprintf(f, "				}\n");
 	fprintf(f, "			}\n");
 	fprintf(f, "		}\n");
