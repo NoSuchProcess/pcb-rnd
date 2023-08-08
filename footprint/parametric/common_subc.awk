@@ -366,6 +366,7 @@ function subc_end(     layer,n,v,L,lt,UID,lc)
 	print "}"
 }
 
+# [pcb-rnd >= 3.1.2]
 # Optional helper function; call this to set up a layer. For the most usual
 # layers this is not required, simply naming them "top-coppe" or "bottom-silk"
 # would automatically create them. Setting up the layer is required if it has
