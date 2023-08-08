@@ -310,7 +310,7 @@ function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir, ATTR    ,
 }
 
 # generate subcircuit footers
-function subc_end(     layer,n,v,L,lt,UID)
+function subc_end(     layer,n,v,L,lt,UID,lc)
 {
 	minuid_add(UID, tolower(gen))
 	for(n in P) {
@@ -342,12 +342,20 @@ function subc_end(     layer,n,v,L,lt,UID)
 		print "     lid = 0"
 		print "     ha:type {"
 		for(n = 1; n <= v; n++)
-			print "      " L[n] " = 1"
+			if (L[n] != "")
+				print "      " L[n] " = 1"
 		print "     }"
 		print "     li:objects {"
 		print LAYER[layer]
 		print "     }"
 		print "     ha:combining {"
+		lc = LAYER_COMBINING[layer]
+		if (lc != "") {
+			v = split(lc, L, "-")
+			for(n = 1; n <= v; n++)
+				if (L[n] != "")
+					print "      " L[n] " = 1"
+		}
 		print "     }"
 		print "    }"
 	}
@@ -356,6 +364,33 @@ function subc_end(     layer,n,v,L,lt,UID)
 	print "  uid = " minuid_str(UID)
 	print " }"
 	print "}"
+}
+
+# Optional helper function; call this to set up a layer. For the most usual
+# layers this is not required, simply naming them "top-coppe" or "bottom-silk"
+# would automatically create them. Setting up the layer is required if it has
+# a non-standard name or the combining flags (neg, auto) are non-zero.
+# Arguments:
+#  - name: arbitrary but may contribute to binding score
+#  - type is group type ("mask", "paste", "copper", "silk")
+#  - loc is "top", "bottom" or "intern"
+#  - neg is 0 or 1 (1 for sub (negatively drawn layers), e.g. mask; contributes to the combining field)
+#  - auto is 0 or 1 (1 for setting the auto bit in the combining field)
+function layer_setup(name, loc, type, neg, auto)
+{
+	if (!(name in LAYER))
+		LAYER[name] = ""
+
+	LAYER_TYPE[name] = loc "-" type
+
+	if (auto)
+		LAYER_COMBINING[name] = "auto"
+	if (neg) {
+		if (LAYER_COMBINING[name] != "")
+			LAYER_COMBINING[name] = LAYER_COMBINING[name] "-sub"
+		else
+			LAYER_COMBINING[name] = "sub"
+	}
 }
 
 function subc_proto_alloc()
