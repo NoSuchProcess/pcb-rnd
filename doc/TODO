@@ -19,7 +19,7 @@
 + FEATURE: enable features to be generated on negative draw layers, i.e. top-mask, by common_subc.awk [report: Erich] 
 	-> call layer_setup() with the layer name, see comments for that func in common_subc.awk
 	-> must include in your footprint's doc: the footprint will depend on pcb-rnd >=3.1.2, it will fail with syntax error with older versions [of common_subc.awk]
-- BUG: start pcb-rnd with bug_files subc-resize.rf, i.e. pcb-rnd subc-resize.rf &, and in terminal, manually edit subc-resize and increase dimension of polygon vertex from 1000 to 3000. In pcb-rnd, click reload when change to file is recognised by pcb-rnd. Now, using { z e } fails because reloaded file has not had extents updated. [report: Erich]
++ BUG: start pcb-rnd with bug_files subc-resize.rf, i.e. pcb-rnd subc-resize.rf &, and in terminal, manually edit subc-resize and increase dimension of polygon vertex from 1000 to 3000. In pcb-rnd, click reload when change to file is recognised by pcb-rnd. Now, using { z e } fails because reloaded file has not had extents updated. [report: Erich]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
