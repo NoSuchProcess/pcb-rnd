@@ -682,14 +682,14 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 	lht_dom_hash_put(obj, geo);
 
 	tbl = lht_dom_node_alloc(LHT_TABLE, "contour");
-	tbl->data.table.cols = 2;
+	tbl->data.table.cols = tbl->data.table.cols_alloced = 2;
 	lht_dom_list_append(geo, tbl);
 
 	for(n = 0; n < poly->PointN; n++) {
 		int row;
 		if ((hole < poly->HoleIndexN) && (n == poly->HoleIndex[hole])) {
 			tbl = lht_dom_node_alloc(LHT_TABLE, "hole");
-			tbl->data.table.cols = 2;
+			tbl->data.table.cols = tbl->data.table.cols_alloced = 2;
 			lht_dom_list_append(geo, tbl);
 			hole++;
 		}
