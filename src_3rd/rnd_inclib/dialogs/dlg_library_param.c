@@ -305,7 +305,7 @@ static char *gen_cmd(library_param_ctx_t *ctx)
 		const char *val;
 		rnd_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[n]];
 
-		if (((n >= ctx->first_optional) && (!a->changed)) || (a->empty))
+		if (((ctx->first_optional >= 0) && (n >= ctx->first_optional) && (!a->changed)) || (a->empty))
 			continue;
 
 		switch(a->type) {
