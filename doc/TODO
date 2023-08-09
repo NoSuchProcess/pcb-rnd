@@ -7,7 +7,6 @@
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	-> happens when subc is removed from pcb_removelist
 	-> subc line is probably added but not removed from pcb_removelist's rtrees
-- BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 ? BUG: start pcb-rnd passing it a subcircuit to edit, i.e. pcb-rnd foo.rf, once subcircuit displayed, then {f r}. Footprint is rendered outside of layout area, and sometimes is far enough away it cannot be selected with cursor [report: Erich]
 	-> can't reproduce it with your subc-resize.rf; may have been the same bug as that one the file is for
 + BUG: start pcb-rnd with tube.awk available. { w l }, type tube in text box, select tube() with cursor once, note wireframe and render of default tube footprint. click on tube() again with cursor to launch GUI editing window. use decrement button once on radius paramater, and see wireframe render change drastically. Only after modifying radius, hole, pin_size and outline_r will render behave again. [report: Erich]
@@ -61,6 +60,7 @@
 
 3. Long term ===============================================================================
 - multi: merge sch-rnd r4718 for proper multiboard support later
+- BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter bwloe 0805, where the vectors are larger than the fp [report: aron]
 - poly lib rewrite:
 	- BUG: bug_files/Poly_rewrite/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
