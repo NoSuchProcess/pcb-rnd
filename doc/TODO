@@ -36,6 +36,9 @@
 	- build a list of layers rendered, in the order of rendering while drawing layer groups; maybe use gdl and move the group to the end and use a terminator item;  get pcb_search_obj_by_location_() to use this list for ordering
 	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - CLEANUP: revise dialog boxes for string/integer input box character length
+- FEATURE: attribute propagation from sch-rnd via tEDAx
+	- device attribute in subcricuits
+	- mkae a new bom template that includes that
 - FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
 - FEATURE: tutorial: new examples
 	- blinking led with parametric footprints
