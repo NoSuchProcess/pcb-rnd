@@ -820,29 +820,40 @@ int pcb_save_pcb(const char *file, const char *fmt)
 	return retcode;
 }
 
-int pcb_load_pcb(const char *file, const char *fmt, rnd_bool require_font, int how)
+/* When PCB is a footprint, tune board size to match the footprint's; call
+   this right after real_load_pcb(), in case real_load_pcb() did not fail.
+   Returns -1 on error. */
+static int footprint_as_pcb_resize(void)
 {
-	int res = real_load_pcb(file, fmt, rnd_false, require_font, how);
-	if (res == 0) {
-		rnd_file_loaded_set_at("design", "main", file, PCB->is_footprint ? "footprint" : "board");
 		if (PCB->is_footprint) {
 			rnd_box_t b;
 			/* a footprint has no board size set, need to invent one */
 			pcb_data_bbox(&b, PCB->Data, 0);
 			if ((b.X2 < b.X1) || (b.Y2 < b.Y1)) {
 				rnd_message(RND_MSG_ERROR, "Invalid footprint file: can not determine bounding box\n");
-				res = -1;
+				return -1;
 			}
-			else
-				pcb_board_resize(b.X1, b.Y1, b.X2*1.5, b.Y2*1.5, 0);
+			pcb_board_resize(b.X1, b.Y1, b.X2*1.5, b.Y2*1.5, 0);
 		}
+	return 0;
+}
+
+int pcb_load_pcb(const char *file, const char *fmt, rnd_bool require_font, int how)
+{
+	int res = real_load_pcb(file, fmt, rnd_false, require_font, how);
+	if (res == 0) {
+		rnd_file_loaded_set_at("design", "main", file, PCB->is_footprint ? "footprint" : "board");
+		res |= footprint_as_pcb_resize();
 	}
 	return res;
 }
 
 int pcb_revert_pcb(void)
 {
-	return real_load_pcb(PCB->hidlib.loadname, NULL, rnd_true, rnd_true, 0);
+	int r = real_load_pcb(PCB->hidlib.loadname, NULL, rnd_true, rnd_true, 0);
+	if (r == 0)
+		r |= footprint_as_pcb_resize();
+	return r;
 }
 
 int pcb_load_buffer(rnd_design_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt)
