@@ -7,11 +7,6 @@
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	-> happens when subc is removed from pcb_removelist
 	-> subc line is probably added but not removed from pcb_removelist's rtrees
-/ BUG: see bug_files smiley.rf. Start pcb-rnd, import subc to layout, select smiley.rf, place on layout, "Couldn't bind layer top-mask of subcircuit while placing it" appears in message log. [report: Erich]
-	-> not a bug: your top mask required type is set to +manual (no sub, no auto), which won't match anything on the default sheet's layer stackup
-	-> for the normal use case set that to -auto (sub, auto)
-	-> or the +manual setup could work on a layer stackup where you have a second mask layer that's positive and not auto
-	-> note: right click over the subc, layer bindings submenu -> you can experiment with these in real-time there; the right side of the table shows you what the code things your layer recipe maps onto
 + FEATURE: enable features to be generated on negative draw layers, i.e. top-mask, by common_subc.awk [report: Erich] 
 	-> call layer_setup() with the layer name, see comments for that func in common_subc.awk
 	-> must include in your footprint's doc: the footprint will depend on pcb-rnd >=3.1.2, it will fail with syntax error with older versions [of common_subc.awk]
