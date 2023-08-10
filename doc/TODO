@@ -9,7 +9,6 @@
 	-> subc line is probably added but not removed from pcb_removelist's rtrees
 ? BUG: start pcb-rnd passing it a subcircuit to edit, i.e. pcb-rnd foo.rf, once subcircuit displayed, then {f r}. Footprint is rendered outside of layout area, and sometimes is far enough away it cannot be selected with cursor [report: Erich]
 	-> can't reproduce it with your subc-resize.rf; may have been the same bug as that one the file is for
-+ BUG: start pcb-rnd with tube.awk available. { w l }, type tube in text box, select tube() with cursor once, note wireframe and render of default tube footprint. click on tube() again with cursor to launch GUI editing window. use decrement button once on radius paramater, and see wireframe render change drastically. Only after modifying radius, hole, pin_size and outline_r will render behave again. [report: Erich]
 / BUG: see bug_files smiley.rf. Start pcb-rnd, import subc to layout, select smiley.rf, place on layout, "Couldn't bind layer top-mask of subcircuit while placing it" appears in message log. [report: Erich]
 	-> not a bug: your top mask required type is set to +manual (no sub, no auto), which won't match anything on the default sheet's layer stackup
 	-> for the normal use case set that to -auto (sub, auto)
