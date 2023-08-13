@@ -6,7 +6,8 @@
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 - BUG: bug_files/TODO/uc.rp, drag&drop move selected twice then {u c} -> valgrind log! [report: aron]
 	-> happens when subc is removed from pcb_removelist
-	-> subc line is probably added but not removed from pcb_removelist's rtrees
+	-> subc line is added but not removed from pcb_removelist's rtrees
+	-> by the time of {u c}, the subcircuits on pcb_removelist have layer rtrees not bound to removelists's rtrees
 + FEATURE: enable features to be generated on negative draw layers, i.e. top-mask, by common_subc.awk [report: Erich] 
 	-> call layer_setup() with the layer name, see comments for that func in common_subc.awk
 	-> must include in your footprint's doc: the footprint will depend on pcb-rnd >=3.1.2, it will fail with syntax error with older versions [of common_subc.awk]
