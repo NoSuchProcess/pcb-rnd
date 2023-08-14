@@ -1640,10 +1640,29 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		else
 			dl = ctx->buffer.dst->Layer + n;
 
-		if (dst_is_pcb)
+		if (dst_is_pcb) {
 			subc_bind_layer(dl, sl, dst_is_pcb);
-		else
+		}
+		else {
 			subc_relocate_layer_objs(dl, ctx->buffer.src, sl, src_has_real_layer, dst_is_pcb, 0);
+
+			/* Happens when moving the subc into buffer, most notably into removelist:
+			   - layer objects got registered in dl-> trees
+			   - if we don't do the bindings here, subc won't remember its layer objects are registered in which trees
+			   - on subc free, layer objects are freed, but rtree del won't run as subc's layer rtree is NULL
+			   - layer objects will remain on old dl-> trees (e.g. on removelist trees)
+			   - as long as the object is still alive in removelist, it goes on unnoticed; the undo list keeps objects alive; but these are really ghost objects in the rtree because sc free already free'd the layer object
+			   - clearing the undo list, {u c}, will flush the remove list and that will expose the bug in form of  ghost rtree objects are invalid memory reads now
+			   - see TODO:7 @ r38121
+				(anchor #1)
+			*/
+			if ((sl->line_tree != NULL) || (sl->arc_tree != NULL) || (sl->text_tree != NULL) || (sl->polygon_tree != NULL))
+				rnd_message(RND_MSG_ERROR, "pcb_subcop_move_buffer(): expected empty layer object trees.\nPlease report this bug.\n");
+			/* gfx_tree is always bound for some reason (do not free it, it's on the board) */
+			if (sl->gfx_tree != NULL)
+				sl->gfx_tree = NULL;
+			pcb_layer_link_trees(sl, dl);
+		}
 	}
 
 	if (dst_is_pcb) {
@@ -1654,8 +1673,11 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		clip.clip.pcb = ctx->buffer.pcb;
 		pcb_subc_op(ctx->buffer.dst, sc, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_SUBC);
 	}
-	else
+	else {
 		subc_relocate_globals(ctx->buffer.dst, sc->data, sc, dst_is_pcb, 0);
+		/* see anchor #1 above */
+		sc->data->padstack_tree = ctx->buffer.dst->padstack_tree;
+	}
 
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
