@@ -4,9 +4,6 @@
 1. For the upcoming release ===============================================================================
 - DOC: pool node on how to use pixmap for breadboading
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
-+ FEATURE: enable features to be generated on negative draw layers, i.e. top-mask, by common_subc.awk [report: Erich] 
-	-> call layer_setup() with the layer name, see comments for that func in common_subc.awk
-	-> must include in your footprint's doc: the footprint will depend on pcb-rnd >=3.1.2, it will fail with syntax error with older versions [of common_subc.awk]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
