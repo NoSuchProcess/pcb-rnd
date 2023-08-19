@@ -221,7 +221,7 @@ module part_acy(pitch=7.68, standing=0, body=0, body_dia=2.3,pin_descent=2.5, pi
         pins(link=0);
     } else if (body == 10) { // two pin potentiometer
         aligned_body(is_standing=0,link=0,body=10);
-        pins(standing, link=0);
+        pins(standing=0, link=0);
     } else if (body == 11) { // greencap/polyester capacitor
         aligned_body(is_standing=0,link=0,body=11);
         pins(link=1);
