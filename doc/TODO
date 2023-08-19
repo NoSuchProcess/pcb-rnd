@@ -4,6 +4,7 @@
 1. For the upcoming release ===============================================================================
 - DOC: pool node on how to use pixmap for breadboading
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
+- BUG: segfault recipe. load bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout, note 90 degree error in rotation, shift click again on rotated subc, segfault ensues [report: Erich]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
