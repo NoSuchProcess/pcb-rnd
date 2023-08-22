@@ -5,7 +5,6 @@
 - DOC: pool node on how to use pixmap for breadboading
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 + BUG: bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout, shift click again on rotated subc, segfault ensues [report: Erich]
-- BUG: bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout: 90 degree error [report: Erich]
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow [report: Erich]
 
 2. For later releases ===============================================================================
@@ -51,6 +50,14 @@
 
 3. Long term ===============================================================================
 - multi: merge sch-rnd r4718 for proper multiboard support later
+- CLEANUP: footprint lib rework
+	- BUG: bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout: 90 degree error [report: Erich]
+		-> wrong subx-aux x and y lines (names mixed up)
+		-> apply patch in bug_files/fp_rework to fix that, check with the script in the same dir
+	- revise sil graphics for at least smd
+	- add assy drawing
+	- add keepout
+	- rewise pad sizes and hole sizes, maybe starting from bedrock
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter bwloe 0805, where the vectors are larger than the fp [report: aron]
 - poly lib rewrite:
