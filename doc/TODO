@@ -5,7 +5,7 @@
 - DOC: pool node on how to use pixmap for breadboading
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 + BUG: bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout, shift click again on rotated subc, segfault ensues [report: Erich]
-? BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow [report: Erich]
+- BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
 	-> I can not reproduce this; please compare the two exported files
 
 2. For later releases ===============================================================================
