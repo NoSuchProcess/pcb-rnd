@@ -59,7 +59,7 @@
 	- revise sil graphics for at least smd
 	- add assy drawing
 	- add keepout
-	- rewise pad sizes and hole sizes, maybe starting from bedrock
+	- revise pad sizes and hole sizes, maybe starting from bedrock
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter bwloe 0805, where the vectors are larger than the fp [report: aron]
 - poly lib rewrite:
