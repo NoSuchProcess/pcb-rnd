@@ -11,6 +11,7 @@
 	-> happens only if the export dialog is left open for the whole time
 	-> happens because the dialog remembers the old hidlib (design) ptr
 	-> maybe export dialog should be closed on design change?
+- BUG: start pcb-rnd, { w l }, select tssop(), place on layout, shift click to replace tssop() on layout with tssop() in buffer, then { u u }, note "pcb_search_obj_by_id(): internal error, search for ID XXXX failed" [report: Erich] 
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
