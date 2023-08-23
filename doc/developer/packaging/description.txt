@@ -100,7 +100,7 @@ File formats and compatibility:
     * tEDAx drc
     * tEDAx pcb-rnd drc script
   - export misc:
-    * bom (Bill of Materials, text)
+    * bom (Bill of Materials, text, templated)
     * .dxf (2D drawing for mech CADs)
     * excellon drill/cnc (for PCB fabbing)
     * fidocad .fcd (partial export)

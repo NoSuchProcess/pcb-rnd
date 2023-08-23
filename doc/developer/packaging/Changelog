@@ -5,10 +5,19 @@ How to get a release candidate tarball in /tmp:
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
-Packaging changes between 3.1.2 and 3.1.0
+Packaging changes between 3.1.2 and 3.1.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TODO: gsch2pcb-rnd dummy
 
+A. changes that probably don't need action
+
+1. gsch2pcb-rnd got replaced by a dummy that makes suggestions to
+   the user how to switch to a better alternative; both the binary
+   and the man page remains, but are replaced by dummies.
+
+B. changes that probably DO need action
+
+1. new config file in package pcb-rnd-export:
+   $C/export_bom.conf
 
 Packaging changes between 3.1.1 and 3.1.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
