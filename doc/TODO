@@ -10,7 +10,6 @@
 	-> happens only if the export dialog is left open for the whole time
 	-> happens because the dialog remembers the old hidlib (design) ptr
 	-> maybe export dialog should be closed on design change?
-- BUG: bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout, newly placed subc has rotated 90 degress CW vs original. [report: Erich]
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
