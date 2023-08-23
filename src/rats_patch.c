@@ -69,6 +69,10 @@ static void pcb_ratspatch_append_(pcb_board_t *pcb, pcb_rats_patch_op_t op, char
 {
 	pcb_ratspatch_line_t *n;
 
+	/* do not append invalid entries (with no ID) */
+	if (id == NULL)
+		return;
+
 	n = malloc(sizeof(pcb_ratspatch_line_t));
 
 	n->op = op;
