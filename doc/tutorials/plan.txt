@@ -1,0 +1,156 @@
+=== basic ===
+
+- getting started [25]
+	- normal workflow (diagram):
+		- setup (layer stackup)
+		- sch import
+		- placement
+		- routing
+		- tuning details (nope)
+		- sim & fixes (nope)
+		- drc & fixes (nope)
+		- prepare for fab (nope)
+	- layer stackup
+		- show preferences cross sect
+		- drag&drop remove intern layer groups
+		- remove extra layers, keep one layer per group for now
+		- decide that bottom is gnd, rename layers accordingly
+	- sch import
+		- sch-rnd
+		- hint on other formats
+		- mention stdlib footprints are used
+		- zoom out for the footprints
+		- look at the netlist
+	- placement
+		- manual for this tutorial
+		- looking at rats nest, {c r}
+		- looking at sch
+		- drag&drop move: no need to select
+		- show rotate
+		- show context menu move to the other side, show hotkey
+		- terminology: subcircuit
+	- routing
+		- routing with lines on top layer, leave out gnd
+			- line refraction with shift
+			- line refraction with '/' and menu (bottom status!)
+			- routing styles
+		- via & sides
+				- find a crossing show manual via placement + usig the other side
+				- tab, shift tab, ctrl tab
+				- bottom status
+				- via terminology: padstack
+		- polygon on the bottom side
+		- thermals to connect (minimum thermals)
+
+- advanced routing with lines [3]
+	- line refraction:
+		- 90 degree
+		- all-direction
+	- rubber band modes
+	- route radius
+	- show routing style configuration
+
+- advanced routing: arcs and propedit on traces [3]
+	- arcs
+		- same trace width
+		- editing arc angles graphically
+	- draw a line, an arc and a via and a rectangle around them
+	- open propedit on the line from context menu, show scope
+	- explain thickness and clearance
+	- close propedit
+	- select line, arc, via
+	- use {p e} to open propedit, show scope
+	- show stats
+	- change clearance and trace thickness
+	- refer to sch-rnd propedit video
+
+	- poly [5]
+		- drawing rectangles
+		- drawing arbitrary polygons
+			- all-direction line
+			- hotkey for close
+		- drawing holes
+		- explain that hole is part of the polygon object
+		- clearances in polygons
+			- normal object clearance
+			- as-drawn and clipped poly (turn on frame)
+			- poly cut into multiple islands
+		- editing existing polygons
+			- grab a corner
+			- ortho-move (shift or ctrl?)
+			- show invisible corners with as-drawn frame and hover
+			- insert
+		- explain there are no pours or planes
+		- show poly clipping out of existence
+
+- text [3]
+	TODO
+		
+- placing footprints from the lib [5]
+	- manual nav
+	- placement
+	- filter
+	- parametric
+		- type in
+		- gui edit
+	- edakrill
+	- configuring own library
+	- how this interferes with import
+		- nonetlist
+
+- grid, snap, wireframe [3]
+	TODO
+
+- select [3]
+
+- drawing on any layer [3]
+	- turning layers on-off
+	- turning all layers on-off
+	- drawing on any layer
+	- explain negative layer
+	- moving objects between layers
+	- one object is always on one layer, except for subcircuits and padstacks
+
+- export to fab [3]
+	- cam export to jlc
+		- explain gerber + excellon
+		- explain file naming
+	- export XY
+
+- outline and cutouts [3]
+	TODO
+
+- remove and buffer basics [2]
+	TODO
+	(include mirror and arb. rotation)
+
+- advanced buffer use [5]
+	- save buffer content
+	- save single footprint
+	- save footprint lib
+	- loading buffer content
+	- loading footprint to buffer
+		- that's really happening with the lib window
+		- but also from the import menu
+	- using multiple buffers
+	- buffer survives board switch
+	- explain buffer layer bindings
+
+- connectivity [2]
+	- {c r}
+	- {c f}
+	- shorts and mincut
+
+- netlist window basics [3]
+	TODO
+
+- netlist window advanced [5]
+	TODO
+
+=== advanced ===
+- layer compositing
+- creating doc layers
+- mechanical keepout layers
+- doc layers: assy and custom
+- fab layers
+- footprint creation basics [5]
