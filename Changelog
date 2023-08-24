@@ -1,3 +1,191 @@
+pcb-rnd 3.1.2 (r38156)
+~~~~~~~~~~~~~~~~~~~~~~
+	[acompnet]
+		-Cleanup: replace compat rtree with native
+
+	[autoplace]
+		-Cleanup: replace compat rtree with native
+
+	[autoroute]
+		-Cleanup: replace compat rtree with native
+		-Cleanup: remove inline, use portable RND_INLINE instead
+
+	[build]
+		-Add: ./configure --enable-polybool and --disable-polybool (default for now) to allow testing the new poly lib later on
+
+	[ch_editpoint]
+		-Cleanup: remove rtree2_compat.h dependency
+
+	[ch_endpoint]
+		-Cleanup: replace compat rtree with native
+
+	[ch_onpoint]
+		-Cleanup: replace compat rtree with native
+
+	[core]
+		-Fix: poly as-drawn frame annotation option also draws cutout contours
+		-Fix: allow padstack convert from selected work in footprint edit mode
+		-Fix: pcb_flag_uninit() should clear all fields (flag bits), not just the unknown-flags part
+		-Fix: do not uninit flags while gui-erasing objects
+		-Fix: no-effect poly clearance change operation wrarning message doesn't refer to obsolete MinClearGap() but offers modern alternatives
+		-Fix: verify number of points in a simplepoly when drawing/decomposing font; skip and warn if there are too many points
+		-Fix: font unlink: when the default (system) font is unlinked, cheat: make a copy and return that; this is required for the font editor because the board struct hosting the default font is soon to be free()'d
+		-Fix: pstk thin draw: don't draw mech layer twice because it will make the object inivisible in xor-draw
+		-Fix: remove padstack mirror optimization: there are cases when ps->y is 0 but we still need to change the coords
+		-Fix: revert should do the same PCB drawing area bbox tuning that normal load does, when pcb is a footprint; this fixes the problem of not updating drawing area of growing footprint on reload-on-change (which is really a revert)
+		-Fix: when subc is moved to buffer (most notably to removelist), rebind subc layers to the buffer after all the objects have been moved; without this, free'ing the subc (e.g. clearing the undo list which clears the removelist which frees all objects there) would leave ghost objects on the rtrees because at subc free the rtree is NULL so child objects are not removed from the rtree but those child objects are freed
+		-Cleanup: rename pcb_flag_erase() to pcb_flag_uninit(), as "erase" is used in the gui redraw sense; the confusing terminology already caused the call to be in the wrong place for all objects
+		-Cleanup: remove inline, use portable RND_INLINE instead
+		-Cleanup: centralzie flag uninit on object free, into obj_common
+		-Cleanup: remove old rtree compat, use native rtree instead
+		-Cleanup: remove unused/unimplemented function proto (pstk clear draw)
+		-Add: more sophisticated thindraw shape selection for drawing from buffer: pick top copper or bottom copper first and fall back to first shape only if those are not found; this avoids picking the mech shape for the main contour
+
+	[dialogs]
+		-Cleanup: replace compat rtree dir consts with native
+		-Fix: don't crash when help text is NULL (not available) for a parametric library entry
+		-Fix: library parametric window command generator: corner case when there are no optional parameters (force generating all parameters that are not unknown)
+
+	[distalign]
+		-Cleanup: remove inline, use portable RND_INLINE instead
+
+	[doc]
+		-Add: document the templating system of the new export_bom plugin
+		-Add: link in export_bom doc
+		-Add: export_bom: document skip_if_empty and skip_if_nonempty templates
+		-Add: export_xy skip_if_nonempty
+		-Add: document outline and cutout mechanism including centerline defined cutouts and slots
+
+	[draw_fab]
+		-Cleanup: remove rtree compatibility dependency on determining if rtree is empty
+
+	[export_bom]
+		-Add: rewrite the plugin; switch over from hardwired format to templates (user configurable)	[export_openscad]
+		-Fix: min-max value for fs so it can be changed from the GUI
+		-Fix: adjust model placement so it considers top and bottom copper thickness
+		-Cleanup: remove rtree compat dependency
+		-Add: support for --fs to set arc resolution
+		-Add: export options to override default colors
+		-Add: export cutouts & slots
+		-Add: make exporting cutouts optional
+
+	[export_ps]
+		-Fix: finish previous file before starting a new file (fixes missing showpages)
+
+	[export_stl]
+		-Fix: switch over to generate all cutouts as an rnd_polyarea_t so that overlapping cutouts wouldn't cause broken export anymore
+		-Cleanup: remove rtree2_compat.h dependency
+
+	[export_xy]
+		-Update: export_xy doesn't depend on export_bom anymore
+		-Add: skip_if_nonempty template, to control which subcircuits to skip
+		-Add: default templates: skip subcircuits that have the dnp attribute set
+
+	[exto_std]
+		-Cleanup: replace compat rtree entry with native
+
+	[fontmode]
+		-Fix: RND_EVENT_DESIGN_SET_CURRENT always requires an argument, even if it is NULL
+
+	[footprint]
+		-Add: openscad model for all parametric footprints in the default lib
+		-Add: 3d related optional arguments in parametric footprints
+
+	[gsch2pcb-rnd]
+		-Del: remove the code, replace it with a long explanation on how to substitute it
+
+	[import_ipcd356]
+		-Cleanup: replace compat rtree with native
+
+	[import_ttf]
+		-Add: slice up large polygons so the resulting simplepoly always respects simplepoly size limitation
+
+	[io_altium]
+		-Cleanup: replace compat rtree with native
+
+	[io_autotrax]
+		-Cleanup: replace compat rtree with native
+
+	[io_bxl]
+		-Cleanup: replace compat rtree with native
+
+	[io_eagle]
+		-Cleanup: replace compat rtree with native
+
+	[io_hyp]
+		-Cleanup: replace compat rtree with native
+
+	[io_kicad]
+		-Cleanup: replace compat rtree with native
+
+	[io_lihata]
+		-Cleanup: replace compat rtree with native
+		-Fix: when saving polygon coords in a lihata table, make sure col allocation is also set so table cols are allocated to the proper size, not to 0 size
+
+	[io_mentor_cell]
+		-Cleanup: replace compat rtree with native
+
+	[io_pads]
+		-Cleanup: replace compat rtree with native
+
+	[io_pcb]
+		-Cleanup: replace compat rtree with native
+
+	[io_tedax]
+		-Cleanup: replace compat rtree with native
+
+	[jostle]
+		-Cleanup: replace compat rtree with native
+
+	[lib_bom]
+		-Add: generic, reusable templating for BoM exporters
+
+	[lib_compat_help]
+		-Cleanup: remove rtree compat dependency from layer compat code
+
+	[lib_polyhelp]
+		-Cleanup: replace compat rtree with native
+		-Add: API to generate a multi-island rnd_polyarea_t of all cutouts that are within a given contour
+		-Add: topoly_cutout: include mech layer lines and arcs with their true shape so that slots work as expected
+
+	[libcdtr]
+		-Fix: there is no local genvector in pcb-rnd's src-3rd, use librnd's
+		-Cleanup: remove inline, use portable RND_INLINE instead
+
+	[millpath]
+		-Cleanup: remove rtree compat dependency from toolpath calculation
+
+	[oldactions]
+		-Del: MinClearGap() action implementation
+		-Add: MinClearGap() also suggests using polygon side clearance
+
+	[polycombine]
+		-Fix: set the standard clearpoly flag instead of an unknown-flag (string) on the resulting poly to get it behave as normal polygons do
+
+	[puller]
+		-Cleanup: replace compat rtree with native
+
+	[query]
+		-Fix: advanced search dialog: preserve quotes in strings in decompile
+
+	[report]
+		-Cleanup: replace compat rtree with native
+
+	[rubberband_orig]
+		-Cleanup: replace compat rtree with native
+
+	[shape]
+		-Cleanup: replace compat rtree with native
+
+	[sketch_route]
+		-Cleanup: replace compat rtree with native
+
+	[teardrops]
+		-Cleanup: replace rtree compat with native
+
+	[util]
+		-Add: warning about deprecation of the gnet-pcbrndfwd_elem script
+
 pcb-rnd 3.1.1 (r37572)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[asm]

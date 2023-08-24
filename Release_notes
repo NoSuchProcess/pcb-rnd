@@ -1,5 +1,17 @@
-pcb-rnd 3.1.1
+pcb-rnd 3.1.2
 ~~~~~~~~~~~~~
 
-This release is a minor bugfix release with only one major feature:
-openscad 3d models for all static file footprints in the stock lib.
+This release contains a lot of code cleanup, some feature removal and
+a few new features:
+
+1. Code cleanup: remove the dependency on the rtree compatibility layer, use
+   librnd native rtrees
+
+2. Feature removal: gsch2pcb-rnd removed and replaced with a dummy that prints
+   the alternatives, including CLI and GUI import sch 
+
+3. New 3d models: openscad models for all parametric footprints in the standard
+   footprint lib
+
+4. Rewrite of export_bom: BoM export uses user configurable templates instead
+   of a hardwired format
