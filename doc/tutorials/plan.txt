@@ -33,7 +33,7 @@
 		- routing with lines on top layer, leave out gnd
 			- line refraction with shift
 			- line refraction with '/' and menu (bottom status!)
-			- routing styles
+			- routing styles (selection only)
 		- via & sides
 				- find a crossing show manual via placement + usig the other side
 				- tab, shift tab, ctrl tab
@@ -48,7 +48,10 @@
 		- all-direction
 	- rubber band modes
 	- route radius
-	- show routing style configuration
+	- show routing style configuration (no padstack yet)
+
+- per board and per subc padstack proto lib [5]
+	TODO (save load too!)
 
 - advanced routing: arcs and propedit on traces [3]
 	- arcs
@@ -147,10 +150,16 @@
 - netlist window advanced [5]
 	TODO
 
+- advanced thermals [3]
+	TODO
+
+
+
 === advanced ===
 - layer compositing
 - creating doc layers
 - mechanical keepout layers
 - doc layers: assy and custom
 - fab layers
+- subcircuit layer bindings
 - footprint creation basics [5]
