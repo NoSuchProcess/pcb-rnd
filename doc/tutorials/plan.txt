@@ -64,24 +64,24 @@
 	- change clearance and trace thickness
 	- refer to sch-rnd propedit video
 
-	- poly [5]
-		- drawing rectangles
-		- drawing arbitrary polygons
-			- all-direction line
-			- hotkey for close
-		- drawing holes
-		- explain that hole is part of the polygon object
-		- clearances in polygons
-			- normal object clearance
-			- as-drawn and clipped poly (turn on frame)
-			- poly cut into multiple islands
-		- editing existing polygons
-			- grab a corner
-			- ortho-move (shift or ctrl?)
-			- show invisible corners with as-drawn frame and hover
-			- insert
-		- explain there are no pours or planes
-		- show poly clipping out of existence
+- poly [5]
+	- drawing rectangles
+	- drawing arbitrary polygons
+		- all-direction line
+		- hotkey for close
+	- drawing holes
+	- explain that hole is part of the polygon object
+	- clearances in polygons
+		- normal object clearance
+		- as-drawn and clipped poly (turn on frame)
+		- poly cut into multiple islands
+	- editing existing polygons
+		- grab a corner
+		- ortho-move (shift or ctrl?)
+		- show invisible corners with as-drawn frame and hover
+		- insert
+	- explain there are no pours or planes
+	- show poly clipping out of existence
 
 - text [3]
 	TODO
