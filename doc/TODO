@@ -3,7 +3,8 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
-- BUG: start pcb-rnd, { w l }. select HC49.fp, place on layout, then shift click replace HC49 on layout with HC49 in buffer. segfault ensues [report: Erich]
+? BUG: start pcb-rnd, { w l }. select HC49.fp, place on layout, then shift click replace HC49 on layout with HC49 in buffer. segfault ensues [report: Erich]
+	-> can't reproduce, valgrind-clean
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
