@@ -5,6 +5,7 @@
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 
 2. For later releases ===============================================================================
+- BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
 	-> happens only if the export dialog is left open for the whole time
