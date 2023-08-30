@@ -3,14 +3,17 @@
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
-- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
 	-> happens only if the export dialog is left open for the whole time
 	-> happens because the dialog remembers the old hidlib (design) ptr
 	-> maybe export dialog should be closed on design change?
+- FEATURE: attribute propagation from sch-rnd via tEDAx
+	- device attribute in subcricuits
+	- make a new bom template that includes that
+
+2. For later releases ===============================================================================
+- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: start pcb-rnd, { w l }, select tssop(), place on layout, shift click to replace tssop() on layout with tssop() in buffer, then { u u }, note "pcb_search_obj_by_id(): internal error, search for ID XXXX failed" [report: Erich] 
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
@@ -27,9 +30,6 @@
 	- build a list of layers rendered, in the order of rendering while drawing layer groups; maybe use gdl and move the group to the end and use a terminator item;  get pcb_search_obj_by_location_() to use this list for ordering
 	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - CLEANUP: revise dialog boxes for string/integer input box character length
-- FEATURE: attribute propagation from sch-rnd via tEDAx
-	- device attribute in subcricuits
-	- mkae a new bom template that includes that
 - FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
 - FEATURE: tutorial: new examples
 	- blinking led with parametric footprints
