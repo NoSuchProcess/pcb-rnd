@@ -99,7 +99,7 @@
 	- edakrill
 	- configuring own library
 	- how this interferes with import
-		- nonetlist
+		- nonetlist (connector(1) for test pad, logo)
 
 - grid, snap, wireframe [3]
 	TODO

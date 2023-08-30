@@ -31,9 +31,6 @@
 	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - CLEANUP: revise dialog boxes for string/integer input box character length
 - FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
-- FEATURE: tutorial: new examples
-	- blinking led with parametric footprints
-	- example of nonetlist: 1206 jumpers and logos
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
