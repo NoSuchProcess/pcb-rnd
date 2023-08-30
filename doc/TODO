@@ -1,8 +1,8 @@
 0. old, still waiting for ack
 + BUG: debian packaging: sort control file so diff'ing is easier; propagate the change to all projects [report: Bdale]
++ BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 
 1. For the upcoming release ===============================================================================
-+ BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
