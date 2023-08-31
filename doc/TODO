@@ -3,6 +3,20 @@
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 
 1. For the upcoming release ===============================================================================
+- back annotation upgrade (nlnet 9)
+	- netlist patch dialog box
+	- netlist window:
+		- break connection button (remove a single pin)
+		- add connection button (add a single pin)
+		- remove a whole net
+	- propedit: checkbox for back annot ops
+		- add
+		- del
+		- any modification
+		- watch out for multipleobjects being edited
+	- tEDAx block upgrade:
+		- del net
+		- comment field?
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
 	-> happens only if the export dialog is left open for the whole time
