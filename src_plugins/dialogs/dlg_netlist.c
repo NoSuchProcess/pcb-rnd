@@ -39,7 +39,9 @@ typedef struct {
 	pcb_board_t *pcb;
 	rnd_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
-	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats, wripup, waddrats, wrename, wmerge, wattr, wnlcalc, wnlon, wnloff;
+	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats;
+	int wripup, waddrats, wrename, wmerge, wattr, wnlcalc, wnlon, wnloff;
+	int wbrkconn;
 	void *last_selected_row;
 	double last_selected_time;
 	int active; /* already open - allow only one instance */
@@ -242,6 +244,26 @@ static void netlist_update_len_by_name(netlist_ctx_t *ctx, const char *name)
 		netlist_update_len_by_row(ctx, row);
 }
 #endif
+
+static void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	netlist_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *nltree = &ctx->dlg[ctx->wnetlist];
+	rnd_hid_attribute_t *tmtree = &ctx->dlg[ctx->wtermlist];
+	rnd_hid_row_t *row_net  = rnd_dad_tree_get_selected(nltree);
+	rnd_hid_row_t *row_term = rnd_dad_tree_get_selected(tmtree);
+
+	if ((row_net == NULL) || (row_term == NULL)) {
+		rnd_message(RND_MSG_ERROR, "Select a terminal first\n");
+		return;
+	}
+
+	pcb_ratspatch_append_optimize(ctx->pcb, RATP_DEL_CONN, row_term->cell[0], row_net->cell[0], NULL);
+	pcb_ratspatch_make_edited(ctx->pcb);
+	netlist_data2dlg(ctx);
+	pcb_board_set_changed_flag(ctx->pcb, 1);
+}
+
 
 static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
@@ -457,6 +479,13 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 							netlist_ctx.wtermlist = RND_DAD_CURRENT(netlist_ctx.dlg);
 							RND_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, termlist_row_selected);
 							RND_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
+
+						RND_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* connection buttons */
+							RND_DAD_BUTTON(netlist_ctx.dlg, "break connection");
+								RND_DAD_CHANGE_CB(netlist_ctx.dlg, brkconn_button_cb);
+								netlist_ctx.wbrkconn = RND_DAD_CURRENT(netlist_ctx.dlg);
+								RND_DAD_HELP(netlist_ctx.dlg, "Remove selected pin from the net\nRemember removal on the back annotation netlist patch");
+						RND_DAD_END(netlist_ctx.dlg);
 					RND_DAD_END(netlist_ctx.dlg);
 				RND_DAD_END(netlist_ctx.dlg);
 			RND_DAD_END(netlist_ctx.dlg);
