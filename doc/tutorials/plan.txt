@@ -1,5 +1,7 @@
 === basic ===
 
+Milestone A:
+
 - getting started [25]
 	- normal workflow (diagram):
 		- setup (layer stackup)
@@ -41,6 +43,8 @@
 				- via terminology: padstack
 		- polygon on the bottom side
 		- thermals to connect (minimum thermals)
+
+Milestone B:
 
 - advanced routing with lines [3]
 	- line refraction:
@@ -88,7 +92,11 @@
 
 - text [3]
 	TODO
-		
+
+- select [3]
+
+Milestone C:
+
 - placing footprints from the lib [5]
 	- manual nav
 	- placement
@@ -104,8 +112,6 @@
 - grid, snap, wireframe [3]
 	TODO
 
-- select [3]
-
 - drawing on any layer [3]
 	- turning layers on-off
 	- turning all layers on-off
@@ -114,14 +120,16 @@
 	- moving objects between layers
 	- one object is always on one layer, except for subcircuits and padstacks
 
+- outline and cutouts [3]
+	TODO
+
 - export to fab [3]
 	- cam export to jlc
 		- explain gerber + excellon
 		- explain file naming
 	- export XY
 
-- outline and cutouts [3]
-	TODO
+Milestone D:
 
 - remove and buffer basics [2]
 	TODO
