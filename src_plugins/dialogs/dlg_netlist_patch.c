@@ -68,6 +68,8 @@ static void netlist_patch_data2dlg(netlist_patch_ctx_t *ctx)
 
 	cell[2] = NULL;
 	for(n = ctx->pcb->NetlistPatches; n != NULL; n = n->next) {
+		rnd_hid_row_t *r;
+
 		switch(n->op) {
 			case RATP_ADD_CONN:      cell[0] = rnd_strdup("add conn"); break;
 			case RATP_DEL_CONN:      cell[0] = rnd_strdup("del conn"); break;
@@ -80,8 +82,24 @@ static void netlist_patch_data2dlg(netlist_patch_ctx_t *ctx)
 			case RATP_CHANGE_ATTRIB: cell[1] = rnd_strdup_printf("%s, %s, %s", n->id, n->arg1.attrib_name, n->arg2.attrib_val); break;
 			default:                 cell[1] = rnd_strdup("?"); break;
 		}
-		rnd_dad_tree_append(attr, NULL, cell);
+		r = rnd_dad_tree_append(attr, NULL, cell);
+		r->user_data = n;
 	}
+}
+
+static void patch_remove_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	netlist_patch_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *atree = &ctx->dlg[ctx->wlist];
+	rnd_hid_row_t *r;
+
+	r = rnd_dad_tree_get_selected(atree);
+	if (r == NULL)
+		return;
+
+	rats_patch_remove(ctx->pcb, r->user_data, 1);
+	pcb_board_set_changed_flag(ctx->pcb, rnd_true);
+	pcb_netlist_changed(0);
 }
 
 static void patch_export_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -107,6 +125,9 @@ static void pcb_dlg_netlist_patch(pcb_board_t *pcb)
 				netlist_patch_ctx.wlist = RND_DAD_CURRENT(netlist_patch_ctx.dlg);
 		
 			RND_DAD_BEGIN_HBOX(netlist_patch_ctx.dlg);
+				RND_DAD_BUTTON(netlist_patch_ctx.dlg, "Remove");
+					RND_DAD_CHANGE_CB(netlist_patch_ctx.dlg, patch_remove_button_cb);
+					RND_DAD_HELP(netlist_patch_ctx.dlg, "Removes the selected instruction from the list; not undoable");
 				RND_DAD_BUTTON(netlist_patch_ctx.dlg, "Export...");
 					RND_DAD_CHANGE_CB(netlist_patch_ctx.dlg, patch_export_button_cb);
 					RND_DAD_HELP(netlist_patch_ctx.dlg, "Open the back annotation export dialog");
