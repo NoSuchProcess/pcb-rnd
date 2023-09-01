@@ -75,6 +75,9 @@ int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch);
    input netlist. Returns number of entries removed or -1 on error. */
 int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb);
 
+/* Unlink n from the list; if do_free is non-zero, also free fields and n */
+void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t *n, int do_free);
+
 
 /**** exporter ****/
 

@@ -45,8 +45,6 @@
 #include "netlist.h"
 #include "event.h"
 
-static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
-
 static const char core_ratspatch_cookie[] = "core-rats-patch";
 
 const char *pcb_netlist_names[PCB_NUM_NETLISTS] = {
@@ -232,8 +230,7 @@ quit:;
 	pcb_ratspatch_append(pcb, op, id, a1, a2, 0);
 }
 
-/* Unlink n from the list; if do_free is non-zero, also free fields and n */
-static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t *n, int do_free)
+void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t *n, int do_free)
 {
 	/* if we are the first or last... */
 	if (n == pcb->NetlistPatches)
