@@ -1956,6 +1956,11 @@ int io_lihata_write_pcb_v8(pcb_plug_io_t *ctx, FILE * FP, const char *old_filena
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 8);
 }
 
+int io_lihata_write_pcb_v9(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
+{
+	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 9);
+}
+
 int io_lihata_write_font(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filename)
 {
 	FILE *f;

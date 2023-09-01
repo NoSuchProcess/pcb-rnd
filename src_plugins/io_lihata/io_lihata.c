@@ -33,7 +33,7 @@
 
 pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3,
               plug_io_lihata_v4, plug_io_lihata_v5, plug_io_lihata_v6,
-              plug_io_lihata_v7, plug_io_lihata_v8;
+              plug_io_lihata_v7, plug_io_lihata_v8, plug_io_lihata_v9;
 conf_io_lihata_t conf_io_lihata;
 
 pcb_plug_io_t *plug_io_lihata_default = &plug_io_lihata_v8;
@@ -72,6 +72,7 @@ int pplg_check_ver_io_lihata(int ver_needed) { return 0; }
 void pplg_uninit_io_lihata(void)
 {
 	rnd_conf_unreg_fields("plugins/io_lihata/");
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v9);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v8);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v7);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
@@ -122,6 +123,12 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v8.description = "lihata board v8";
 	plug_io_lihata_v8.save_preference_prio = 199;
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v8);
+
+	plug_io_lihata_v9 = plug_io_lihata_v7;
+	plug_io_lihata_v9.write_pcb = io_lihata_write_pcb_v9;
+	plug_io_lihata_v9.description = "lihata board v9";
+	plug_io_lihata_v9.save_preference_prio = 197;
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v9);
 
 
 	plug_io_lihata_v6 = plug_io_lihata_v7;
