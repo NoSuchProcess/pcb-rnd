@@ -8,15 +8,13 @@
 - back annotation upgrade (nlnet 9)
 	- a way to add a new subc to back annot
 	- netlist patch dialog box
-	- netlist window:
-		- remove a whole net
 	- propedit: checkbox for back annot ops
 		- add
 		- del
 		- any modification
 		- watch out for multipleobjects being edited
 	- tEDAx block upgrade:
-		- del net
+		- del net -> probably not needed, removing all connections should be enough
 		- comment field?
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]

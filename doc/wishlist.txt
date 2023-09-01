@@ -8,13 +8,13 @@ Active user wishes:
 
 Being done:
 	W10: pcb-rnd + sch-rnd: back annotation upgrades; from pcb-rnd back: [Erich]
-		- remove net
+		+ remove net
+		+ add new net -> claim net
 		+ remove connections (terminals from a net) -> netlist window
 		+ add mew connections (terminals to a net) -> netlist window
 		- change or remove subcircuit attribute
 		- change or remove network attribute
 		- add new subcircuit
-		- add new net
 
 User wishes fulfilled:
 	W1: cschem [Chris] -> sch-rnd
