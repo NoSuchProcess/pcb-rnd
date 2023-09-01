@@ -661,7 +661,7 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			default_file = malloc(len + 8);
 			memcpy(default_file, PCB->hidlib.loadname, len + 1);
 			end = strrchr(default_file, '.');
-			if ((end == NULL) || (rnd_strcasecmp(end, ".pcb") != 0))
+			if ((end == NULL) || ((rnd_strcasecmp(end, ".rp") != 0) && (rnd_strcasecmp(end, ".pcb") != 0)))
 				end = default_file + len;
 			strcpy(end, ".bap");
 		}
