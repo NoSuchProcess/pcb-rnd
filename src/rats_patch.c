@@ -460,9 +460,145 @@ static void fexport_old_bap_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 	}
 }
 
+static int fputs_tdx_(FILE *f, const char *s, int *len, int replace_term_sep)
+{
+	char *sep = NULL;
+	if (replace_term_sep) {
+		/* need to replace the last '-' so that subc-in-subc hierarchy like
+		   U1-R3-2 results in U1-R3 2 */
+		sep = strrchr(s, '-');
+	}
+
+	for(; *s != '\0'; s++) {
+		int c;
+
+		if (s != sep) {
+			c = *s;
+			if ((*s == ' ') || (*s == '\t')) { /* escape spaces */
+				if (*len < 511)
+					fputc('\\', f);
+				(*len)++;
+			}
+			else if ((c < 32) || (c > 126)) {
+				rnd_message(RND_MSG_ERROR, "tEDAx output: replaced invalid character with undescrore\n");
+				c = '_';
+			}
+		}
+		else
+			c = ' '; /* replace last dash with space for terminals */
+
+		if (*len >= 511) {
+			rnd_message(RND_MSG_ERROR, "tEDAx output: line too long (truncated)\n");
+			return -1;
+		}
+		fputc(c, f);
+		(*len)++;
+	}
+	return 0;
+}
+
+static int fputs_tdx(FILE *f, const char *s, int *len)
+{
+	return fputs_tdx_(f, s, len, 0);
+}
+
+static int fputs_tdx_term(FILE *f, const char *s, int *len)
+{
+	return fputs_tdx_(f, s, len, 1);
+}
+
+
+typedef struct {
+	FILE *f;
+	int ver;
+
+	/* temp */
+	char *netn;
+	unsigned int in_block:1;
+} fexport_tedax_t;
+
+static void fexport_tedax_start_block(fexport_tedax_t *ctx, const char *name)
+{
+	int len;
+
+	assert(!ctx->in_block);
+
+	if (name == NULL)
+		name = "not named";
+
+	len = fprintf(ctx->f, "begin backann v%d ", ctx->ver);
+	fputs_tdx(ctx->f, name, &len);
+	fprintf(ctx->f, "\n");
+	ctx->in_block = 1;
+}
+
+static void fexport_tedax_end_block(fexport_tedax_t *ctx)
+{
+	assert(ctx->in_block);
+	fprintf(ctx->f, "end backann\n");
+	ctx->in_block = 0;
+}
+
+
+static void fexport_tedax_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val)
+{
+	int len = 0;
+	fexport_tedax_t *ctx = ctx_;
+
+
+	switch(ev) {
+		case PCB_RPE_INFO_BEGIN:
+			ctx->netn = rnd_strdup(netn);
+			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
+			break;
+		case PCB_RPE_INFO_TERMINAL:
+			len = fprintf(ctx->f, "	net_info ");
+			fputs_tdx(ctx->f, ctx->netn, &len);
+			len += fprintf(ctx->f, " ");
+			fputs_tdx_term(ctx->f, val, &len);
+			fprintf(ctx->f, "\n");
+			break;
+		case PCB_RPE_INFO_END:
+			free(ctx->netn);
+			break;
+		case PCB_RPE_CONN_ADD:
+			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
+			len = fprintf(ctx->f, "	add_conn ");
+			fputs_tdx(ctx->f, netn, &len);
+			len += fprintf(ctx->f, " ");
+			fputs_tdx_term(ctx->f, val, &len);
+			fprintf(ctx->f, "\n");
+			break;
+		case PCB_RPE_CONN_DEL:
+			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
+			len = fprintf(ctx->f, "	del_conn ");
+			fputs_tdx(ctx->f, netn, &len);
+			len += fprintf(ctx->f, " ");
+			fputs_tdx_term(ctx->f, val, &len);
+			fprintf(ctx->f, "\n");
+			break;
+		case PCB_RPE_ATTR_CHG:
+			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
+			if ((strcmp(ctx->netn, "footprint") == 0) || (strcmp(ctx->netn, "value") == 0))
+				len = fprintf(ctx->f, "	fattr_comp ");
+			else
+				len = fprintf(ctx->f, "	attr_comp ");
+			fputs_tdx(ctx->f, ctx->netn, &len);
+			fputs_tdx(ctx->f, key, &len);
+			len += fprintf(ctx->f, " ");
+			fputs_tdx(ctx->f, val, &len);
+			fprintf(ctx->f, "\n");
+			break;
+	}
+}
+
 int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, pcb_ratspatch_fmt_t fmt)
 {
+	int res;
 	fexport_old_bap_t ctx_old;
+	fexport_tedax_t ctx_tdx = {0};
+
+	ctx_old.f = ctx_tdx.f = f;
 
 	switch(fmt) {
 		case PCB_RPFM_PCB:
@@ -470,17 +606,22 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, pcb_ratspatch_fmt_t fmt)
 			ctx_old.po = "(";
 			ctx_old.pc = ")";
 			ctx_old.line_prefix = "\t";
-			ctx_old.f = f;
 			return pcb_rats_patch_export(pcb, pcb->NetlistPatches, 0, fexport_old_bap_cb, &ctx_old);
 		case PCB_RPFM_BAP:
 			ctx_old.q = "";
 			ctx_old.po = " ";
 			ctx_old.pc = "";
 			ctx_old.line_prefix = "";
-			ctx_old.f = f;
 			return pcb_rats_patch_export(pcb, pcb->NetlistPatches, 1, fexport_old_bap_cb, &ctx_old);
 		case PCB_RPFM_BACKANN_V1:
+			ctx_tdx.ver = 1;
+			fprintf(f, "tEDAx v1\n");
+			res = pcb_rats_patch_export(pcb, pcb->NetlistPatches, 1, fexport_tedax_cb, &ctx_tdx);
+			fexport_tedax_end_block(&ctx_tdx);
+			return res;
 		case PCB_RPFM_BACKANN_V2:
+			fprintf(f, "tEDAx v1\n");
+			ctx_tdx.ver = 2;
 			rnd_message(RND_MSG_ERROR, "Not yet supported\n");
 			return -1;
 		default:
