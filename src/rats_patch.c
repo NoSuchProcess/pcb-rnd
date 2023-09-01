@@ -657,7 +657,7 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fn = NULL;
 	const char *sfmt = "bap";
-	pcb_ratspatch_fmt_t fmt;
+	pcb_ratspatch_fmt_t fmt = -1;
 	FILE *f;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, SavePatch, fn = argv[1].val.str);
@@ -701,6 +701,11 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (strcmp(sfmt, "backannv2") == 0) fmt = PCB_RPFM_BACKANN_V2;
 	else if (strcmp(sfmt, "pcb") == 0) fmt = PCB_RPFM_PCB;
 	else if (strcmp(sfmt, "bap") == 0) fmt = PCB_RPFM_BAP;
+	else {
+		rnd_message(RND_MSG_ERROR, "Unknown back annotation file format '%s'\n", sfmt);
+		RND_ACT_IRES(-1);
+		return 0;
+	}
 
 	pcb_ratspatch_fexport(PCB, f, fmt);
 	fclose(f);
