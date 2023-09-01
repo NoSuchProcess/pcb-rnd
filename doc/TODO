@@ -15,8 +15,8 @@
 		- any modification
 		- watch out for multipleobjects being edited
 	- tEDAx block upgrade:
-		- del net -> probably not needed, removing all connections should be enough
-		- comment field
+		- del net -> not needed, removing all connections should be enough
+		- comment field -> not needed, just use multiple blocks in tedax
 		- component add
 		- component remove
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
