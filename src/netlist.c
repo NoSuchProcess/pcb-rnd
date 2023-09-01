@@ -169,6 +169,7 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 				a->pcb = net->parent.board;
 				a->nl_idx = net->parent_nl_idx;
 				a->netname = rnd_strdup(net->name);
+	TODO("subc-in-subc: this must be a longer path, refdes-refdes-term");
 				a->refdes = rnd_strdup(refdes);
 				a->term = rnd_strdup(term);
 				return pcb_net_term_alloc(net, a->refdes, a->term);
