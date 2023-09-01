@@ -42,7 +42,7 @@ typedef struct {
 	int wnetlist, wprev, wtermlist;
 	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats;
 	int wripup, waddrats, wrename, wmerge, wattr, wnlcalc, wnlon, wnloff;
-	int wbrkconn;
+	int wbrkconn, wdel;
 	void *last_selected_row;
 	double last_selected_time;
 	int active; /* already open - allow only one instance */
@@ -380,6 +380,8 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		rnd_actionva(&ctx->pcb->hidlib, "netlist", "AddRats", name, NULL);
 	else if (w == ctx->wrename)
 		rnd_actionva(&ctx->pcb->hidlib, "netlist", "rename", name, NULL);
+	else if (w == ctx->wdel)
+		rnd_actionva(&ctx->pcb->hidlib, "netlist", "remove", name, NULL);
 	else if (w == ctx->wmerge)
 		rnd_actionva(&ctx->pcb->hidlib, "netlist", "merge", name, NULL);
 	else if (w == ctx->wattr) {
@@ -619,10 +621,16 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* back annotated changes */
 				RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_FRAME);
-				RND_DAD_BUTTON(netlist_ctx.dlg, "rename");
-					netlist_ctx.wrename = RND_DAD_CURRENT(netlist_ctx.dlg);
-					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-					RND_DAD_HELP(netlist_ctx.dlg, "change the name of the selected network\nBack annotated.");
+				RND_DAD_BEGIN_HBOX(netlist_ctx.dlg);
+					RND_DAD_BUTTON(netlist_ctx.dlg, "rename");
+						netlist_ctx.wrename = RND_DAD_CURRENT(netlist_ctx.dlg);
+						RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+						RND_DAD_HELP(netlist_ctx.dlg, "change the name of the selected network\nBack annotated.");
+					RND_DAD_BUTTON(netlist_ctx.dlg, "del");
+						netlist_ctx.wdel = RND_DAD_CURRENT(netlist_ctx.dlg);
+						RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+						RND_DAD_HELP(netlist_ctx.dlg, "Remove network\nBack annotated.");
+				RND_DAD_END(netlist_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(netlist_ctx.dlg);
 					RND_DAD_BUTTON(netlist_ctx.dlg, "merge");
 						netlist_ctx.wmerge = RND_DAD_CURRENT(netlist_ctx.dlg);
