@@ -153,6 +153,7 @@ f9	menu-default.lht	Tool(rotate)	Rotate
 f;a	menu-default.lht	Save(LayoutAs)	Save Layout As...
 f;c	menu-default.lht	cam()	Export with CAM job...
 f;e	menu-default.lht	ExportGUI()	Export layout...
+f;f;s	menu-default.lht	ImportSch() 	Import schematics...
 f;l	menu-default.lht	Load(Layout)	Load layout...
 f;n	menu-default.lht	New() 	Start New Layout
 f;o	menu-default.lht	Load(Layout)	Load layout...
@@ -168,7 +169,7 @@ g;d	menu-default.lht	SetGrid(*2) 	Grid *2
 g;f	menu-default.lht	Grid(up) 	Next grid
 g;h	menu-default.lht	SetGrid(/2) 	Grid \0572
 g;i	menu-default.lht	SetUnits(mil)	mil
-g;l	menu-default.lht	conf(toggle, plugins/hid_gtk/local_grid/enable, design) 	Enable local grid
+g;l	menu-default.lht	conf(toggle, editor/local_grid/enable, design) 	Enable local grid
 g;m	menu-default.lht	SetUnits(mm)	mm
 g;r	menu-default.lht	 Display(RealignGrid) 	Realign grid
 g;v	menu-default.lht	conf(toggle, editor/draw_grid, design) 	Enable visible grid
@@ -312,6 +313,7 @@ v;t;n	menu-default.lht	Display(TermID, "%a.name%")	name
 v;t;s	menu-default.lht	Display(TermID, "%a.term%,%a.name%")	term+name
 v;t;t	menu-default.lht	Display(TermID, "%a.term%")	term
 w;a	menu-default.lht	About() 	About...
+w;b	menu-default.lht	NetlistPatchDialog() 	Back annotation
 w;d	menu-default.lht	DRC() 	DRC Check
 w;f	menu-default.lht	FontSel() 	Font selector
 w;l	menu-default.lht	LibraryDialog() 	Library
