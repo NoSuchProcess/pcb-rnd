@@ -26,6 +26,7 @@
 
 #include "event.h"
 #include "netlist.h"
+#include "data_it.h"
 #include <genvector/vtp0.h>
 #include <librnd/core/rnd_conf.h>
 
@@ -254,7 +255,7 @@ static void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_hid_row_t *row_term = rnd_dad_tree_get_selected(tmtree);
 
 	if ((row_net == NULL) || (row_term == NULL)) {
-		rnd_message(RND_MSG_ERROR, "Select a terminal first\n");
+		rnd_message(RND_MSG_ERROR, "Select a terminal in the dialog box's \"terminal list\" first\n");
 		return;
 	}
 
@@ -264,6 +265,74 @@ static void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pcb_board_set_changed_flag(ctx->pcb, 1);
 }
 
+static long addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_t *obj)
+{
+	pcb_subc_t *subc = pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
+	pcb_net_term_t *term;
+	char *termname;
+
+	if (subc == NULL)
+		return 0;
+
+	term = pcb_net_term_get(net, subc->refdes, obj->term, PCB_NETA_NOALLOC);
+	if (term != NULL) {
+		rnd_trace(" already on\n");
+		return 0;
+	}
+
+	termname = rnd_strdup_printf("%s-%s", subc->refdes, obj->term);
+	pcb_ratspatch_append_optimize(ctx->pcb, RATP_ADD_CONN, termname, net->name, NULL);
+	free(termname);
+	pcb_ratspatch_make_edited(ctx->pcb);
+	netlist_data2dlg(ctx);
+	pcb_board_set_changed_flag(ctx->pcb, 1);
+
+
+	return 1;
+}
+
+static long addconn_selected(netlist_ctx_t *ctx, pcb_data_t *parent, pcb_net_t *net)
+{
+	long cnt = 0;
+	pcb_any_obj_t *obj;
+	pcb_data_it_t it;
+
+	for(obj = pcb_data_first(&it, parent, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
+		if ((obj->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) /* pick up terminals */
+			cnt += addconn_term(ctx, net, obj);
+
+		if (obj->type == PCB_OBJ_SUBC) { /* recurse to subc */
+			pcb_subc_t *subc = (pcb_subc_t *)obj;
+			cnt += addconn_selected(ctx, subc->data, net);
+		}
+	}
+
+	return cnt;
+}
+
+static void addconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	netlist_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *nltree = &ctx->dlg[ctx->wnetlist];
+	rnd_hid_row_t *row_net = rnd_dad_tree_get_selected(nltree);
+	pcb_net_t *net;
+
+	if (row_net == NULL) {
+		rnd_message(RND_MSG_ERROR, "Select a net in the netlist window first\n");
+		return;
+	}
+
+	net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], row_net->cell[0], 0);
+	if (net == NULL) {
+		rnd_message(RND_MSG_ERROR, "Internal error: selected net doesn't exist\n");
+		return;
+	}
+
+	if (addconn_selected(ctx, ctx->pcb->Data, net) == 0) {
+		rnd_message(RND_MSG_ERROR, "No terminals selected on board or all selected terminals are already on the netlist\n");
+		return;
+	}
+}
 
 static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
@@ -481,10 +550,14 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 							RND_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
 
 						RND_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* connection buttons */
-							RND_DAD_BUTTON(netlist_ctx.dlg, "break connection");
+							RND_DAD_BUTTON(netlist_ctx.dlg, "break conn");
 								RND_DAD_CHANGE_CB(netlist_ctx.dlg, brkconn_button_cb);
 								netlist_ctx.wbrkconn = RND_DAD_CURRENT(netlist_ctx.dlg);
-								RND_DAD_HELP(netlist_ctx.dlg, "Remove selected pin from the net\nRemember removal on the back annotation netlist patch");
+								RND_DAD_HELP(netlist_ctx.dlg, "Remove terminal (selected in the above list) from the net\nRemember removal on the back annotation netlist patch");
+							RND_DAD_BUTTON(netlist_ctx.dlg, "add conn");
+								RND_DAD_CHANGE_CB(netlist_ctx.dlg, addconn_button_cb);
+								netlist_ctx.wbrkconn = RND_DAD_CURRENT(netlist_ctx.dlg);
+								RND_DAD_HELP(netlist_ctx.dlg, "Add terminals (selected on the board) to the net\nAlso add them on the back annotation netlist patch");
 						RND_DAD_END(netlist_ctx.dlg);
 					RND_DAD_END(netlist_ctx.dlg);
 				RND_DAD_END(netlist_ctx.dlg);
