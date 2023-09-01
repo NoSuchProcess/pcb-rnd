@@ -389,7 +389,7 @@ static int netlist_merge(pcb_board_t *pcb, const char *from, const char *to, int
 		return 1;
 	}
 
-		nto = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], to, 0);
+	nto = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], to, 0);
 	if (merge) {
 		if (nto == NULL) {
 			rnd_message(RND_MSG_ERROR, "No such net: '%s'\n", to);
