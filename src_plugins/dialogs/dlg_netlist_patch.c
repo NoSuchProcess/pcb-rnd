@@ -30,6 +30,10 @@
 #include "netlist.h"
 #include <librnd/core/rnd_conf.h>
 
+/* don't directly call into the netlist dialog code */
+#define netlist_ctx_t ITS_A_BUG
+#define netlist_ctx ITS_A_BUG
+
 const char *dlg_netlist_patch_cookie = "netlist patch dialog";
 
 typedef struct {
@@ -80,6 +84,12 @@ static void netlist_patch_data2dlg(netlist_patch_ctx_t *ctx)
 	}
 }
 
+static void patch_export_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	netlist_patch_ctx_t *ctx = caller_data;
+	rnd_actionva(&ctx->pcb->hidlib, "SavePatch", NULL);
+}
+
 static void pcb_dlg_netlist_patch(pcb_board_t *pcb)
 {
 	static const char *hdr[] = {"instruction", "args", NULL};
@@ -90,13 +100,24 @@ static void pcb_dlg_netlist_patch(pcb_board_t *pcb)
 
 	netlist_patch_ctx.pcb = pcb;
 
-	RND_DAD_BEGIN_VBOX(netlist_patch_ctx.dlg); /* layout */
+	RND_DAD_BEGIN_VBOX(netlist_patch_ctx.dlg);
 		RND_DAD_COMPFLAG(netlist_patch_ctx.dlg, RND_HATF_EXPFILL);
 			RND_DAD_TREE(netlist_patch_ctx.dlg, 2, 0, hdr);
 				RND_DAD_COMPFLAG(netlist_patch_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				netlist_patch_ctx.wlist = RND_DAD_CURRENT(netlist_patch_ctx.dlg);
 		
-			RND_DAD_BUTTON_CLOSES(netlist_patch_ctx.dlg, clbtn);
+			RND_DAD_BEGIN_HBOX(netlist_patch_ctx.dlg);
+				RND_DAD_BUTTON(netlist_patch_ctx.dlg, "Export...");
+					RND_DAD_CHANGE_CB(netlist_patch_ctx.dlg, patch_export_button_cb);
+					RND_DAD_HELP(netlist_patch_ctx.dlg, "Open the back annotation export dialog");
+
+				RND_DAD_BEGIN_VBOX(netlist_patch_ctx.dlg); /* spring */
+					RND_DAD_COMPFLAG(netlist_patch_ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(netlist_patch_ctx.dlg);
+
+				RND_DAD_BUTTON_CLOSES(netlist_patch_ctx.dlg, clbtn);
+			RND_DAD_END(netlist_patch_ctx.dlg);
+
 		RND_DAD_END(netlist_patch_ctx.dlg);
 	RND_DAD_END(netlist_patch_ctx.dlg);
 
@@ -135,3 +156,6 @@ static void pcb_dlg_netlist_patch_uninit(void)
 {
 	rnd_event_unbind_allcookie(dlg_netlist_patch_cookie);
 }
+
+#undef netlist_ctx_t
+#undef netlist_ctx
