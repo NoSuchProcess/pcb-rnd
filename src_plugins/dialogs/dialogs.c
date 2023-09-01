@@ -61,6 +61,7 @@ extern conf_dialogs_t dialogs_conf;
 #include "dlg_fpmap.c"
 #include "dlg_obj_list.c"
 #include "dlg_netlist.c"
+#include "dlg_netlist_patch.c"
 #include "dlg_printcalib.c"
 
 #include "dlg_view.h"
@@ -84,6 +85,7 @@ rnd_action_t dialogs_action_list[] = {
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
 	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
 	{"NetlistDialog", pcb_act_NetlistDialog, pcb_acth_NetlistDialog, pcb_acts_NetlistDialog},
+	{"NetlistPatchDialog", pcb_act_NetlistPatchDialog, pcb_acth_NetlistPatchDialog, pcb_acts_NetlistPatchDialog},
 	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog},
 	{"IOIncompatListDialog", pcb_act_IOIncompatListDialog, pcb_acth_IOIncompatListDialog, pcb_acts_IOIncompatListDialog},
 	{"ViewList", pcb_act_ViewList, pcb_acth_ViewList, pcb_acts_ViewList},
@@ -106,6 +108,7 @@ void pplg_uninit_dialogs(void)
 	pcb_export_uninit();
 	pcb_dlg_library_uninit();
 	pcb_dlg_netlist_uninit();
+	pcb_dlg_netlist_patch_uninit();
 	pcb_dlg_undo_uninit();
 	pcb_dlg_pstklib_uninit();
 	rnd_dlg_pref_uninit();
@@ -133,6 +136,7 @@ rnd_conf_plug_reg(dialogs_conf, adialogs_conf_internal, dialogs_cookie);
 	pcb_dlg_pstklib_init();
 	pcb_dlg_undo_init();
 	pcb_dlg_netlist_init();
+	pcb_dlg_netlist_patch_init();
 	pcb_view_dlg_init();
 	pcb_dlg_fontsel_init();
 	pcb_dlg_library_init();
