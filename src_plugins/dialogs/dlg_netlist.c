@@ -261,8 +261,7 @@ static void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 	pcb_ratspatch_append_optimize(ctx->pcb, RATP_DEL_CONN, row_term->cell[0], row_net->cell[0], NULL);
 	pcb_ratspatch_make_edited(ctx->pcb);
-	netlist_data2dlg(ctx);
-	pcb_board_set_changed_flag(ctx->pcb, 1);
+	pcb_netlist_changed(0);
 }
 
 static long addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_t *obj)
@@ -285,10 +284,7 @@ static long addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_t *obj)
 	pcb_ratspatch_append_optimize(ctx->pcb, RATP_ADD_CONN, termname, net->name, NULL);
 	free(termname);
 	pcb_ratspatch_make_edited(ctx->pcb);
-	netlist_data2dlg(ctx);
-	pcb_board_set_changed_flag(ctx->pcb, 1);
-
-
+	pcb_netlist_changed(0);
 	return 1;
 }
 
