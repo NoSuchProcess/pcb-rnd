@@ -204,8 +204,8 @@ void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, con
 	case RATP_DEL_CONN:
 		seek_op = RATP_ADD_CONN;
 		break;
-	case RATP_CHANGE_ATTRIB:
-		seek_op = RATP_CHANGE_ATTRIB;
+	case RATP_CHANGE_COMP_ATTRIB:
+		seek_op = RATP_CHANGE_COMP_ATTRIB;
 		break;
 	}
 
@@ -213,7 +213,7 @@ void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, con
 	for (n = pcb->NetlistPatchLast; n != NULL; n = n->prev) {
 		if ((n->op == seek_op) && (strcmp(n->id, id) == 0)) {
 			switch (op) {
-				case RATP_CHANGE_ATTRIB:
+				case RATP_CHANGE_COMP_ATTRIB:
 					if (strcmp(n->arg1.attrib_name, a1) != 0)
 						break;
 					rats_patch_remove(pcb, n, 1);
@@ -313,7 +313,7 @@ int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
 			return rats_patch_apply_conn(pcb, patch, 0);
 		case RATP_DEL_CONN:
 			return rats_patch_apply_conn(pcb, patch, 1);
-		case RATP_CHANGE_ATTRIB:
+		case RATP_CHANGE_COMP_ATTRIB:
 			return rats_patch_apply_attrib(pcb, patch);
 	}
 	return 0;
@@ -347,7 +347,7 @@ int pcb_rats_patch_already_done(pcb_board_t *pcb, pcb_ratspatch_line_t *n)
 				return 1;
 			}
 			break;
-		case RATP_CHANGE_ATTRIB:
+		case RATP_CHANGE_COMP_ATTRIB:
 			{
 				pcb_subc_t *subc = pcb_subc_by_refdes(pcb->Data, n->id);
 				if (subc != NULL) {
@@ -414,7 +414,7 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 						}
 					}
 				}
-			case RATP_CHANGE_ATTRIB:
+			case RATP_CHANGE_COMP_ATTRIB:
 				break;
 			}
 		}
@@ -430,7 +430,7 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 		case RATP_DEL_CONN:
 			cb(ctx, PCB_RPE_CONN_DEL, n->arg1.net_name, NULL, n->id);
 			break;
-		case RATP_CHANGE_ATTRIB:
+		case RATP_CHANGE_COMP_ATTRIB:
 			cb(ctx, PCB_RPE_COMP_ATTR_CHG, n->id, n->arg1.attrib_name, n->arg2.attrib_val);
 			break;
 		}
@@ -737,7 +737,7 @@ static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, cha
 				placed = pcb_subc_replace(PCB, subc, news, rnd_true, dumb);
 				if (placed != NULL) {
 					if (!dumb)
-						pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
+						pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_COMP_ATTRIB, placed->refdes, "footprint", fpname);
 					changed = 1;
 				}
 			}
@@ -747,7 +747,7 @@ static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, cha
 			placed = pcb_subc_replace(PCB, olds, news, rnd_true, dumb);
 			if (placed != NULL) {
 				if (!dumb)
-					pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
+					pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_COMP_ATTRIB, placed->refdes, "footprint", fpname);
 				changed = 1;
 			}
 			break;

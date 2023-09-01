@@ -1357,7 +1357,7 @@ netpatch
 			/* name style pin pin ... */
 		: T_ADD_CONN      '(' STRING STRING ')'         { pcb_ratspatch_append(yyPCB, RATP_ADD_CONN, $3, $4, NULL, 0); free($3); free($4); }
 		| T_DEL_CONN      '(' STRING STRING ')'         { pcb_ratspatch_append(yyPCB, RATP_DEL_CONN, $3, $4, NULL, 0); free($3); free($4); }
-		| T_CHANGE_ATTRIB '(' STRING STRING STRING ')'  { pcb_ratspatch_append(yyPCB, RATP_CHANGE_ATTRIB, $3, $4, $5, 0); free($3); free($4); free($5); }
+		| T_CHANGE_ATTRIB '(' STRING STRING STRING ')'  { pcb_ratspatch_append(yyPCB, RATP_CHANGE_COMP_ATTRIB, $3, $4, $5, 0); free($3); free($4); free($5); }
 		;
 
 attribute

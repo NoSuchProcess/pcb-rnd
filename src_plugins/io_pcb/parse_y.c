@@ -2966,7 +2966,7 @@ yyreduce:
 
   case 201:
 #line 1360 "parse_y.y" /* yacc.c:1652  */
-    { pcb_ratspatch_append(yyPCB, RATP_CHANGE_ATTRIB, (yyvsp[-3].string), (yyvsp[-2].string), (yyvsp[-1].string), 0); free((yyvsp[-3].string)); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
+    { pcb_ratspatch_append(yyPCB, RATP_CHANGE_COMP_ATTRIB, (yyvsp[-3].string), (yyvsp[-2].string), (yyvsp[-1].string), 0); free((yyvsp[-3].string)); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
 #line 2971 "parse_y.c" /* yacc.c:1652  */
     break;
 

@@ -660,7 +660,7 @@ static void set_net(pcb_propset_ctx_t *st, const char *netname)
 			return;
 
 		st->set_cnt++;
-		pcb_ratspatch_append_optimize(st->pcb, RATP_CHANGE_ATTRIB, netname, key, st->s);
+		pcb_ratspatch_append_optimize(st->pcb, RATP_CHANGE_COMP_ATTRIB, netname, key, st->s);
 		return;
 	}
 }
@@ -1224,7 +1224,7 @@ static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
 	if ((net == NULL) || (pcb_attribute_get(&net->Attributes, key) == NULL))
 		return 0;
 
-	pcb_ratspatch_append_optimize(ctx->pcb, RATP_CHANGE_ATTRIB, netname, key, NULL);
+	pcb_ratspatch_append_optimize(ctx->pcb, RATP_CHANGE_COMP_ATTRIB, netname, key, NULL);
 	return 1;
 }
 

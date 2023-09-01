@@ -35,7 +35,7 @@
 typedef enum {
 	RATP_ADD_CONN,
 	RATP_DEL_CONN,
-	RATP_CHANGE_ATTRIB
+	RATP_CHANGE_COMP_ATTRIB
 } pcb_rats_patch_op_t;
 
 struct pcb_ratspatch_line_s {
