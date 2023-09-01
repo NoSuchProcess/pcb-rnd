@@ -265,6 +265,7 @@
  ../src_plugins/dialogs/dlg_fpmap.c actions_pcb.h plug_footprint.h \
  plug_io.h plug_footprint.h ../src_plugins/dialogs/dlg_obj_list.c \
  ../src_plugins/dialogs/dlg_netlist.c data_it.h \
+ ../src_plugins/dialogs/dlg_netlist_patch.c \
  ../src_plugins/dialogs/dlg_printcalib.c \
  ../src_plugins/dialogs/dlg_view.h ../src_plugins/dialogs/adialogs_conf.h \
  ../src_plugins/dialogs/conf_internal.c \
