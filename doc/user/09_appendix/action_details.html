@@ -1948,10 +1948,12 @@ Note that moving an subcircuit from a component layer to a solder layer, or from
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])
+Net(find|select|rats|norats|ripup|addrats|clear[,net[,pin]])
 Net(freeze|thaw|forcethaw)
 Net(swap)
-Net(add,net,pin)Net([rename|merge],srcnet,dstnet)
+Net(add,net,pin)
+Net([rename|merge],srcnet,dstnet)
+Net(remove,netname)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Perform various actions on netlists.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
@@ -2107,7 +2109,13 @@ connected-color
 <th>
  merge  
 <td>
- Move all terminal connections from the source network (first arg)       to the destination network (with back annotation)  
+ Move all terminal connections from the source network (first arg)       to the destination network (with back annotation)   
+<tr>
+
+<th>
+ remove  
+<td>
+ Remove all connections of a net (with back annotation); also remove       the net.  
 </table>
  
 </dd></dl>
@@ -2813,7 +2821,7 @@ If no filename is given a file select box will pop up.
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-pcb_move_obj(steps)
+Rotate90(steps)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Rotates the object under the crosshair by 90 degree steps.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
@@ -2911,9 +2919,10 @@ If no filename is entered, either the last one is used again or, if it is not av
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 Save()
-Save(Layout|LayoutAs)
-Save(AllConnections|AllUnusedPins|ElementConnections)
-Save(PasteBuffer)
+Save(Layout)
+Save(LayoutAs, [path])
+Save(AllConnections|AllUnusedPins|ElementConnections, [path])
+Save(PasteBuffer, [path])
 Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Save layout data to a user-selected file.
@@ -3763,13 +3772,19 @@ The values are percentages of the viewport's view. Thus, a pan of
 <tr>
 
 <td>
-board  
+design  
 <td>
  The values are percentages of the board size. Thus, a move of       
 <i>
 50,50
 </i>
- moves you halfway across the board.  
+ moves you halfway across the board.   
+<tr>
+
+<td>
+board  
+<td>
+ Same as design (for backward compatibility)  
 </table>
  
 </dd></dl>
