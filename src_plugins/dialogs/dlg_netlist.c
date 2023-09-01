@@ -274,13 +274,14 @@ static long addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_t *obj)
 	if (subc == NULL)
 		return 0;
 
-	term = pcb_net_term_get(net, subc->refdes, obj->term, PCB_NETA_NOALLOC);
+	termname = rnd_strdup_printf("%s-%s", subc->refdes, obj->term);
+	term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], obj);
 	if (term != NULL) {
-		rnd_trace(" already on\n");
+		rnd_message(RND_MSG_ERROR, "Can not add %s to net %s because terminal is already part of a net\n", termname, net->name);
+		free(termname);
 		return 0;
 	}
 
-	termname = rnd_strdup_printf("%s-%s", subc->refdes, obj->term);
 	pcb_ratspatch_append_optimize(ctx->pcb, RATP_ADD_CONN, termname, net->name, NULL);
 	free(termname);
 	pcb_ratspatch_make_edited(ctx->pcb);
