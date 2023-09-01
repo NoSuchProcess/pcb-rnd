@@ -272,7 +272,8 @@ static const char pcb_acts_Netlist[] =
 	"Net(freeze|thaw|forcethaw)\n"
 	"Net(swap)\n"
 	"Net(add,net,pin)\n"
-	"Net([rename|merge],srcnet,dstnet)"
+	"Net([rename|merge],srcnet,dstnet)\n"
+	"Net(remove,netname)"
 	;
 static const char pcb_acth_Netlist[] = "Perform various actions on netlists.";
 
@@ -346,6 +347,35 @@ static void netlist_unfreeze(pcb_board_t *pcb)
 	}
 }
 
+/* Remove a net (back annotated): remove all connections so the net is empty */
+static int netlist_remove(pcb_board_t *pcb, const char *netname)
+{
+	pcb_net_t *net;
+	pcb_net_term_t *t, *tnext;
+
+	net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
+	if (net == NULL) {
+		rnd_message(RND_MSG_ERROR, "No such net: '%s'\n", netname);
+		return 1;
+	}
+
+	/* remove all terminals from net*/
+	for(t = pcb_termlist_first(&net->conns); t != NULL; t = tnext) {
+		char *pinname = rnd_strdup_printf("%s-%s", t->refdes, t->term);
+
+		tnext = pcb_termlist_next(t);
+		pcb_net_term_del(net, t);
+		pcb_ratspatch_append_optimize(PCB, RATP_DEL_CONN, pinname, net->name, NULL);
+
+		free(pinname);
+	}
+	pcb_net_del(&PCB->netlist[PCB_NETLIST_EDITED], netname);
+	pcb_netlist_changed(0);
+
+	return 0;
+}
+
+
 /* Rename or merge networks: move all conns from 'from' to 'to'. If merge,
    'to' shall be an existing network, else it shall be a non-existing network. */
 static int netlist_merge(pcb_board_t *pcb, const char *from, const char *to, int merge)
@@ -411,6 +441,11 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 
 	switch(op) {
+		case F_Remove:
+			if (a1 == NULL)
+				RND_ACT_FAIL(Netlist);
+			RND_ACT_IRES(netlist_remove(PCB, a1));
+			return 0;
 		case F_Rename:
 			if (a1 == NULL)
 				RND_ACT_FAIL(Netlist);
