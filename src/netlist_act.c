@@ -268,10 +268,10 @@ static void pcb_netlist_addrats(pcb_net_t *new_net, pcb_net_term_t *term)
 
 
 static const char pcb_acts_Netlist[] =
-	"Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])\n"
+	"Net(find|select|rats|norats|ripup|addrats|clear[,net[,pin]])\n"
 	"Net(freeze|thaw|forcethaw)\n"
 	"Net(swap)\n"
-	"Net(add,net,pin)"
+	"Net(add,net,pin)\n"
 	"Net([rename|merge],srcnet,dstnet)"
 	;
 static const char pcb_acth_Netlist[] = "Perform various actions on netlists.";
