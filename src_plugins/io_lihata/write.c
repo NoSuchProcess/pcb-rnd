@@ -1643,7 +1643,8 @@ static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 			lht_dom_list_append(ctx->patch, n);
 			break;
 
-		case PCB_RPE_ATTR_CHG:
+		case PCB_RPE_COMP_ATTR_CHG:
+TODO("from v9 rename this:");
 			n = lht_dom_node_alloc(LHT_HASH, "change_attrib");
 			lht_dom_hash_put(n, build_text("net", netn));
 			lht_dom_hash_put(n, build_text("key", key));

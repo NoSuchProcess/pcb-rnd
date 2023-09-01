@@ -431,7 +431,7 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 			cb(ctx, PCB_RPE_CONN_DEL, n->arg1.net_name, NULL, n->id);
 			break;
 		case RATP_CHANGE_ATTRIB:
-			cb(ctx, PCB_RPE_ATTR_CHG, n->id, n->arg1.attrib_name, n->arg2.attrib_val);
+			cb(ctx, PCB_RPE_COMP_ATTR_CHG, n->id, n->arg1.attrib_name, n->arg2.attrib_val);
 			break;
 		}
 	}
@@ -452,7 +452,7 @@ static void fexport_old_bap_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 		case PCB_RPE_INFO_END:       fprintf(ctx->f, "%s\n", ctx->pc); break;
 		case PCB_RPE_CONN_ADD:       fprintf(ctx->f, "%sadd_conn%s%s%s%s %s%s%s%s\n", ctx->line_prefix, ctx->po, ctx->q, val, ctx->q, ctx->q, netn, ctx->q, ctx->pc); break;
 		case PCB_RPE_CONN_DEL:       fprintf(ctx->f, "%sdel_conn%s%s%s%s %s%s%s%s\n", ctx->line_prefix, ctx->po, ctx->q, val, ctx->q, ctx->q, netn, ctx->q, ctx->pc); break;
-		case PCB_RPE_ATTR_CHG:
+		case PCB_RPE_COMP_ATTR_CHG:
 			fprintf(ctx->f, "%schange_attrib%s%s%s%s %s%s%s %s%s%s%s\n",
 				ctx->line_prefix, ctx->po,
 				ctx->q, netn, ctx->q,
@@ -579,7 +579,7 @@ static void fexport_tedax_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const ch
 			fputs_tdx_term(ctx->f, val, &len);
 			fprintf(ctx->f, "\n");
 			break;
-		case PCB_RPE_ATTR_CHG:
+		case PCB_RPE_COMP_ATTR_CHG:
 			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
 			if ((strcmp(ctx->netn, "footprint") == 0) || (strcmp(ctx->netn, "value") == 0))
 				len = fprintf(ctx->f, "	fattr_comp ");
