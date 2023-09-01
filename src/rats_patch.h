@@ -81,10 +81,15 @@ void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t *n, int do_free);
 
 /**** exporter ****/
 
-/* Special text exporter:
-   save all patch lines as an ordered list of text lines
-   if fmt is non-zero, generate pcb savefile compatible lines, else generate a back annotation patch */
-int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE * f, int fmt_pcb);
+typedef enum pcb_ratspatch_fmt_e {
+	PCB_RPFM_PCB,         /* original .pcb format from the early days of pcb-rnd; feature-compatible with tEDAx backann v1 */
+	PCB_RPFM_BAP,         /* plain text format for gschem and old versions of sch-rnd; feature-compatible with tEDAx backann v1 */
+	PCB_RPFM_BACKANN_V1,  /* tEDAx backann v1 block */
+	PCB_RPFM_BACKANN_V2   /* tEDAx backann v2 block */
+} pcb_ratspatch_fmt_t;
+
+/* Special text exporter: save all patch lines as an ordered list */
+int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE * f, pcb_ratspatch_fmt_t fmt);
 
 /* Generic, callback based exporter: */
 

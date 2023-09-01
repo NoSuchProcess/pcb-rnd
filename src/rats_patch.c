@@ -439,11 +439,11 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 typedef struct {
 	FILE *f;
 	const char *q, *po, *pc, *line_prefix;
-} fexport_t;
+} fexport_old_bap_t;
 
-static void fexport_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val)
+static void fexport_old_bap_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val)
 {
-	fexport_t *ctx = ctx_;
+	fexport_old_bap_t *ctx = ctx_;
 	switch(ev) {
 		case PCB_RPE_INFO_BEGIN:     fprintf(ctx->f, "%snet_info%s%s%s%s", ctx->line_prefix, ctx->po, ctx->q, netn, ctx->q); break;
 		case PCB_RPE_INFO_TERMINAL:  fprintf(ctx->f, " %s%s%s", ctx->q, val, ctx->q); break;
@@ -460,23 +460,35 @@ static void fexport_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const char *ne
 	}
 }
 
-int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
+int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, pcb_ratspatch_fmt_t fmt)
 {
-	fexport_t ctx;
-	if (fmt_pcb) {
-		ctx.q = "\"";
-		ctx.po = "(";
-		ctx.pc = ")";
-		ctx.line_prefix = "\t";
+	fexport_old_bap_t ctx_old;
+
+	switch(fmt) {
+		case PCB_RPFM_PCB:
+			ctx_old.q = "\"";
+			ctx_old.po = "(";
+			ctx_old.pc = ")";
+			ctx_old.line_prefix = "\t";
+			ctx_old.f = f;
+			return pcb_rats_patch_export(pcb, pcb->NetlistPatches, 0, fexport_old_bap_cb, &ctx_old);
+		case PCB_RPFM_BAP:
+			ctx_old.q = "";
+			ctx_old.po = " ";
+			ctx_old.pc = "";
+			ctx_old.line_prefix = "";
+			ctx_old.f = f;
+			return pcb_rats_patch_export(pcb, pcb->NetlistPatches, 1, fexport_old_bap_cb, &ctx_old);
+		case PCB_RPFM_BACKANN_V1:
+		case PCB_RPFM_BACKANN_V2:
+			rnd_message(RND_MSG_ERROR, "Not yet supported\n");
+			return -1;
+		default:
+			rnd_message(RND_MSG_ERROR, "Unknown file format\n");
+			return -1;
 	}
-	else {
-		ctx.q = "";
-		ctx.po = " ";
-		ctx.pc = "";
-		ctx.line_prefix = "";
-	}
-	ctx.f = f;
-	return pcb_rats_patch_export(pcb, pcb->NetlistPatches, !fmt_pcb, fexport_cb, &ctx);
+
+	return -1;
 }
 
 static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint([Selected|Object], [footprint], [dumb])\n";
@@ -639,14 +651,20 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	return 0;
 }
 
-static const char pcb_acts_SavePatch[] = "SavePatch(filename)";
-static const char pcb_acth_SavePatch[] = "Save netlist patch for back annotation.";
+static const char pcb_acts_SavePatch[] = "SavePatch([fmt], filename)";
+static const char pcb_acth_SavePatch[] = "Save netlist patch for back annotation. File format can be specified in fmt, which should be one of: @bap (for the old gschem/sch-rnd format), @backannv1 or @backannv2 (for tEDAx), @pcb (for the old gEDA/PCB format, read by pcb-rnd only)";
 static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fn = NULL;
+	const char *sfmt = "bap";
+	pcb_ratspatch_fmt_t fmt;
 	FILE *f;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, SavePatch, fn = argv[1].val.str);
+	if ((fn != NULL) && (*fn == '@')) {
+		sfmt = fn+1;
+		RND_ACT_MAY_CONVARG(2, FGW_STR, SavePatch, fn = argv[2].val.str);
+	}
 
 	if (fn == NULL) {
 		char *default_file;
@@ -678,7 +696,13 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(-1);
 		return 0;
 	}
-	pcb_ratspatch_fexport(PCB, f, 0);
+
+	if (strcmp(sfmt, "backannv1") == 0) fmt = PCB_RPFM_BACKANN_V1;
+	else if (strcmp(sfmt, "backannv2") == 0) fmt = PCB_RPFM_BACKANN_V2;
+	else if (strcmp(sfmt, "pcb") == 0) fmt = PCB_RPFM_PCB;
+	else if (strcmp(sfmt, "bap") == 0) fmt = PCB_RPFM_BAP;
+
+	pcb_ratspatch_fexport(PCB, f, fmt);
 	fclose(f);
 
 	RND_ACT_IRES(0);

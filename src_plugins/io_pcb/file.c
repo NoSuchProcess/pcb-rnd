@@ -442,7 +442,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 	if (PCB->NetlistPatches != NULL) {
 		pcb_io_incompat_save(PCB->Data, NULL, "net-patch", "Saving netlist patch makes the file incompatible with geda/pcb.", "Either remove (or resolve) your netlist patches before save or remove the NetListPatch() subtree manually from the saved file before using with geda/pcb.");
 		fprintf(FP, "NetListPatch()\n(\n");
-		pcb_ratspatch_fexport(PCB, FP, 1);
+		pcb_ratspatch_fexport(PCB, FP, PCB_RPFM_PCB);
 		fprintf(FP, ")\n");
 	}
 }
