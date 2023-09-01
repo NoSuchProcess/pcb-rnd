@@ -698,11 +698,30 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_BaSubc[] = "BaSubc(object|selected)\n";
+static const char pcb_acth_BaSubc[] = "Add new subcircuits to the back annotation list";
+/* DOC: basubc.html */
+static fgw_error_t pcb_act_BaSubc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op;
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+
+	rnd_message(RND_MSG_ERROR, "TODO: not yet implemented\n");
+
+	switch(op) {
+		case F_Object:
+		case F_Selected:
+			break;
+	}
+	return 0;
+}
 
 static rnd_action_t netlist_action_list[] = {
 	{"net", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
 	{"netlist", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
-	{"claimnet", pcb_act_ClaimNet, pcb_acth_ClaimNet, pcb_acts_ClaimNet}
+	{"claimnet", pcb_act_ClaimNet, pcb_acth_ClaimNet, pcb_acts_ClaimNet},
+	{"basubc", pcb_act_BaSubc, pcb_acth_BaSubc, pcb_acts_BaSubc}
 };
 
 void pcb_netlist_act_init2(void)
