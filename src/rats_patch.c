@@ -207,6 +207,9 @@ void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, con
 	case RATP_CHANGE_COMP_ATTRIB:
 		seek_op = RATP_CHANGE_COMP_ATTRIB;
 		break;
+	case RATP_CHANGE_NET_ATTRIB:
+		seek_op = RATP_CHANGE_NET_ATTRIB;
+		break;
 	}
 
 	/* keep the list clean: remove the last operation that becomes obsolete by the new one */
@@ -214,6 +217,7 @@ void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, con
 		if ((n->op == seek_op) && (strcmp(n->id, id) == 0)) {
 			switch (op) {
 				case RATP_CHANGE_COMP_ATTRIB:
+				case RATP_CHANGE_NET_ATTRIB:
 					if (strcmp(n->arg1.attrib_name, a1) != 0)
 						break;
 					rats_patch_remove(pcb, n, 1);
@@ -294,7 +298,19 @@ static int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t *patch, 
 	return 1;
 }
 
-static int rats_patch_apply_attrib(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
+static int rats_patch_apply_comp_attrib(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
+{
+		pcb_subc_t *subc = pcb_subc_by_refdes(pcb->Data, patch->id);
+	if (subc == NULL)
+		return 1;
+	if ((patch->arg2.attrib_val == NULL) || (*patch->arg2.attrib_val == '\0'))
+		pcb_attribute_remove(&subc->Attributes, patch->arg1.attrib_name);
+	else
+		pcb_attribute_put(&subc->Attributes, patch->arg1.attrib_name, patch->arg2.attrib_val);
+	return 0;
+}
+
+static int rats_patch_apply_net_attrib(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
 {
 	pcb_net_t *net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], patch->id, PCB_NETA_ALLOC);
 	if (net == NULL)
@@ -314,7 +330,9 @@ int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
 		case RATP_DEL_CONN:
 			return rats_patch_apply_conn(pcb, patch, 1);
 		case RATP_CHANGE_COMP_ATTRIB:
-			return rats_patch_apply_attrib(pcb, patch);
+			return rats_patch_apply_comp_attrib(pcb, patch);
+		case RATP_CHANGE_NET_ATTRIB:
+			return rats_patch_apply_net_attrib(pcb, patch);
 	}
 	return 0;
 }
@@ -354,11 +372,28 @@ int pcb_rats_patch_already_done(pcb_board_t *pcb, pcb_ratspatch_line_t *n)
 					char *want = n->arg2.attrib_val;
 					char *av = pcb_attribute_get(&subc->Attributes, n->arg1.attrib_name);
 					if (((av == NULL) || (*av == '\0')) && ((want == NULL) || (*want == '\0'))) {
-						rnd_message(RND_MSG_INFO, "rats patch: attrib %s del from %s is done on forward annotation, removing.\n", n->arg1.attrib_name, n->id);
+						rnd_message(RND_MSG_INFO, "rats patch: comp attrib %s del from %s is done on forward annotation, removing.\n", n->arg1.attrib_name, n->id);
 						return 1;
 					}
 					if ((av != NULL) && (want != NULL) && (strcmp(av, want) == 0)) {
-						rnd_message(RND_MSG_INFO, "rats patch: attrib %s change for %s is done on forward annotation, removing.\n", n->arg1.attrib_name, n->id);
+						rnd_message(RND_MSG_INFO, "rats patch: comp attrib %s change for %s is done on forward annotation, removing.\n", n->arg1.attrib_name, n->id);
+						return 1;
+					}
+				}
+			}
+			break;
+		case RATP_CHANGE_NET_ATTRIB:
+			{
+				pcb_net_t *net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], n->id, 0);
+				if (net != NULL) {
+					char *want = n->arg2.attrib_val;
+					char *av = pcb_attribute_get(&net->Attributes, n->arg1.attrib_name);
+					if (((av == NULL) || (*av == '\0')) && ((want == NULL) || (*want == '\0'))) {
+						rnd_message(RND_MSG_INFO, "rats patch: net attrib %s del from %s is done on forward annotation, removing.\n", n->arg1.attrib_name, n->id);
+						return 1;
+					}
+					if ((av != NULL) && (want != NULL) && (strcmp(av, want) == 0)) {
+						rnd_message(RND_MSG_INFO, "rats patch: net attrib %s change for %s is done on forward annotation, removing.\n", n->arg1.attrib_name, n->id);
 						return 1;
 					}
 				}
@@ -415,6 +450,7 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 					}
 				}
 			case RATP_CHANGE_COMP_ATTRIB:
+			case RATP_CHANGE_NET_ATTRIB:
 				break;
 			}
 		}
@@ -432,6 +468,9 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 			break;
 		case RATP_CHANGE_COMP_ATTRIB:
 			cb(ctx, PCB_RPE_COMP_ATTR_CHG, n->id, n->arg1.attrib_name, n->arg2.attrib_val);
+			break;
+		case RATP_CHANGE_NET_ATTRIB:
+			cb(ctx, PCB_RPE_NET_ATTR_CHG, n->id, n->arg1.attrib_name, n->arg2.attrib_val);
 			break;
 		}
 	}
@@ -459,6 +498,9 @@ static void fexport_old_bap_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 				ctx->q, key, ctx->q,
 				ctx->q, val, ctx->q,
 				ctx->pc);
+		case PCB_RPE_NET_ATTR_CHG:
+			rnd_message(RND_MSG_ERROR, "Can not save net attrib change in old or bap netlist patch format for back annotation\n");
+			break;
 	}
 }
 
@@ -581,11 +623,21 @@ static void fexport_tedax_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const ch
 			break;
 		case PCB_RPE_COMP_ATTR_CHG:
 			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
-			if ((strcmp(ctx->netn, "footprint") == 0) || (strcmp(ctx->netn, "value") == 0))
+			if ((strcmp(key, "footprint") == 0) || (strcmp(key, "value") == 0))
 				len = fprintf(ctx->f, "	fattr_comp ");
 			else
 				len = fprintf(ctx->f, "	attr_comp ");
-			fputs_tdx(ctx->f, ctx->netn, &len);
+			goto save_attr_val;
+		case PCB_RPE_NET_ATTR_CHG:
+			if (ctx->ver < 2) {
+				rnd_message(RND_MSG_ERROR, "Can not save net attrib change in tedax backann v1 format; please use v2 for this export\n");
+				break;
+			}
+			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
+			len = fprintf(ctx->f, "	attr_conn ");
+			save_attr_val:;
+			fputs_tdx(ctx->f, netn, &len);
+			len += fprintf(ctx->f, " ");
 			fputs_tdx(ctx->f, key, &len);
 			len += fprintf(ctx->f, " ");
 			fputs_tdx(ctx->f, val, &len);
@@ -618,14 +670,14 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, pcb_ratspatch_fmt_t fmt)
 		case PCB_RPFM_BACKANN_V1:
 			ctx_tdx.ver = 1;
 			fprintf(f, "tEDAx v1\n");
+			save_tedax:;
 			res = pcb_rats_patch_export(pcb, pcb->NetlistPatches, 1, fexport_tedax_cb, &ctx_tdx);
 			fexport_tedax_end_block(&ctx_tdx);
 			return res;
 		case PCB_RPFM_BACKANN_V2:
 			fprintf(f, "tEDAx v1\n");
 			ctx_tdx.ver = 2;
-			rnd_message(RND_MSG_ERROR, "Not yet supported\n");
-			return -1;
+			goto save_tedax;
 		default:
 			rnd_message(RND_MSG_ERROR, "Unknown file format\n");
 			return -1;

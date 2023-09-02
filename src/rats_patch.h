@@ -35,7 +35,8 @@
 typedef enum {
 	RATP_ADD_CONN,
 	RATP_DEL_CONN,
-	RATP_CHANGE_COMP_ATTRIB
+	RATP_CHANGE_COMP_ATTRIB,
+	RATP_CHANGE_NET_ATTRIB
 } pcb_rats_patch_op_t;
 
 struct pcb_ratspatch_line_s {
@@ -103,7 +104,8 @@ typedef enum {            /* netn is always the net name, unless specified other
 
 	PCB_RPE_CONN_ADD,       /* netn; val is the terminal pin/pad name */
 	PCB_RPE_CONN_DEL,       /* netn; val is the terminal pin/pad name */
-	PCB_RPE_COMP_ATTR_CHG   /* netn is component name; key is the attribute name, val is the new attribute value */
+	PCB_RPE_COMP_ATTR_CHG,  /* netn is component name; key is the attribute name, val is the new attribute value */
+	PCB_RPE_NET_ATTR_CHG    /* netn is net name; key is the attribute name, val is the new attribute value */
 } pcb_rats_patch_export_ev_t;
 
 /* Call cb() for each item to output; PCB_PTRE_INFO* is calculated/called only
