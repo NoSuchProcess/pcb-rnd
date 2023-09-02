@@ -4,79 +4,87 @@ Each table below describes the full tree of one of the pcb-rnd file formats, fro
 
 ha:pcb-rnd-board-v*
 
-type:name           value  ver description
-ha:pcb-rnd-board-v*            \t\t\tThe full, self-contained description of a printed circuit board. \t\t\tThis is the root of a board .lht file. The * after the v in the name \t\t\tis an integer which is the format version. \t\t
- ha:meta                       Any meta-data that won't directly turn into physical material (e.g. copper).
-  board_name        string     User assigned name of the board
-  ha:grid                      User interface last grid settings
-   offs_x           coord      grid origin: X offset from 0;0
-   offs_y           coord      grid origin: Y offset from 0;0
-   spacing          coord      distance between two grid points both in X and Y directions
-  ha:size                      object size related settings
-   x                coord      drawing area size X (width)
-   y                coord      drawing area size Y (height)
-   isle_area_nm2    double     remove polygon islands smaller than this value, specified in nm^2
-   thermal_scale    double     scale all thermals on the board by this factor
-  ha:drc                   <5  design rule checker settings for the old DRC
-   bloat            coord      Minimum copper spacing
-   shrink           coord      Minimum overlap between validly touching copper objects
-   min_width        coord      Minimum copper width
-   min_silk         coord      Minimum silk width
-   min_drill        coord      Minimum drill diameter
-   min_ring         coord      Minimum annular ring width
-  ha:cursor                    obsolete cursor/view state
-   x                coord      last position, X (horizontal)
-   y                coord      last position, Y (horizontal)
-   zoom             double     last view zoom factor
- ha:layer_stack                physical layer stack information: geometry and properties of physical layers
-  li:groups                    ordered list of physical layers from top to bottom
-   ha:INTEGER                  a layer group (a physical layer of the board); the ID of the layer group is the integer in the name of the node
-    name            string >=6 purpose of layer groups (useful with mechanical/documentation groups
-    ha:type                    a flag-list of layer type flag bits
-     top            flag       location: top side
-     bottom         flag       location: bottom side
-     intern         flag       location: internal
-     logical        flag       location: logical (not in the actual stackup)
-     copper         flag       material: copper
-     silk           flag       material: silk
-     mask           flag       material: mask
-     paste          flag       material: paste
-     outline        flag       "material": router path for board outline; normally for the outer contour, sometimes for biggish inner cutouts as well)
-     mech           flag       "material": various mechanical fabbing instructions, e.g. slots; the purpose field provides more detail about the use
-     doc            flag       "material": documentation, either for the user and for pcb-rnd or both (the purpose field shoudl tell); e.g. assembly documentation for the user, keepout for the user and DRC
-     substrate      flag       material: substrate or insulator
-    name            string >=6 purpose of layer groups (useful with mechanical/documentation groups
-    li:layers                  ordered list of logical layer IDs hosted by this layer group
- ha:font                       font kit: all fonts used on the board (if no font specified, default font will be used)
-  ha:FONT-ID                   the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below ->
- ha:styles                     routing styles hash: collection of all available routing syles
- ha:netlists                   all available netlists
-  li:input                     the input netlist (as seen in the last netlist import, a.k.a. forward annotation)
-   ha:NETNAME                  a network
-    style           string <=7 routing style hint; same as the style attribute; from v8 only the style attribute exists
-    li:conn                    list of terminals connected to the network
-     diameter       string     refdes-terminal
-    ha:attributes          >=5 a hash of attribute key=value pairs
-     attrib-key     string     attribute value
-  li:netlist_patch             a list of intentional deviations from the input netlist, a.k.a. material for back annotation
-   li:net_info                 describe the current state of a net, as seen on the input
-    net             string     net name; first item on the list, only once
-    term            string     terminal name; zero or more items starting from the second item
-   ha:add_conn                 the 'as built' network requires a new connection to be created during the back annotation
-    net             string     net name the terminal should be added to
-    term            string     terminal name
-   ha:del_conn                 the 'as built' network requires an existing connection to be removed during the back annotation
-    net             string     net name the terminal should be removed from
-    term            string     terminal name
-   ha:change_attrib            the 'as built' network requires an attribute to be set or changed
-    net             string     net name whose attribute needs to be changed
-    key             string     key (name) of the attribute
-    val             string     new value of the attribute
- li:conf                       complete pcb-rnd configuration tree ->
- ha:data                       Layers and global objects of the board ->
- ha:pixmaps                >=7 Collection of all unique pixmaps used by the board or footprint ->
- ha:attributes                 a hash of attribute key=value pairs
-  attrib-key        string     attribute value
+type:name                value  ver description
+ha:pcb-rnd-board-v*                 \t\t\tThe full, self-contained description of a printed circuit board. \t\t\tThis is the root of a board .lht file. The * after the v in the name \t\t\tis an integer which is the format version. \t\t
+ ha:meta                            Any meta-data that won't directly turn into physical material (e.g. copper).
+  board_name             string     User assigned name of the board
+  ha:grid                           User interface last grid settings
+   offs_x                coord      grid origin: X offset from 0;0
+   offs_y                coord      grid origin: Y offset from 0;0
+   spacing               coord      distance between two grid points both in X and Y directions
+  ha:size                           object size related settings
+   x                     coord      drawing area size X (width)
+   y                     coord      drawing area size Y (height)
+   isle_area_nm2         double     remove polygon islands smaller than this value, specified in nm^2
+   thermal_scale         double     scale all thermals on the board by this factor
+  ha:drc                        <5  design rule checker settings for the old DRC
+   bloat                 coord      Minimum copper spacing
+   shrink                coord      Minimum overlap between validly touching copper objects
+   min_width             coord      Minimum copper width
+   min_silk              coord      Minimum silk width
+   min_drill             coord      Minimum drill diameter
+   min_ring              coord      Minimum annular ring width
+  ha:cursor                         obsolete cursor/view state
+   x                     coord      last position, X (horizontal)
+   y                     coord      last position, Y (horizontal)
+   zoom                  double     last view zoom factor
+ ha:layer_stack                     physical layer stack information: geometry and properties of physical layers
+  li:groups                         ordered list of physical layers from top to bottom
+   ha:INTEGER                       a layer group (a physical layer of the board); the ID of the layer group is the integer in the name of the node
+    name                 string >=6 purpose of layer groups (useful with mechanical/documentation groups
+    ha:type                         a flag-list of layer type flag bits
+     top                 flag       location: top side
+     bottom              flag       location: bottom side
+     intern              flag       location: internal
+     logical             flag       location: logical (not in the actual stackup)
+     copper              flag       material: copper
+     silk                flag       material: silk
+     mask                flag       material: mask
+     paste               flag       material: paste
+     outline             flag       "material": router path for board outline; normally for the outer contour, sometimes for biggish inner cutouts as well)
+     mech                flag       "material": various mechanical fabbing instructions, e.g. slots; the purpose field provides more detail about the use
+     doc                 flag       "material": documentation, either for the user and for pcb-rnd or both (the purpose field shoudl tell); e.g. assembly documentation for the user, keepout for the user and DRC
+     substrate           flag       material: substrate or insulator
+    name                 string >=6 purpose of layer groups (useful with mechanical/documentation groups
+    li:layers                       ordered list of logical layer IDs hosted by this layer group
+ ha:font                            font kit: all fonts used on the board (if no font specified, default font will be used)
+  ha:FONT-ID                        the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below ->
+ ha:styles                          routing styles hash: collection of all available routing syles
+ ha:netlists                        all available netlists
+  li:input                          the input netlist (as seen in the last netlist import, a.k.a. forward annotation)
+   ha:NETNAME                       a network
+    style                string <=7 routing style hint; same as the style attribute; from v8 only the style attribute exists
+    li:conn                         list of terminals connected to the network
+     diameter            string     refdes-terminal
+    ha:attributes               >=5 a hash of attribute key=value pairs
+     attrib-key          string     attribute value
+  li:netlist_patch                  a list of intentional deviations from the input netlist, a.k.a. material for back annotation
+   li:net_info                      describe the current state of a net, as seen on the input
+    net                  string     net name; first item on the list, only once
+    term                 string     terminal name; zero or more items starting from the second item
+   ha:add_conn                      the 'as built' network requires a new connection to be created during the back annotation
+    net                  string     net name the terminal should be added to
+    term                 string     terminal name
+   ha:del_conn                      the 'as built' network requires an existing connection to be removed during the back annotation
+    net                  string     net name the terminal should be removed from
+    term                 string     terminal name
+   ha:change_attrib             <9  the 'as built' network requires an attribute to be set or changed
+    net                  string     net name whose attribute needs to be changed
+    key                  string     key (name) of the attribute
+    val                  string     new value of the attribute
+   ha:change_net_attrib         >=9 the 'as built' network requires an attribute to be set or changed
+    net                  string     net name whose attribute needs to be changed
+    key                  string     key (name) of the attribute
+    val                  string     new value of the attribute
+   ha:change_comp_attrib        >=9 component (subcircuit) requires an attribute to be set or changed
+    comp                 string     component refdes whose attribute needs to be changed
+    key                  string     key (name) of the attribute
+    val                  string     new value of the attribute
+ li:conf                            complete pcb-rnd configuration tree ->
+ ha:data                            Layers and global objects of the board ->
+ ha:pixmaps                     >=7 Collection of all unique pixmaps used by the board or footprint ->
+ ha:attributes                      a hash of attribute key=value pairs
+  attrib-key             string     attribute value
 
 li:pcb-rnd-buffer-v*
 
@@ -258,7 +266,6 @@ li:pcb-rnd-subcircuit-v*            footprint file containing a single subcircui
   ha:flags                          flag bits of a subcircuit
    found                 flag       If set, this object has been found by FindConnection()
    selected              flag       Set when the object is selected.
-   drc                   flag       Set for objects that fail DRC: flag like FOUND flag for DRC checking.
    exportsel             flag       Set for objects that should be exported in a partial export.
    lock                  flag       Set for locked objects.
    nonetlist             flag       subcircuit is not on the netlist and should not interfere with the netlist
@@ -306,7 +313,6 @@ ha:data                              Layers and global objects of the board
     selected            flag         Set when the object is selected.
     auto                flag         For lines and vias, indicates that these were created by the autorouter.
     warn                flag         For pins, vias, and pads, set to indicate a warning.
-    drc                 flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
     exportsel           flag         Set for objects that should be exported in a partial export.
     lock                flag         Set for locked objects.
     termname            flag         when set the names of pins are shown.
@@ -387,7 +393,6 @@ ha:data                              Layers and global objects of the board
       selected          flag         Set when the object is selected.
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
-      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
@@ -415,7 +420,6 @@ ha:data                              Layers and global objects of the board
       selected          flag         Set when the object is selected.
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
-      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
@@ -443,7 +447,6 @@ ha:data                              Layers and global objects of the board
       selected          flag         Set when the object is selected.
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
-      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
@@ -464,7 +467,6 @@ ha:data                              Layers and global objects of the board
       clearpoly         flag         For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection). When clear, polygons will solidly connect to pins and vias.
       fullpoly          flag         For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).
       selected          flag         Set when the object is selected.
-      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
@@ -499,7 +501,6 @@ ha:data                              Layers and global objects of the board
       clearline         flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
       selected          flag         Set when the object is selected.
       onsolder          flag         For text, indicates that it is on the solder side.
-      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
@@ -553,7 +554,6 @@ ha:data                              Layers and global objects of the board
   ha:flags                           flag bits of a subcircuit
    found                flag         If set, this object has been found by FindConnection()
    selected             flag         Set when the object is selected.
-   drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
    exportsel            flag         Set for objects that should be exported in a partial export.
    lock                 flag         Set for locked objects.
    nonetlist            flag         subcircuit is not on the netlist and should not interfere with the netlist
@@ -649,7 +649,6 @@ ha:data                              Layers and global objects of the board
    selected             flag         Set when the object is selected.
    auto                 flag         For lines and vias, indicates that these were created by the autorouter.
    rubberend            flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
-   drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
    exportsel            flag         Set for objects that should be exported in a partial export.
    lock                 flag         Set for locked objects.
    termname             flag         when set the names of pins are shown.

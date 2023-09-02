@@ -167,6 +167,7 @@ ha:lht_tree_doc { ha:roots {
 							}
 							ha:change_attrib {
 								type=ha
+								ver {<9}
 								desc { the 'as built' network requires an attribute to be set or changed }
 								li:children {
 									ha:net   { valtype=string; desc={net name whose attribute needs to be changed }}
@@ -174,6 +175,27 @@ ha:lht_tree_doc { ha:roots {
 									ha:val   { valtype=string; desc={new value of the attribute}}
 								}
 							}
+							ha:change_net_attrib {
+								type=ha
+								ver {>=9}
+								desc { the 'as built' network requires an attribute to be set or changed }
+								li:children {
+									ha:net   { valtype=string; desc={net name whose attribute needs to be changed }}
+									ha:key   { valtype=string; desc={key (name) of the attribute}}
+									ha:val   { valtype=string; desc={new value of the attribute}}
+								}
+							}
+							ha:change_comp_attrib {
+								type=ha
+								ver {>=9}
+								desc { component (subcircuit) requires an attribute to be set or changed }
+								li:children {
+									ha:comp  { valtype=string; desc={component refdes whose attribute needs to be changed }}
+									ha:key   { valtype=string; desc={key (name) of the attribute}}
+									ha:val   { valtype=string; desc={new value of the attribute}}
+								}
+							}
+
 						}
 					}
 				}
