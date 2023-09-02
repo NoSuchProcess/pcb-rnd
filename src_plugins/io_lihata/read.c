@@ -2381,7 +2381,13 @@ static int parse_netlist_input(lht_read_t *rctx, pcb_board_t *pcb, pcb_netlist_t
 	return 0;
 }
 
-static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
+#define REQUIRE_NNET \
+do { \
+		if ((nnet == NULL) || (nnet->type != LHT_TEXT) || (*nnet->data.text.value == '\0')) \
+			return iolht_error(nnet, "netlist patch net name must be a non-empty text\n"); \
+} while(0)
+
+static int parse_netlist_patch(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *patches)
 {
 	lht_node_t *np;
 
@@ -2393,22 +2399,32 @@ static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
 		if (np->type != LHT_HASH)
 			return iolht_error(np, "each netlist patch must be a hash\n");
 		nnet = lht_dom_hash_get(np, "net");
-		if ((nnet == NULL) || (nnet->type != LHT_TEXT) || (*nnet->data.text.value == '\0'))
-			return iolht_error(nnet, "netlist patch net name must be a non-empty text\n");
 
 		if (strcmp(np->name, "del_conn") == 0) {
+			REQUIRE_NNET;
 			nval = lht_dom_hash_get(np, "term");
 			if ((nval == NULL) || (nval->type != LHT_TEXT) || (*nval->data.text.value == '\0'))
 				return iolht_error(nval, "netlist patch terminal ID must be a non-empty string (del_conn)\n");
 			pcb_ratspatch_append(pcb, RATP_DEL_CONN, nval->data.text.value, nnet->data.text.value, NULL, 0);
 		}
 		else if (strcmp(np->name, "add_conn") == 0) {
+			REQUIRE_NNET;
 			nval = lht_dom_hash_get(np, "term");
 			if ((nval == NULL) || (nval->type != LHT_TEXT) || (*nval->data.text.value == '\0'))
 				return iolht_error(nval, "netlist patch terminal ID must be a non-empty string (add_conn)\n");
 			pcb_ratspatch_append(pcb, RATP_ADD_CONN, nval->data.text.value, nnet->data.text.value, NULL, 0);
 		}
-		else if (strcmp(np->name, "change_attrib") == 0) {
+		else if (strcmp(np->name, "change_comp_attrib") == 0) {
+			if (rctx->rdver < 9)
+				iolht_warn(rctx, np, -1, "Lihata board below v9 should not have change_comp_attrib in the netlist patch\n");
+			nnet = lht_dom_hash_get(np, "comp");
+			if ((nnet == NULL) || (nnet->type != LHT_TEXT) || (*nnet->data.text.value == '\0')) \
+				return iolht_error(nnet, "netlist patch comp name must be a non-empty text for change_comp_attrib\n"); \
+			goto change_comp_attrib;
+		}
+		else if (strcmp(np->name, "change_attrib") == 0)  {
+			REQUIRE_NNET;
+			change_comp_attrib:;
 			nkey = lht_dom_hash_get(np, "key");
 			if ((nkey == NULL) || (nkey->type != LHT_TEXT) || (*nkey->data.text.value == '\0'))
 				return iolht_error(nkey, "netlist patch attrib key must be a non-empty string (change_attrib)\n");
@@ -2417,6 +2433,20 @@ static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
 				return iolht_error(nval, "netlist patch attrib value must be a non-empty string (change_attrib)\n");
 			pcb_ratspatch_append(pcb, RATP_CHANGE_COMP_ATTRIB, nnet->data.text.value, nkey->data.text.value, nval->data.text.value, 0);
 		}
+		else if ((strcmp(np->name, "change_net_attrib") == 0)) {
+			if (rctx->rdver < 9)
+				iolht_warn(rctx, np, -1, "Lihata board below v9 should not have change_net_attrib in the netlist patch\n");
+			REQUIRE_NNET;
+
+			nkey = lht_dom_hash_get(np, "key");
+			if ((nkey == NULL) || (nkey->type != LHT_TEXT) || (*nkey->data.text.value == '\0'))
+				return iolht_error(nkey, "netlist patch attrib key must be a non-empty string (change_attrib)\n");
+			nval = lht_dom_hash_get(np, "val");
+			if ((nval == NULL) || (nval->type != LHT_TEXT))
+				return iolht_error(nval, "netlist patch attrib value must be a non-empty string (change_attrib)\n");
+			pcb_ratspatch_append(pcb, RATP_CHANGE_NET_ATTRIB, nnet->data.text.value, nkey->data.text.value, nval->data.text.value, 0);
+		}
+
 	}
 	return 0;
 }
@@ -2433,7 +2463,7 @@ static int parse_netlists(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *netlis
 		return iolht_error(sub, "failed to parse the input netlist\n");
 
 	sub = lht_dom_hash_get(netlists, "netlist_patch");
-	if ((sub != NULL) && (parse_netlist_patch(pcb, sub) != 0))
+	if ((sub != NULL) && (parse_netlist_patch(rctx, pcb, sub) != 0))
 		return iolht_error(sub, "failed to parse the netlist patch\n");
 
 	return 0;
@@ -2467,9 +2497,10 @@ static int parse_board(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 		case 6: loader = &plug_io_lihata_v6; break;
 		case 7: loader = &plug_io_lihata_v7; break;
 		case 8: loader = &plug_io_lihata_v8; break;
+		case 9: loader = &plug_io_lihata_v9; break;
 		default:
 			return iolht_error(nd, "Lihata board version %d not supported;\n"
-				"must be 1, 2, 3, 4, 5, 6 or 7.\n", rctx->rdver);
+				"must be 1, 2, 3, 4, 5, 6, 7, 8 or 9.\n", rctx->rdver);
 	}
 
 	vtp0_init(&rctx->post_ids);

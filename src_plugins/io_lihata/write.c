@@ -1644,8 +1644,26 @@ static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 			break;
 
 		case PCB_RPE_COMP_ATTR_CHG:
-TODO("from v9 rename this:");
-			n = lht_dom_node_alloc(LHT_HASH, "change_attrib");
+			if (wrver >= 9) {
+				n = lht_dom_node_alloc(LHT_HASH, "change_comp_attrib");
+				lht_dom_hash_put(n, build_text("comp", netn));
+			}
+			else {
+				n = lht_dom_node_alloc(LHT_HASH, "change_attrib");
+				lht_dom_hash_put(n, build_text("net", netn));
+			}
+			lht_dom_hash_put(n, build_text("key", key));
+			lht_dom_hash_put(n, build_text("val", val));
+			lht_dom_list_append(ctx->patch, n);
+			break;
+
+		case PCB_RPE_NET_ATTR_CHG:
+			if (wrver < 9) {
+				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save net attrib change (change lost from back annotation)\n", "Save in lihata v9");
+				break;
+			}
+
+			n = lht_dom_node_alloc(LHT_HASH, "change_net_attrib");
 			lht_dom_hash_put(n, build_text("net", netn));
 			lht_dom_hash_put(n, build_text("key", key));
 			lht_dom_hash_put(n, build_text("val", val));
@@ -1999,6 +2017,7 @@ static int plug2ver(const pcb_plug_io_t *ctx)
 	if (ctx == &plug_io_lihata_v6) return 6;
 	if (ctx == &plug_io_lihata_v7) return 7;
 	if (ctx == &plug_io_lihata_v8) return 8;
+	if (ctx == &plug_io_lihata_v9) return 9;
 	return 0;
 }
 
