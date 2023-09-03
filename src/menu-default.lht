@@ -588,8 +588,6 @@ ha:rnd-menu-v1 {
 				ha:Key Bindings {
 					li:submenu {
 						ha:Cycle object being dragged   = { li:a={{<char>,};{<key>e;<key>y;};}; action=CycleDrag() }
-
-
 						ha:Step Cursor {
 							li:submenu {
 								ha:Step Up                      = { li:a={{<Key>Up};{<Key>k;<Key>k};}; action=Cursor(Warp,0,-1,grid) }
