@@ -703,16 +703,28 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static int ba_subc_(pcb_board_t *pcb, pcb_subc_t *subc, int op2, int undoable)
 {
+	int res = -1;
+
 	switch(op2) {
 		case F_Add:
-			return rats_patch_add_subc(pcb, subc, undoable);
+			res = rats_patch_add_subc(pcb, subc, undoable);
+			if (res == 0) {
+				char *val;
+				val = pcb_attribute_get(&subc->Attributes, "footprint");
+				if (val != NULL)
+					pcb_ratspatch_append(pcb, RATP_CHANGE_COMP_ATTRIB, subc->refdes, "footprint", val, 1);
+				val = pcb_attribute_get(&subc->Attributes, "value");
+				if (val != NULL)
+					pcb_ratspatch_append(pcb, RATP_CHANGE_COMP_ATTRIB, subc->refdes, "value", val, 1);
+			}
+			break;
 		case F_Remove:
 			TODO("back annotate breaking connections of the given subc");
 			return rats_patch_del_subc(pcb, subc, undoable);
 		default:
 			rnd_message(RND_MSG_ERROR, "BaSubc(): invalid second argument\n");
 	}
-	return -1;
+	return res;
 }
 
 static int ba_subc_object(pcb_board_t *pcb, int op2, int undoable)
