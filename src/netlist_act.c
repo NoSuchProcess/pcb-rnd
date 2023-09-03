@@ -701,45 +701,43 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static int ba_subc_(pcb_board_t *pcb, pcb_subc_t *subc, int op2)
+static int ba_subc_(pcb_board_t *pcb, pcb_subc_t *subc, int op2, int undoable)
 {
-	rnd_message(RND_MSG_ERROR, "TODO: ba_subc_ not implemented\n");
 	switch(op2) {
 		case F_Add:
-			TODO("back annotate subc add");
-			return 0;
+			return rats_patch_add_subc(pcb, subc, undoable);
 		case F_Remove:
 			TODO("back annotate breaking connections of the given subc");
-			TODO("back annotate subc removal");
-			return 0;
+			return rats_patch_del_subc(pcb, subc, undoable);
+		default:
+			rnd_message(RND_MSG_ERROR, "BaSubc(): invalid second argument\n");
 	}
 	return -1;
 }
 
-static int ba_subc_object(pcb_board_t *pcb, int op2)
+static int ba_subc_object(pcb_board_t *pcb, int op2, int undoable)
 {
 	rnd_coord_t x, y;
 	void *r1, *r2, *r3;
 
 	rnd_hid_get_coords("Select a subcircuit for back annotation", &x, &y, 0);
-	if (pcb_search_screen(x, y, PCB_OBJ_SUBC, &r1, &r2, &r3) <= 0)
+	if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &r1, &r2, &r3) <= 0) || (r2 == NULL)) {
+		rnd_message(RND_MSG_ERROR, "No subcircuit under the cursor\n");
 		return -1;
+	}
 
-	if (r2 != NULL)
-		return ba_subc_(pcb, r2, op2);
-
-	return -1;
+	return ba_subc_(pcb, r2, op2, undoable);
 }
 
-static int ba_subc_selected(pcb_board_t *pcb, pcb_data_t *data, int op2)
+static int ba_subc_selected(pcb_board_t *pcb, pcb_data_t *data, int op2, int undoable)
 {
 	int res = 0;
 
 	PCB_SUBC_LOOP(data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
-			res |= ba_subc_(pcb, subc, op2);
-		ba_subc_selected(pcb, subc->data, op2); /* recurse for subc in subc */
+			res |= ba_subc_(pcb, subc, op2, undoable);
+		ba_subc_selected(pcb, subc->data, op2, undoable); /* recurse for subc in subc */
 	}
 	PCB_END_LOOP;
 
@@ -756,11 +754,13 @@ static fgw_error_t pcb_act_BaSubc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op1 = fgw_keyword(&argv[1]));
 	RND_ACT_CONVARG(2, FGW_KEYWORD, Netlist, op2 = fgw_keyword(&argv[2]));
-	RND_ACT_IRES(0);
+	RND_ACT_IRES(-1);
 
-	switch(op2) {
-		case F_Object:   return ba_subc_object(pcb, op1);
-		case F_Selected: return ba_subc_selected(pcb, pcb->Data, op2);
+	switch(op1) {
+		case F_Object:   RND_ACT_IRES(ba_subc_object(pcb, op2, 1)); break;
+		case F_Selected: RND_ACT_IRES(ba_subc_selected(pcb, pcb->Data, op2, 1)); break;
+		default:
+			rnd_message(RND_MSG_ERROR, "Invalid first argument for BaSubc()\n");
 	}
 	return 0;
 }
