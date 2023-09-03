@@ -195,6 +195,22 @@ ha:lht_tree_doc { ha:roots {
 									ha:val   { valtype=string; desc={new value of the attribute}}
 								}
 							}
+							ha:comp_add {
+								type=ha
+								ver {>=9}
+								desc { create a new subcircuit (component in netlist terminology) }
+								li:children {
+									ha:comp  { valtype=string; desc={component refdes }}
+								}
+							}
+							ha:comp_del {
+								type=ha
+								ver {>=9}
+								desc { remove a subcircuit (component in netlist terminology) }
+								li:children {
+									ha:comp  { valtype=string; desc={component refdes }}
+								}
+							}
 
 						}
 					}

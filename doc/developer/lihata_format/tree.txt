@@ -80,6 +80,10 @@ ha:pcb-rnd-board-v*                 \t\t\tThe full, self-contained description o
     comp                 string     component refdes whose attribute needs to be changed
     key                  string     key (name) of the attribute
     val                  string     new value of the attribute
+   ha:comp_add                  >=9 create a new subcircuit (component in netlist terminology)
+    comp                 string     component refdes
+   ha:comp_del                  >=9 remove a subcircuit (component in netlist terminology)
+    comp                 string     component refdes
  li:conf                            complete pcb-rnd configuration tree ->
  ha:data                            Layers and global objects of the board ->
  ha:pixmaps                     >=7 Collection of all unique pixmaps used by the board or footprint ->
