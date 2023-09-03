@@ -93,6 +93,10 @@ int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable);
    netlist. Returns 0 on sucess.*/
 int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable);
 
+/* Back annotate removal of all connections of a subc */
+void rats_patch_break_subc_conns(pcb_board_t *pcb, pcb_subc_t *subc, int undoable);
+
+
 /**** exporter ****/
 
 typedef enum pcb_ratspatch_fmt_e {

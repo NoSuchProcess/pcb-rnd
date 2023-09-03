@@ -719,7 +719,7 @@ static int ba_subc_(pcb_board_t *pcb, pcb_subc_t *subc, int op2, int undoable)
 			}
 			break;
 		case F_Remove:
-			TODO("back annotate breaking connections of the given subc");
+			rats_patch_break_subc_conns(pcb, subc, undoable);
 			return rats_patch_del_subc(pcb, subc, undoable);
 		default:
 			rnd_message(RND_MSG_ERROR, "BaSubc(): invalid second argument\n");

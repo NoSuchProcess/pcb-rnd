@@ -520,6 +520,26 @@ int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
 	return 0;
 }
 
+void rats_patch_break_subc_conns(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
+{
+	pcb_netlist_t *netlist = &pcb->netlist[PCB_NETLIST_EDITED];
+	htsp_entry_t *e;
+
+	for(e = htsp_first(netlist); e != NULL; e = htsp_next(netlist, e)) {
+		pcb_net_t *net = e->value;
+		pcb_net_term_t *term, *next;
+		for(term = pcb_termlist_first(&net->conns); term != NULL; term = next) {
+			next = pcb_termlist_next(term);
+			if (strcmp(term->refdes, subc->refdes) == 0) {
+				char *pinname = rnd_strdup_printf("%s-%s", term->refdes, term->term);
+				pcb_ratspatch_append_optimize(pcb, RATP_DEL_CONN, pinname, net->name, NULL);
+				pcb_net_term_del(net, term);
+				free(pinname);
+			}
+		}
+	}
+}
+
 
 
 /**** export ****/
