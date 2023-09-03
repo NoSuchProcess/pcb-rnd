@@ -775,6 +775,12 @@ ha:rnd-menu-v1 {
 
 #TODO: replace from lib
 				-
+				ha:Back annotation {
+					li:submenu {
+						ha:Add (to back annotate)           { action=basubc(object, add) }
+						ha:Del (and back annotate removal)  { action=basubc(object, remove) }
+					}
+				}
 				ha:Remove subcircuit      { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to other side     { action=Flip(object) }
