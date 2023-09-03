@@ -15,6 +15,9 @@
 		- any modification
 		- watch out for multiple objects being edited
 	- remove draft state of the new tEDAx block
+	- FEATURE: lihata board v9:
+		- replace board/size with the bbox representation
+		- font v2? maybe only in v10
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
 	-> happens only if the export dialog is left open for the whole time
@@ -51,10 +54,6 @@
 	- keep numeric format: test all
 	- keep unknown subtrees
 	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
-- FEATURE: lihata board v9:
-	- replace board/size with the bbox representation
-	- new netlist patch commands for component add/component remove
-	- font v2? maybe only in v10
 - BUG: I/O bugs:
 	- eagle:
 		- BUG: xml: eagle XML import fails on polygon import reported by miloh, test file pcb-rnd-aux poly_selfi/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
