@@ -75,6 +75,8 @@ static void netlist_patch_data2dlg(netlist_patch_ctx_t *ctx)
 			case RATP_DEL_CONN:           cell[0] = rnd_strdup("del conn"); break;
 			case RATP_CHANGE_COMP_ATTRIB: cell[0] = rnd_strdup("chg comp attrib"); break;
 			case RATP_CHANGE_NET_ATTRIB:  cell[0] = rnd_strdup("chg net attrib"); break;
+			case RATP_COMP_ADD:           cell[0] = rnd_strdup("add comp"); break;
+			case RATP_COMP_DEL:           cell[0] = rnd_strdup("del comp"); break;
 			default:                      cell[0] = rnd_strdup("unknown"); break;
 		}
 		switch(n->op) {
@@ -82,6 +84,8 @@ static void netlist_patch_data2dlg(netlist_patch_ctx_t *ctx)
 			case RATP_DEL_CONN:           cell[1] = rnd_strdup_printf("%s, %s", n->arg1.net_name, n->id); break;
 			case RATP_CHANGE_COMP_ATTRIB: cell[1] = rnd_strdup_printf("%s, %s, %s", n->id, n->arg1.attrib_name, n->arg2.attrib_val); break;
 			case RATP_CHANGE_NET_ATTRIB:  cell[1] = rnd_strdup_printf("%s, %s, %s", n->id, n->arg1.attrib_name, n->arg2.attrib_val); break;
+			case RATP_COMP_ADD:           cell[1] = rnd_strdup_printf("%s", n->id); break;
+			case RATP_COMP_DEL:           cell[1] = rnd_strdup_printf("%s", n->id); break;
 			default:                      cell[1] = rnd_strdup("?"); break;
 		}
 		r = rnd_dad_tree_append(attr, NULL, cell);
