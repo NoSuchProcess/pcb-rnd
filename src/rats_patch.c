@@ -504,7 +504,7 @@ int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
 
 	pcb_ratspatch_append(pcb, RATP_COMP_ADD, subc->refdes, NULL, NULL, undoable);
 
-	return -1;
+	return 0;
 }
 
 int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
@@ -517,7 +517,7 @@ int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
 
 	pcb_ratspatch_append(pcb, RATP_COMP_DEL, subc->refdes, NULL, NULL, undoable);
 
-	return -1;
+	return 0;
 }
 
 
