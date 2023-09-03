@@ -68,13 +68,16 @@ static int is_subc_on_netlist(pcb_netlist_t *netlist, const char *refdes)
 	return 0;
 }
 
-static int is_subc_created_on_patch(pcb_ratspatch_line_t *head)
+static int is_subc_created_on_patch(pcb_ratspatch_line_t *head, const char *refdes)
 {
 	pcb_ratspatch_line_t *rp;
 	int created = 0;
 
 	for(rp = head; rp != NULL; rp = rp->next) {
-		TODO("look for subc add and subc remove");
+		if ((rp->op == RATP_COMP_ADD) && (strcmp(rp->id, refdes) == 0))
+			created = 1;
+		else if ((rp->op == RATP_COMP_DEL) && (strcmp(rp->id, refdes) == 0))
+			created = 0;
 	}
 
 	return created;
@@ -487,7 +490,7 @@ int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb)
 
 int rats_patch_is_subc_referenced(pcb_board_t *pcb, const char *refdes)
 {
-	return is_subc_created_on_patch(pcb->NetlistPatches) || is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_EDITED], refdes);
+	return is_subc_created_on_patch(pcb->NetlistPatches, refdes) || is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_EDITED], refdes);
 }
 
 
