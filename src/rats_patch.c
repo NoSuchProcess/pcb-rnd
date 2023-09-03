@@ -419,6 +419,66 @@ int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb)
 	return cnt;
 }
 
+/**** high level subc ****/
+
+static int is_subc_on_netlist(pcb_netlist_t *netlist, const char *refdes)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(netlist); e != NULL; e = htsp_next(netlist, e)) {
+		pcb_net_t *net = e->value;
+		pcb_net_term_t *term;
+		for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term)) {
+			if (strcmp(term->refdes, refdes) == 0)
+				return 1;
+		}
+	}
+	return 0;
+}
+
+static int is_subc_created_on_patch(pcb_ratspatch_line_t *head)
+{
+	pcb_ratspatch_line_t *rp;
+	int created = 0;
+
+	for(rp = head; rp != NULL; rp = rp->next) {
+		TODO("look for subc add and subc remove");
+	}
+
+	return created;
+}
+
+int rats_patch_is_subc_refereced(pcb_board_t *pcb, const char *refdes)
+{
+	return is_subc_created_on_patch(pcb->NetlistPatches) || is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_EDITED], refdes);
+}
+
+
+int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc)
+{
+	if ((subc->refdes == NULL) || (*subc->refdes == '\0'))
+		return -1;
+
+	if (rats_patch_is_subc_refereced(pcb, subc->refdes))
+		return 0; /* already on */
+
+	return -1;
+}
+
+int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc)
+{
+	if ((subc->refdes == NULL) || (*subc->refdes == '\0'))
+		return -1;
+
+	if (!rats_patch_is_subc_refereced(pcb, subc->refdes))
+		return 0; /* already removed */
+
+	return -1;
+}
+
+
+
+/**** export ****/
+
 int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
 {
 	pcb_ratspatch_line_t *n;
