@@ -701,21 +701,66 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_BaSubc[] = "BaSubc(object|selected)\n";
-static const char pcb_acth_BaSubc[] = "Add new subcircuits to the back annotation list";
+static int ba_subc_(pcb_board_t *pcb, pcb_subc_t *subc, int op2)
+{
+	rnd_message(RND_MSG_ERROR, "TODO: ba_subc_ not implemented\n");
+	switch(op2) {
+		case F_Add:
+			TODO("back annotate subc add");
+			return 0;
+		case F_Remove:
+			TODO("back annotate breaking connections of the given subc");
+			TODO("back annotate subc removal");
+			return 0;
+	}
+	return -1;
+}
+
+static int ba_subc_object(pcb_board_t *pcb, int op2)
+{
+	rnd_coord_t x, y;
+	void *r1, *r2, *r3;
+
+	rnd_hid_get_coords("Select a subcircuit for back annotation", &x, &y, 0);
+	if (pcb_search_screen(x, y, PCB_OBJ_SUBC, &r1, &r2, &r3) <= 0)
+		return -1;
+
+	if (r2 != NULL)
+		return ba_subc_(pcb, r2, op2);
+
+	return -1;
+}
+
+static int ba_subc_selected(pcb_board_t *pcb, pcb_data_t *data, int op2)
+{
+	int res = 0;
+
+	PCB_SUBC_LOOP(data);
+	{
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
+			res |= ba_subc_(pcb, subc, op2);
+		ba_subc_selected(pcb, subc->data, op2); /* recurse for subc in subc */
+	}
+	PCB_END_LOOP;
+
+	return res;
+}
+
+static const char pcb_acts_BaSubc[] = "BaSubc(object|selected, add|remove)\n";
+static const char pcb_acth_BaSubc[] = "Add new subcircuits to the back annotation list or remove and back annotate removal of a subcircuit";
 /* DOC: basubc.html */
 static fgw_error_t pcb_act_BaSubc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int op;
+	int op1, op2;
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 
-	RND_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op1 = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_KEYWORD, Netlist, op2 = fgw_keyword(&argv[2]));
+	RND_ACT_IRES(0);
 
-	rnd_message(RND_MSG_ERROR, "TODO: not yet implemented\n");
-
-	switch(op) {
-		case F_Object:
-		case F_Selected:
-			break;
+	switch(op2) {
+		case F_Object:   return ba_subc_object(pcb, op1);
+		case F_Selected: return ba_subc_selected(pcb, pcb->Data, op2);
 	}
 	return 0;
 }
