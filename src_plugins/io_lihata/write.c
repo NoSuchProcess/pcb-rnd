@@ -1669,6 +1669,27 @@ static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 			lht_dom_hash_put(n, build_text("val", val));
 			lht_dom_list_append(ctx->patch, n);
 			break;
+
+		case PCB_RPE_COMP_ADD:
+			if (wrver < 9) {
+				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save comp add (change lost from back annotation)\n", "Save in lihata v9");
+				break;
+			}
+			n = lht_dom_node_alloc(LHT_HASH, "comp_add");
+			lht_dom_hash_put(n, build_text("comp", netn));
+			lht_dom_list_append(ctx->patch, n);
+			break;
+
+		case PCB_RPE_COMP_DEL:
+			if (wrver < 9) {
+				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save comp del (change lost from back annotation)\n", "Save in lihata v9");
+				break;
+			}
+			n = lht_dom_node_alloc(LHT_HASH, "comp_del");
+			lht_dom_hash_put(n, build_text("comp", netn));
+			lht_dom_list_append(ctx->patch, n);
+			break;
+
 	}
 }
 

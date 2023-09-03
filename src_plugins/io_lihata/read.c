@@ -2446,6 +2446,18 @@ static int parse_netlist_patch(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *p
 				return iolht_error(nval, "netlist patch attrib value must be a non-empty string (change_attrib)\n");
 			pcb_ratspatch_append(pcb, RATP_CHANGE_NET_ATTRIB, nnet->data.text.value, nkey->data.text.value, nval->data.text.value, 0);
 		}
+		else if ((strcmp(np->name, "comp_add") == 0) || (strcmp(np->name, "comp_del") == 0)) {
+			int add = np->name[5] == 'a';
+
+			if (rctx->rdver < 9)
+				iolht_warn(rctx, np, -1, "Lihata board below v9 should not have comp_add in the netlist patch\n");
+
+			nnet = lht_dom_hash_get(np, "comp");
+			if ((nnet == NULL) || (nnet->type != LHT_TEXT) || (*nnet->data.text.value == '\0'))
+				return iolht_error(nnet, "netlist patch comp must be a non-empty text in %s\n", np->name);
+
+			pcb_ratspatch_append(pcb, add ? RATP_COMP_ADD : RATP_COMP_DEL, nnet->data.text.value, NULL, NULL, 0);
+		}
 
 	}
 	return 0;
