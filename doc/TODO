@@ -23,6 +23,7 @@
 - FEATURE: attribute propagation from sch-rnd via tEDAx
 	- device attribute in subcricuits
 	- make a new bom template that includes that
+- BUG: load bug_files/TODO/thermals.rp and then import the subcircuit ATO_blade_fuse_holder.rf to the paste buffer and then shift click on the existing fuse holder on the layout. Thermal settings are not duplicated for electrically common padstacks when the existing subc is replaced. [report: Erich]
 
 2. For later releases ===============================================================================
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
