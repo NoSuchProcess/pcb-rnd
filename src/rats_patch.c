@@ -54,6 +54,33 @@ const char *pcb_netlist_names[PCB_NUM_NETLISTS] = {
 	"edited"
 };
 
+static int is_subc_on_netlist(pcb_netlist_t *netlist, const char *refdes)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(netlist); e != NULL; e = htsp_next(netlist, e)) {
+		pcb_net_t *net = e->value;
+		pcb_net_term_t *term;
+		for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term)) {
+			if (strcmp(term->refdes, refdes) == 0)
+				return 1;
+		}
+	}
+	return 0;
+}
+
+static int is_subc_created_on_patch(pcb_ratspatch_line_t *head)
+{
+	pcb_ratspatch_line_t *rp;
+	int created = 0;
+
+	for(rp = head; rp != NULL; rp = rp->next) {
+		TODO("look for subc add and subc remove");
+	}
+
+	return created;
+}
+
+
 /*** undoable ratspatch append */
 
 typedef struct {
@@ -210,6 +237,12 @@ void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, con
 	case RATP_CHANGE_NET_ATTRIB:
 		seek_op = RATP_CHANGE_NET_ATTRIB;
 		break;
+	case RATP_COMP_ADD:
+		seek_op = RATP_COMP_DEL;
+		break;
+	case RATP_COMP_DEL:
+		seek_op = RATP_COMP_ADD;
+		break;
 	}
 
 	/* keep the list clean: remove the last operation that becomes obsolete by the new one */
@@ -225,6 +258,12 @@ void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, con
 				case RATP_ADD_CONN:
 				case RATP_DEL_CONN:
 					if (strcmp(n->arg1.net_name, a1) != 0)
+						break;
+					rats_patch_remove(pcb, n, 1);
+					goto quit;
+				case RATP_COMP_ADD:
+				case RATP_COMP_DEL:
+					if (strcmp(n->id, id) != 0)
 						break;
 					rats_patch_remove(pcb, n, 1);
 					goto quit;
@@ -322,6 +361,12 @@ static int rats_patch_apply_net_attrib(pcb_board_t *pcb, pcb_ratspatch_line_t *p
 	return 0;
 }
 
+static int rats_patch_apply_comp_del(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
+{
+	TODO("warning if refs are not removed");
+	return 0;
+}
+
 int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
 {
 	switch (patch->op) {
@@ -333,6 +378,11 @@ int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
 			return rats_patch_apply_comp_attrib(pcb, patch);
 		case RATP_CHANGE_NET_ATTRIB:
 			return rats_patch_apply_net_attrib(pcb, patch);
+		case RATP_COMP_ADD:
+			/* this doesn't cause any direct netlist change */
+			return 0;
+		case RATP_COMP_DEL:
+			return rats_patch_apply_comp_del(pcb, patch);
 	}
 	return 0;
 }
@@ -399,6 +449,19 @@ int pcb_rats_patch_already_done(pcb_board_t *pcb, pcb_ratspatch_line_t *n)
 				}
 			}
 			break;
+
+		case RATP_COMP_ADD:
+			if (is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_EDITED], n->id)) {
+				rnd_message(RND_MSG_INFO, "rats patch: subcircuit %s has already been added, removing patch.\n", n->id);
+				return 1;
+			}
+			break;
+		case RATP_COMP_DEL:
+			if (!is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_EDITED], n->id)) {
+				rnd_message(RND_MSG_INFO, "rats patch: subcircuit %s has already been deleted, removing patch.\n", n->id);
+				return 1;
+			}
+			break;
 	}
 	return 0;
 }
@@ -421,31 +484,6 @@ int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb)
 
 /**** high level subc ****/
 
-static int is_subc_on_netlist(pcb_netlist_t *netlist, const char *refdes)
-{
-	htsp_entry_t *e;
-	for(e = htsp_first(netlist); e != NULL; e = htsp_next(netlist, e)) {
-		pcb_net_t *net = e->value;
-		pcb_net_term_t *term;
-		for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term)) {
-			if (strcmp(term->refdes, refdes) == 0)
-				return 1;
-		}
-	}
-	return 0;
-}
-
-static int is_subc_created_on_patch(pcb_ratspatch_line_t *head)
-{
-	pcb_ratspatch_line_t *rp;
-	int created = 0;
-
-	for(rp = head; rp != NULL; rp = rp->next) {
-		TODO("look for subc add and subc remove");
-	}
-
-	return created;
-}
 
 int rats_patch_is_subc_refereced(pcb_board_t *pcb, const char *refdes)
 {
@@ -453,7 +491,7 @@ int rats_patch_is_subc_refereced(pcb_board_t *pcb, const char *refdes)
 }
 
 
-int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc)
+int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
 {
 	if ((subc->refdes == NULL) || (*subc->refdes == '\0'))
 		return -1;
@@ -461,16 +499,20 @@ int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc)
 	if (rats_patch_is_subc_refereced(pcb, subc->refdes))
 		return 0; /* already on */
 
+	pcb_ratspatch_append(pcb, RATP_COMP_ADD, subc->refdes, NULL, NULL, undoable);
+
 	return -1;
 }
 
-int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc)
+int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
 {
 	if ((subc->refdes == NULL) || (*subc->refdes == '\0'))
 		return -1;
 
 	if (!rats_patch_is_subc_refereced(pcb, subc->refdes))
 		return 0; /* already removed */
+
+	pcb_ratspatch_append(pcb, RATP_COMP_DEL, subc->refdes, NULL, NULL, undoable);
 
 	return -1;
 }
@@ -511,6 +553,8 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 				}
 			case RATP_CHANGE_COMP_ATTRIB:
 			case RATP_CHANGE_NET_ATTRIB:
+			case RATP_COMP_DEL:
+			case RATP_COMP_ADD:
 				break;
 			}
 		}
@@ -531,6 +575,12 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 			break;
 		case RATP_CHANGE_NET_ATTRIB:
 			cb(ctx, PCB_RPE_NET_ATTR_CHG, n->id, n->arg1.attrib_name, n->arg2.attrib_val);
+			break;
+		case RATP_COMP_DEL:
+			cb(ctx, PCB_RPE_COMP_DEL, n->id, NULL, NULL);
+			break;
+		case RATP_COMP_ADD:
+			cb(ctx, PCB_RPE_COMP_ADD, n->id, NULL, NULL);
 			break;
 		}
 	}
@@ -560,6 +610,14 @@ static void fexport_old_bap_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 				ctx->pc);
 		case PCB_RPE_NET_ATTR_CHG:
 			rnd_message(RND_MSG_ERROR, "Can not save net attrib change in old or bap netlist patch format for back annotation\n");
+			break;
+
+		case PCB_RPE_COMP_ADD:
+			rnd_message(RND_MSG_ERROR, "Can not save comp_add (subcircuit added) in old or bap netlist patch format for back annotation\n");
+			break;
+
+		case PCB_RPE_COMP_DEL:
+			rnd_message(RND_MSG_ERROR, "Can not save comp_del (subcircuit removed) in old or bap netlist patch format for back annotation\n");
 			break;
 	}
 }
@@ -701,6 +759,28 @@ static void fexport_tedax_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const ch
 			fputs_tdx(ctx->f, key, &len);
 			len += fprintf(ctx->f, " ");
 			fputs_tdx(ctx->f, val, &len);
+			fprintf(ctx->f, "\n");
+			break;
+
+		case PCB_RPE_COMP_ADD:
+			if (ctx->ver < 2) {
+				rnd_message(RND_MSG_ERROR, "Can not save comp_add in tedax backann v1 format; please use v2 for this export\n");
+				break;
+			}
+			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
+			len = fprintf(ctx->f, "	comp_add ");
+			fputs_tdx(ctx->f, netn, &len);
+			fprintf(ctx->f, "\n");
+			break;
+
+		case PCB_RPE_COMP_DEL:
+			if (ctx->ver < 2) {
+				rnd_message(RND_MSG_ERROR, "Can not save comp_del in tedax backann v1 format; please use v2 for this export\n");
+				break;
+			}
+			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
+			len = fprintf(ctx->f, "	comp_del ");
+			fputs_tdx(ctx->f, netn, &len);
 			fprintf(ctx->f, "\n");
 			break;
 	}

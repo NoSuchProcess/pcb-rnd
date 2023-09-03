@@ -36,7 +36,9 @@ typedef enum {
 	RATP_ADD_CONN,
 	RATP_DEL_CONN,
 	RATP_CHANGE_COMP_ATTRIB,
-	RATP_CHANGE_NET_ATTRIB
+	RATP_CHANGE_NET_ATTRIB,
+	RATP_COMP_ADD,
+	RATP_COMP_DEL
 } pcb_rats_patch_op_t;
 
 struct pcb_ratspatch_line_s {
@@ -85,11 +87,11 @@ void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t *n, int do_free);
 
 /* Add a subc to the netlist patch of pcb if subc is not already on it.
    Returns 0 on sucess.*/
-int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc);
+int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable);
 
 /* Remove a subc from the netlist patch of pcb if subc is referenced from the
    netlist. Returns 0 on sucess.*/
-int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc);
+int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable);
 
 /**** exporter ****/
 
@@ -114,7 +116,9 @@ typedef enum {            /* netn is always the net name, unless specified other
 	PCB_RPE_CONN_ADD,       /* netn; val is the terminal pin/pad name */
 	PCB_RPE_CONN_DEL,       /* netn; val is the terminal pin/pad name */
 	PCB_RPE_COMP_ATTR_CHG,  /* netn is component name; key is the attribute name, val is the new attribute value */
-	PCB_RPE_NET_ATTR_CHG    /* netn is net name; key is the attribute name, val is the new attribute value */
+	PCB_RPE_NET_ATTR_CHG,   /* netn is net name; key is the attribute name, val is the new attribute value */
+	PCB_RPE_COMP_ADD,       /* netn is component name */
+	PCB_RPE_COMP_DEL        /* netn is component name */
 } pcb_rats_patch_export_ev_t;
 
 /* Call cb() for each item to output; PCB_PTRE_INFO* is calculated/called only
