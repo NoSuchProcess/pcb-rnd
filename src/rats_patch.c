@@ -485,7 +485,7 @@ int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb)
 /**** high level subc ****/
 
 
-int rats_patch_is_subc_refereced(pcb_board_t *pcb, const char *refdes)
+int rats_patch_is_subc_referenced(pcb_board_t *pcb, const char *refdes)
 {
 	return is_subc_created_on_patch(pcb->NetlistPatches) || is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_EDITED], refdes);
 }
@@ -496,7 +496,7 @@ int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
 	if ((subc->refdes == NULL) || (*subc->refdes == '\0'))
 		return -1;
 
-	if (rats_patch_is_subc_refereced(pcb, subc->refdes))
+	if (rats_patch_is_subc_referenced(pcb, subc->refdes))
 		return 0; /* already on */
 
 	pcb_ratspatch_append(pcb, RATP_COMP_ADD, subc->refdes, NULL, NULL, undoable);
@@ -509,7 +509,7 @@ int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
 	if ((subc->refdes == NULL) || (*subc->refdes == '\0'))
 		return -1;
 
-	if (!rats_patch_is_subc_refereced(pcb, subc->refdes))
+	if (!rats_patch_is_subc_referenced(pcb, subc->refdes))
 		return 0; /* already removed */
 
 	pcb_ratspatch_append(pcb, RATP_COMP_DEL, subc->refdes, NULL, NULL, undoable);
