@@ -26,8 +26,12 @@ ha:lht_tree_doc { ha:roots {
 						type=ha
 						desc { object size related settings }
 						li:children {
-							ha:x { valtype=coord; desc={drawing area size X (width)}}
-							ha:y { valtype=coord; desc={drawing area size Y (height)}}
+							ha:x  { ver {<9}; valtype=coord; desc={drawing area size X (width)}}
+							ha:y  { ver {<9}; valtype=coord; desc={drawing area size Y (height)}}
+							ha:x1 { ver {>=9}; valtype=coord; desc={drawing area box X1 (left)}}
+							ha:y1 { ver {>=9}; valtype=coord; desc={drawing area box Y1 (upper)}}
+							ha:x2 { ver {>=9}; valtype=coord; desc={drawing area box X2 (right)}}
+							ha:y2 { ver {>=9}; valtype=coord; desc={drawing area box Y2 (lower)}}
 							ha:isle_area_nm2 { valtype=double; desc={remove polygon islands smaller than this value, specified in nm<sup>2</sup>}}
 							ha:thermal_scale { valtype=double; desc={scale all thermals on the board by this factor}}
 						}

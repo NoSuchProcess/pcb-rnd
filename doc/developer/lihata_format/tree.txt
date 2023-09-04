@@ -13,8 +13,12 @@ ha:pcb-rnd-board-v*                 \t\t\tThe full, self-contained description o
    offs_y                coord      grid origin: Y offset from 0;0
    spacing               coord      distance between two grid points both in X and Y directions
   ha:size                           object size related settings
-   x                     coord      drawing area size X (width)
-   y                     coord      drawing area size Y (height)
+   x                     coord  <9  drawing area size X (width)
+   y                     coord  <9  drawing area size Y (height)
+   x1                    coord  >=9 drawing area box X1 (left)
+   y1                    coord  >=9 drawing area box Y1 (upper)
+   x2                    coord  >=9 drawing area box X2 (right)
+   y2                    coord  >=9 drawing area box Y2 (lower)
    isle_area_nm2         double     remove polygon islands smaller than this value, specified in nm^2
    thermal_scale         double     scale all thermals on the board by this factor
   ha:drc                        <5  design rule checker settings for the old DRC
