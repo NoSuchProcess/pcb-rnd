@@ -545,7 +545,12 @@ ha:rnd-menu-v1 {
 				ha:Design changes (back annotation) {
 					li:submenu {
 						ha:Swap nets on two selected pins  = { a={<key>a;<key>b;<key>s;}; action=net(swap) }
-						ha:Replace footprint               = { a={<key>a;<key>b;<key>f;}; action=ReplaceFootprint() }
+						ha:Remove subcircuit from netlist  = { a={<key>a;<key>b;<key>r;}; action=BaSubc(object, remove); tip={put a subcircuit removal request on subcircuit under cursor to the back annotation list} }
+						ha:Add subcircuit to netlist       = { a={<key>a;<key>b;<key>a;}; action=BaSubc(object, add); tip={put a subcircuit creation request on subcircuit under cursor to the back annotation list} }
+						-
+						ha:Replace selected footprints     = { a={<key>a;<key>b;<key>f;}; action=ReplaceFootprint(); tip={Replace footprint of all selected subcircuits and put the change on the back annotation list} }
+						ha:Remove subcircuits from netlist = { a={<key>a;<key>b;Shift<key>r;}; action=BaSubc(selected, remove); tip={put a subcircuit removal request on all selected subcircuits to the back annotation list} }
+						ha:Add subcircuits to netlist      = { a={<key>a;<key>b;Shift<key>a;}; action=BaSubc(selected, add); tip={put a subcircuit creation request on all selected subcircuits to the back annotation list} }
 						-
 						ha:claim net by object             = { a={<key>n;<key>c;<key>o;}; action=ClaimNet(object) }
 						ha:claim net on found              = { a={<key>n;<key>c;<key>f;}; action=ClaimNet(found) }
