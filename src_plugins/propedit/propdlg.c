@@ -49,7 +49,7 @@ extern const char *pcb_propedit_cookie;
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
-	int wtree, wfilter, wtype, wvals, wscope, wprev, whelptxt;
+	int wtree, wfilter, wtype, wvals, wscope, wprev, whelptxt, wbabox;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
 	unsigned lock:1; /* do not refresh while editing */
 	gdl_elem_t link;
@@ -372,6 +372,7 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 	pcb_props_t *p = NULL;
 	void (*last_help)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e) = NULL;
 	const char *helptxt = NULL;
+	int babox_hide = 1;
 
 	last_help = help_expose;
 	help_expose = NULL;
@@ -409,7 +410,12 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		else if (strcmp(row->path, "p/padstack/xmirror") == 0)         helptxt = "Mirror geometry over\nthe X axis.";
 
 		else if (strcmp(row->path, "p/text/clearance") == 0)           helptxt = "Text clearance\nis experimental.\n\nDO NOT USE!";
+
+		if (row->path[0] == 'a')
+			babox_hide = 0;
 	}
+
+	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wbabox, babox_hide);
 
 	if (last_help != help_expose) {
 		rnd_hid_attr_val_t hv;
@@ -742,6 +748,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	const char *hdr[] = {"property", "common", "min", "max", "avg", NULL};
 	const char *hdr_val[] = {"use", "values"};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	static const char *backann_help = "allow subc attributes to be back annotated\nany subc attribute change made when this checkbox is ticked in\nwill be added to the back annotation list if the subc is on the netlist";
 	static rnd_box_t prvbb = {0, 0, RND_MM_TO_COORD(10), RND_MM_TO_COORD(10)};
 	int n;
 	rnd_hid_attr_val_t hv;
@@ -797,7 +804,24 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 				RND_DAD_BEGIN_VBOX(ctx->dlg);
 					build_propval(ctx);
 				RND_DAD_END(ctx->dlg);
-				RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+
+				/* bottom righ: back annot checkbox and closes buttons */
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_BEGIN_HBOX(ctx->dlg);
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
+						ctx->wbabox = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_BOOL(ctx->dlg);
+							RND_DAD_HELP(ctx->dlg, backann_help);
+						RND_DAD_LABEL(ctx->dlg, "backann");
+							RND_DAD_HELP(ctx->dlg, backann_help);
+					RND_DAD_END(ctx->dlg);
+
+					RND_DAD_BEGIN_VBOX(ctx->dlg);
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+					RND_DAD_END(ctx->dlg);
+
+					RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+				RND_DAD_END(ctx->dlg);
 			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
@@ -811,6 +835,8 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	hv.lng = 1;
 	for(n = 0; n < PCB_PROPT_max; n++)
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wabs[n], &hv);
+
+	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wbabox, 1);
 }
 
 extern int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet);
