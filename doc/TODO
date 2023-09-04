@@ -8,7 +8,6 @@
 - ANNOUNCE: netlist patch dialog box
 - ANNOUNCE: back annotation upgrade: subc add and remove
 - back annotation upgrade (nlnet 9)
-	- file format selector in back annotation export
 	- remove draft state of the new tEDAx block
 	- FEATURE: lihata board v9:
 		- replace board/size with the bbox representation
