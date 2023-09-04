@@ -10,7 +10,6 @@
 - back annotation upgrade (nlnet 9)
 	- remove draft state of the new tEDAx block
 	- FEATURE: lihata board v9:
-		- replace board/size with the bbox representation
 		- font v2? maybe only in v10
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
