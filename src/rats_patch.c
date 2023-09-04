@@ -1032,7 +1032,7 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (fn == NULL) {
 		char *default_file;
-		static const *fmts[] = {"bap", "backannv2", "backannv1", "pcb", NULL};
+		static const char *fmts[] = {"bap", "backannv2", "backannv1", "pcb", NULL};
 		rnd_hid_dad_subdialog_t fmtsub_local = {0}, *fmtsub = &fmtsub_local;
 		int wfmt, fmt_id;
 
