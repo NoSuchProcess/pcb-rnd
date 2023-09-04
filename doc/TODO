@@ -6,9 +6,8 @@
 - ANNOUNCE: subc-in-subc syntax proposal: refdes-refdes-term
 - ANNOUNCE: netlist dialog: add conn and del conn button
 - ANNOUNCE: netlist patch dialog box
+- ANNOUNCE: back annotation upgrade: subc add and remove
 - back annotation upgrade (nlnet 9)
-	- a way to add a new subc to back annot: subc context menu; menu for selected
-	- a way to del subc to back annot: subc context menu; menu for selected
 	- propedit: checkbox for back annot ops
 		- add
 		- del
