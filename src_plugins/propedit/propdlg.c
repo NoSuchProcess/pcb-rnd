@@ -602,6 +602,12 @@ static void prop_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	prop_refresh((propdlg_t *)caller_data);
 }
 
+static void backann_chk_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	const char *new_val = attr->val.lng ? "1" : "0";
+	rnd_conf_set(RND_CFR_DESIGN, "editor/backann_subc_attr_edit", -1, new_val, RND_POL_OVERWRITE);
+}
+
 
 static void prop_refresh(propdlg_t *ctx)
 {
@@ -820,6 +826,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 						RND_DAD_BOOL(ctx->dlg);
 							ctx->wbachk = RND_DAD_CURRENT(ctx->dlg);
 							RND_DAD_HELP(ctx->dlg, backann_help);
+							RND_DAD_CHANGE_CB(ctx->dlg, backann_chk_cb);
 						RND_DAD_LABEL(ctx->dlg, "backann");
 							RND_DAD_HELP(ctx->dlg, backann_help);
 					RND_DAD_END(ctx->dlg);
