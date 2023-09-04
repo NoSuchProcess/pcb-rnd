@@ -793,7 +793,7 @@ static void fexport_tedax_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const ch
 				break;
 			}
 			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
-			len = fprintf(ctx->f, "	comp_add ");
+			len = fprintf(ctx->f, "	add_comp ");
 			fputs_tdx(ctx->f, netn, &len);
 			fprintf(ctx->f, "\n");
 			break;
@@ -804,7 +804,7 @@ static void fexport_tedax_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const ch
 				break;
 			}
 			if (!ctx->in_block) fexport_tedax_start_block(ctx, NULL);
-			len = fprintf(ctx->f, "	comp_del ");
+			len = fprintf(ctx->f, "	del_comp ");
 			fputs_tdx(ctx->f, netn, &len);
 			fprintf(ctx->f, "\n");
 			break;
