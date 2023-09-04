@@ -629,6 +629,10 @@ static const char *cpat_line_th[]  = {"te:thickness", "ha:line.*", "*", NULL};
 static const char *cpat_line_cl[]  = {"te:clearance", "ha:line.*", "*", NULL};
 static const char *cpat_size_x[]   = {"te:x", "ha:size", "ha:meta", "*", NULL};
 static const char *cpat_size_y[]   = {"te:y", "ha:size", "ha:meta", "*", NULL};
+static const char *cpat_size_x1[]  = {"te:x1", "ha:size", "ha:meta", "*", NULL};
+static const char *cpat_size_y1[]  = {"te:y1", "ha:size", "ha:meta", "*", NULL};
+static const char *cpat_size_x2[]  = {"te:x2", "ha:size", "ha:meta", "*", NULL};
+static const char *cpat_size_y2[]  = {"te:y2", "ha:size", "ha:meta", "*", NULL};
 static const char *cpat_curs_x[]   = {"te:x", "ha:cursor", "ha:meta", "*", NULL};
 static const char *cpat_curs_y[]   = {"te:y", "ha:cursor", "ha:meta", "*", NULL};
 static const char *cpat_curs_z[]   = {"te:zoom", "ha:cursor", "ha:meta", "*", NULL};
@@ -684,6 +688,10 @@ lhtpers_rule_t io_lihata_out_coords[] = {
 	{cpat_line_cl,  NULL, NULL},
 	{cpat_size_x,   NULL, NULL},
 	{cpat_size_y,   NULL, NULL},
+	{cpat_size_x1,  NULL, NULL},
+	{cpat_size_y1,  NULL, NULL},
+	{cpat_size_x2,  NULL, NULL},
+	{cpat_size_y2,  NULL, NULL},
 	{cpat_curs_x,   NULL, NULL},
 	{cpat_curs_y,   NULL, NULL},
 	{cpat_curs_z,   NULL, NULL},

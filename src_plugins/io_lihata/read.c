@@ -454,8 +454,41 @@ static int parse_meta(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "size");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		err |= parse_coord(&pcb->hidlib.dwg.X2, hash_get(grp, "x", 0));
-		err |= parse_coord(&pcb->hidlib.dwg.Y2, hash_get(grp, "y", 0));
+		lht_node_t *nx, *ny, *nx1, *ny1, *nx2, *ny2;
+		int size_box;
+		nx  = hash_get(grp, "x", 1);  ny  = hash_get(grp, "y", 1);
+		nx1 = hash_get(grp, "x1", 1); ny1 = hash_get(grp, "y1", 1);
+		nx2 = hash_get(grp, "x2", 1); ny2 = hash_get(grp, "y2", 1);
+
+		if (rctx->rdver < 9) {
+			if ((nx == &missing_ok) || (ny == &missing_ok)) {
+				iolht_error(grp, "missing nodes: lihata board version below 9 should have size/x and size/y for board dimensions\n");
+				size_box = 1;
+			}
+			else
+				size_box = 0;
+		}
+		else {
+			if ((nx1 == &missing_ok) || (ny1 == &missing_ok) || (nx2 == &missing_ok) || (ny2 == &missing_ok)) {
+				iolht_error(grp, "missing nodes: lihata board from version 9 should have size/x1, size/y1, size/x2, size/y2 for board dimensions\n");
+				size_box = 0;
+			}
+			else
+				size_box = 1;
+		}
+
+		if (size_box) {
+			err |= parse_coord(&pcb->hidlib.dwg.X1, nx1);
+			err |= parse_coord(&pcb->hidlib.dwg.Y1, ny1);
+			err |= parse_coord(&pcb->hidlib.dwg.X2, nx2);
+			err |= parse_coord(&pcb->hidlib.dwg.Y2, ny2);
+		}
+		else {
+			err |= parse_coord(&pcb->hidlib.dwg.X2, nx);
+			err |= parse_coord(&pcb->hidlib.dwg.Y2, ny);
+		}
+
+
 		err |= parse_coord_conf(rctx, "design/poly_isle_area", hash_get(grp, "isle_area_nm2", 1));
 		err |= parse_double(&pcb->ThermScale, hash_get(grp, "thermal_scale", 1));
 		if (pcb->ThermScale < 0.01) {

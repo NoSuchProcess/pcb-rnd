@@ -174,10 +174,18 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 
 	grp = lht_dom_node_alloc(LHT_HASH, "size");
 	lht_dom_hash_put(meta, grp);
-	lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->hidlib.dwg.X2));
-	lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->hidlib.dwg.Y2));
-	if ((pcb->hidlib.dwg.X1 != 0) || (pcb->hidlib.dwg.Y1 != 0))
-		pcb_io_incompat_save(NULL, NULL, "board", "drawing are bbox with non-zero origin (X1 or Y1)\n", "Run autocrop()");
+	if (wrver < 9) {
+		lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->hidlib.dwg.X2));
+		lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->hidlib.dwg.Y2));
+		if ((pcb->hidlib.dwg.X1 != 0) || (pcb->hidlib.dwg.Y1 != 0))
+			pcb_io_incompat_save(NULL, NULL, "board", "drawing are bbox with non-zero origin (X1 or Y1)\n", "Run autocrop()");
+	}
+	else {
+		lht_dom_hash_put(grp, build_textf("x1", CFMT, pcb->hidlib.dwg.X1));
+		lht_dom_hash_put(grp, build_textf("y1", CFMT, pcb->hidlib.dwg.Y1));
+		lht_dom_hash_put(grp, build_textf("x2", CFMT, pcb->hidlib.dwg.X2));
+		lht_dom_hash_put(grp, build_textf("y2", CFMT, pcb->hidlib.dwg.Y2));
+	}
 
 	if (wrver < 5) {
 		lht_dom_hash_put(grp, build_textf("isle_area_nm2", "%f", conf_core.design.poly_isle_area));
