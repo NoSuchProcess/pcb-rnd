@@ -38,6 +38,7 @@
 #include <librnd/hid/hid_inlines.h>
 #include "netlist.h"
 #include "event.h"
+#include "conf_core.h"
 
 #include "props.h"
 #include "propsel.h"
@@ -49,7 +50,7 @@ extern const char *pcb_propedit_cookie;
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
-	int wtree, wfilter, wtype, wvals, wscope, wprev, whelptxt, wbabox;
+	int wtree, wfilter, wtype, wvals, wscope, wprev, whelptxt, wbabox, wbachk;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
 	unsigned lock:1; /* do not refresh while editing */
 	gdl_elem_t link;
@@ -609,6 +610,12 @@ static void prop_refresh(propdlg_t *ctx)
 	prop_select_node_cb(attr, ctx->dlg_hid_ctx, rnd_dad_tree_get_selected(attr));
 }
 
+static void bachk_update(propdlg_t *ctx)
+{
+	rnd_hid_attr_val_t hv;
+	hv.lng = conf_core.editor.backann_subc_attr_edit;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wbachk, &hv);
+}
 
 static void build_propval(propdlg_t *ctx)
 {
@@ -811,6 +818,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 						ctx->wbabox = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_BOOL(ctx->dlg);
+							ctx->wbachk = RND_DAD_CURRENT(ctx->dlg);
 							RND_DAD_HELP(ctx->dlg, backann_help);
 						RND_DAD_LABEL(ctx->dlg, "backann");
 							RND_DAD_HELP(ctx->dlg, backann_help);
@@ -837,6 +845,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wabs[n], &hv);
 
 	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wbabox, 1);
+	bachk_update(ctx);
 }
 
 extern int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet);
@@ -877,6 +886,17 @@ static void propdlg_unit_change(rnd_conf_native_t *cfg, int arr_idx, void *user_
 	}
 }
 
+static void propdlg_ba_change(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
+{
+	propdlg_t *ctx;
+	gdl_iterator_t it;
+
+	gdl_foreach(&propdlgs, &it, ctx) {
+		bachk_update(ctx);
+	}
+}
+
+
 static void propedit_brd_chg(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	propdlg_t *pd;
@@ -900,13 +920,20 @@ static rnd_conf_hid_id_t propdlg_conf_id;
 static const char *propdlg_cookie = "propdlg";
 void pcb_propdlg_init(void)
 {
-	static rnd_conf_hid_callbacks_t cbs;
-	rnd_conf_native_t *n = rnd_conf_get_field("editor/grid_unit");
+	static rnd_conf_hid_callbacks_t cbs, cbs2;
+	rnd_conf_native_t *n;
 	propdlg_conf_id = rnd_conf_hid_reg(propdlg_cookie, NULL);
 
+	n = rnd_conf_get_field("editor/grid_unit");
 	if (n != NULL) {
 		cbs.val_change_post = propdlg_unit_change;
 		rnd_conf_hid_set_cb(n, propdlg_conf_id, &cbs);
+	}
+
+	n = rnd_conf_get_field("editor/backann_subc_attr_edit");
+	if (n != NULL) {
+		cbs2.val_change_post = propdlg_ba_change;
+		rnd_conf_hid_set_cb(n, propdlg_conf_id, &cbs2);
 	}
 
 	rnd_event_bind(PCB_EVENT_BOARD_EDITED, propedit_brd_chg, NULL, pcb_propedit_cookie);
