@@ -837,6 +837,10 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, pcb_ratspatch_fmt_t fmt)
 			fprintf(f, "tEDAx v1\n");
 			save_tedax:;
 			res = pcb_rats_patch_export(pcb, pcb->NetlistPatches, 1, fexport_tedax_cb, &ctx_tdx);
+			if (!ctx_tdx.in_block) {
+				/* happens when the list is empty - export an empty block just for the headers */
+				fexport_tedax_start_block(&ctx_tdx, "empty netlist patch");
+			}
 			fexport_tedax_end_block(&ctx_tdx);
 			return res;
 		case PCB_RPFM_BACKANN_V2:
