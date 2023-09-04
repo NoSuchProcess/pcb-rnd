@@ -406,6 +406,21 @@ static int attr_key_has_side_effect(const char *key)
 	return 0;
 }
 
+/* back annotate a subc attribute change (if enabled and if the subc is on the netlist) */
+static void ba_attr(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *key, const char *val, int undoable)
+{
+	pcb_subc_t *subc = (pcb_subc_t *)obj;
+
+	/* figure if we shouldn't do this */
+	if (obj == NULL) return;
+	if (!conf_core.editor.backann_subc_attr_edit) return;
+	if (obj->type != PCB_OBJ_SUBC) return;
+	if ((subc->refdes == NULL) || (*subc->refdes == '\0')) return;
+	if (!rats_patch_is_subc_referenced(pcb, subc->refdes)) return;
+
+	pcb_ratspatch_append(pcb, RATP_CHANGE_COMP_ATTRIB, subc->refdes, key, val, undoable);
+}
+
 static void toggle_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list, int undoable, pcb_any_obj_t *obj)
 {
 	const char *key = st->name+2, *newval = NULL;
@@ -438,6 +453,9 @@ static void toggle_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list, int u
 		pcb_uchg_attr(st->pcb, obj, key, newval);
 	else
 		pcb_attribute_put(list, key, newval);
+
+	ba_attr(st->pcb, obj, key, newval, undoable);
+
 	if ((obj != NULL) && side_effect) {
 		pcb_obj_update_bbox(st->pcb, obj);
 		pcb_obj_post(obj);
@@ -446,7 +464,7 @@ static void toggle_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list, int u
 	st->set_cnt++;
 }
 
-static void set_attr_raw(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
+static void set_attr_raw(pcb_propset_ctx_t *st, pcb_attribute_list_t *list, pcb_any_obj_t *obj)
 {
 	const char *key = st->name+2;
 	const char *orig;
@@ -461,12 +479,15 @@ static void set_attr_raw(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
 		if (strcmp(st->s, key) == 0)
 			return;
 		pcb_attribute_put(list, st->s, orig);
+		ba_attr(st->pcb, obj, st->s, orig, 0);
 		pcb_attribute_remove(list, key);
+		ba_attr(st->pcb, obj, key, NULL, 0);
 	}
 	else {
 		if ((orig != NULL) && (strcmp(orig, st->s) == 0))
 			return;
 		pcb_attribute_put(list, key, st->s);
+		ba_attr(st->pcb, obj, key, st->s, 0);
 	}
 	st->set_cnt++;
 }
@@ -493,14 +514,20 @@ static void set_attr_obj(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 		const char *orig = pcb_attribute_get(&obj->Attributes, key);
 		if (orig != NULL) {
 			res = pcb_uchg_attr(st->pcb, obj, st->s, orig);
-			if (res == 0)
+			if (res == 0) {
+				ba_attr(st->pcb, obj, st->s, orig, 1);
 				res = pcb_uchg_attr(st->pcb, obj, key, NULL);
+				if (res == 0)
+					ba_attr(st->pcb, obj, key, NULL, 1);
+			}
 		}
 		else
 			res = -1;
 	}
-	else
+	else {
 		res = pcb_uchg_attr(st->pcb, obj, key, st->s);
+		ba_attr(st->pcb, obj, key, st->s, 1);
+	}
 
 	if (side_effect) {
 		pcb_obj_update_bbox(st->pcb, obj);
@@ -552,7 +579,7 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 	const char *pn = st->name + 8;
 
 	if (st->is_attr) {
-		set_attr_raw(st, &pcb->Attributes);
+		set_attr_raw(st, &pcb->Attributes, NULL);
 		return;
 	}
 
@@ -1201,21 +1228,23 @@ int pcb_propsel_toggle(pcb_propedit_t *ctx, const char *prop, rnd_bool create)
 
 /*******************/
 
-static long del_attr(void *ctx, pcb_attribute_list_t *list, const char *key)
+static long del_attr(pcb_propedit_t *ctx, pcb_attribute_list_t *list, const char *key, pcb_any_obj_t *obj)
 {
-	if (pcb_attribute_remove(list, key))
+	if (pcb_attribute_remove(list, key)) {
+		ba_attr(ctx->pcb, obj, key, NULL, 0);
 		return 1;
+	}
 	return 0;
 }
 
-static long del_layer(void *ctx, pcb_layer_t *ly, const char *key)
+static long del_layer(pcb_propedit_t *ctx, pcb_layer_t *ly, const char *key)
 {
-	return del_attr(ctx, &ly->Attributes, key);
+	return del_attr(ctx, &ly->Attributes, key, NULL);
 }
 
-static long del_layergrp(void *ctx, pcb_layergrp_t *grp, const char *key)
+static long del_layergrp(pcb_propedit_t *ctx, pcb_layergrp_t *grp, const char *key)
 {
-	return del_attr(ctx, &grp->Attributes, key);
+	return del_attr(ctx, &grp->Attributes, key, NULL);
 }
 
 static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
@@ -1230,12 +1259,12 @@ static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
 
 static long del_any(void *ctx, pcb_any_obj_t *o, const void *key)
 {
-	return del_attr(ctx, &o->Attributes, key);
+	return del_attr(ctx, &o->Attributes, key, o);
 }
 
 static long del_board(void *ctx, pcb_board_t *pcb, const char *key)
 {
-	return del_attr(ctx, &pcb->Attributes, key);
+	return del_attr(ctx, &pcb->Attributes, key, NULL);
 }
 
 int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
