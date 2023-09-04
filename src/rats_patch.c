@@ -40,6 +40,8 @@
 #include "move.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_dad.h>
 #include "funchash_core.h"
 #include "search.h"
 #include "undo.h"
@@ -1026,6 +1028,9 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (fn == NULL) {
 		char *default_file;
+		static const *fmts[] = {"bap", "backannv2", "backannv1", "pcb", NULL};
+		rnd_hid_dad_subdialog_t fmtsub_local = {0}, *fmtsub = &fmtsub_local;
+		int wfmt, fmt_id;
 
 		if (PCB->hidlib.loadname != NULL) {
 			char *end;
@@ -1041,9 +1046,20 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			default_file = rnd_strdup("unnamed.bap");
 
+
+		RND_DAD_BEGIN_HBOX(fmtsub->dlg);
+			RND_DAD_LABEL(fmtsub->dlg, "File format:");
+			RND_DAD_ENUM(fmtsub->dlg, fmts);
+				wfmt = RND_DAD_CURRENT(fmtsub->dlg);
+		RND_DAD_END(fmtsub->dlg);
+
 		fn = rnd_hid_fileselect(rnd_gui, "Save netlist patch as ...",
 			"Choose a file to save netlist patch to\n"
-			"for back annotation\n", default_file, ".bap", NULL, "patch", 0, NULL);
+			"for back annotation\n", default_file, ".bap", NULL, "patch", 0, fmtsub);
+
+		fmt_id = fmtsub->dlg[wfmt].val.lng;
+		if ((fmt_id >= 0) && (fmt_id < sizeof(fmts)/sizeof(fmts[0])))
+			sfmt = fmts[fmt_id];
 
 		free(default_file);
 	}
