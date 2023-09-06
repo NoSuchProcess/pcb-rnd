@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.3-dev running with librnd version 4.0.3-dev ,  Revision: 38199
+This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.3-dev running with librnd version 4.0.3-dev ,  Revision: 38272
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -38,6 +38,7 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>Backup</td><td>Backup the current layout - save using the same method that the timed backup function uses</td><td>Backup()</td><td></td>
 <tr><td>bas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#basubc">basubc</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Add new subcircuits to the back annotation list or remove and back annotate removal of a subcircuit</td><td>BaSubc(object|selected, add|remove)</td><td></td>
 <tr><td>Bell</td><td>Attempt to produce audible notification (e.g. beep the speaker).</td><td>Bell()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#benchmark">Benchmark</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Benchmark the GUI speed.</td><td>Benchmark()</td><td></td>
 <tr><td><a href="action_details.html#boardflip">BoardFlip</a></td><td>Mirror the board over the x axis, optionally mirroring sides as well.</td><td>BoardFlip([sides])</td><td></td>
@@ -421,7 +422,7 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout)<br>Save(LayoutAs, [path])<br>Save(AllConnections|AllUnusedPins|ElementConnections, [path])<br>Save(PasteBuffer, [path])<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td><a href="action_details.html#savelib">SaveLib</a></td><td>Saves all subcircuits to a library file or directory from a board or buffer.</td><td>SaveLib(file|dir, board|buffer, [filename], [fmt])</td><td></td>
-<tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
+<tr><td>SavePatch</td><td>Save netlist patch for back annotation. File format can be specified in fmt, which should be one of: @bap (for the old gschem/sch-rnd format), @backannv1 or @backannv2 (for tEDAx), @pcb (for the old gEDA/PCB format, read by pcb-rnd only)</td><td>SavePatch([fmt], filename)</td><td></td>
 <tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)<br>SaveTedax(drc_query, filename, [rule_name])SaveTedax(route_req, filename, [confkey=value, confkey=value, ...])</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
