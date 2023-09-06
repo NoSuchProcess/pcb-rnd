@@ -264,7 +264,7 @@
  ../src_3rd/libuundo/uundo.h event.h undo.h undo_old.h \
  ../src_plugins/dialogs/dlg_fpmap.c actions_pcb.h plug_footprint.h \
  plug_io.h plug_footprint.h ../src_plugins/dialogs/dlg_obj_list.c \
- ../src_plugins/dialogs/dlg_netlist.c data_it.h \
+ ../src_plugins/dialogs/dlg_netlist.c \
  ../src_plugins/dialogs/dlg_netlist_patch.c \
  ../src_plugins/dialogs/dlg_printcalib.c \
  ../src_plugins/dialogs/dlg_view.h ../src_plugins/dialogs/adialogs_conf.h \
@@ -3381,7 +3381,7 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h move.h funchash_core.h funchash_core_list.h search.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h netlist.h \
- event.h
+ event.h obj_subc_parent.h data_it.h
 remove.o: remove.c ../config.h conf_core.h globalconst.h board.h \
  vtroutestyle.h attrib.h global_typedefs.h layer.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
