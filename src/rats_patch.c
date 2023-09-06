@@ -509,13 +509,15 @@ int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
 	return 0;
 }
 
-int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable)
+int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int force, int undoable)
 {
 	if ((subc->refdes == NULL) || (*subc->refdes == '\0'))
 		return -1;
 
-	if (!rats_patch_is_subc_referenced(pcb, subc->refdes))
-		return 0; /* already removed */
+	if (!force) {
+		if (!rats_patch_is_subc_referenced(pcb, subc->refdes))
+			return 0; /* already removed */
+	}
 
 	pcb_ratspatch_append(pcb, RATP_COMP_DEL, subc->refdes, NULL, NULL, undoable);
 

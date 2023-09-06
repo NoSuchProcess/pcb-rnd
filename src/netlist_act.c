@@ -719,8 +719,10 @@ static int ba_subc_(pcb_board_t *pcb, pcb_subc_t *subc, int op2, int undoable)
 			}
 			break;
 		case F_Remove:
+			if (!rats_patch_is_subc_referenced(pcb, subc->refdes))
+				return 0; /* already removed */
 			rats_patch_break_subc_conns(pcb, subc, undoable);
-			return rats_patch_del_subc(pcb, subc, undoable);
+			return rats_patch_del_subc(pcb, subc, 1, undoable);
 		default:
 			rnd_message(RND_MSG_ERROR, "BaSubc(): invalid second argument\n");
 	}

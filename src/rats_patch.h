@@ -91,7 +91,7 @@ int rats_patch_add_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable);
 
 /* Remove a subc from the netlist patch of pcb if subc is referenced from the
    netlist. Returns 0 on sucess.*/
-int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int undoable);
+int rats_patch_del_subc(pcb_board_t *pcb, pcb_subc_t *subc, int force, int undoable);
 
 /* Back annotate removal of all connections of a subc */
 void rats_patch_break_subc_conns(pcb_board_t *pcb, pcb_subc_t *subc, int undoable);
