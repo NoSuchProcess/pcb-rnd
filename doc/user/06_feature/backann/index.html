@@ -225,6 +225,17 @@ GUI: network window; select a network on the left side, click on the
 <p>
 CLI: action: NetList(merge, <i>src_netname</i>, <i>dst_netname</i>)
 
+<h4> Claim net </h4>
+<p>
+Create a new net, with connections to existing subcircuit terminals, by looking
+at copper objects on the board.
+<p>
+GUI: menu: Connects/Design changes.../Claim net*.
+<p>
+GUI: netlist window, <i>Claim</i> button group.
+<p>
+CLI: n/a
+
 
 <h4> Add new subcircuit </h4>
 <p>
@@ -247,9 +258,17 @@ an empty area of the subcircuit; this brings up the subc contextmenu; select
 <p>
 CLI: action: BaSubc(object|selected, del)
 
+<h4> Subcircuit: footprint replace </h4>
+<p>
+Replace selected subcircuits on board from the library and remember the
+footprint attribute change on the netlist patch.
+<p>
+GUI: select subcircuits; Connects/Design changes.../Replace selected footprints
+<p>
+CLI: action: ReplaceFootprint()
+
 <h4> Change or create subcircuit attribute </h4>
 
 <h4> Change or create network attribute </h4>
-
 
 
