@@ -783,7 +783,7 @@ ha:rnd-menu-v1 {
 				ha:Back annotation {
 					li:submenu {
 						ha:Add (to back annotate)           { action=basubc(object, add) }
-						ha:Del (and back annotate removal)  { action=basubc(object, remove) }
+						ha:Del (back annotate removal)      { action=basubc(object, remove) }
 					}
 				}
 				ha:Remove subcircuit      { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
