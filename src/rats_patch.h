@@ -88,6 +88,9 @@ void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t *n, int do_free);
 long pcb_ratspatch_addconn_term(pcb_board_t *pcb, pcb_net_t *net, pcb_any_obj_t *obj);
 long pcb_ratspatch_addconn_selected(pcb_board_t *pcb, pcb_data_t *parent, pcb_net_t *net);
 
+long pcb_ratspatch_delconn_term(pcb_board_t *pcb, pcb_any_obj_t *obj);
+long pcb_ratspatch_delconn_selected(pcb_board_t *pcb, pcb_data_t *parent);
+
 
 /**** high level calls for subc add/remove ****/
 

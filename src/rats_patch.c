@@ -533,6 +533,53 @@ long pcb_ratspatch_addconn_selected(pcb_board_t *pcb, pcb_data_t *parent, pcb_ne
 	return cnt;
 }
 
+long pcb_ratspatch_delconn_term(pcb_board_t *pcb, pcb_any_obj_t *obj)
+{
+	pcb_subc_t *subc = pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
+	pcb_net_term_t *term;
+	pcb_net_t *net;
+	char *termname;
+
+	if (subc == NULL)
+		return 0;
+
+	termname = rnd_strdup_printf("%s-%s", subc->refdes, obj->term);
+	term = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], obj);
+	if (term == NULL)
+		return 0;
+
+	net = term->parent.net;
+	if (net == NULL)
+		return 0;
+
+	assert(term->parent_type == PCB_PARENT_NET);
+
+	pcb_ratspatch_append_optimize(pcb, RATP_DEL_CONN, termname, net->name, NULL);
+	free(termname);
+	pcb_ratspatch_make_edited(pcb);
+	pcb_netlist_changed(0);
+	return 1;
+
+}
+
+long pcb_ratspatch_delconn_selected(pcb_board_t *pcb, pcb_data_t *parent)
+{
+	long cnt = 0;
+	pcb_any_obj_t *obj;
+	pcb_data_it_t it;
+
+	for(obj = pcb_data_first(&it, parent, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
+		if ((obj->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) /* pick up terminals */
+			cnt += pcb_ratspatch_delconn_term(pcb, obj);
+
+		if (obj->type == PCB_OBJ_SUBC) { /* recurse to subc */
+			pcb_subc_t *subc = (pcb_subc_t *)obj;
+			cnt += pcb_ratspatch_delconn_selected(pcb, subc->data);
+		}
+	}
+
+	return cnt;
+}
 
 /**** high level subc ****/
 
