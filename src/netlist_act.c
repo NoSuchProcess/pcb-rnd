@@ -779,6 +779,27 @@ static fgw_error_t pcb_act_BaSubc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static pcb_any_obj_t *find_term(pcb_board_t *pcb)
+{
+						int rv;
+						rnd_coord_t x, y;
+						void *r1, *r2, *r3;
+						pcb_any_obj_t *obj;
+
+						rnd_hid_get_coords("Select a termina to connect", &x, &y, 0);
+						rv = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
+						obj = r2;
+						if ((rv <= 0) || (obj == NULL) || (obj->term == NULL))
+							rv = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK| PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
+						obj = r2;
+						if ((rv <= 0) || (obj == NULL) || (obj->term == NULL)) {
+							rnd_message(RND_MSG_ERROR, "No terminal for BaConn()\n");
+							return NULL;
+						}
+
+	return obj;
+}
+
 static const char pcb_acts_BaConn[] = "BaConn(object|selected, add, [netname])\n";
 static const char pcb_acth_BaConn[] = "Add a terminal-net connection to the back annotation list";
 /* DOC: basubc.html */
@@ -788,6 +809,7 @@ static fgw_error_t pcb_act_BaConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	char *netname = NULL, *freeme = NULL;
 	pcb_net_t *net;
+	pcb_any_obj_t *obj;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op1 = fgw_keyword(&argv[1]));
 	RND_ACT_CONVARG(2, FGW_KEYWORD, Netlist, op2 = fgw_keyword(&argv[2]));
@@ -802,7 +824,6 @@ static fgw_error_t pcb_act_BaConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				freeme = netname = rnd_hid_prompt_for(RND_ACT_DESIGN, "Name of the network to connecto to", NULL, "connect term to net: netname");
 			if (netname == NULL)
 				return 0; /* cancel */
-
 			net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
 			if (net == NULL) {
 				rnd_message(RND_MSG_ERROR, "BaConn(): net '%s' not found\n", netname);
@@ -813,25 +834,11 @@ static fgw_error_t pcb_act_BaConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			switch(op1) {
 				case F_Object:
-					{
-						int rv;
-						rnd_coord_t x, y;
-						void *r1, *r2, *r3;
-						pcb_any_obj_t *obj;
-
-						rnd_hid_get_coords("Select a termina to connect", &x, &y, 0);
-						rv = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
-						obj = r2;
-						if ((rv <= 0) || (obj == NULL) || (obj->term == NULL))
-							rv = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK| PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
-						obj = r2;
-						if ((rv <= 0) || (obj == NULL) || (obj->term == NULL)) {
-							rnd_message(RND_MSG_ERROR, "No terminal for BaConn()\n");
-							return 0;
-						}
-						if (pcb_ratspatch_addconn_term(pcb, net, obj) > 0)
-							RND_ACT_IRES(0);
-					}
+					obj = find_term(pcb);
+					if (obj == NULL)
+						return 0;
+					if (pcb_ratspatch_addconn_term(pcb, net, obj) > 0)
+						RND_ACT_IRES(0);
 					break;
 				case F_Selected:
 					if (pcb_ratspatch_addconn_selected(pcb, pcb->Data, net) > 0)
