@@ -227,8 +227,28 @@ CLI: action: NetList(merge, <i>src_netname</i>, <i>dst_netname</i>)
 
 
 <h4> Add new subcircuit </h4>
+<p>
+Add the creation of an existing subcircuit to the back annotation list by refdes.
+<p>
+GUI: place a subcircuit, make sure it has an unique refres; right click over
+an empty area of the subcircuit; this brings up the subc contextmenu; select
+<i>back annotation</i> then <i>Add</i>.
+<p>
+CLI: action: BaSubc(object|selected, add)
+
 <h4> Remove subcircuit </h4>
+<p>
+Add the removal of an existing subcircuit to the back annotation list by refdes.
+Also remove all connections to the subcircuit.
+<p>
+GUI: find a subcircuit with unique refres; right click over
+an empty area of the subcircuit; this brings up the subc contextmenu; select
+<i>back annotation</i> then <i>Del</i>.
+<p>
+CLI: action: BaSubc(object|selected, del)
+
 <h4> Change or create subcircuit attribute </h4>
+
 <h4> Change or create network attribute </h4>
 
 
