@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.3-dev running with librnd version 4.0.3-dev ,  Revision: 38272
+This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.3-dev running with librnd version 4.0.3-dev ,  Revision: 38278
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -37,8 +37,9 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#autoroute">AutoRoute</a></td><td>Auto-route some or all rat lines.</td><td>AutoRoute(AllRats|SelectedRats)</td><td>autoroute plugin</td>
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>Backup</td><td>Backup the current layout - save using the same method that the timed backup function uses</td><td>Backup()</td><td></td>
+<tr><td><a href="action_details.html#baconn">baconn</a></td><td>Add a terminal-net connection to the back annotation list</td><td>BaConn(object|selected, add, [netname])</td><td></td>
 <tr><td>bas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td><a href="action_details.html#basubc">basubc</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Add new subcircuits to the back annotation list or remove and back annotate removal of a subcircuit</td><td>BaSubc(object|selected, add|remove)</td><td></td>
+<tr><td><a href="action_details.html#basubc">basubc</a></td><td>Add new subcircuits to the back annotation list or remove and back annotate removal of a subcircuit</td><td>BaSubc(object|selected, add|remove)</td><td></td>
 <tr><td>Bell</td><td>Attempt to produce audible notification (e.g. beep the speaker).</td><td>Bell()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#benchmark">Benchmark</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Benchmark the GUI speed.</td><td>Benchmark()</td><td></td>
 <tr><td><a href="action_details.html#boardflip">BoardFlip</a></td><td>Mirror the board over the x axis, optionally mirroring sides as well.</td><td>BoardFlip([sides])</td><td></td>
