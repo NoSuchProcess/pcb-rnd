@@ -781,21 +781,21 @@ static fgw_error_t pcb_act_BaSubc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static pcb_any_obj_t *find_term(pcb_board_t *pcb)
 {
-						int rv;
-						rnd_coord_t x, y;
-						void *r1, *r2, *r3;
-						pcb_any_obj_t *obj;
+	int rv;
+	rnd_coord_t x, y;
+	void *r1, *r2, *r3;
+	pcb_any_obj_t *obj;
 
-						rnd_hid_get_coords("Select a termina to connect", &x, &y, 0);
-						rv = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
-						obj = r2;
-						if ((rv <= 0) || (obj == NULL) || (obj->term == NULL))
-							rv = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK| PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
-						obj = r2;
-						if ((rv <= 0) || (obj == NULL) || (obj->term == NULL)) {
-							rnd_message(RND_MSG_ERROR, "No terminal for BaConn()\n");
-							return NULL;
-						}
+	rnd_hid_get_coords("Select a termina to connect", &x, &y, 0);
+	rv = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
+	obj = r2;
+	if ((rv <= 0) || (obj == NULL) || (obj->term == NULL))
+		rv = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK| PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
+	obj = r2;
+	if ((rv <= 0) || (obj == NULL) || (obj->term == NULL)) {
+		rnd_message(RND_MSG_ERROR, "No terminal for BaConn()\n");
+		return NULL;
+	}
 
 	return obj;
 }
