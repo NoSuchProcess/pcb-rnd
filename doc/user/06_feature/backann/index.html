@@ -43,7 +43,7 @@ commandfor making the change so pcb-rnd understands it's a change that needs
 to be tracked and back annotated.
 <p>
 Tracking such changes intended for back annotation is done using the
-<i>netlist patch<i>, which is also saved in the board file (when using the
+<i>netlist patch</i>, which is also saved in the board file (when using the
 right file format). The netlist patch is an ordered list of simple,
 <a href="TODO">atomic operations</a> the user made to deliberately change
 the "current state" of the project in pcb-rnd. This netlist patch is then
@@ -142,10 +142,21 @@ Schematic editors vs. file format version vs. functionality:
 This section lists all operations that are available for back annotation.
 A few of them are demonstrated in the
 <a href="https://archive.org/details/sch-rnd-tut-back-annotation">sch-rnd back
-annotation tutorial video. The rest work very similar; this section concentrates
+annotation tutorial video.</a> The rest work very similar; this section concentrates
 on what each operations does on instruction level and where to find the given
 operation. The network window can be invoked from the window menu or with
 the hotkey {w n}.
+
+<h4> Inspecting the netlist patch </h4>
+<p>
+GUI: <i>netlist patch</i> (a.k.a. back annotation) window; can be be invoked
+from the window menu. Lists all instructions in order. The <i>Remove</i> button
+can be used (at your own risk) to remove any instruction (potentially breaking
+further instructions depending on this one).
+<p>
+CLI: save the file in the lihata v9 format and look for the
+<a href="../../../developer/lihata_format/tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*/children/netlists/children/netlist_patch">li:netlist_patch subtree.</a>
+
 
 <h4> Add connection </h4>
 <p>
