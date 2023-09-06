@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2 autotoc="yes"> Back annotation </h2>
+<p>
+<h3> Theory of operation </h3>
+<p>
+<i>Forward annotation</i> is when the schematics editor exports a full
+"current state" of the project in a netlist and pcb-rnd loads that. On
+pcb-rnd side this is called <i>import schematics</i> or <i>import
+netlist</i> (the latter loads connectivity information only, the former
+connectivity and a lot of metadata like footprints and component values).
+<p>
+After a forward annotation, pcb-rnd will be in sync about the "current state"
+of the project. The user will go on editing; most changes that are
+in-line with the imported netlist/schematics (the rats nest will guarantee
+that). There may be mistakes, for example accidentally shorting two nets;
+these are changes contradicting the imported netlist. This is also detected
+by the rats nest code in pcb-rnd and a short circuit warning is generated.
+(Note: the user needs to invoke the check manually, e.g. using the hotkey
+{c r}).
+<p>
+For pcb-rnd to be able to perform the check any time, the imported netlist,
+called <i>input netlist</i> needs to be saved in the board file.
+<p>
+<i>Back annotation</i> is when the user makes a deliberate edit in
+pcb-rnd that contradicts with the <i>input netlist</i> (or at least not
+mentioned in the input netlist), then pcb-rnd keeps track on this
+deviation from the input netlist and later on the deviation is sent back
+to the schematics editor where the schematics is upgraded to incorporate
+the chnages made in pcb-rnd.
+<p>
+Just by looking at a conflicting edit, pcb-rnd can not decide if it was
+accidental or delibrate. Therefore by default pcb-rnd assumes a
+conflicting edit is a mistake. When the user wants make a deliberate deviation
+from the input netlist, they need to indicate this by using a dedicated
+commandfor making the change so pcb-rnd understands it's a change that needs
+to be tracked and back annotated.
+<p>
+Tracking such changes intended for back annotation is done using the
+<i>netlist patch<i>, which is also saved in the board file (when using the
+right file format). The netlist patch is an ordered list of simple,
+<a href="TODO">atomic operations</a> the user made to deliberately change
+the "current state" of the project in pcb-rnd. This netlist patch is then
+can be exported in pcb-rnd and imported in the schematics editor where
+the schematics can be upgraded. Then upon the next forward annotation,
+pcb-rnd automatically detects if changes on the board's netlist patch
+are applied to the schematics and removes those changes from the
+board's netlist patch.
+<p>
+Implementation detail: once a deliberate change is made for back
+annotation, pcb-rnd assumes this is the new state of the project and
+all checks are done accordingly. For example if the user uses back annotation
+tools to remove the connection of U4-3 to gnd, what the next rats nest
+generatio (hotkey: {c r}) does is making sure that all connections from
+the input netlist are done properly, except for the "U4-3 to gnd" connection,
+which is still part of the input netlist but not part of the "current state"
+of the project. This is done by maintaining a second netlist in memory,
+called the <i>edited netlist</i>; this one is never saved in a file. The edited
+netlist is the input netlist plus netlist patches applied.
+<p>
+Schematics editor side support: in the simplest case the schematics
+editor should load the back annotation patch file and present it as a
+list of changes the user needs to perform.
+A more advanced approach is also auto-detect whether the changes have been
+done and present the state of each item of the list on the UI.
+An even more advanced feature is when the schematics editor can
+make edits, upon explicit request from the user, to implement items from
+the list (sch-rnd can do this for most instructions).
+
+<h3> Schematics editors and file formats and versions </h3>
+<p>
+At the time of writing (September 2023), the following back annotation
+support is available.
+<p>
+Back annotation file formats that can be saved from pcb-rnd:
+<p>
+<table border=1 cellspacing=0>
+<tr><th>format    <th> comments
+<tr><td> bap
+    <td> The old Back Annotation Patch format originally developed for
+         pcb-rnd to gschem back annotation; limited to a few types of
+         instructions: can do pin swaps, break conn and add conn; this
+         file format is very simple but lacks header and version information
+         so can not be extended/upgraded.
+
+<tr><td> <a href="http://www.repo.hu/projects/tedax/backann.html">tEDAx backann v1</a>
+    <td> Similar functionality as bap, but has a proper file format with
+         header, well documented syntax (handling corner cases like escaping
+         whitespace) and versioning so that it could be upgraded. Supports
+         the same features as bap, plus subcircuit and network attribute
+         changes.
+
+<tr><td> <a href="http://www.repo.hu/projects/tedax/backann_v2.html">tEDAx backann v2</a>
+    <td> Newer version of backann; also supports adding and removing
+         subcircuits.
+
+<tr><td> pcb
+    <td> This is an internal format that should be used only by the code
+         when saving the old .pcb format from the times when pcb-rnd still
+         used gEDA/PCB's file format but already extended it (for example
+         with netlist patches). Supported functionality matches bap, but
+         nothing reads this format from a stand-alone file.
+</table>
+
+<p>
+Schematic editors that can use pcb-rnd exported back annotations:
+<p>
+<table border=1 cellspacing=0>
+<tr><th>software  <th> limitations
+<tr><td>sch-rnd   <td> none - supports everything pcb-rnd does; supports auto-fix for most instructions
+<tr><td>xschem    <td> works using the old bap format; later on may upgrade to tEDAx backann v2; no auto-fix
+<tr><td>gschem    <td> from about 2019 (1.10.x), it supports bap; no auto-fix; no hope for an upgrade
+</table>
+
+
+<p>
+Schematic editors vs. file format version vs. functionality:
+<p>
+<table border=1 cellspacing=0>
+<tr><th> software
+    <th> bap
+    <th> tEDAx backann v1
+    <th> tEDAx backann v2
+    <th> present list of changes
+    <th> auto-detect if item is implemented
+    <th> auto-fix item when requested
+
+<!--     software       bap |  tdx v1 | tdx v2 | present | detect | fix -->
+<tr><td> sch-rnd   <td> yes <td> yes <td> yes <td> yes  <td> yes <td> yes
+<tr><td> gschem    <td> yes <td> no  <td> no  <td> yes  <td> yes <td> no
+<tr><td> xschem    <td> yes <td> no  <td> no  <td> yes  <td> ?   <td> ? 
+</table>
+
+<h3> Operations that can be back annotated </h3>
+<p>
