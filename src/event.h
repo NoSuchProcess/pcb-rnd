@@ -38,6 +38,7 @@ enum {
 
 	PCB_EVENT_ROUTE_STYLES_CHANGED,       /* [d] called after any route style change (used to be the RouteStylesChanged action) */
 	PCB_EVENT_NETLIST_CHANGED,            /* [d] called after any netlist change (used to be the NetlistChanged action) */
+	PCB_EVENT_NETLIST_IMPORTED,           /* [d] called after a netlist import (forward annotation) */
 	PCB_EVENT_LAYERS_CHANGED,             /* [d] called after layers or layer groups change (used to be the LayersChanged action) */
 	PCB_EVENT_LAYER_CHANGED_GRP,          /* [d] called after a layer changed its group; argument: layer pointer */
 	PCB_EVENT_LAYERVIS_CHANGED,           /* [d] called after the visibility of layers has changed */

@@ -1098,7 +1098,7 @@ static rnd_action_t rats_patch_action_list[] = {
 	{"SavePatch", pcb_act_SavePatch, pcb_acth_SavePatch, pcb_acts_SavePatch}
 };
 
-static void rats_patch_netlist_chg(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rats_patch_netlist_import(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_rats_patch_cleanup_patches((pcb_board_t *)hidlib);
 }
@@ -1107,7 +1107,7 @@ static void rats_patch_netlist_chg(rnd_design_t *hidlib, void *user_data, int ar
 void pcb_rats_patch_init2(void)
 {
 	RND_REGISTER_ACTIONS(rats_patch_action_list, NULL);
-	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, rats_patch_netlist_chg, NULL, core_ratspatch_cookie);
+	rnd_event_bind(PCB_EVENT_NETLIST_IMPORTED, rats_patch_netlist_import, NULL, core_ratspatch_cookie);
 }
 
 void pcb_rats_patch_uninit(void)

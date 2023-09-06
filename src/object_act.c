@@ -511,6 +511,7 @@ static void plc_remove(placer_t *plc, pcb_subc_t *sc)
 
 static void plc_end(placer_t *plc)
 {
+	rnd_event(&PCB->hidlib, PCB_EVENT_NETLIST_IMPORTED, NULL);
 	if (plc->rem_method == PLC_LIST) {
 		fgw_arg_t res;
 		fgw_arg_t args[4];

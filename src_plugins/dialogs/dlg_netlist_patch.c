@@ -177,6 +177,7 @@ static void pcb_dlg_netlist_patch_ev(rnd_design_t *hidlib, void *user_data, int 
 static void pcb_dlg_netlist_patch_init(void)
 {
 	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, pcb_dlg_netlist_patch_ev, &netlist_patch_ctx, dlg_netlist_patch_cookie);
+	rnd_event_bind(PCB_EVENT_NETLIST_IMPORTED, pcb_dlg_netlist_patch_ev, &netlist_patch_ctx, dlg_netlist_patch_cookie);
 }
 
 static void pcb_dlg_netlist_patch_uninit(void)

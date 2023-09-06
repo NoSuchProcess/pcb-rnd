@@ -31,6 +31,7 @@ static const char *pcb_evnames[] = {
 	"pcbev_new_pstk",
 	"pcbev_route_styles_changed",
 	"pcbev_netlist_changed",
+	"pcbev_netlist_imported",
 	"pcbev_layers_changed",
 	"pcbev_layer_changed_grp",
 	"pcbev_layervis_changed",
