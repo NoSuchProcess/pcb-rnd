@@ -800,8 +800,10 @@ static pcb_any_obj_t *find_term(pcb_board_t *pcb)
 	return obj;
 }
 
-static const char pcb_acts_BaConn[] = "BaConn(object|selected, add, [netname])\n";
-static const char pcb_acth_BaConn[] = "Add a terminal-net connection to the back annotation list";
+static const char pcb_acts_BaConn[] =
+	"BaConn(object|selected, add, [netname])\n"
+	"BaConn(object|selected, remove)\n";
+static const char pcb_acth_BaConn[] = "Add a terminal-net connection to the back annotation list or add a terminal-net connection removal to the back annotation list";
 /* DOC: basubc.html */
 static fgw_error_t pcb_act_BaConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -848,6 +850,24 @@ static fgw_error_t pcb_act_BaConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					rnd_message(RND_MSG_ERROR, "Invalid first argument for BaConn()\n");
 			}
 		break;
+		case F_Remove:
+			switch(op1) {
+				case F_Object:
+					obj = find_term(pcb);
+					if (obj == NULL)
+						return 0;
+					if (pcb_ratspatch_delconn_term(pcb, obj) > 0)
+						RND_ACT_IRES(0);
+					break;
+				case F_Selected:
+					if (pcb_ratspatch_delconn_selected(pcb, pcb->Data) > 0)
+						RND_ACT_IRES(0);
+					break;
+				default:
+					rnd_message(RND_MSG_ERROR, "Invalid first argument for BaConn()\n");
+			}
+			break;
+
 		default:
 			rnd_message(RND_MSG_ERROR, "Invalid second argument for BaConn()\n");
 	}
