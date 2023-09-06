@@ -139,12 +139,82 @@ Schematic editors vs. file format version vs. functionality:
 
 <h3> Operations that can be back annotated </h3>
 <p>
+This section lists all operations that are available for back annotation.
+A few of them are demonstrated in the
+<a href="https://archive.org/details/sch-rnd-tut-back-annotation">sch-rnd back
+annotation tutorial video. The rest work very similar; this section concentrates
+on what each operations does on instruction level and where to find the given
+operation. The network window can be invoked from the window menu or with
+the hotkey {w n}.
 
 <h4> Add connection </h4>
+<p>
+Creates a new connection between a terminal and a network. The terminal can
+not be conncted to any network at the moment.
+<p>
+GUI: select the line tool and the rat layer and draw a line from the given
+terminal to any other terminal that's on the target network.
+<p>
+GUI: select terminals, then network window; select a network on the left side,
+click on the "add conn" button. This will add all selected terminals to
+the selected network. Selected objects that are non-terminal are ignored.
+<p>
+CLI: n/a.
+
 <h4> Break connection </h4>
-<h4> Swap pins </h4>
+<p>
+Breaks an existing connection between a terminal and a network.
+<p>
+GUI: network window; select a network on the left side, select the
+a terminal on the right side list, click on the "break conn" button.
+<p>
+CLI: n/a.
+
+<h4> Swap terminals </h4>
+<p>
+Remove the connection of both terminals selected and add new connection
+for each, swapping the two connections.
+GUI: network window; select a network on the left side, select the
+a terminal on the right side list, click on the "break conn" button.
+<p>
+GUI: select two terminals then menu: Connects/Design changes.../Swap nets
+<p>
+CLI: select two terminals then action: NetList(swap)
+
+
+
 <h4> Remove net </h4>
+<p>
+Break all connectsions to the given net.
+<p>
+GUI: network window; select a network on the left side, click on the
+"del" button.
+<p>
+CLI: action: NetList(remove, <i>netname</i>)
+
+<h4> Rename net </h4>
+<p>
+Break all connectsions to the given net and make the same connections to
+a new net with a new name.
+<p>
+GUI: network window; select a network on the left side, click on the
+"rename" button.
+<p>
+CLI: action: NetList(rename, <i>old_netname</i>, <i>new_netname</i>)
+
+
 <h4> Merge nets </h4>
+<p>
+Break all connectsions to the source net and make the same connections to
+the also existing destination net. This effectively moves over all
+connections from src to dst, merging the two nets keeping dst and removing src.
+<p>
+GUI: network window; select a network on the left side, click on the
+"merge" button.
+<p>
+CLI: action: NetList(merge, <i>src_netname</i>, <i>dst_netname</i>)
+
+
 <h4> Add new subcircuit </h4>
 <h4> Remove subcircuit </h4>
 <h4> Change or create subcircuit attribute </h4>
