@@ -246,7 +246,7 @@ static void netlist_update_len_by_name(netlist_ctx_t *ctx, const char *name)
 }
 #endif
 
-void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	netlist_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *nltree = &ctx->dlg[ctx->wnetlist];
@@ -264,7 +264,7 @@ void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	pcb_netlist_changed(0);
 }
 
-long pcb_ratspatch_addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_t *obj)
+long pcb_ratspatch_addconn_term(pcb_board_t *pcb, pcb_net_t *net, pcb_any_obj_t *obj)
 {
 	pcb_subc_t *subc = pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
 	pcb_net_term_t *term;
@@ -274,21 +274,21 @@ long pcb_ratspatch_addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_
 		return 0;
 
 	termname = rnd_strdup_printf("%s-%s", subc->refdes, obj->term);
-	term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], obj);
+	term = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], obj);
 	if (term != NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not add %s to net %s because terminal is already part of a net\n", termname, net->name);
 		free(termname);
 		return 0;
 	}
 
-	pcb_ratspatch_append_optimize(ctx->pcb, RATP_ADD_CONN, termname, net->name, NULL);
+	pcb_ratspatch_append_optimize(pcb, RATP_ADD_CONN, termname, net->name, NULL);
 	free(termname);
-	pcb_ratspatch_make_edited(ctx->pcb);
+	pcb_ratspatch_make_edited(pcb);
 	pcb_netlist_changed(0);
 	return 1;
 }
 
-static long pcb_ratspatch_addconn_selected(netlist_ctx_t *ctx, pcb_data_t *parent, pcb_net_t *net)
+long pcb_ratspatch_addconn_selected(pcb_board_t *pcb, pcb_data_t *parent, pcb_net_t *net)
 {
 	long cnt = 0;
 	pcb_any_obj_t *obj;
@@ -296,11 +296,11 @@ static long pcb_ratspatch_addconn_selected(netlist_ctx_t *ctx, pcb_data_t *paren
 
 	for(obj = pcb_data_first(&it, parent, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
 		if ((obj->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) /* pick up terminals */
-			cnt += pcb_ratspatch_addconn_term(ctx, net, obj);
+			cnt += pcb_ratspatch_addconn_term(pcb, net, obj);
 
 		if (obj->type == PCB_OBJ_SUBC) { /* recurse to subc */
 			pcb_subc_t *subc = (pcb_subc_t *)obj;
-			cnt += pcb_ratspatch_addconn_selected(ctx, subc->data, net);
+			cnt += pcb_ratspatch_addconn_selected(pcb, subc->data, net);
 		}
 	}
 
@@ -325,7 +325,7 @@ static void addconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		return;
 	}
 
-	if (pcb_ratspatch_addconn_selected(ctx, ctx->pcb->Data, net) == 0) {
+	if (pcb_ratspatch_addconn_selected(ctx->pcb, ctx->pcb->Data, net) == 0) {
 		rnd_message(RND_MSG_ERROR, "No terminals selected on board or all selected terminals are already on the netlist\n");
 		return;
 	}
