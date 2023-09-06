@@ -414,11 +414,20 @@ static void ba_attr(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *key, const
 	/* figure if we shouldn't do this */
 	if (obj == NULL) return;
 	if (!conf_core.editor.backann_subc_attr_edit) return;
-	if (obj->type != PCB_OBJ_SUBC) return;
-	if ((subc->refdes == NULL) || (*subc->refdes == '\0')) return;
-	if (!rats_patch_is_subc_referenced(pcb, subc->refdes)) return;
 
-	pcb_ratspatch_append(pcb, RATP_CHANGE_COMP_ATTRIB, subc->refdes, key, val, undoable);
+	if ((obj->term != NULL) && (*obj->term != '\0')) {
+		/* "pin" attr change */
+		/* Since forward annotation doesn't deliver pin attributes, we can not
+		   check if the change has been performed. This requires a tEDAx netlist
+		   upgrade */
+		/* pcb_ratspatch_append4(pcb, RATP_CHANGE_PIN_ATTRIB, obj->parent.subc->refdes, obj->term, key, val, undoable); */
+	}
+	else if ((obj->type == PCB_OBJ_SUBC) && (subc->refdes != NULL) && (*subc->refdes != '\0')) {
+		/* "comp" attr change */
+		if (!rats_patch_is_subc_referenced(pcb, subc->refdes)) return;
+
+		pcb_ratspatch_append(pcb, RATP_CHANGE_COMP_ATTRIB, subc->refdes, key, val, undoable);
+	}
 }
 
 static void toggle_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list, int undoable, pcb_any_obj_t *obj)
