@@ -26,7 +26,6 @@
 
 #include "event.h"
 #include "netlist.h"
-#include "data_it.h"
 #include <genvector/vtp0.h>
 #include <librnd/core/rnd_conf.h>
 
@@ -262,49 +261,6 @@ static void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pcb_ratspatch_append_optimize(ctx->pcb, RATP_DEL_CONN, row_term->cell[0], row_net->cell[0], NULL);
 	pcb_ratspatch_make_edited(ctx->pcb);
 	pcb_netlist_changed(0);
-}
-
-long pcb_ratspatch_addconn_term(pcb_board_t *pcb, pcb_net_t *net, pcb_any_obj_t *obj)
-{
-	pcb_subc_t *subc = pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
-	pcb_net_term_t *term;
-	char *termname;
-
-	if (subc == NULL)
-		return 0;
-
-	termname = rnd_strdup_printf("%s-%s", subc->refdes, obj->term);
-	term = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], obj);
-	if (term != NULL) {
-		rnd_message(RND_MSG_ERROR, "Can not add %s to net %s because terminal is already part of a net\n", termname, net->name);
-		free(termname);
-		return 0;
-	}
-
-	pcb_ratspatch_append_optimize(pcb, RATP_ADD_CONN, termname, net->name, NULL);
-	free(termname);
-	pcb_ratspatch_make_edited(pcb);
-	pcb_netlist_changed(0);
-	return 1;
-}
-
-long pcb_ratspatch_addconn_selected(pcb_board_t *pcb, pcb_data_t *parent, pcb_net_t *net)
-{
-	long cnt = 0;
-	pcb_any_obj_t *obj;
-	pcb_data_it_t it;
-
-	for(obj = pcb_data_first(&it, parent, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
-		if ((obj->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) /* pick up terminals */
-			cnt += pcb_ratspatch_addconn_term(pcb, net, obj);
-
-		if (obj->type == PCB_OBJ_SUBC) { /* recurse to subc */
-			pcb_subc_t *subc = (pcb_subc_t *)obj;
-			cnt += pcb_ratspatch_addconn_selected(pcb, subc->data, net);
-		}
-	}
-
-	return cnt;
 }
 
 static void addconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

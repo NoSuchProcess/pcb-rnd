@@ -83,6 +83,12 @@ int pcb_rats_patch_cleanup_patches(pcb_board_t *pcb);
 /* Unlink n from the list; if do_free is non-zero, also free fields and n */
 void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t *n, int do_free);
 
+/**** high level calls for connection add/remove ****/
+
+long pcb_ratspatch_addconn_term(pcb_board_t *pcb, pcb_net_t *net, pcb_any_obj_t *obj);
+long pcb_ratspatch_addconn_selected(pcb_board_t *pcb, pcb_data_t *parent, pcb_net_t *net);
+
+
 /**** high level calls for subc add/remove ****/
 
 /* Add a subc to the netlist patch of pcb if subc is not already on it.
