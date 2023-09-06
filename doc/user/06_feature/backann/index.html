@@ -136,6 +136,17 @@ Schematic editors vs. file format version vs. functionality:
 <tr><td> gschem    <td> yes <td> no  <td> no  <td> yes  <td> yes <td> no
 <tr><td> xschem    <td> yes <td> no  <td> no  <td> yes  <td> ?   <td> ? 
 </table>
+<p>
+<b>Board formats/versions</b>: back annotation patches are saved only
+in the gEDA/PCB format and lihata board format. A gEDA/PCB file saved with
+netlist patch may be unreadable in gEDA/PCB (but is readable by early
+versions of pcb-rnd). Some features are accessible only in lihata board
+format, and some even have minimum file format version requirements, see
+the
+<a href="../../../developer/lihata_format/tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*/children/netlists/children/netlist_patch">
+li:netlist_patch subtree</a> in the file format doc.
+
+
 
 <h3> Operations that can be back annotated </h3>
 <p>
