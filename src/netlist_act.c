@@ -639,7 +639,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_coord_t x, y;
 				void *r1, *r2, *r3;
 
-				rnd_hid_get_coords("Select a an object to claim network from", &x, &y, 0);
+				rnd_hid_get_coords("Select an object to claim network from", &x, &y, 0);
 				if (pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK, &r1, &r2, &r3) <= 0)
 					return 0;
 
@@ -779,11 +779,80 @@ static fgw_error_t pcb_act_BaSubc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_BaConn[] = "BaConn(object|selected, add, [netname])\n";
+static const char pcb_acth_BaConn[] = "Add a terminal-net connection to the back annotation list";
+/* DOC: basubc.html */
+static fgw_error_t pcb_act_BaConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op1, op2;
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	char *netname = NULL, *freeme = NULL;
+	pcb_net_t *net;
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op1 = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_KEYWORD, Netlist, op2 = fgw_keyword(&argv[2]));
+	RND_ACT_IRES(-1);
+
+	switch(op2) {
+
+		case F_Add:
+
+			RND_ACT_MAY_CONVARG(3, FGW_STR, BaConn, netname = argv[3].val.str);
+			if (netname == NULL)
+				freeme = netname = rnd_hid_prompt_for(RND_ACT_DESIGN, "Name of the network to connecto to", NULL, "connect term to net: netname");
+			if (netname == NULL)
+				return 0; /* cancel */
+
+			net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
+			if (net == NULL) {
+				rnd_message(RND_MSG_ERROR, "BaConn(): net '%s' not found\n", netname);
+				free(freeme);
+				return 0;
+			}
+			free(freeme);
+
+			switch(op1) {
+				case F_Object:
+					{
+						int rv;
+						rnd_coord_t x, y;
+						void *r1, *r2, *r3;
+						pcb_any_obj_t *obj;
+
+						rnd_hid_get_coords("Select a termina to connect", &x, &y, 0);
+						rv = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
+						obj = r2;
+						if ((rv <= 0) || (obj == NULL) || (obj->term == NULL))
+							rv = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK| PCB_OBJ_SUBC_PART, &r1, &r2, &r3);
+						obj = r2;
+						if ((rv <= 0) || (obj == NULL) || (obj->term == NULL)) {
+							rnd_message(RND_MSG_ERROR, "No terminal for BaConn()\n");
+							return 0;
+						}
+						if (pcb_ratspatch_addconn_term(pcb, net, obj) > 0)
+							RND_ACT_IRES(0);
+					}
+					break;
+				case F_Selected:
+					if (pcb_ratspatch_addconn_selected(pcb, pcb->Data, net) > 0)
+						RND_ACT_IRES(0);
+					break;
+				default:
+					rnd_message(RND_MSG_ERROR, "Invalid first argument for BaConn()\n");
+			}
+		break;
+		default:
+			rnd_message(RND_MSG_ERROR, "Invalid second argument for BaConn()\n");
+	}
+	return 0;
+}
+
 static rnd_action_t netlist_action_list[] = {
 	{"net", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
 	{"netlist", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
 	{"claimnet", pcb_act_ClaimNet, pcb_acth_ClaimNet, pcb_acts_ClaimNet},
-	{"basubc", pcb_act_BaSubc, pcb_acth_BaSubc, pcb_acts_BaSubc}
+	{"basubc", pcb_act_BaSubc, pcb_acth_BaSubc, pcb_acts_BaSubc},
+	{"baconn", pcb_act_BaConn, pcb_acth_BaConn, pcb_acts_BaConn}
 };
 
 void pcb_netlist_act_init2(void)
