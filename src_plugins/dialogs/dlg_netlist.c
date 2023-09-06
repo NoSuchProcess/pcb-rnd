@@ -246,7 +246,7 @@ static void netlist_update_len_by_name(netlist_ctx_t *ctx, const char *name)
 }
 #endif
 
-static void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	netlist_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *nltree = &ctx->dlg[ctx->wnetlist];
@@ -264,7 +264,7 @@ static void brkconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pcb_netlist_changed(0);
 }
 
-static long addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_t *obj)
+long pcb_ratspatch_addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_t *obj)
 {
 	pcb_subc_t *subc = pcb_gobj_parent_subc(obj->parent_type, &obj->parent);
 	pcb_net_term_t *term;
@@ -288,7 +288,7 @@ static long addconn_term(netlist_ctx_t *ctx, pcb_net_t *net, pcb_any_obj_t *obj)
 	return 1;
 }
 
-static long addconn_selected(netlist_ctx_t *ctx, pcb_data_t *parent, pcb_net_t *net)
+static long pcb_ratspatch_addconn_selected(netlist_ctx_t *ctx, pcb_data_t *parent, pcb_net_t *net)
 {
 	long cnt = 0;
 	pcb_any_obj_t *obj;
@@ -296,11 +296,11 @@ static long addconn_selected(netlist_ctx_t *ctx, pcb_data_t *parent, pcb_net_t *
 
 	for(obj = pcb_data_first(&it, parent, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
 		if ((obj->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) /* pick up terminals */
-			cnt += addconn_term(ctx, net, obj);
+			cnt += pcb_ratspatch_addconn_term(ctx, net, obj);
 
 		if (obj->type == PCB_OBJ_SUBC) { /* recurse to subc */
 			pcb_subc_t *subc = (pcb_subc_t *)obj;
-			cnt += addconn_selected(ctx, subc->data, net);
+			cnt += pcb_ratspatch_addconn_selected(ctx, subc->data, net);
 		}
 	}
 
@@ -325,7 +325,7 @@ static void addconn_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		return;
 	}
 
-	if (addconn_selected(ctx, ctx->pcb->Data, net) == 0) {
+	if (pcb_ratspatch_addconn_selected(ctx, ctx->pcb->Data, net) == 0) {
 		rnd_message(RND_MSG_ERROR, "No terminals selected on board or all selected terminals are already on the netlist\n");
 		return;
 	}
