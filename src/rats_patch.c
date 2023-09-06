@@ -836,8 +836,8 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, pcb_ratspatch_fmt_t fmt)
 			return pcb_rats_patch_export(pcb, pcb->NetlistPatches, 1, fexport_old_bap_cb, &ctx_old);
 		case PCB_RPFM_BACKANN_V1:
 			ctx_tdx.ver = 1;
-			fprintf(f, "tEDAx v1\n");
 			save_tedax:;
+			fprintf(f, "tEDAx v1\n");
 			res = pcb_rats_patch_export(pcb, pcb->NetlistPatches, 1, fexport_tedax_cb, &ctx_tdx);
 			if (!ctx_tdx.in_block) {
 				/* happens when the list is empty - export an empty block just for the headers */
@@ -846,7 +846,6 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, pcb_ratspatch_fmt_t fmt)
 			fexport_tedax_end_block(&ctx_tdx);
 			return res;
 		case PCB_RPFM_BACKANN_V2:
-			fprintf(f, "tEDAx v1\n");
 			ctx_tdx.ver = 2;
 			goto save_tedax;
 		default:
