@@ -456,13 +456,13 @@ int pcb_rats_patch_already_done(pcb_board_t *pcb, pcb_ratspatch_line_t *n)
 			break;
 
 		case RATP_COMP_ADD:
-			if (is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_EDITED], n->id)) {
+			if (is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_INPUT], n->id)) {
 				rnd_message(RND_MSG_INFO, "rats patch: subcircuit %s has already been added, removing patch.\n", n->id);
 				return 1;
 			}
 			break;
 		case RATP_COMP_DEL:
-			if (!is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_EDITED], n->id)) {
+			if (!is_subc_on_netlist(&pcb->netlist[PCB_NETLIST_INPUT], n->id)) {
 				rnd_message(RND_MSG_INFO, "rats patch: subcircuit %s has already been deleted, removing patch.\n", n->id);
 				return 1;
 			}
