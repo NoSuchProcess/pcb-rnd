@@ -1,0 +1,10 @@
+put /local/rnd/mod {trimesh}
+put /local/rnd/mod/OBJS [@
+	$(PLUGDIR)/trimesh/trimesh.o
+@]
+
+switch /local/module/trimesh/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

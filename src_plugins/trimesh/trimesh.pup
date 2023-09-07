@@ -1,0 +1,7 @@
+$class feature
+$short triangulated mesh
+$long generic surface triangulation
+$state WIP
+#$package export-sim
+dep lib_polyhelp
+default buildin

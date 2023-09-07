@@ -2722,6 +2722,9 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  ../src_plugins/tool_std/tool_thermal.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h obj_pstk_draw.h draw.h
+../src_plugins/trimesh/trimesh.o: ../src_plugins/trimesh/trimesh.c \
+ ../config.h ../src_plugins/lib_polyhelp/triangulate.h \
+ ../src_3rd/fast89-poly2tri/fast89_poly2tri.h
 ../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
  ../config.h conf_core.h globalconst.h change.h board.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
