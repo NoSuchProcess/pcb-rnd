@@ -341,7 +341,7 @@ static void proj_extend(double *ox, double *oy, double vx, double vy, double dx,
 }
 
 
-/* extend the pine between px;py and (already moved) x;y knowing the previous
+/* extend the line between px;py and (already moved) x;y knowing the previous
    point beyond px;py (which is ppx;ppy) */
 static void perp_extend(rnd_coord_t ppx, rnd_coord_t ppy, rnd_coord_t *px, rnd_coord_t *py, rnd_coord_t x, rnd_coord_t y, rnd_coord_t dx, rnd_coord_t dy)
 {
