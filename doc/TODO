@@ -4,6 +4,7 @@
 
 1. For the upcoming release ===============================================================================
 - ANNOUNCE: subc-in-subc syntax proposal: refdes-refdes-term?
+- FEATURE: copy sch-rnd's RtreeList action in act_read [report: Majenko]
 - FEATURE: lihata board v9:
 	- font v2? maybe only in v10
 	- ANNOUNCE: netlist dialog: add conn and del conn button
