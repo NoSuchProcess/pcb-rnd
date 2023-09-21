@@ -1,20 +1,11 @@
 Active user wishes:
 	W4: user doc [Miloh]
 	W9: push & shove [Erich, Evan]
-	W13: sch-rnd: alternate MCU/CPU pin functions [report: Wojciech]
 	W14: pcb-rnd: subc-in-subc from hierarchic design ml=pcb-rnd@5920 [report: Vuokko]
 	W15: HPGL export (maybe a HPGL import plugin in camv-rnd for verification) [report: Erich]
 	W16: sch-rnd: block diagram editor helpers: symbol generator to create/update boxes to text; wirenets (or lines) with arrows to connect them [report: Vuokko]
 
 Being done:
-	W10: pcb-rnd + sch-rnd: back annotation upgrades; from pcb-rnd back: [Erich]
-		+ remove net
-		+ add new net -> claim net
-		+ remove connections (terminals from a net) -> netlist window
-		+ add mew connections (terminals to a net) -> netlist window
-		- change or remove subcircuit attribute
-		- change or remove network attribute
-		- add new subcircuit
 
 User wishes fulfilled:
 	W1: cschem [Chris] -> sch-rnd
@@ -25,3 +16,12 @@ User wishes fulfilled:
 	W7: programmable drc (star grounding is implemented with intconn) [James]
 	W8: gl support [Erich, Evan]
 	W11: sch-rnd: build options in netlist export ->stances [Erich]
+	W10: pcb-rnd + sch-rnd: back annotation upgrades; from pcb-rnd back: [Erich]
+		+ remove net
+		+ add new net -> claim net
+		+ remove connections (terminals from a net) -> netlist window
+		+ add mew connections (terminals to a net) -> netlist window
+		+ change or remove subcircuit attribute
+		+ change or remove network attribute
+		+ add new subcircuit
+	W13: sch-rnd: alternate MCU/CPU pin functions [report: Wojciech]
