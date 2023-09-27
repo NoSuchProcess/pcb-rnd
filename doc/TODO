@@ -23,6 +23,9 @@
 - BUG: thermal tool allows invalid polygon assert. might be a non bug. load bug_files/TODO/thermal-assert.rp and use thermal tool and shift click to start cycling through thermal types on padstack. Assert eventually occurs. [report: Erich]
 
 2. For later releases ===============================================================================
+- librnd4.1:
+	- remove PCB_WANT_FONT2, it's the default
+	- remove --enable-font2 and want_font2 from scconfig and config.h, it's the default
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: start pcb-rnd, { w l }, select tssop(), place on layout, shift click to replace tssop() on layout with tssop() in buffer, then { u u }, note "pcb_search_obj_by_id(): internal error, search for ID XXXX failed" [report: Erich] 
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]

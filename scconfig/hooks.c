@@ -37,6 +37,8 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-byaccic",   "/local/pcb/want_byaccic",      arg_false,     "$disable generating language files byaccic/ureglex"},
 	{"enable-polybool",   "/local/pcb/want_polybool",     arg_true,      "$enable the new polygon clipping library"},
 	{"disable-polybool",  "/local/pcb/want_polybool",     arg_false,     "$disable the new polygon clipping library"},
+	{"enable-font2",      "/local/pcb/want_font2",        arg_true,      "$enable the new font library in librnd; temporary; requires librnd >=4.1.0"},
+	{"disable-font2",     "/local/pcb/want_font2",        arg_false,     "$disable the new font library in librnd; temporary; requires librnd >=4.1.0"},
 
 #undef plugin_def
 #undef plugin_header
@@ -107,6 +109,7 @@ int hook_postinit()
 	put("/local/pcb/want_byaccic", sfalse);
 	put("/local/pcb/want_static", sfalse);
 	put("/local/pcb/want_polybool", sfalse);
+	put("/local/pcb/want_font2", sfalse);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 	put("/local/pcb/librnd_prefix", TO_STR(LIBRND_PREFIX));
 
@@ -176,6 +179,10 @@ static void calc_dialog_deps(void)
 	}
 }
 
+/* TODO: remove this; for /local/pcb/want_font2 test */
+extern unsigned long librnd_ver_get(int *major, int *minor, int *patch);
+
+
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
@@ -189,6 +196,15 @@ int hook_detect_target()
 	rnd_hook_detect_cc();
 	if (rnd_hook_detect_sys() != 0)
 		return 1;
+
+	if (istrue(get("/local/pcb/want_font2"))) {
+		int major, minor, patch;
+		librnd_ver_get(&major, &minor, &patch);
+		if ((major < 4) || (minor < 1)) {
+			fprintf(stderr, "configuration error: can't enable font2: requires librnd >=4.1.0\n(You have librnd %d.%d.%d)\n", major, minor, patch);
+			exit(1);
+		}
+	}
 
 	if (want_fuse) {
 		require("libs/sul/fuse/*", 0, 0);
