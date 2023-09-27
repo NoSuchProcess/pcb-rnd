@@ -444,7 +444,12 @@ int pcb_text_invalid_chars(pcb_board_t *pcb, rnd_font_t *FontPtr, pcb_text_t *Te
 	if (rendered == NULL)
 		return 0;
 
+#ifdef PCB_WANT_FONT2
+	TODO("the second arg 0 may need to benon-zero for &entyiy, depending on Text");
+	ctr = rnd_font_invalid_chars(FontPtr, 0, rendered);
+#else
 	ctr = rnd_font_invalid_chars(FontPtr, rendered);
+#endif
 
 	pcb_text_free_str(Text, rendered);
 
