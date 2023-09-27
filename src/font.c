@@ -35,7 +35,11 @@
 #include <genht/hash.h>
 
 #include <librnd/font/xform_mx.h>
-#include <librnd/font/font.h>
+#ifdef PCB_WANT_FONT2
+#	include <librnd/font2/font.h>
+#else
+#	include <librnd/font/font.h>
+#endif
 
 #include "font.h"
 #include "board.h"

@@ -5,7 +5,12 @@
 #include <librnd/core/unit.h>
 #include "attrib.h"
 #include <librnd/core/global_typedefs.h>
-#include <librnd/font/font.h>
+#ifdef PCB_WANT_FONT2
+#	include <librnd/font2/font.h>
+#else
+#	include <librnd/font/font.h>
+#endif
+
 
 /* Elem=RouteStyle; init=0 */
 

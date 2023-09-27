@@ -57,7 +57,12 @@
 #include "obj_text_draw.h"
 #include "conf_core.h"
 
-#include <librnd/font/font.h>
+#ifdef PCB_WANT_FONT2
+#	include <librnd/font2/font.h>
+#else
+#	include <librnd/font/font.h>
+#endif
+
 
 TODO("ui_layer parent fix: remove this")
 #include "layer_ui.h"
@@ -1153,7 +1158,12 @@ int pcb_text_chg_any(pcb_text_t *text, const pcb_text_t *src, rnd_bool undoable)
 
 /*** draw ***/
 
-#define MAX_SIMPLE_POLY_POINTS 256
+#ifdef PCB_WANT_FONT2
+#	define MAX_SIMPLE_POLY_POINTS RND_FONT2_MAX_SIMPLE_POLY_POINTS
+#else
+#	define MAX_SIMPLE_POLY_POINTS 256
+#endif
+
 static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 {
 	pcb_draw_info_t *info = cb_ctx;
