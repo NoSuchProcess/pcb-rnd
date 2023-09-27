@@ -1041,6 +1041,14 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	return buff;
 }
 
+/* TODO: remove this when font2 is removed and hardwire ,0; this is an extra
+   rendering options argument in the new API */
+#ifdef PCB_WANT_FONT2
+#	define FONT2_TMP1 0,
+#else
+#	define FONT2_TMP1
+#endif
+
 /* vert flip magic: make sure the offset is in-line with the flip and our sick y coords for vertical */
 #define PCB_TERM_LABEL_SETUP(label) \
 	rnd_bool flip_x = rnd_conf.editor.view.flip_x; \
@@ -1049,12 +1057,12 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	rnd_coord_t w, h, dx, dy; \
 	double scl = scale/100.0; \
 	if (vert) { \
-		h = rnd_font_string_width(font, scl, label); \
-		w = rnd_font_string_height(font, scl, label); \
+		h = rnd_font_string_width(font, FONT2_TMP1 scl, label); \
+		w = rnd_font_string_height(font, FONT2_TMP1 scl, label); \
 	} \
 	else { \
-		w = rnd_font_string_width(font, scl, label); \
-		h = rnd_font_string_height(font, scl, label); \
+		w = rnd_font_string_width(font, FONT2_TMP1 scl, label); \
+		h = rnd_font_string_height(font, FONT2_TMP1 scl, label); \
 	} \
 	dx = w / 2; \
 	dy = h / 2; \
