@@ -6,7 +6,7 @@
 - ANNOUNCE: subc-in-subc syntax proposal: refdes-refdes-term?
 - FEATURE: copy sch-rnd's RtreeList action in act_read [report: Majenko]
 - FEATURE: lihata board v9:
-	- font v2? maybe only in v10
+	- font v2
 	- ANNOUNCE: netlist dialog: add conn and del conn button
 	- ANNOUNCE: netlist patch dialog box
 	- ANNOUNCE: back annotation upgrade: subc add and remove
@@ -26,6 +26,7 @@
 - librnd4.1:
 	- remove PCB_WANT_FONT2, it's the default
 	- remove --enable-font2 and want_font2 from scconfig and config.h, it's the default
+	- DRC test in make test: the invchar test bbox changes because of a bugfix
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: start pcb-rnd, { w l }, select tssop(), place on layout, shift click to replace tssop() on layout with tssop() in buffer, then { u u }, note "pcb_search_obj_by_id(): internal error, search for ID XXXX failed" [report: Erich] 
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
