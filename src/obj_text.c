@@ -1307,7 +1307,13 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, rnd_font_t *font
 		cb_ctx = &ucb;
 	}
 
+#ifdef PCB_WANT_FONT2
+	if (poly_thin)
+		mirror |= RND_FONT_THIN_POLY;
+	rnd_font_draw_string(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, tiny, rcb, cb_ctx);
+#else
 	rnd_font_draw_string(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, rcb, cb_ctx);
+#endif
 }
 
 
