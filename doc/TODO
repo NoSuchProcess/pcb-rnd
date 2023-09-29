@@ -13,7 +13,6 @@
 	- ANNOUNCE: netlist patch dialog box
 	- ANNOUNCE: back annotation upgrade: subc add and remove
 - font editor for font2:
-	- preserve line_height and tab_width on save
 	- gui with preview for kerning, tab_width, line_height
 	- gui with preview for the entity table
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
