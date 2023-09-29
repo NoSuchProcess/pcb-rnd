@@ -12,6 +12,11 @@
 	- ANNOUNCE: netlist dialog: add conn and del conn button
 	- ANNOUNCE: netlist patch dialog box
 	- ANNOUNCE: back annotation upgrade: subc add and remove
+- font editor for font2:
+	- save action/dialog file format version
+	- baseline
+	- gui with preview for kerning, tab_width, line_height
+	- gui with preview for the entity table
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
 	-> happens only if the export dialog is left open for the whole time
