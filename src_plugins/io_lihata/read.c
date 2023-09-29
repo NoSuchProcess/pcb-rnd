@@ -2206,7 +2206,7 @@ static pcb_data_t *parse_data(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *ds
 #undef PARSE_HASH_GET
 #undef RND_LHT_ERROR
 
-static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
+static int parse_fontkit(lht_read_t *rctx, pcb_fontkit_t *fk, lht_node_t *nd)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;
@@ -2233,6 +2233,13 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 			fk->dflt.id = 0; /* restore default font's ID */
 			f = &fk->dflt;
 		}
+
+#ifdef PCB_WANT_FONT2
+		if (rctx->rdver >= 9)
+			f->filever = 2;
+		else
+			f->filever = 1;
+#endif
 
 		if (rnd_font_lht_parse_font(f, n) != 0)
 			return -1;
@@ -2569,7 +2576,7 @@ static int parse_board(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 		goto error;
 
 	sub = lht_dom_hash_get(nd, "font");
-	if ((sub != NULL) && (parse_fontkit(&PCB->fontkit, sub) != 0))
+	if ((sub != NULL) && (parse_fontkit(rctx, &PCB->fontkit, sub) != 0))
 		goto error;
 	PCB->fontkit.valid = 1;
 
