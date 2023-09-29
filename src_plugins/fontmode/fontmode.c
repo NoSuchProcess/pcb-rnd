@@ -686,6 +686,7 @@ static const char pcb_acts_FontBaseline[] = "FontBaseline(+-delta)";
 static const char pcb_acth_FontBaseline[] = "Change the baseline value and redraw. If there is no baseline, add baseline first.";
 static fgw_error_t pcb_act_FontBaseline(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+#ifdef PCB_WANT_FONT2
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_font_t *font = pcb_font(pcb, 0, 1);
 	rnd_coord_t delta = 0;
@@ -698,6 +699,11 @@ static fgw_error_t pcb_act_FontBaseline(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		font->baseline = RND_MIL_TO_COORD(50); /* default value that works with the default font */
 	font->baseline += delta;
 	return pcb_act_FontEdit(res, argc, argv);
+#else
+	rnd_message(RND_MSG_ERROR, "FontBaseline() is not implemented until librnd 4.1.0 (font v2 support)\n");
+	RND_ACT_IRES(-1);
+	return 0;
+#endif
 }
 
 rnd_action_t fontmode_action_list[] = {
