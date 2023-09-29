@@ -291,7 +291,10 @@ static void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *or
 	rnd_font_copy_tables(font, orig_font);
 	font->kerning_tbl_valid = orig_font->kerning_tbl_valid;
 	font->entity_tbl_valid = orig_font->entity_tbl_valid;
-	font->baseline = orig_font->baseline; /* not edited graphically */
+	/* these numericals are not edited graphically */
+	font->baseline = orig_font->baseline;
+	font->tab_width = orig_font->tab_width;
+	font->line_height = orig_font->line_height;
 #endif
 
 	rnd_font_normalize(font);
