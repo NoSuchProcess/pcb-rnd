@@ -81,11 +81,19 @@ static pcb_layer_t *make_layer(pcb_board_t *pcb, rnd_layergrp_id_t grp, const ch
 	return &pcb->Data->Layer[lid];
 }
 
+/* Remember the original font we are editing; some metadata are not represented
+   graphically and can not be converted back from graphics - those are loaded
+   from here when converting the graphics back to a font for saving */
+static rnd_font_t *fontedit_src;
+
 static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
 {
 	int s;
 	long n;
 	rnd_glyph_t *g;
+
+	/* remember the font for fields not represente graphically */
+	fontedit_src = font;
 
 	for(s = 0, g = font->glyph; s <= RND_FONT_MAX_GLYPHS; s++,g++) {
 		char txt[32];
@@ -172,7 +180,7 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 	}
 }
 
-static void editor2font(pcb_board_t *pcb, rnd_font_t *font)
+static void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *orig_font)
 {
 	rnd_glyph_t *g;
 	int i;
@@ -182,7 +190,6 @@ static void editor2font(pcb_board_t *pcb, rnd_font_t *font)
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
 	rnd_glyph_poly_t *gp;
-
 
 	lfont = pcb->Data->Layer + 0;
 	lwidth = pcb->Data->Layer + 2;
@@ -380,7 +387,7 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, FontSave, fn = argv[1].val.str);
 
-	editor2font(pcb, font);
+	editor2font(pcb, font, fontedit_src);
 	rnd_actionva(RND_ACT_DESIGN, "SaveFontTo", fn, NULL);
 
 	RND_ACT_IRES(0);
@@ -645,7 +652,7 @@ static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_font_t *font = pcb_font(pcb, 0, 1);
 
-	editor2font(pcb, font);
+	editor2font(pcb, font, fontedit_src);
 	rnd_font_normalize(font);
 
 	return pcb_act_FontEdit(res, argc, argv);
