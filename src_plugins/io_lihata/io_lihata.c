@@ -40,7 +40,7 @@ pcb_plug_io_t *plug_io_lihata_default = &plug_io_lihata_v8;
 
 int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
-	int lih = (strcmp(fmt, "lihata") == 0);
+	int lih = (strncmp(fmt, "lihata", 6) == 0);
 
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
