@@ -84,6 +84,16 @@ static lht_perstyle_t style_newline = {
 	/* name_braced */ 0
 };
 
+/* same as style_newline but also inserts a newline in front; useful after inlines */
+static lht_perstyle_t style_newline_nl = {
+	/* buff */        {PB_BEGINNL, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_NEWLINE},
+	/* has_eq */      1,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
 static lht_perstyle_t style_newline_sp = {
 	/* buff */        {PB_BEGINSP, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_NEWLINE},
 	/* has_eq */      1,
@@ -472,12 +482,26 @@ static lhtpers_rule_t r_symbol[] = {
 
 static const char *pat_cell_width[]   = {"te:cell_width", "*", NULL};
 static const char *pat_cell_height[]  = {"te:cell_height", "*", NULL};
+static const char *pat_font_height[]  = {"te:height", "*", NULL};
+static const char *pat_cent_height[]  = {"te:cent_height", "*", NULL};
+static const char *pat_baseline[]     = {"te:baseline", "*", NULL};
+static const char *pat_tab_width[]    = {"te:tab_width", "*", NULL};
+static const char *pat_line_height[]  = {"te:line_height", "*", NULL};
 static const char *pat_ha_symbols[]   = {"ha:symbols", "*", NULL};
+static const char *pat_ha_entities[]  = {"ha:entities", "*", NULL};
+static const char *pat_ha_kerning[]   = {"ha:kerning", "*", NULL};
 static lhtpers_rule_t r_font1[] = {
 	{pat_cell_width,      &style_inline, NULL},
 	{pat_cell_height,     &style_inline, NULL},
+	{pat_font_height,     &style_inline, NULL},
+	{pat_cent_height,     &style_inline, NULL},
+	{pat_baseline,        &style_newline_nl, NULL},
+	{pat_line_height,     &style_newline_nl, NULL},
+	{pat_tab_width,       &style_newline_nl, NULL},
 	{pat_attributes,      &style_nlstruct, NULL},
 	{pat_ha_symbols,      &style_nlstruct, NULL},
+	{pat_ha_entities,     &style_nlstruct, NULL},
+	{pat_ha_kerning,      &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
 };
 

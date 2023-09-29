@@ -1370,6 +1370,9 @@ static lht_node_t *build_data(pcb_data_t *data)
 	return ndt;
 }
 
+/* Use the &number format for these */
+#define glyph_non_printable(n) ((n <= 32) || (n > 126) || (n == '&') || (n == '#') || (n == '{') || (n == '}') || (n == '/') || (n == ':') || (n == ';') || (n == '=') || (n == '\\'))
+
 static lht_node_t *build_glyph_line(rnd_glyph_line_t *line, long local_id)
 {
 	char buff[128];
@@ -1446,6 +1449,51 @@ static lht_node_t *build_glyph(rnd_glyph_t *g, const char *name)
 	return ndt;
 }
 
+static lht_node_t *build_entity_tbl(rnd_font_t *font)
+{
+	lht_node_t *ntbl;
+	htsi_entry_t *e;
+
+	ntbl = lht_dom_node_alloc(LHT_HASH, "entities");
+	for(e = htsi_first(&font->entity_tbl); e != NULL; e = htsi_next(&font->entity_tbl, e)) {
+		const char *name = e->key;
+		lht_dom_hash_put(ntbl, build_textf(name, "%d", e->value));
+	}
+
+	return ntbl;
+}
+
+static lht_node_t *build_kerning_tbl(rnd_font_t *font)
+{
+	lht_node_t *ntbl;
+	htkc_entry_t *e;
+	gds_t tmp = {0};
+
+	ntbl = lht_dom_node_alloc(LHT_HASH, "kerning");
+	for(e = htkc_first(&font->kerning_tbl); e != NULL; e = htkc_next(&font->kerning_tbl, e)) {
+		/* build name in tmp */
+		tmp.used = 0;
+
+		if ((e->key.left == '-') || glyph_non_printable(e->key.left))
+			rnd_append_printf(&tmp, "&%d", e->key.left);
+		else
+			gds_append(&tmp, e->key.left);
+
+		gds_append(&tmp, '-');
+
+		if ((e->key.right == '-') || glyph_non_printable(e->key.right))
+			rnd_append_printf(&tmp, "&%d", e->key.right);
+		else
+			gds_append(&tmp, e->key.right);
+
+		/* append entry */
+		lht_dom_hash_put(ntbl, build_textf(tmp.array, CFMT, e->value));
+	}
+
+	gds_uninit(&tmp);
+	return ntbl;
+}
+
 static lht_node_t *build_font_rnd(rnd_font_t *font)
 {
 	lht_node_t *syms, *ndt;
@@ -1467,13 +1515,61 @@ static lht_node_t *build_font_rnd(rnd_font_t *font)
 	if (font->name != NULL)
 		lht_dom_hash_put(ndt, build_text("name", font->name));
 
+#ifdef PCB_WANT_FONT2
+	/* font v2 fields, avaliable from lihata board 9 */
+	if (wrver >= 9) {
+		/* fields always saved */
+		lht_dom_hash_put(ndt, build_textf("height", CFMT, font->height));
+		lht_dom_hash_put(ndt, build_textf("cent_height", CFMT, font->cent_height));
+
+		/* fields that are optional */
+		if (font->tab_width != 0)
+			lht_dom_hash_put(ndt, build_textf("tab_width", CFMT, font->tab_width));
+		else
+			lht_dom_hash_put(ndt, dummy_node("tab_width"));
+
+		if (font->line_height != 0)
+			lht_dom_hash_put(ndt, build_textf("line_height", CFMT, font->line_height));
+		else
+			lht_dom_hash_put(ndt, dummy_node("line_height"));
+
+		if (font->baseline != 0)
+			lht_dom_hash_put(ndt, build_textf("baseline", CFMT, font->baseline));
+		else
+			lht_dom_hash_put(ndt, dummy_node("baseline"));
+
+		if ((font->entity_tbl_valid) && (font->entity_tbl.used > 0))
+			lht_dom_hash_put(ndt, build_entity_tbl(font));
+		else
+			lht_dom_hash_put(ndt, dummy_node("entities"));
+
+		if ((font->kerning_tbl_valid) && (font->kerning_tbl.used > 0))
+			lht_dom_hash_put(ndt, build_kerning_tbl(font));
+		else
+			lht_dom_hash_put(ndt, dummy_node("kerning"));
+	}
+	else { /* warn for any advanced field */
+		/* do not save height and cent_height: these are just computed when an old font is loaded */
+		if (font->tab_width != 0)
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font tab_width\n", "Custom tab width is lost and will be replaced by a computed one on load (matters only if you have tabs rendered)");
+		if (font->line_height != 0)
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font line_height\n", "Custom line height is lost and will be replaced by a computed one on load (matters only if you have multiline text)");
+		if (font->baseline != 0)
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font baseline\n", "Baseline info is lost (matters only if you have baseline-placed text)");
+		if ((font->entity_tbl_valid) && (font->entity_tbl.used > 0))
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font entity table\n", "Entity table is lost, if your text contains &entity; references, they will render to the unknown glyph");
+		if ((font->kerning_tbl_valid) && (font->kerning_tbl.used > 0))
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font kerning table\n", "Kerning table is lost, inter-glyph spacing will change when rendering this font");
+	}
+#endif
+
 	syms = lht_dom_node_alloc(LHT_HASH, "symbols");
 	lht_dom_hash_put(ndt, syms);
 	for(n = 0; n < RND_FONT_MAX_GLYPHS + 1; n++) {
 		char sname[32];
 		if (!font->glyph[n].valid)
 			continue;
-		if ((n <= 32) || (n > 126) || (n == '&') || (n == '#') || (n == '{') || (n == '}') || (n == '/') || (n == ':') || (n == ';') || (n == '=') || (n == '\\')) {
+		if (glyph_non_printable(n)) {
 			sprintf(sname, "&%02x", n);
 		}
 		else {
