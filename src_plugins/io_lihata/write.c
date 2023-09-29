@@ -2109,9 +2109,27 @@ int io_lihata_write_pcb_v9(pcb_plug_io_t *ctx, FILE * FP, const char *old_filena
 int io_lihata_write_font(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filename, const char *fmt)
 {
 	FILE *f;
-	int res;
+	const char *header;
+	int res, filever = 1;
 	lht_doc_t *doc;
 
+	if (fmt != NULL) {
+		char *sver = strrchr(fmt, 'v'), *end;
+		if (sver != NULL) {
+			sver++;
+			res = strtol(sver, &end, 10);
+			if (*end == '\0')
+				filever = res;
+		}
+	}
+
+	switch(filever) {
+		case 1: wrver = 8; header = "pcb-rnd-font-v1"; break;
+		case 2: wrver = 9; header = "pcb-rnd-font-v2"; break;
+		default:
+			rnd_message(RND_MSG_ERROR, "Failed to save font file in lihata: invalid version %d", filever);
+			return -1;
+	}
 
 	f = rnd_fopen_askovr(&PCB->hidlib, Filename, "w", NULL);
 	if (f == NULL) {
@@ -2122,7 +2140,7 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filen
 	/* create the doc */
 	io_lihata_full_tree = 1;
 	doc = lht_dom_init();
-	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-font-v1");
+	doc->root = lht_dom_node_alloc(LHT_LIST, header);
 	lht_dom_list_append(doc->root, build_font(font));
 
 	clean_invalid(doc->root);
