@@ -286,6 +286,13 @@ static void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *or
 			g->valid = 1;
 	}
 
+#ifdef PCB_WANT_FONT2
+	/* copy metadata */
+	rnd_font_copy_tables(font, orig_font);
+	font->kerning_tbl_valid = orig_font->kerning_tbl_valid;
+	font->entity_tbl_valid = orig_font->entity_tbl_valid;
+#endif
+
 	rnd_font_normalize(font);
 }
 
