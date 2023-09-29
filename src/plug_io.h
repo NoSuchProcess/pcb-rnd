@@ -125,7 +125,7 @@ struct pcb_plug_io_s {
 	int (*write_pcb)(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency);
 
 	/* Attempt to write the font to file. Return 0 on success. */
-	int (*write_font)(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filename);
+	int (*write_font)(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filename, const char *fmt);
 
 	/* OPTIONAL: save-as subdialog; sub is the parent's, already initialized
 	   subdialog; init() returns an plugin-allocated context that is then

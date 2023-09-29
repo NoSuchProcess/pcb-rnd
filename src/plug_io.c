@@ -550,7 +550,7 @@ int pcb_write_font(rnd_font_t *Ptr, const char *Filename, const char *fmt)
 	pcb_plug_io_t *p = pcb_io_find_writer(PCB_IOT_FONT, fmt);
 
 	if (p != NULL) {
-		res = p->write_font(p, Ptr, Filename);
+		res = p->write_font(p, Ptr, Filename, fmt);
 		/*newfmt = 1;*/
 	}
 	else

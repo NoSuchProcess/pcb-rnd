@@ -2106,7 +2106,7 @@ int io_lihata_write_pcb_v9(pcb_plug_io_t *ctx, FILE * FP, const char *old_filena
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 9);
 }
 
-int io_lihata_write_font(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filename)
+int io_lihata_write_font(pcb_plug_io_t *ctx, rnd_font_t *font, const char *Filename, const char *fmt)
 {
 	FILE *f;
 	int res;
