@@ -1449,6 +1449,7 @@ static lht_node_t *build_glyph(rnd_glyph_t *g, const char *name)
 	return ndt;
 }
 
+#ifdef PCB_WANT_FONT2
 static lht_node_t *build_entity_tbl(rnd_font_t *font)
 {
 	lht_node_t *ntbl;
@@ -1493,6 +1494,7 @@ static lht_node_t *build_kerning_tbl(rnd_font_t *font)
 	gds_uninit(&tmp);
 	return ntbl;
 }
+#endif
 
 static lht_node_t *build_font_rnd(rnd_font_t *font)
 {
