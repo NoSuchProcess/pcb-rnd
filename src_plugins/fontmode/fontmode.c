@@ -291,6 +291,7 @@ static void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *or
 	rnd_font_copy_tables(font, orig_font);
 	font->kerning_tbl_valid = orig_font->kerning_tbl_valid;
 	font->entity_tbl_valid = orig_font->entity_tbl_valid;
+	font->baseline = orig_font->baseline; /* not edited graphically */
 #endif
 
 	rnd_font_normalize(font);
@@ -681,12 +682,31 @@ static fgw_error_t pcb_act_FontNormalize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return pcb_act_FontEdit(res, argc, argv);
 }
 
+static const char pcb_acts_FontBaseline[] = "FontBaseline(+-delta)";
+static const char pcb_acth_FontBaseline[] = "Change the baseline value and redraw. If there is no baseline, add baseline first.";
+static fgw_error_t pcb_act_FontBaseline(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	rnd_font_t *font = pcb_font(pcb, 0, 1);
+	rnd_coord_t delta = 0;
+
+	RND_ACT_MAY_CONVARG(1, FGW_COORD, FontBaseline, delta = fgw_coord(&argv[1]));
+
+	pcb->Changed = 0;
+	editor2font(pcb, font, fontedit_src);
+	if (font->baseline == 0)
+		font->baseline = RND_MIL_TO_COORD(50); /* default value that works with the default font */
+	font->baseline += delta;
+	return pcb_act_FontEdit(res, argc, argv);
+}
+
 rnd_action_t fontmode_action_list[] = {
 	{"FontEdit", pcb_act_FontEdit, pcb_acth_FontEdit, pcb_acts_FontEdit},
 	{"FontSave", pcb_act_FontSave, pcb_acth_FontSave, pcb_acts_FontSave},
 	{"FontXform", pcb_act_FontXform, pcb_acth_FontXform, pcb_acts_FontXform},
 	{"FontSetXdelta", pcb_act_FontSetXdelta, pcb_acth_FontSetXdelta, pcb_acts_FontSetXdelta},
-	{"FontNormalize", pcb_act_FontNormalize, pcb_acth_FontNormalize, pcb_acts_FontNormalize}
+	{"FontNormalize", pcb_act_FontNormalize, pcb_acth_FontNormalize, pcb_acts_FontNormalize},
+	{"FontBaseline", pcb_act_FontBaseline, pcb_acth_FontBaseline, pcb_acts_FontBaseline}
 };
 
 static const char *fontmode_cookie = "fontmode plugin";
