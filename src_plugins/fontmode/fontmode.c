@@ -304,7 +304,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_font_t *font;
-	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
+	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk, *lbaslin;
 	rnd_layergrp_id_t grp[4];
 	int l, inplace = 0;
 	const char *opt = "";
@@ -360,6 +360,11 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	lwidth = make_layer(pcb, grp[2], "Width");
 	lgrid  = make_layer(pcb, grp[3], "Grid");
 
+#ifdef PCB_WANT_FONT2
+	if (font->baseline > 0)
+		lbaslin = make_layer(pcb, grp[3], "Baseline");
+#endif
+
 	assert(pcb_layergrp_list(pcb, PCB_LYT_SILK, grp, 2) == 2);
 	make_layer(pcb, grp[0], "Silk");
 	lsilk = make_layer(pcb, grp[1], "Silk");
@@ -380,6 +385,17 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int y = (l + 1) * CELL_SIZE;
 		pcb_line_new_merge(lgrid, 0, y, pcb->hidlib.dwg.X2, y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
+
+
+#ifdef PCB_WANT_FONT2
+	if (font->baseline > 0) {
+		for (l = 0; l <= PCB_MAX_FONTPOSITION / 16 + 1; l++) {
+			int y = (l + 1) * CELL_SIZE + font->baseline;
+			pcb_line_new_merge(lbaslin, 0, y, pcb->hidlib.dwg.X2, y, RND_MIL_TO_COORD(0.25), RND_MIL_TO_COORD(1), pcb_no_flags());
+		}
+	}
+#endif
+
 	RND_ACT_IRES(0);
 	return 0;
 }
