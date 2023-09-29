@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include "board.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/error.h>
+#include <librnd/hid/hid_dad.h>
 #include "font.h"
 #include "conf_core.h"
 #include "plug_io.h"
@@ -112,19 +113,24 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static const char pcb_acts_save_font_to[] = "SaveFontTo([file, id])";
+static const char pcb_acts_save_font_to[] = "SaveFontTo([file, id, fmt])";
 static const char pcb_acth_save_font_to[] = "Save PCB font to a file";
 
 fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *fname = NULL, *sid = NULL;
+	const char *fmts[] = {"lihata font v2", "lihata font v1", NULL};
+	const char *fname = NULL, *sid = NULL, *fmt;
 	static char *default_file = NULL;
 	rnd_font_id_t fid;
 	rnd_font_t *fnt;
 	int r;
 
+	/* pick default font */
+	fmt = fmts[0];
+
 	RND_ACT_MAY_CONVARG(1, FGW_STR, load_font_from, fname = argv[1].val.str);
-	RND_ACT_MAY_CONVARG(2, FGW_STR, load_font_from, sid = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, load_font_from, sid = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, load_font_from, fmt = argv[3].val.str);
 
 	if (sid != NULL) {
 		char *end;
@@ -148,18 +154,31 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (!fname || !*fname) {
+		rnd_hid_dad_subdialog_t fmtsub = {0}, *fmtsubp = NULL;
+
+		if (RND_HAVE_GUI_ATTR_DLG) {
+			RND_DAD_ENUM(fmtsub.dlg, fmts);
+				
+			fmtsubp = &fmtsub;
+		}
+
 		fname = rnd_hid_fileselect(rnd_gui, "Save PCB font file...",
 																"Picks a PCB font file to save.\n",
-																default_file, ".font", NULL, "pcbfont", 0, NULL);
+																default_file, ".font", NULL, "pcbfont", 0, fmtsubp);
 		if (fname == NULL)
 			RND_ACT_FAIL(save_font_to);
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
 		}
+		if (RND_HAVE_GUI_ATTR_DLG) {
+			
+		}
 	}
 
-	r = pcb_write_font(fnt, fname, "lihata");
+
+
+	r = pcb_write_font(fnt, fname, fmt);
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "SaveFontTo(): failed to save font to %s\n", fname);
 		return 1;
