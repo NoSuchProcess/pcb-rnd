@@ -112,13 +112,23 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static int font_fmt_selected; /* this is not reentrant but the dialog is modal */
+
+static void font_fmt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	font_fmt_selected = attr->val.lng;
+}
 
 static const char pcb_acts_save_font_to[] = "SaveFontTo([file, id, fmt])";
 static const char pcb_acth_save_font_to[] = "Save PCB font to a file";
 
 fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+#ifdef PCB_WANT_FONT2
 	const char *fmts[] = {"lihata font v2", "lihata font v1", NULL};
+#else
+	const char *fmts[] = {"lihata font v1", NULL};
+#endif
 	const char *fname = NULL, *sid = NULL, *fmt;
 	static char *default_file = NULL;
 	rnd_font_id_t fid;
@@ -156,9 +166,11 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		rnd_hid_dad_subdialog_t fmtsub = {0}, *fmtsubp = NULL;
 
+		font_fmt_selected = 0;
+
 		if (RND_HAVE_GUI_ATTR_DLG) {
 			RND_DAD_ENUM(fmtsub.dlg, fmts);
-				
+				RND_DAD_CHANGE_CB(fmtsub.dlg, font_fmt_change_cb);
 			fmtsubp = &fmtsub;
 		}
 
@@ -172,11 +184,11 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			default_file = NULL;
 		}
 		if (RND_HAVE_GUI_ATTR_DLG) {
-			
+			if ((font_fmt_selected >= 0) && (font_fmt_selected < sizeof(fmts)/sizeof(fmts[0]))) {
+				fmt = fmts[font_fmt_selected];
+			}
 		}
 	}
-
-
 
 	r = pcb_write_font(fnt, fname, fmt);
 	if (r != 0) {
