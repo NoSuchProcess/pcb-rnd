@@ -178,7 +178,7 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 		lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->hidlib.dwg.X2));
 		lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->hidlib.dwg.Y2));
 		if ((pcb->hidlib.dwg.X1 != 0) || (pcb->hidlib.dwg.Y1 != 0))
-			pcb_io_incompat_save(NULL, NULL, "board", "drawing are bbox with non-zero origin (X1 or Y1)\n", "Run autocrop()");
+			pcb_io_incompat_save(NULL, NULL, "board", "drawing are bbox with non-zero origin (X1 or Y1)", "Run autocrop()");
 	}
 	else {
 		lht_dom_hash_put(grp, build_textf("x1", CFMT, pcb->hidlib.dwg.X1));
@@ -340,7 +340,7 @@ void build_thermal_heavy(lht_node_t *dst, pcb_any_obj_t *o)
 	}
 
 	if (wrver < 4)
-		pcb_io_incompat_save(NULL, o, "thermal", "lihata boards before version v4 did not support heavy terminal vias\n", "Either save in lihata v4+ or do not use heavy terminal thermals");
+		pcb_io_incompat_save(NULL, o, "thermal", "lihata boards before version v4 did not support heavy terminal vias", "Either save in lihata v4+ or do not use heavy terminal thermals");
 
 	th = lht_dom_node_alloc(LHT_LIST, "thermal");
 	lht_dom_hash_put(dst, th);
@@ -483,7 +483,7 @@ static lht_node_t *build_pxm(rnd_pixmap_t *pxm, long int ID)
 	}
 	else {
 		free(tbuff);
-		pcb_io_incompat_save(NULL, NULL, "gfx_internal", "Internal error saving gfx: base64\n", "Please report this bug to the developer!");
+		pcb_io_incompat_save(NULL, NULL, "gfx_internal", "Internal error saving gfx: base64", "Please report this bug to the developer!");
 	}
 	free(uctx.buff);
 	return obj;
@@ -684,7 +684,7 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 		lht_dom_hash_put(obj, dummy_node("enforce_clearance"));
 
 	if ((wrver < 7) && (poly->enforce_clearance > 0))
-		pcb_io_incompat_save(NULL, (pcb_any_obj_t *)poly, "enforce_clearance", "lihata boards before version v7 did not support polygon side enforce_clearance\n", "Either save in lihata v7+ or set polygon enforce_clearance to 0");
+		pcb_io_incompat_save(NULL, (pcb_any_obj_t *)poly, "enforce_clearance", "lihata boards before version v7 did not support polygon side enforce_clearance", "Either save in lihata v7+ or set polygon enforce_clearance to 0");
 
 	geo = lht_dom_node_alloc(LHT_LIST, "geometry");
 	lht_dom_hash_put(obj, geo);
@@ -788,11 +788,11 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 
 	if ((wrver < 7) && ((av = pcb_attribute_get(&text->Attributes, "tight_clearance")) != NULL))
 		if (rnd_istrue(av))
-			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_tight_clearance", "lihata boards before version v7 did not support text tight_clearance\n", "Either save in lihata v7+ or remove the tight_clearance attribute");
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_tight_clearance", "lihata boards before version v7 did not support text tight_clearance", "Either save in lihata v7+ or remove the tight_clearance attribute");
 
 	if ((wrver < 7) && ((av = pcb_attribute_get(&text->Attributes, "mirror_x")) != NULL))
 		if (rnd_istrue(av))
-			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_mirror_x", "lihata boards before version v7 did not support text mirror_x\n", "Either save in lihata v7+ or remove the mirror_x attribute");
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_mirror_x", "lihata boards before version v7 did not support text mirror_x", "Either save in lihata v7+ or remove the mirror_x attribute");
 
 	return obj;
 }
@@ -961,7 +961,7 @@ static lht_node_t *build_pstk_proto(pcb_data_t *data, pcb_pstk_proto_t *proto, l
 		if (wrver >= 5)
 			lht_dom_hash_put(nproto, build_text("name", proto->name));
 		else
-			pcb_io_incompat_save(NULL, NULL, "padstack-name", "versions below lihata board v5 do not support padstack prototype names\n", "Be aware that padstack proto names are lost in save or use lihata board v5 or higher");
+			pcb_io_incompat_save(NULL, NULL, "padstack-name", "versions below lihata board v5 do not support padstack prototype names", "Be aware that padstack proto names are lost in save or use lihata board v5 or higher");
 	}
 	else
 		lht_dom_hash_put(nproto, dummy_node("name"));
@@ -1232,7 +1232,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, rnd_la
 	}
 	else
 		for(; gfx != NULL; gfx = gfxlist_next(gfx))
-			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)gfx, "gfx", "lihata boards before version v7 did not support the gfx object\n", "Either save in lihata v7+ or remove the gfx object");
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)gfx, "gfx", "lihata boards before version v7 did not support the gfx object", "Either save in lihata v7+ or remove the gfx object");
 
 
 	lht_dom_hash_put(obj, grp);
@@ -1285,14 +1285,14 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
 		if (g == NULL) {
-			pcb_io_incompat_save(NULL, NULL, "layer", "lihata board v1 did not support a layer stackup without bottom silk\n", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
+			pcb_io_incompat_save(NULL, NULL, "layer", "lihata board v1 did not support a layer stackup without bottom silk", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
 			return NULL;
 		}
 		grp[g - PCB->LayerGroups.grp] = gbottom;
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
 		if (g == NULL) {
-			pcb_io_incompat_save(NULL, NULL, "layer", "lihata board v1 did not support a layer stackup without top silk\n", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
+			pcb_io_incompat_save(NULL, NULL, "layer", "lihata board v1 did not support a layer stackup without top silk", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
 			return NULL;
 		}
 		grp[g - PCB->LayerGroups.grp] = gtop;
@@ -1553,15 +1553,15 @@ static lht_node_t *build_font_rnd(rnd_font_t *font)
 	else { /* warn for any advanced field */
 		/* do not save height and cent_height: these are just computed when an old font is loaded */
 		if (font->tab_width != 0)
-			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font tab_width\n", "Custom tab width is lost and will be replaced by a computed one on load (matters only if you have tabs rendered)");
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font tab_width", "Custom tab width is lost and will be replaced by a computed one on load (matters only if you have tabs rendered)");
 		if (font->line_height != 0)
-			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font line_height\n", "Custom line height is lost and will be replaced by a computed one on load (matters only if you have multiline text)");
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font line_height", "Custom line height is lost and will be replaced by a computed one on load (matters only if you have multiline text)");
 		if (font->baseline != 0)
-			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font baseline\n", "Baseline info is lost (matters only if you have baseline-placed text)");
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font baseline", "Baseline info is lost (matters only if you have baseline-placed text)");
 		if ((font->entity_tbl_valid) && (font->entity_tbl.used > 0))
-			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font entity table\n", "Entity table is lost, if your text contains &entity; references, they will render to the unknown glyph");
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font entity table", "Entity table is lost, if your text contains &entity; references, they will render to the unknown glyph");
 		if ((font->kerning_tbl_valid) && (font->kerning_tbl.used > 0))
-			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font kerning table\n", "Kerning table is lost, inter-glyph spacing will change when rendering this font");
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font kerning table", "Kerning table is lost, inter-glyph spacing will change when rendering this font");
 	}
 #endif
 
@@ -1651,17 +1651,17 @@ static lht_node_t *build_styles(pcb_data_t *data, vtroutestyle_t *styles)
 		if (wrver >= 6)
 			lht_dom_hash_put(sn, build_textf("text_thick", CFMT, s->textt));
 		else if (s->textt > 0)
-			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v6 did not support text thickness in route style\n", "Either save in lihata v6+ or be aware of losing this information");
+			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v6 did not support text thickness in route style", "Either save in lihata v6+ or be aware of losing this information");
 
 		if (wrver >= 6)
 			lht_dom_hash_put(sn, build_textf("text_scale", "%d", s->texts));
 		else if (s->texts > 0)
-			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v6 did not support text scale in route style\n", "Either save in lihata v6+ or be aware of losing this information");
+			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v6 did not support text scale in route style", "Either save in lihata v6+ or be aware of losing this information");
 
 		if ((wrver >= 8) && (s->fid != -1))
 			lht_dom_hash_put(sn, build_textf("fid", "%ld", s->fid));
 		else if (s->fid != -1)
-			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v8 did not support setting font from style\n", "Either save in lihata v8+ or be aware of losing this information");
+			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v8 did not support setting font from style", "Either save in lihata v8+ or be aware of losing this information");
 
 		lht_dom_hash_put(sn, build_attributes(&s->attr));
 	}
@@ -1765,7 +1765,7 @@ static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 
 		case PCB_RPE_NET_ATTR_CHG:
 			if (wrver < 9) {
-				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save net attrib change (change lost from back annotation)\n", "Save in lihata v9");
+				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save net attrib change (change lost from back annotation)", "Save in lihata v9");
 				break;
 			}
 
@@ -1778,7 +1778,7 @@ static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 
 		case PCB_RPE_COMP_ADD:
 			if (wrver < 9) {
-				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save comp add (change lost from back annotation)\n", "Save in lihata v9");
+				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save comp add (change lost from back annotation)", "Save in lihata v9");
 				break;
 			}
 			n = lht_dom_node_alloc(LHT_HASH, "comp_add");
@@ -1788,7 +1788,7 @@ static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 
 		case PCB_RPE_COMP_DEL:
 			if (wrver < 9) {
-				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save comp del (change lost from back annotation)\n", "Save in lihata v9");
+				pcb_io_incompat_save(NULL, NULL, "board", "Netlist patch: can not save comp del (change lost from back annotation)", "Save in lihata v9");
 				break;
 			}
 			n = lht_dom_node_alloc(LHT_HASH, "comp_del");
