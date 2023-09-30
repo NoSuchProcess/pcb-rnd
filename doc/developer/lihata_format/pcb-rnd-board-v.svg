@@ -51,7 +51,7 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/font -->
 <g id="node46" class="node">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/font</title>
-<g id="a_node46"><a xlink:href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*/children/font" xlink:title=" font kit: all fonts used on the board (if no font specified, default font will be used) ">
+<g id="a_node46"><a xlink:href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*/children/font" xlink:title=" font kit: all fonts used on the board (if no font specified, default font will be used); old boards use pcb&#45;rnd&#45;font&#45;v1, boards &gt;= v9 use pcb&#45;rnd&#45;font&#45;v2 ">
 <ellipse fill="none" stroke="#000000" cx="2172.0624" cy="-1441.5611" rx="38.7821" ry="27.6545"/>
 <text text-anchor="middle" x="2172.0624" y="-1445.8611" font-family="Times,serif" font-size="14.00" fill="#000000">ha:font</text>
 </a>

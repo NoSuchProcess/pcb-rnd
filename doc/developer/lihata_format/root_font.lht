@@ -1,6 +1,6 @@
 ha:lht_tree_doc { ha:roots {
 
-	ha:pcb-rnd-font-v1 {
+	ha:pcb-rnd-font-v* {
 		type=li
 		desc={font description}
 		li:children {
@@ -11,6 +11,11 @@ ha:lht_tree_doc { ha:roots {
 				li:children {
 					ha:cell_height { valtype=coord; desc={height of the tallest glyph}}
 					ha:cell_width { valtype=coord; desc={width of the widest glyph}}
+					ha:height { valtype=coord; ver={>=2}; desc={total height, font-wise (distance between lowest point of the lowest glyph and highest point of the tallest glyph }}
+					ha:cent_height { valtype=coord; ver={>=2}; desc={same as height but computed for centerline of stroke}}
+					ha:tab_width { valtype=coord; ver={>=2}; desc={optional: tab column width}}
+					ha:line_height { valtype=coord; ver={>=2}; desc={optional: vertical advance from one line to the next in multiline rendering}}
+					ha:baseline { valtype=coord; ver={>=2}; desc={normally the origin of a text object is the top-left of the glyph coord system; when this is enabled and the font has a baseline, the glyphs are moved up so the origin is at the custom baseline of the font (bbox is modified too); measured from the top (from the glyph coord system y=0)}}
 					ha:id { valtype=integer; desc={unique font ID within the fontkit; fonts are referenced by ID}}
 					ha:name { valtype=string; desc={user specified, user readable font name}}
 					ha:symbols {
@@ -60,6 +65,22 @@ ha:lht_tree_doc { ha:roots {
 									}
 								}
 							}
+						}
+					}
+					ha:entities {
+						ver={>=2};
+						type=ha
+						desc={table for translating named &entity; characters to character indices}
+						li:children {
+							ha:ENTITYNAME { valtype=integer;   desc={translate &ENTITYNAME; to the charatcter addressed by the integer value (should be between 1 and 254)}}
+						}
+					}
+					ha:kerning {
+						ver={>=2};
+						type=ha
+						desc={kerning table: tune horizontal distance of character pairs}
+						li:children {
+							ha:CHAR1-CHAR2 { valtype=coord;   desc={if CHAR1 is followed by CHAR2 while rendering a string, move CHAR2 horizontally by the value; negative means CHAR2 is moved toward CHAR1}}
 						}
 					}
 				}

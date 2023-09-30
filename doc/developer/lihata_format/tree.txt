@@ -51,7 +51,7 @@ ha:pcb-rnd-board-v*                 \t\t\tThe full, self-contained description o
      substrate           flag       material: substrate or insulator
     name                 string >=6 purpose of layer groups (useful with mechanical/documentation groups
     li:layers                       ordered list of logical layer IDs hosted by this layer group
- ha:font                            font kit: all fonts used on the board (if no font specified, default font will be used)
+ ha:font                            font kit: all fonts used on the board (if no font specified, default font will be used); old boards use pcb-rnd-font-v1, boards >= v9 use pcb-rnd-font-v2
   ha:FONT-ID                        the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below ->
  ha:styles                          routing styles hash: collection of all available routing syles
  ha:netlists                        all available netlists
@@ -126,13 +126,19 @@ ha:pcb-rnd-drc-query-v*            pcb-rnd drc_query script
    desc                 string     human readable description of the violation, with hints on how to resolve it
    query                string     query script to execute for finding violations
 
-li:pcb-rnd-font-v1
+li:pcb-rnd-font-v*
 
 type:name             value   ver description
-li:pcb-rnd-font-v1                font description
+li:pcb-rnd-font-v*                font description
  ha:FONT-ID                       the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below
   cell_height         coord       height of the tallest glyph
   cell_width          coord       width of the widest glyph
+  height              coord   >=2 total height, font-wise (distance between lowest point of the lowest glyph and highest point of the tallest glyph
+  cent_height         coord   >=2 same as height but computed for centerline of stroke
+  tab_width           coord   >=2 optional: tab column width
+  line_height         coord   >=2 optional: vertical advance from one line to the next in multiline rendering
+  baseline            coord   >=2 normally the origin of a text object is the top-left of the glyph coord system; when this is enabled and the font has a baseline, the glyphs are moved up so the origin is at the custom baseline of the font (bbox is
+                                  modified too); measured from the top (from the glyph coord system y=0)
   id                  integer     unique font ID within the fontkit; fonts are referenced by ID
   name                string      user specified, user readable font name
   ha:symbols                      a collections of glyphs availbale in the font
@@ -156,6 +162,10 @@ li:pcb-rnd-font-v1                font description
       astart          angle       start angle
       adelta          angle       delta angle
      li:simplepoly.ID             round cap arc, simplified; contains a flat list of coords; each coord pair is an x;y corner of the outline of the polygon (odd indices are x coords, even indices are y coords)
+  ha:entities                 >=2 table for translating named &entity; characters to character indices
+   ENTITYNAME         integer     translate &ENTITYNAME; to the charatcter addressed by the integer value (should be between 1 and 254)
+  ha:kerning                  >=2 kerning table: tune horizontal distance of character pairs
+   CHAR1-CHAR2        coord       if CHAR1 is followed by CHAR2 while rendering a string, move CHAR2 horizontally by the value; negative means CHAR2 is moved toward CHAR1
 
 ha:pcb-rnd-log-v*
 

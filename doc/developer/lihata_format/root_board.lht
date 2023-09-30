@@ -92,9 +92,9 @@ ha:lht_tree_doc { ha:roots {
 			}
 			ha:font {
 				type=ha
-				desc { font kit: all fonts used on the board (if no font specified, default font will be used) }
+				desc { font kit: all fonts used on the board (if no font specified, default font will be used); old boards use pcb-rnd-font-v1, boards >= v9 use pcb-rnd-font-v2 }
 				li:children {
-					sy:FONT-ID {/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID}
+					sy:FONT-ID {/lht_tree_doc/roots/pcb-rnd-font-v*/children/FONT-ID}
 				}
 			}
 			ha:styles {
