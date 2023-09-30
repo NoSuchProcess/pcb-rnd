@@ -111,6 +111,8 @@ History of io_lihata, per format version.
 
 	<H3> v9 </H3>
 	<p>
+	Uses pcb-rnd-font-v2.
+	<p>
 	Netlist patch (back annotation) upgrades:
 	<ul>
 		<li> remove change_attrib operation
@@ -152,5 +154,23 @@ History of io_lihata, per format version.
 	Used from board v6. Features new layer type: PCB_LYT_MECH and
 	new pad shape: hshadow. 
 
+<H2> font </H2>
+	<H3> v1 </H3>
+	<p>
+	Original native font format
+
+	<H3> v2 </H3>
+	<p>
+	Save height and cent_height so they are not required to be recomputed on load.
+	<p>
+	Optional tab_width to size tab columns. (Computed if not specified.)
+	<p>
+	Optional line_height to size y advance on multiline rendering (affects line distance; computed if not specified.)
+	<p>
+	Optional baseline so text rended with different font in the same row can line up as long as they all have baseline specified properly (0 if not specified).
+	<p>
+	Entities table: when enabled in the rendering call, interpret &lt;entity; names in the string and look them up in this table; entities found are rendered from the glyph address stored in the table; entities not found are rendered as the unknown glyph.
+	<p>
+	Kerning table: tune horizontal distance of character pairs.
 </body>
 </html>
