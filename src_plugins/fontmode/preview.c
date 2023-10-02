@@ -105,7 +105,9 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 	info.xform = &xform;
 	pcb_draw_setup_default_gui_xform(&xform);
 
+#if PCB_WANT_FONT2
 	opts |= RND_FONT_HTAB | RND_FONT_ENTITY | RND_FONT_MULTI_LINE;
+#endif
 
 	rnd_render->set_color(pcb_draw_out.fgGC, rnd_color_black);
 
