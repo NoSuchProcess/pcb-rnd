@@ -819,7 +819,12 @@
  layer.h move.h remove.h operation.h flag_str.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h event.h polygon.h obj_poly_draw.h \
  draw.h ../src_plugins/fontmode/preview.h brave.h
-../src_plugins/fontmode/preview.o: ../src_plugins/fontmode/preview.c
+../src_plugins/fontmode/preview.o: ../src_plugins/fontmode/preview.c \
+ board.h ../config.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
+ globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
+ board.h draw.h font.h
 ../src_plugins/fp_board/fp_board.o: ../src_plugins/fp_board/fp_board.c \
  ../config.h plug_footprint.h data.h globalconst.h layer.h attrib.h \
  global_typedefs.h obj_common.h flag.h data_parent.h obj_arc_list.h \
