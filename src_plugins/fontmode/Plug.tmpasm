@@ -1,5 +1,8 @@
 put /local/rnd/mod {fontmode}
-put /local/rnd/mod/OBJS [@ $(PLUGDIR)/fontmode/fontmode.o @]
+put /local/rnd/mod/OBJS [@
+	$(PLUGDIR)/fontmode/fontmode.o
+	$(PLUGDIR)/fontmode/preview.o
+@]
 
 switch /local/module/fontmode/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

@@ -818,7 +818,8 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h flag.h \
  layer.h move.h remove.h operation.h flag_str.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h event.h polygon.h obj_poly_draw.h \
- draw.h brave.h
+ draw.h ../src_plugins/fontmode/preview.h brave.h
+../src_plugins/fontmode/preview.o: ../src_plugins/fontmode/preview.c
 ../src_plugins/fp_board/fp_board.o: ../src_plugins/fp_board/fp_board.c \
  ../config.h plug_footprint.h data.h globalconst.h layer.h attrib.h \
  global_typedefs.h obj_common.h flag.h data_parent.h obj_arc_list.h \
@@ -2723,7 +2724,15 @@
  ../src_plugins/tool_std/tool_thermal.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h obj_pstk_draw.h draw.h
 ../src_plugins/trimesh/trimesh.o: ../src_plugins/trimesh/trimesh.c \
- ../config.h ../src_plugins/lib_polyhelp/triangulate.h \
+ ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
+ globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
+ board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h flag.h obj_line.h \
+ ../src_plugins/lib_polyhelp/triangulate.h \
  ../src_3rd/fast89-poly2tri/fast89_poly2tri.h
 ../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
  ../config.h conf_core.h globalconst.h change.h board.h vtroutestyle.h \

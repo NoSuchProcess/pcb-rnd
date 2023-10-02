@@ -58,6 +58,7 @@
 #include "event.h"
 #include "polygon.h"
 #include "obj_poly_draw.h"
+#include "preview.h"
 
 /* FIXME - we currently hardcode the grid and PCB size.  What we
    should do in the future is scan the font for its extents, and size
@@ -715,7 +716,8 @@ rnd_action_t fontmode_action_list[] = {
 	{"FontXform", pcb_act_FontXform, pcb_acth_FontXform, pcb_acts_FontXform},
 	{"FontSetXdelta", pcb_act_FontSetXdelta, pcb_acth_FontSetXdelta, pcb_acts_FontSetXdelta},
 	{"FontNormalize", pcb_act_FontNormalize, pcb_acth_FontNormalize, pcb_acts_FontNormalize},
-	{"FontBaseline", pcb_act_FontBaseline, pcb_acth_FontBaseline, pcb_acts_FontBaseline}
+	{"FontBaseline", pcb_act_FontBaseline, pcb_acth_FontBaseline, pcb_acts_FontBaseline},
+	{"FontModePreview", pcb_act_FontModePreview, pcb_acth_FontModePreview, pcb_acts_FontModePreview}
 };
 
 static const char *fontmode_cookie = "fontmode plugin";
