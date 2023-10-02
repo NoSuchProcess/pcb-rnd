@@ -85,7 +85,7 @@ static pcb_layer_t *make_layer(pcb_board_t *pcb, rnd_layergrp_id_t grp, const ch
 /* Remember the original font we are editing; some metadata are not represented
    graphically and can not be converted back from graphics - those are loaded
    from here when converting the graphics back to a font for saving */
-static rnd_font_t *fontedit_src;
+rnd_font_t *fontedit_src;
 
 static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfont, pcb_layer_t *lorig, pcb_layer_t *lwidth, pcb_layer_t *lsilk)
 {
@@ -181,7 +181,7 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 	}
 }
 
-static void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *orig_font)
+void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *orig_font)
 {
 	rnd_glyph_t *g;
 	int i;
