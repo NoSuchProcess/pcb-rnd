@@ -27,6 +27,7 @@
 #include <librnd/core/config.h>
 #include <genht/hash.h>
 #include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include "board.h"
 #include "draw.h"
 #include "font.h"
@@ -98,7 +99,34 @@ static void fmprv_pcb2preview_geo(fmprv_ctx_t *ctx)
 
 static void fmprv_pcb2preview_entities(fmprv_ctx_t *ctx)
 {
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wentt];
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *r;
+	htsi_entry_t *e;
+	char *cursor_path = NULL;
 
+	/* remember cursor */
+	r = rnd_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = rnd_strdup(r->path);
+
+	rnd_dad_tree_clear(tree);
+
+	for(e = htsi_first(&fontedit_src->entity_tbl); e != NULL; e = htsi_next(&fontedit_src->entity_tbl, e)) {
+		char *cell[3];
+		cell[0] = rnd_strdup(e->key);
+		cell[1] = rnd_strdup_printf("%d", e->value);
+		cell[2] = NULL;
+		rnd_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		rnd_hid_attr_val_t hv;
+		hv.str = cursor_path;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wentt, &hv);
+		free(cursor_path);
+	}
 }
 
 static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
