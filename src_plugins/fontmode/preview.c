@@ -25,6 +25,7 @@
  */
 
 #include <librnd/core/config.h>
+#include <genht/hash.h>
 #include <librnd/hid/hid_dad.h>
 #include "board.h"
 #include "draw.h"
@@ -33,6 +34,9 @@
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int wprev;
+#ifdef PCB_WANT_FONT2
+	int wbaseline, wtab_width, wline_height, wentt, wkernt;
+#endif
 	int active; /* already open - allow only one instance */
 	unsigned char *sample;
 	rnd_font_t font;
@@ -65,9 +69,19 @@ static void fmprv_pcb2preview_sample(fmprv_ctx_t *ctx)
 
 }
 
+#if PCB_WANT_FONT2
 static void fmprv_pcb2preview_geo(fmprv_ctx_t *ctx)
 {
+	rnd_hid_attr_val_t hv;
 
+	hv.crd = fontedit_src->baseline;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wbaseline, &hv);
+
+	hv.crd = fontedit_src->tab_width;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtab_width, &hv);
+
+	hv.crd = fontedit_src->line_height;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wline_height, &hv);
 }
 
 static void fmprv_pcb2preview_entities(fmprv_ctx_t *ctx)
@@ -79,6 +93,8 @@ static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
 {
 
 }
+#endif
+
 
 static void fmprv_pcb2preview(fmprv_ctx_t *ctx)
 {
@@ -88,9 +104,12 @@ static void fmprv_pcb2preview(fmprv_ctx_t *ctx)
 	}
 
 	fmprv_pcb2preview_sample(ctx);
+
+#if PCB_WANT_FONT2
 	fmprv_pcb2preview_geo(ctx);
 	fmprv_pcb2preview_entities(ctx);
 	fmprv_pcb2preview_kerning(ctx);
+#endif
 
 	rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], NULL); /* redraw */
 }
@@ -128,6 +147,8 @@ static void pcb_dlg_fontmode_preview(void)
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static rnd_box_t prvbb = {0, 0, RND_MM_TO_COORD(40), RND_MM_TO_COORD(20)};
 	static const char *tab_names[] = {"geometry", "entities", "kerning", NULL};
+	static const char *ent_hdr[]   = {"entity name", "glyph index", NULL};
+	static const char *kern_hdr[]  = {"character pair", "displacement", NULL};
 
 	if (fmprv_ctx.active)
 		return; /* do not open another */
@@ -136,6 +157,7 @@ static void pcb_dlg_fontmode_preview(void)
 		fmprv_ctx.sample = (unsigned char *)rnd_strdup("Sample string\nin multiple\nlines.");
 
 	RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
+		RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
 		RND_DAD_PREVIEW(fmprv_ctx.dlg, font_prv_expose_cb, NULL, NULL, NULL, &prvbb, 400, 200, &fmprv_ctx);
 			fmprv_ctx.wprev = RND_DAD_CURRENT(fmprv_ctx.dlg);
 
@@ -146,19 +168,41 @@ static void pcb_dlg_fontmode_preview(void)
 		RND_DAD_BEGIN_TABBED(fmprv_ctx.dlg, tab_names);
 			RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
 
-			RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* geometry */
+			RND_DAD_BEGIN_TABLE(fmprv_ctx.dlg, 2); /* geometry */
 				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_LABEL(fmprv_ctx.dlg, "geo...");
+#ifndef PCB_WANT_FONT2
+				RND_DAD_LABEL(fmprv_ctx.dlg, "Not supported in font v1");
+#else
+				RND_DAD_LABEL(fmprv_ctx.dlg, "Baseline:");
+				RND_DAD_COORD(fmprv_ctx.dlg);
+					fmprv_ctx.wbaseline = RND_DAD_CURRENT(fmprv_ctx.dlg);
+				RND_DAD_LABEL(fmprv_ctx.dlg, "Line height:");
+				RND_DAD_COORD(fmprv_ctx.dlg);
+					fmprv_ctx.wline_height = RND_DAD_CURRENT(fmprv_ctx.dlg);
+				RND_DAD_LABEL(fmprv_ctx.dlg, "Tab width:");
+				RND_DAD_COORD(fmprv_ctx.dlg);
+					fmprv_ctx.wtab_width = RND_DAD_CURRENT(fmprv_ctx.dlg);
+#endif
 			RND_DAD_END(fmprv_ctx.dlg);
 
 			RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* entities */
 				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_LABEL(fmprv_ctx.dlg, "entities...");
+#ifndef PCB_WANT_FONT2
+				RND_DAD_LABEL(fmprv_ctx.dlg, "Not supported in font v1");
+#else
+				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, ent_hdr);
+					fmprv_ctx.wentt = RND_DAD_CURRENT(fmprv_ctx.dlg);
+#endif
 			RND_DAD_END(fmprv_ctx.dlg);
 
 			RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* kerning */
 				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_LABEL(fmprv_ctx.dlg, "kerning...");
+#ifndef PCB_WANT_FONT2
+				RND_DAD_LABEL(fmprv_ctx.dlg, "Not supported in font v1");
+#else
+				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, kern_hdr);
+					fmprv_ctx.wkernt = RND_DAD_CURRENT(fmprv_ctx.dlg);
+#endif
 			RND_DAD_END(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
 
