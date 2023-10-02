@@ -31,11 +31,18 @@
 #include "draw.h"
 #include "font.h"
 
+#define RND_TIMED_CHG_TIMEOUT 1000
+#include <librnd/plugins/lib_hid_common/timed_chg.h>
+
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
-	int wprev;
+	int wprev, wpend;
 #ifdef PCB_WANT_FONT2
 	int wbaseline, wtab_width, wline_height, wentt, wkernt;
+	rnd_timed_chg_t timed_refresh;
+	unsigned geo_changed:1;
+	unsigned ent_changed:1;
+	unsigned kern_changed:1;
 #endif
 	int active; /* already open - allow only one instance */
 	unsigned char *sample;
@@ -53,6 +60,7 @@ static void fmprv_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	fmprv_ctx_t *ctx = caller_data;
 
+	rnd_timed_chg_cancel(&ctx->timed_refresh);
 	rnd_font_free(&ctx->font);
 	RND_DAD_FREE(ctx->dlg);
 
@@ -62,8 +70,12 @@ static void fmprv_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 static void fmprv_pcb2preview_sample(fmprv_ctx_t *ctx)
 {
 	rnd_font_free(&ctx->font);
+	memset(&ctx->font, 0, sizeof(ctx->font)); /* clear any cache */
 	editor2font(PCB, &ctx->font, fontedit_src);
 #if PCB_WANT_FONT2
+	ctx->font.baseline = fontedit_src->baseline;
+	ctx->font.line_height = fontedit_src->line_height;
+	ctx->font.tab_width = fontedit_src->tab_width;
 	rnd_font_copy_tables(&ctx->font, fontedit_src);
 #endif
 
@@ -106,13 +118,24 @@ static void fmprv_pcb2preview(fmprv_ctx_t *ctx)
 	fmprv_pcb2preview_sample(ctx);
 
 #if PCB_WANT_FONT2
-	fmprv_pcb2preview_geo(ctx);
-	fmprv_pcb2preview_entities(ctx);
-	fmprv_pcb2preview_kerning(ctx);
+	if (ctx->geo_changed)
+		fmprv_pcb2preview_geo(ctx);
+	if (ctx->ent_changed)
+		fmprv_pcb2preview_entities(ctx);
+	if (ctx->kern_changed)
+		fmprv_pcb2preview_kerning(ctx);
+
 #endif
 
+	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
 	rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], NULL); /* redraw */
 }
+
+static void fmprv_pcb2preview_timed(void *ctx)
+{
+	fmprv_pcb2preview(ctx);
+}
+
 
 static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
@@ -142,6 +165,35 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 #endif
 }
 
+static void timed_refresh(fmprv_ctx_t *ctx)
+{
+	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
+	rnd_timed_chg_schedule(&ctx->timed_refresh);
+}
+
+static void refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	fmprv_ctx_t *ctx = caller_data;
+	int widx = attr - ctx->dlg;
+
+	if (widx == ctx->wbaseline) {
+		ctx->geo_changed = 1;
+		fontedit_src->baseline = attr->val.crd;
+	}
+	else if (widx == ctx->wline_height) {
+		ctx->geo_changed = 1;
+		fontedit_src->line_height = attr->val.crd;
+	}
+	else if (widx == ctx->wtab_width) {
+		ctx->geo_changed = 1;
+		fontedit_src->tab_width = attr->val.crd;
+	}
+	else
+		return;
+
+	timed_refresh(ctx);
+}
+
 static void pcb_dlg_fontmode_preview(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -156,6 +208,8 @@ static void pcb_dlg_fontmode_preview(void)
 	if (fmprv_ctx.sample == NULL)
 		fmprv_ctx.sample = (unsigned char *)rnd_strdup("Sample string\nin multiple\nlines.");
 
+	rnd_timed_chg_init(&fmprv_ctx.timed_refresh, fmprv_pcb2preview_timed, &fmprv_ctx);
+
 	RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
 		RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
 		RND_DAD_PREVIEW(fmprv_ctx.dlg, font_prv_expose_cb, NULL, NULL, NULL, &prvbb, 400, 200, &fmprv_ctx);
@@ -163,6 +217,8 @@ static void pcb_dlg_fontmode_preview(void)
 
 		RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
 			RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit sample text");
+			RND_DAD_LABEL(fmprv_ctx.dlg, "(pending refresh)");
+				fmprv_ctx.wpend = RND_DAD_CURRENT(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
 
 		RND_DAD_BEGIN_TABBED(fmprv_ctx.dlg, tab_names);
@@ -176,12 +232,15 @@ static void pcb_dlg_fontmode_preview(void)
 				RND_DAD_LABEL(fmprv_ctx.dlg, "Baseline:");
 				RND_DAD_COORD(fmprv_ctx.dlg);
 					fmprv_ctx.wbaseline = RND_DAD_CURRENT(fmprv_ctx.dlg);
+					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
 				RND_DAD_LABEL(fmprv_ctx.dlg, "Line height:");
 				RND_DAD_COORD(fmprv_ctx.dlg);
 					fmprv_ctx.wline_height = RND_DAD_CURRENT(fmprv_ctx.dlg);
+					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
 				RND_DAD_LABEL(fmprv_ctx.dlg, "Tab width:");
 				RND_DAD_COORD(fmprv_ctx.dlg);
 					fmprv_ctx.wtab_width = RND_DAD_CURRENT(fmprv_ctx.dlg);
+					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
 #endif
 			RND_DAD_END(fmprv_ctx.dlg);
 
@@ -214,6 +273,7 @@ static void pcb_dlg_fontmode_preview(void)
 
 	RND_DAD_NEW("font_mode_preview", fmprv_ctx.dlg, "Font editor: preview", &fmprv_ctx, rnd_false, fmprv_close_cb);
 
+	fmprv_ctx.geo_changed = fmprv_ctx.ent_changed = fmprv_ctx.kern_changed = 1;
 	fmprv_pcb2preview(&fmprv_ctx);
 }
 
