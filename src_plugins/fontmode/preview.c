@@ -275,7 +275,9 @@ static void pcb_dlg_fontmode_preview(void)
 
 	RND_DAD_NEW("font_mode_preview", fmprv_ctx.dlg, "Font editor: preview", &fmprv_ctx, rnd_false, fmprv_close_cb);
 
+#ifdef PCB_WANT_FONT2
 	fmprv_ctx.geo_changed = fmprv_ctx.ent_changed = fmprv_ctx.kern_changed = 1;
+#endif
 	fmprv_pcb2preview(&fmprv_ctx);
 }
 
