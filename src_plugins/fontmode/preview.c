@@ -447,7 +447,6 @@ static void kern_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 {
 	fmprv_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wkernt];
-	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 	edit2_t ed2;
 
