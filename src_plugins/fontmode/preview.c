@@ -462,8 +462,47 @@ static void kern_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	edit2_kern(ctx, ed2, r->cell[0]);
 }
-
 #endif
+
+
+static void sample_text_changed_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *atxt)
+{
+	fmprv_ctx_t *ctx = caller_data;
+	rnd_hid_text_t *txt = atxt->wdata;
+
+	free(ctx->sample);
+	ctx->sample = (unsigned char *)txt->hid_get_text(atxt, hid_ctx); /* allocated */
+	fmprv_pcb2preview(ctx);
+}
+
+static void change_sample_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	fmprv_ctx_t *ctx = caller_data;
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	int wtxt;
+	rnd_hid_attribute_t *atxt;
+	rnd_hid_text_t *txt;
+	RND_DAD_DECL(dlg);
+
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+		RND_DAD_TEXT(dlg, NULL);
+			RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+			RND_DAD_CHANGE_CB(dlg, sample_text_changed_cb);
+			wtxt = RND_DAD_CURRENT(dlg);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
+
+	RND_DAD_NEW("font_mode_preview_text_edit", dlg, "Font editor: preview text", ctx, rnd_true, NULL);
+
+	atxt = &dlg[wtxt];
+	txt = atxt->wdata;
+	txt->hid_set_text(atxt, dlg_hid_ctx, RND_HID_TEXT_REPLACE, (const char *)ctx->sample);
+
+	RND_DAD_RUN(dlg);
+	RND_DAD_FREE(dlg);
+}
+
 
 static void pcb_dlg_fontmode_preview(void)
 {
@@ -488,9 +527,9 @@ static void pcb_dlg_fontmode_preview(void)
 
 		RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
 			RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit sample text");
+				RND_DAD_CHANGE_CB(fmprv_ctx.dlg, change_sample_cb);
 			RND_DAD_LABEL(fmprv_ctx.dlg, "(pending refresh)");
 				fmprv_ctx.wpend = RND_DAD_CURRENT(fmprv_ctx.dlg);
-			TODO("editor dialog");
 		RND_DAD_END(fmprv_ctx.dlg);
 
 		RND_DAD_BEGIN_TABBED(fmprv_ctx.dlg, tab_names);
