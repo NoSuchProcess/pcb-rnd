@@ -28,6 +28,7 @@
 - BUG: thermal tool allows invalid polygon assert. might be a non bug. load bug_files/TODO/thermal-assert.rp and use thermal tool and shift click to start cycling through thermal types on padstack. Assert eventually occurs. [report: Erich]
 - BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
 - BUG: double click on poly removes poly enforce clearance: bug_files/TODO/poly_enf_clr.rp [report: aron]
+- BUG: bug_files/TODO/bigsubc.rf triggers assert with "pcb-rnd bigsubc.rf", once pcb-rnd launches, and scroll bars are used to pan across layout; pcb-rnd: ../src/librnd/poly/polygon1_gen.c:66: rnd_poly_from_contour: Assertion `contour->Flags.orient == RND_PLF_DIR' failed [report: Erich]
 
 2. For later releases ===============================================================================
 - librnd4.1:
