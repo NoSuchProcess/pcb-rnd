@@ -311,11 +311,11 @@ RND_INLINE int edit2(edit2_t *ed2)
 	/* copy result */
 	if (res == 0) {
 		ed2->val = ed2->is_crd ? dlg[wval].val.crd : dlg[wval].val.lng;
-		ed2->name = dlg[wname].val.str;
+		ed2->name = (char *)dlg[wname].val.str; /* taking over ownership */
 		dlg[wname].val.str = NULL;
 	}
 	else
-		ed2->val = NULL;
+		ed2->val = 0;
 
 	RND_DAD_FREE(dlg);
 
@@ -359,7 +359,6 @@ static void ent_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 {
 	fmprv_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wentt];
-	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 	edit2_t ed2;
 
@@ -375,6 +374,96 @@ static void ent_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 
 	edit2_ent(ctx, ed2, r->cell[0]);
 }
+
+static int load_kern_key(const char *start, const char *end)
+{
+	/* single character cases, left or right */
+	if (end == start+1)
+		return *start;
+	if ((end == NULL) && (start[0] != '\0') && (start[1] == '\0'))
+		return *start;
+
+	if (*start == '&') {
+		char *e;
+		long val = strtol(start+1, &e, 10);
+		if (end != NULL) {
+			if (e != end)
+				return 0; /* non-numeric suffix on left side */
+		}
+		else {
+			if (*e != '\0')
+				return 0; /* non-numeric suffix on right side */
+		}
+		if ((val < 1) || (val > 254))
+			return 0;
+		return val;
+	}
+
+	return 0; /* unknown format */
+}
+
+RND_INLINE void edit2_kern(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
+{
+	htkc_entry_t *e;
+	htkc_key_t key;
+	char *sep;
+
+	if (edit2(&ed2) != 0)
+		return;
+
+	sep = strchr(ed2.name+1, '-'); /* +1 so if '-' is the left char it is preserved */
+	if (sep == NULL) {
+		rnd_message(RND_MSG_ERROR, "Key needs to be in the form of character pair, e.g. A-V\n");
+		return;
+	}
+
+	key.left = load_kern_key(ed2.name, sep);
+	key.right = load_kern_key(sep+1, NULL);
+
+	/* renamed: remove old entry */
+	if ((orig_name != NULL) && (strcmp(ed2.name, orig_name) != 0))
+		htkc_popentry(&fontedit_src->kerning_tbl, key);
+
+	e = htkc_getentry(&fontedit_src->kerning_tbl, key);
+	if (e != NULL) /* adding an entry that's already in - modify existing */
+		e->value = ed2.val;
+	else /* adding a new entry */
+		htkc_insert(&fontedit_src->kerning_tbl, key, ed2.val);
+
+	free(ed2.name);
+	fmprv_pcb2preview(ctx);
+}
+
+
+static void kern_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	fmprv_ctx_t *ctx = caller_data;
+	edit2_t ed2 = {0};
+	ed2.is_crd = 1;
+	edit2_kern(ctx, ed2, NULL);
+}
+
+static void kern_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	fmprv_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wkernt];
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
+	edit2_t ed2;
+
+	if (r == NULL) {
+		rnd_message(RND_MSG_ERROR, "Select a row first\n");
+		return;
+	}
+
+
+	ed2.name = rnd_strdup(r->cell[0]);
+	ed2.val = strtol(r->cell[1], NULL, 10);
+	ed2.is_crd = 1;
+
+	edit2_kern(ctx, ed2, r->cell[0]);
+}
+
 #endif
 
 static void pcb_dlg_fontmode_preview(void)
@@ -454,9 +543,9 @@ static void pcb_dlg_fontmode_preview(void)
 					fmprv_ctx.wkernt = RND_DAD_CURRENT(fmprv_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
 					RND_DAD_BUTTON(fmprv_ctx.dlg, "Add");
-						TODO("editor dialog");
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_add_cb);
 					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
-						TODO("editor dialog");
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_edit_cb);
 				RND_DAD_END(fmprv_ctx.dlg);
 #endif
 			RND_DAD_END(fmprv_ctx.dlg);
