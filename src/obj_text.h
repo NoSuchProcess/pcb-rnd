@@ -186,4 +186,11 @@ void pcb_text_uninit(void);
 		PCB_TEXT_LOOP(layer);                                      \
 		if (pcb_text_is_visible((board), layer, text))
 
+
+/*** Internal/special calls ***/
+
+/* The font editor's preview dialog uses this tog et the same rendering as core */
+void pcb_font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a);
+
+
 #endif

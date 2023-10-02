@@ -1169,7 +1169,7 @@ int pcb_text_chg_any(pcb_text_t *text, const pcb_text_t *src, rnd_bool undoable)
 #	define MAX_SIMPLE_POLY_POINTS 256
 #endif
 
-static void font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
+void pcb_font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 {
 	pcb_draw_info_t *info = cb_ctx;
 	switch(a->type) {
@@ -1297,7 +1297,7 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, rnd_font_t *font
 			poly_thin = 1;
 		}
 		else
-			rcb = font_draw_atom;
+			rcb = pcb_font_draw_atom;
 		cb_ctx = info;
 	}
 	else {
