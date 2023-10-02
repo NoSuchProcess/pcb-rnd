@@ -129,8 +129,51 @@ static void fmprv_pcb2preview_entities(fmprv_ctx_t *ctx)
 	}
 }
 
+/* Use the &number format for these */
+#define glyph_non_printable(n) ((n <= 32) || (n > 126) || (n == '&') || (n == '#') || (n == '{') || (n == '}') || (n == '/') || (n == ':') || (n == ';') || (n == '=') || (n == '\\') || (n == '\'') || (n == '`'))
+
 static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
 {
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wkernt];
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *r;
+	htkc_entry_t *e;
+	char *cursor_path = NULL;
+
+	/* remember cursor */
+	r = rnd_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = rnd_strdup(r->path);
+
+	rnd_dad_tree_clear(tree);
+
+	for(e = htkc_first(&fontedit_src->kerning_tbl); e != NULL; e = htkc_next(&fontedit_src->kerning_tbl, e)) {
+		char *cell[3];
+		gds_t tmp = {0};
+
+		if (glyph_non_printable(e->key.left))
+			rnd_append_printf(&tmp, "&%d-", e->key.left);
+		else
+			rnd_append_printf(&tmp, "%c-", e->key.left);
+
+		if (glyph_non_printable(e->key.right))
+			rnd_append_printf(&tmp, "&%d", e->key.right);
+		else
+			rnd_append_printf(&tmp, "%c", e->key.right);
+
+		cell[0] = tmp.array;
+		cell[1] = rnd_strdup_printf("%.09$mH", e->value);
+		cell[2] = NULL;
+		rnd_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		rnd_hid_attr_val_t hv;
+		hv.str = cursor_path;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wkernt, &hv);
+		free(cursor_path);
+	}
 
 }
 #endif
