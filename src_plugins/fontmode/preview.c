@@ -112,9 +112,15 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 
 	rnd_render->set_color(pcb_draw_out.fgGC, rnd_color_black);
 
+#if PCB_WANT_FONT2
 	rnd_font_draw_string(&ctx->font, ctx->sample, 0, 0,
 		1.0, 1.0, 0.0,
 		opts, 0, 0, RND_FONT_TINY_ACCURATE, pcb_font_draw_atom, &info);
+#else
+	rnd_font_draw_string(&ctx->font, ctx->sample, 0, 0,
+		1.0, 1.0, 0.0,
+		opts, 0, 0, 0, RND_FONT_TINY_ACCURATE, pcb_font_draw_atom, &info);
+#endif
 }
 
 static void pcb_dlg_fontmode_preview(void)
