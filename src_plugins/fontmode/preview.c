@@ -267,6 +267,116 @@ static void refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 #endif
 }
 
+#ifdef PCB_WANT_FONT2
+typedef struct {
+	char *name;
+	rnd_coord_t val;
+	int is_crd;
+} edit2_t;
+
+RND_INLINE int edit2(edit2_t *ed2)
+{
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"Ok", 0}, {NULL, 0}};
+	int res, wname, wval;
+	RND_DAD_DECL(dlg);
+
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABLE(dlg, 2);
+			RND_DAD_LABEL(dlg, "key:");
+			RND_DAD_STRING(dlg);
+				if (ed2->name != NULL) {
+					RND_DAD_DEFAULT_PTR(dlg, ed2->name);
+					ed2->name = NULL;
+				}
+				wname = RND_DAD_CURRENT(dlg);
+			RND_DAD_LABEL(dlg, "value:");
+			if (ed2->is_crd) {
+				RND_DAD_COORD(dlg);
+				RND_DAD_DEFAULT_NUM(dlg, ed2->val);
+				wval = RND_DAD_CURRENT(dlg);
+			}
+			else {
+				RND_DAD_INTEGER(dlg);
+				RND_DAD_DEFAULT_NUM(dlg, ed2->val);
+				wval = RND_DAD_CURRENT(dlg);
+			}
+		RND_DAD_END(dlg);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
+
+	RND_DAD_NEW("font_mode_table_edit", dlg, "Font editor: table entry", NULL, rnd_true, NULL);
+	res = RND_DAD_RUN(dlg);
+
+	/* copy result */
+	if (res == 0) {
+		ed2->val = ed2->is_crd ? dlg[wval].val.crd : dlg[wval].val.lng;
+		ed2->name = dlg[wname].val.str;
+		dlg[wname].val.str = NULL;
+	}
+	else
+		ed2->val = NULL;
+
+	RND_DAD_FREE(dlg);
+
+	return res;
+}
+
+
+RND_INLINE void edit2_ent(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
+{
+	htsi_entry_t *e;
+
+	if (edit2(&ed2) != 0)
+		return;
+
+	/* renamed: remove old entry */
+	if ((orig_name != NULL) && (strcmp(ed2.name, orig_name) != 0)) {
+		e = htsi_popentry(&fontedit_src->entity_tbl, orig_name);
+		free(e->key);
+	}
+
+	e = htsi_getentry(&fontedit_src->entity_tbl, ed2.name);
+	if (e != NULL) { /* adding an entry that's already in - modify existing */
+		free(ed2.name);
+		e->value = ed2.val;
+	}
+	else /* adding a new entry */
+		htsi_insert(&fontedit_src->entity_tbl, ed2.name, ed2.val);
+
+	fmprv_pcb2preview(ctx);
+}
+
+
+static void ent_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	fmprv_ctx_t *ctx = caller_data;
+	edit2_t ed2 = {0};
+	edit2_ent(ctx, ed2, NULL);
+}
+
+static void ent_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	fmprv_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wentt];
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
+	edit2_t ed2;
+
+	if (r == NULL) {
+		rnd_message(RND_MSG_ERROR, "Select a row first\n");
+		return;
+	}
+
+
+	ed2.name = rnd_strdup(r->cell[0]);
+	ed2.val = strtol(r->cell[1], NULL, 10);
+	ed2.is_crd = 0;
+
+	edit2_ent(ctx, ed2, r->cell[0]);
+}
+#endif
+
 static void pcb_dlg_fontmode_preview(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -292,6 +402,7 @@ static void pcb_dlg_fontmode_preview(void)
 			RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit sample text");
 			RND_DAD_LABEL(fmprv_ctx.dlg, "(pending refresh)");
 				fmprv_ctx.wpend = RND_DAD_CURRENT(fmprv_ctx.dlg);
+			TODO("editor dialog");
 		RND_DAD_END(fmprv_ctx.dlg);
 
 		RND_DAD_BEGIN_TABBED(fmprv_ctx.dlg, tab_names);
@@ -324,6 +435,13 @@ static void pcb_dlg_fontmode_preview(void)
 #else
 				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, ent_hdr);
 					fmprv_ctx.wentt = RND_DAD_CURRENT(fmprv_ctx.dlg);
+
+				RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
+					RND_DAD_BUTTON(fmprv_ctx.dlg, "Add");
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, ent_add_cb);
+					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, ent_edit_cb);
+				RND_DAD_END(fmprv_ctx.dlg);
 #endif
 			RND_DAD_END(fmprv_ctx.dlg);
 
@@ -334,6 +452,12 @@ static void pcb_dlg_fontmode_preview(void)
 #else
 				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, kern_hdr);
 					fmprv_ctx.wkernt = RND_DAD_CURRENT(fmprv_ctx.dlg);
+				RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
+					RND_DAD_BUTTON(fmprv_ctx.dlg, "Add");
+						TODO("editor dialog");
+					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
+						TODO("editor dialog");
+				RND_DAD_END(fmprv_ctx.dlg);
 #endif
 			RND_DAD_END(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
