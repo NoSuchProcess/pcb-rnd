@@ -39,11 +39,11 @@ typedef struct{
 	int wprev, wpend;
 #ifdef PCB_WANT_FONT2
 	int wbaseline, wtab_width, wline_height, wentt, wkernt;
-	rnd_timed_chg_t timed_refresh;
 	unsigned geo_changed:1;
 	unsigned ent_changed:1;
 	unsigned kern_changed:1;
 #endif
+	rnd_timed_chg_t timed_refresh;
 	int active; /* already open - allow only one instance */
 	unsigned char *sample;
 	rnd_font_t font;
@@ -72,7 +72,7 @@ static void fmprv_pcb2preview_sample(fmprv_ctx_t *ctx)
 	rnd_font_free(&ctx->font);
 	memset(&ctx->font, 0, sizeof(ctx->font)); /* clear any cache */
 	editor2font(PCB, &ctx->font, fontedit_src);
-#if PCB_WANT_FONT2
+#ifdef PCB_WANT_FONT2
 	ctx->font.baseline = fontedit_src->baseline;
 	ctx->font.line_height = fontedit_src->line_height;
 	ctx->font.tab_width = fontedit_src->tab_width;
@@ -81,7 +81,7 @@ static void fmprv_pcb2preview_sample(fmprv_ctx_t *ctx)
 
 }
 
-#if PCB_WANT_FONT2
+#ifdef PCB_WANT_FONT2
 static void fmprv_pcb2preview_geo(fmprv_ctx_t *ctx)
 {
 	rnd_hid_attr_val_t hv;
@@ -117,7 +117,7 @@ static void fmprv_pcb2preview(fmprv_ctx_t *ctx)
 
 	fmprv_pcb2preview_sample(ctx);
 
-#if PCB_WANT_FONT2
+#ifdef PCB_WANT_FONT2
 	if (ctx->geo_changed)
 		fmprv_pcb2preview_geo(ctx);
 	if (ctx->ent_changed)
@@ -142,7 +142,7 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 	fmprv_ctx_t *ctx = prv->user_ctx;
 	rnd_xform_t xform = {0};
 	pcb_draw_info_t info = {0};
-#if PCB_WANT_FONT2
+#ifdef PCB_WANT_FONT2
 	rnd_font_render_opts_t opts = RND_FONT_HTAB | RND_FONT_ENTITY | RND_FONT_MULTI_LINE;
 #else
 	int opts = 0;
@@ -154,7 +154,7 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 
 	rnd_render->set_color(pcb_draw_out.fgGC, rnd_color_black);
 
-#if PCB_WANT_FONT2
+#ifdef PCB_WANT_FONT2
 	rnd_font_draw_string(&ctx->font, ctx->sample, 0, 0,
 		1.0, 1.0, 0.0,
 		opts, 0, 0, RND_FONT_TINY_ACCURATE, pcb_font_draw_atom, &info);
@@ -173,6 +173,7 @@ static void timed_refresh(fmprv_ctx_t *ctx)
 
 static void refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
+#ifdef PCB_WANT_FONT2
 	fmprv_ctx_t *ctx = caller_data;
 	int widx = attr - ctx->dlg;
 
@@ -192,6 +193,7 @@ static void refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 		return;
 
 	timed_refresh(ctx);
+#endif
 }
 
 static void pcb_dlg_fontmode_preview(void)
