@@ -91,6 +91,8 @@ static void fmprv_pcb2preview(fmprv_ctx_t *ctx)
 	fmprv_pcb2preview_geo(ctx);
 	fmprv_pcb2preview_entities(ctx);
 	fmprv_pcb2preview_kerning(ctx);
+
+	rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], NULL); /* redraw */
 }
 
 static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
@@ -115,17 +117,17 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 static void pcb_dlg_fontmode_preview(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	static rnd_box_t prvbb = {0, 0, RND_MM_TO_COORD(40), RND_MM_TO_COORD(10)};
+	static rnd_box_t prvbb = {0, 0, RND_MM_TO_COORD(40), RND_MM_TO_COORD(20)};
 	static const char *tab_names[] = {"geometry", "entities", "kerning", NULL};
 
 	if (fmprv_ctx.active)
 		return; /* do not open another */
 
 	if (fmprv_ctx.sample == NULL)
-		fmprv_ctx.sample = (unsigned char *)rnd_strdup("Sample string.");
+		fmprv_ctx.sample = (unsigned char *)rnd_strdup("Sample string\nin multiple\nlines.");
 
 	RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
-		RND_DAD_PREVIEW(fmprv_ctx.dlg, font_prv_expose_cb, NULL, NULL, NULL, &prvbb, 400, 100, &fmprv_ctx);
+		RND_DAD_PREVIEW(fmprv_ctx.dlg, font_prv_expose_cb, NULL, NULL, NULL, &prvbb, 400, 200, &fmprv_ctx);
 			fmprv_ctx.wprev = RND_DAD_CURRENT(fmprv_ctx.dlg);
 
 		RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
