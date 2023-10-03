@@ -29,6 +29,7 @@
 - BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
 - BUG: double click on poly removes poly enforce clearance: bug_files/TODO/poly_enf_clr.rp [report: aron]
 - BUG: bug_files/TODO/out-extract*.rf, on which is not autocropped, triggers assert with scrolling, but the autocropped version does not. Polygon vertex coords are well under size limit for 32 bit coords in both cases. out-minimal.rf is a more minimal polygon version of the subc which triggers assert in footprint edit mode with {ze} and scroll bar use. [Report: Erich]
+- BUG: svn head pcb-rnd/librnd font editor preview window fails to add key pairs and values to unkerned fonts, and fails to show updated values in sample text vs behaviour with already kerned, manually edited font [report: Erich]
 
 2. For later releases ===============================================================================
 - librnd4.1:
