@@ -874,6 +874,7 @@ char *yytext;
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,2006 Thomas Nau
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -896,8 +897,8 @@ char *yytext;
  *
  */
 
-/* lexical definitions to parse ASCII input of geda/pcb PCB and Element
-   description */
+/* lexical definitions to parse ASCII input of geda/pcb PCB, Element and
+   font description */
 
 #include "config.h"
 #include "conf_core.h"
@@ -960,8 +961,8 @@ int	yyparse(void);
 
 static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename);
 
-#line 964 "parse_l.c"
 #line 965 "parse_l.c"
+#line 966 "parse_l.c"
 
 #define INITIAL 0
 
@@ -1178,10 +1179,10 @@ YY_DECL
 		}
 
 	{
-#line 106 "parse_l.l"
+#line 107 "parse_l.l"
 
 
-#line 1185 "parse_l.c"
+#line 1186 "parse_l.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1250,227 +1251,227 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 108 "parse_l.l"
+#line 109 "parse_l.l"
 { return(T_FILEVERSION); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 109 "parse_l.l"
+#line 110 "parse_l.l"
 { return(T_PCB); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 110 "parse_l.l"
+#line 111 "parse_l.l"
 { return(T_GRID); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 111 "parse_l.l"
+#line 112 "parse_l.l"
 { return(T_CURSOR); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 112 "parse_l.l"
+#line 113 "parse_l.l"
 { return(T_THERMAL); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 113 "parse_l.l"
+#line 114 "parse_l.l"
 { return(T_AREA); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 114 "parse_l.l"
+#line 115 "parse_l.l"
 { return(T_DRC); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 115 "parse_l.l"
+#line 116 "parse_l.l"
 { return(T_FLAGS); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 116 "parse_l.l"
+#line 117 "parse_l.l"
 { return(T_LAYER); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 117 "parse_l.l"
+#line 118 "parse_l.l"
 { return(T_PIN); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 118 "parse_l.l"
+#line 119 "parse_l.l"
 { return(T_PAD); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 119 "parse_l.l"
+#line 120 "parse_l.l"
 { return(T_VIA); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 120 "parse_l.l"
+#line 121 "parse_l.l"
 { return(T_LINE); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 121 "parse_l.l"
+#line 122 "parse_l.l"
 { return(T_RAT); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 122 "parse_l.l"
+#line 123 "parse_l.l"
 { return(T_RECTANGLE); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 123 "parse_l.l"
+#line 124 "parse_l.l"
 { return(T_TEXT); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 124 "parse_l.l"
+#line 125 "parse_l.l"
 { return(T_ELEMENTLINE); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 125 "parse_l.l"
+#line 126 "parse_l.l"
 { return(T_ELEMENTARC); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 126 "parse_l.l"
+#line 127 "parse_l.l"
 { return(T_ELEMENT); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 127 "parse_l.l"
+#line 128 "parse_l.l"
 { return(T_SYMBOLLINE); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 128 "parse_l.l"
+#line 129 "parse_l.l"
 { return(T_SYMBOL); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 129 "parse_l.l"
+#line 130 "parse_l.l"
 { return(T_MARK); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 130 "parse_l.l"
+#line 131 "parse_l.l"
 { return(T_GROUPS); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 131 "parse_l.l"
+#line 132 "parse_l.l"
 { return(T_STYLES); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 132 "parse_l.l"
+#line 133 "parse_l.l"
 { return(T_POLYGON); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 133 "parse_l.l"
+#line 134 "parse_l.l"
 { return(T_POLYGON_HOLE); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 134 "parse_l.l"
+#line 135 "parse_l.l"
 { return(T_ARC); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 135 "parse_l.l"
+#line 136 "parse_l.l"
 { return(T_NETLIST); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 136 "parse_l.l"
+#line 137 "parse_l.l"
 { return(T_NET); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 137 "parse_l.l"
+#line 138 "parse_l.l"
 { return(T_CONN); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 138 "parse_l.l"
+#line 139 "parse_l.l"
 { return(T_NETLISTPATCH); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 139 "parse_l.l"
+#line 140 "parse_l.l"
 { return(T_ADD_CONN); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 140 "parse_l.l"
+#line 141 "parse_l.l"
 { return(T_DEL_CONN); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 141 "parse_l.l"
+#line 142 "parse_l.l"
 { return(T_CHANGE_ATTRIB); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 142 "parse_l.l"
+#line 143 "parse_l.l"
 { return(T_ATTRIBUTE); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 144 "parse_l.l"
+#line 145 "parse_l.l"
 { return T_NM; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 145 "parse_l.l"
+#line 146 "parse_l.l"
 { return T_UM; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 146 "parse_l.l"
+#line 147 "parse_l.l"
 { return T_MM; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 147 "parse_l.l"
+#line 148 "parse_l.l"
 { return T_M; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 148 "parse_l.l"
+#line 149 "parse_l.l"
 { return T_KM; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 149 "parse_l.l"
+#line 150 "parse_l.l"
 { return T_UMIL; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 150 "parse_l.l"
+#line 151 "parse_l.l"
 { return T_CMIL; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 151 "parse_l.l"
+#line 152 "parse_l.l"
 { return T_MIL; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 152 "parse_l.l"
+#line 153 "parse_l.l"
 { return T_IN; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 154 "parse_l.l"
+#line 155 "parse_l.l"
 {
 						pcb_lval.integer = (unsigned) *(yytext+1);
 						return(CHAR_CONST);
@@ -1478,17 +1479,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 158 "parse_l.l"
+#line 159 "parse_l.l"
 {	return parse_number(); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 159 "parse_l.l"
+#line 160 "parse_l.l"
 {	pcb_lval.integer = rnd_round(strtod (yytext, NULL)); return INTEGER; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 161 "parse_l.l"
+#line 162 "parse_l.l"
 {	unsigned n;
 				sscanf((char *) yytext, "%x", &n);
 				pcb_lval.integer = n;
@@ -1497,7 +1498,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 166 "parse_l.l"
+#line 167 "parse_l.l"
 {
 						char	*p1, *p2;
 
@@ -1533,23 +1534,23 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 198 "parse_l.l"
+#line 199 "parse_l.l"
 { if (yy_parse_tags) { add_tag(yytext); }}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 199 "parse_l.l"
+#line 200 "parse_l.l"
 {}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 200 "parse_l.l"
+#line 201 "parse_l.l"
 {}
 	YY_BREAK
 case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
-#line 201 "parse_l.l"
+#line 202 "parse_l.l"
 {
 #ifndef FLEX_SCANNER
 						yylineno++;
@@ -1558,20 +1559,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 206 "parse_l.l"
+#line 207 "parse_l.l"
 {}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 207 "parse_l.l"
+#line 208 "parse_l.l"
 { return(*yytext); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 209 "parse_l.l"
+#line 210 "parse_l.l"
 ECHO;
 	YY_BREAK
-#line 1575 "parse_l.c"
+#line 1576 "parse_l.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2588,7 +2589,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 209 "parse_l.l"
+#line 210 "parse_l.l"
 
 
 /* sets up the preprocessor command */
@@ -2855,9 +2856,49 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	return retval;
 }
 
-/* ---------------------------------------------------------------------------
- * initializes LEX and calls parser for a font
- */
+/* Verify if a font file looks like a pcb font. Returns 1 if accepted, 0
+   if not a font file */
+static int io_pcb_test_parse_font(const char *fn)
+{
+	FILE *f;
+	int n, res = 0, seek_open = 0;
+
+	f = rnd_fopen(NULL, fn, "r");
+	if (f == NULL)
+		return 0;
+
+	/* Needs a symbol header in the first 128 lines */
+	for(n = 0; n < 128; n++) {
+		char *s, line[1024];
+		s = fgets(line, sizeof(line), f);
+		if (s == NULL)
+			break;
+
+		if (!seek_open) {
+			/* line starts with Symbol (after whitespaces) */
+			while(isspace(*s)) s++;
+			if (strncmp(s, "Symbol", 6) != 0)
+				continue;
+			s += 6;
+		}
+		seek_open = 0;
+
+		while(isspace(*s)) s++;
+		if ((*s == '[') || (*s == '(')) {
+			res = 1;
+			break;
+		}
+		if (*s == '\0') {
+			/* end of line after Symbol, opening bracket may be in the next line */
+			seek_open = 1;
+		}
+	}
+
+	fclose(f);
+	return res;
+}
+
+/* Initializes LEX and calls parser for a font. Returns 0 on success. */
 int io_pcb_ParseFont(pcb_plug_io_t *ctx, rnd_font_t *Ptr, const char *Filename)
 {
 	int r = 0, valid;
@@ -2868,6 +2909,9 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, rnd_font_t *Ptr, const char *Filename)
 	yyFontkitValid = &valid;
 	yysubc = NULL;
 	yyFontReset = rnd_false;
+
+	if (!io_pcb_test_parse_font(Filename))
+		return -1;
 
 	yy_settings_dest = RND_CFR_invalid;
 	fcmd = conf_core.rc.font_command;

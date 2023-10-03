@@ -5,6 +5,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,2006 Thomas Nau
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,8 +28,8 @@
  *
  */
 
-/* lexical definitions to parse ASCII input of geda/pcb PCB and Element
-   description */
+/* lexical definitions to parse ASCII input of geda/pcb PCB, Element and
+   font description */
 
 #include "config.h"
 #include "conf_core.h"
@@ -472,9 +473,49 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	return retval;
 }
 
-/* ---------------------------------------------------------------------------
- * initializes LEX and calls parser for a font
- */
+/* Verify if a font file looks like a pcb font. Returns 1 if accepted, 0
+   if not a font file */
+static int io_pcb_test_parse_font(const char *fn)
+{
+	FILE *f;
+	int n, res = 0, seek_open = 0;
+
+	f = rnd_fopen(NULL, fn, "r");
+	if (f == NULL)
+		return 0;
+
+	/* Needs a symbol header in the first 128 lines */
+	for(n = 0; n < 128; n++) {
+		char *s, line[1024];
+		s = fgets(line, sizeof(line), f);
+		if (s == NULL)
+			break;
+
+		if (!seek_open) {
+			/* line starts with Symbol (after whitespaces) */
+			while(isspace(*s)) s++;
+			if (strncmp(s, "Symbol", 6) != 0)
+				continue;
+			s += 6;
+		}
+		seek_open = 0;
+
+		while(isspace(*s)) s++;
+		if ((*s == '[') || (*s == '(')) {
+			res = 1;
+			break;
+		}
+		if (*s == '\0') {
+			/* end of line after Symbol, opening bracket may be in the next line */
+			seek_open = 1;
+		}
+	}
+
+	fclose(f);
+	return res;
+}
+
+/* Initializes LEX and calls parser for a font. Returns 0 on success. */
 int io_pcb_ParseFont(pcb_plug_io_t *ctx, rnd_font_t *Ptr, const char *Filename)
 {
 	int r = 0, valid;
@@ -485,6 +526,9 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, rnd_font_t *Ptr, const char *Filename)
 	yyFontkitValid = &valid;
 	yysubc = NULL;
 	yyFontReset = rnd_false;
+
+	if (!io_pcb_test_parse_font(Filename))
+		return -1;
 
 	yy_settings_dest = RND_CFR_invalid;
 	fcmd = conf_core.rc.font_command;
