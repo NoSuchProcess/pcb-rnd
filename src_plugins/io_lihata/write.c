@@ -794,6 +794,9 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 		if (rnd_istrue(av))
 			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_mirror_x", "lihata boards before version v7 did not support text mirror_x", "Either save in lihata v7+ or remove the mirror_x attribute");
 
+	if ((wrver < 9) && (PCB_FLAG_TEST(PCB_FLAG_ENTITY, (pcb_any_obj_t *)text)))
+		pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_entity", "lihata boards before version v9 did not support &entity; substitution", "Text objects containing &entity; will render those entities as-is, without translating them to a single glyph");
+
 	return obj;
 }
 
