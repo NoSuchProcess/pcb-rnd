@@ -94,7 +94,8 @@ typedef enum {
 	PCB_FLAG_DRC_INTCONN  = 0x100000,/* Set for objects are put on the DRC mark because of an intconn */
 	PCB_FLAG_CLEARPOLYPOLY= 0x200000,/* polygon clearning other polygons */
 	PCB_FLAG_DYNTEXT      = 0x400000,/* templated text */
-	PCB_FLAG_FLOATER      = 0x800000 /* object ignores subc lock */
+	PCB_FLAG_FLOATER      = 0x800000,/* object ignores subc lock */
+	PCB_FLAG_ENTITY       = 0x1000000/* text object substitutes &entity; (from lihata board v9) */
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG)*/
 } pcb_flag_values_t;
 

@@ -87,7 +87,8 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_TERMNAME),      N("termname"),      PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT | PCB_OBJ_PSTK | PCB_OBJ_SUBC, "when set the names of pins are shown.", 0, 0},
 	{FN(PCB_FLAG_CLEARPOLYPOLY), N("clearpolypoly"), PCB_OBJ_POLY, "For polygons, apply clearance to nearby polygons", 0, 0},
 	{FN(PCB_FLAG_DYNTEXT),       N("dyntext"),       PCB_OBJ_TEXT, "For text: dynamic string (substitute %patterns%)", 0, 0},
-	{FN(PCB_FLAG_FLOATER),       N("floater"),       PCB_OBJ_ANY, "subc part can be moved after subc placing", 0, 0}
+	{FN(PCB_FLAG_FLOATER),       N("floater"),       PCB_OBJ_ANY, "subc part can be moved after subc placing", 0, 0},
+	{FN(PCB_FLAG_ENTITY),        N("entity"),        PCB_OBJ_TEXT, "For text: substitute &entity; with glyph", 0, 0}
 };
 #undef N
 #undef FN
