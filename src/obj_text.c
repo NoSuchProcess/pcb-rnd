@@ -306,8 +306,12 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 #define text_mirror_bits(t) \
 	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (t)) ? PCB_TXT_MIRROR_Y : 0) | ((t)->mirror_x ? PCB_TXT_MIRROR_X : 0))
 
+#ifdef PCB_WANT_FONT2
 #define text_render_bits(t) \
 	(PCB_FLAG_TEST(PCB_FLAG_ENTITY, (t)) ? RND_FONT_ENTITY : 0)
+#else
+#define text_render_bits(t) 0
+#endif
 
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 {
