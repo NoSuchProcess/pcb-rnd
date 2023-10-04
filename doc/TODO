@@ -6,7 +6,6 @@
 - ANNOUNCE: subc-in-subc syntax proposal: refdes-refdes-term?
 - FEATURE: copy sch-rnd's RtreeList action in act_read [report: Majenko]
 - FEATURE: lihata board v9:
-	- document font v2 in the format doc
 	- new text flag for &entity; (similar to dyntext)
 		- document the new text flag
 	- ANNOUNCE: netlist dialog: add conn and del conn button
