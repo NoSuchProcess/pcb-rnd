@@ -51,11 +51,11 @@ void pcb_text_name_invalidate_draw(pcb_text_t *txt);
 void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text, rnd_bool vis_side);
 
 /* lowlevel drawing routine for text strings */
-void pcb_text_draw_string(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny);
+void pcb_text_draw_string(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_flag_values_t text_flags);
 
 /* Call cb(ctx, ...) for every object in a rendered string or text; obj will
    be disacrded after the call, can be modified by the callback */
 typedef void (*pcb_draw_text_cb)(void *ctx, pcb_any_obj_t *obj);
-void pcb_text_decompose_string(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, pcb_draw_text_cb cb, void *cb_ctx);
+void pcb_text_decompose_string(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, pcb_flag_values_t text_flags, pcb_draw_text_cb cb, void *cb_ctx);
 void pcb_text_decompose_text(pcb_draw_info_t *info, pcb_text_t *text, pcb_draw_text_cb cb, void *cb_ctx);
 

@@ -493,7 +493,7 @@ static void ttf_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_
 	for(y = 0; y < 16; y++) {
 		for(x = 0; x < 16; x++)
 			s[x] = v++;
-		pcb_text_draw_string_simple(NULL, s, RND_MM_TO_COORD(0), RND_MM_TO_COORD(y*2), 1.0, 1.0, 0.0, 0, 0, 0, 0, 0);
+		pcb_text_draw_string_simple(NULL, s, RND_MM_TO_COORD(0), RND_MM_TO_COORD(y*2), 1.0, 1.0, 0.0, 0, 0, 0, 0, 0, 0);
 	}
 }
 

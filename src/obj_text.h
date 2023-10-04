@@ -112,7 +112,7 @@ void pcb_text_flagchg_pre(pcb_text_t *Text, unsigned long flagbits, void **save)
 void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **save);
 
 /* Low level draw call for direct rendering on preview */
-void pcb_text_draw_string_simple(rnd_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy);
+void pcb_text_draw_string_simple(rnd_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_flag_values_t text_flags);
 
 /* Recalculate the bounding box of all dynamic text objects that are
    directly under data - useful e.g. on parent attr change */

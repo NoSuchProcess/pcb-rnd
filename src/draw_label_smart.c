@@ -161,7 +161,7 @@ RND_INLINE void pcb_label_smart_flush(pcb_draw_info_t *info)
 
 	for(l = smart_labels; l != NULL; l = next) {
 		next = l->next;
-		pcb_text_draw_string(info, font, (unsigned const char *)l->label, l->bbox.X1, l->bbox.Y1, l->scale, l->scale, l->rot, l->mirror, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+		pcb_text_draw_string(info, font, (unsigned const char *)l->label, l->bbox.X1, l->bbox.Y1, l->scale, l->scale, l->rot, l->mirror, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE, 0);
 		if ((l->bbox.X1 != l->x) || (l->bbox.Y1 != l->y)) {
 			rnd_coord_t dx = l->w/2, dy = l->h/2;
 			rnd_render->draw_line(pcb_draw_out.fgGC, l->bbox.X1+dx, l->bbox.Y1+dy, l->x+dx, l->y+dy);

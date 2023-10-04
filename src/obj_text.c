@@ -306,6 +306,9 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 #define text_mirror_bits(t) \
 	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (t)) ? PCB_TXT_MIRROR_Y : 0) | ((t)->mirror_x ? PCB_TXT_MIRROR_X : 0))
 
+#define text_render_bits(t) \
+	(PCB_FLAG_TEST(PCB_FLAG_ENTITY, (t)) ? RND_FONT_ENTITY : 0)
+
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 {
 	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X, src->Y, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
@@ -470,7 +473,7 @@ void pcb_text_bbox(rnd_font_t *FontPtr, pcb_text_t *Text)
 		min_line_width = MAX(conf_core.design.min_wid, conf_core.design.min_slk);
 
 		pcb_text_get_scale_xy(Text, &scx, &scy);
-		rnd_font_string_bbox_pcb_rnd(cx, cy, font, rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, Text->Scale);
+		rnd_font_string_bbox_pcb_rnd(cx, cy, font, rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text) | text_render_bits(Text), Text->thickness, min_line_width, Text->Scale);
 		pcb_text_free_str(Text, rendered);
 
 /*		rnd_trace("orig   %mm %mm   %mm %mm\n", Text->bbox_naked.X1, Text->bbox_naked.Y1, Text->bbox_naked.X2, Text->bbox_naked.Y2);*/
@@ -1283,7 +1286,7 @@ static void font_draw_atom_xor(void *cb_ctx, const rnd_glyph_atom_t *a)
 
 typedef void (*rnd_draw_text_cb)(void *ctx, const rnd_glyph_atom_t *atom);
 
-RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
+RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_flag_values_t text_flags, pcb_draw_text_cb cb, void *cb_ctx)
 {
 	font_draw_atom_user_cb_t ucb;
 	int poly_thin = info->xform->thin_draw || info->xform->wireframe;
@@ -1310,6 +1313,8 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, rnd_font_t *font
 #ifdef PCB_WANT_FONT2
 	if (poly_thin)
 		mirror |= RND_FONT_THIN_POLY;
+	if (text_flags & PCB_FLAG_ENTITY)
+		mirror |= RND_FONT_ENTITY;
 	rnd_font_draw_string(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, tiny, rcb, cb_ctx);
 #else
 	rnd_font_draw_string(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, rcb, cb_ctx);
@@ -1317,18 +1322,18 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, rnd_font_t *font
 }
 
 
-RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
+RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_flag_values_t text_flags, pcb_draw_text_cb cb, void *cb_ctx)
 {
-	pcb_text_draw_string_rnd(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, cb, cb_ctx);
+	pcb_text_draw_string_rnd(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, text_flags, cb, cb_ctx);
 }
 
 
-void pcb_text_draw_string(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny)
+void pcb_text_draw_string(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_flag_values_t text_flags)
 {
-	pcb_text_draw_string_(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, NULL, NULL);
+	pcb_text_draw_string_(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, text_flags, NULL, NULL);
 }
 
-void pcb_text_draw_string_simple(rnd_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy)
+void pcb_text_draw_string_simple(rnd_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_flag_values_t text_flags)
 {
 	static rnd_xform_t xform = {0};
 	static pcb_draw_info_t info = {0};
@@ -1337,13 +1342,13 @@ void pcb_text_draw_string_simple(rnd_font_t *font, const char *string, rnd_coord
 	if (font == NULL)
 		font = pcb_font(PCB, 0, 0);
 
-	pcb_text_draw_string_(&info, font, (const unsigned char *)string, x0, y0, scx, scy, rotdeg, mirror, thickness, 0, xordraw, xordx, xordy, PCB_TXT_TINY_CHEAP, NULL, NULL);
+	pcb_text_draw_string_(&info, font, (const unsigned char *)string, x0, y0, scx, scy, rotdeg, mirror, thickness, 0, xordraw, xordx, xordy, PCB_TXT_TINY_CHEAP, text_flags, NULL, NULL);
 }
 
 
-void pcb_text_decompose_string(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, pcb_draw_text_cb cb, void *cb_ctx)
+void pcb_text_decompose_string(pcb_draw_info_t *info, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, pcb_flag_values_t text_flags, pcb_draw_text_cb cb, void *cb_ctx)
 {
-	pcb_text_draw_string_(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, 0, 0, 0, 0, PCB_TXT_TINY_ACCURATE, cb, cb_ctx);
+	pcb_text_draw_string_(info, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, 0, 0, 0, 0, PCB_TXT_TINY_ACCURATE, text_flags, cb, cb_ctx);
 }
 
 void pcb_text_decompose_text(pcb_draw_info_t *info, pcb_text_t *text, pcb_draw_text_cb cb, void *cb_ctx)
@@ -1351,7 +1356,7 @@ void pcb_text_decompose_text(pcb_draw_info_t *info, pcb_text_t *text, pcb_draw_t
 	unsigned char *rendered = pcb_text_render_str(text);
 	double scx, scy;
 	pcb_text_get_scale_xy(text, &scx, &scy);
-	pcb_text_decompose_string(info, pcb_font(PCB, text->fid, 1), rendered, text->X, text->Y, scx, scy, text->rot, text_mirror_bits(text), text->thickness, cb, cb_ctx);
+	pcb_text_decompose_string(info, pcb_font(PCB, text->fid, 1), rendered, text->X, text->Y, scx, scy, text->rot, text_mirror_bits(text), text->thickness, text->Flags.f, cb, cb_ctx);
 	pcb_text_free_str(text, rendered);
 }
 
@@ -1362,7 +1367,7 @@ static void DrawTextLowLevel_(pcb_draw_info_t *info, pcb_text_t *Text, rnd_coord
 	unsigned char *rendered = pcb_text_render_str(Text);
 	double scx, scy;
 	pcb_text_get_scale_xy(Text, &scx, &scy);
-	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny, NULL, NULL);
+	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny, Text->Flags.f, NULL, NULL);
 	pcb_text_free_str(Text, rendered);
 }
 
