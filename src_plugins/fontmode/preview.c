@@ -344,6 +344,8 @@ RND_INLINE void edit2_ent(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
 	else /* adding a new entry */
 		htsi_insert(&fontedit_src->entity_tbl, ed2.name, ed2.val);
 
+	fontedit_src->entity_tbl_valid = 1;
+
 	fmprv_pcb2preview(ctx);
 }
 
@@ -429,6 +431,8 @@ RND_INLINE void edit2_kern(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
 		e->value = ed2.val;
 	else /* adding a new entry */
 		htkc_insert(&fontedit_src->kerning_tbl, key, ed2.val);
+
+	fontedit_src->kerning_tbl_valid = 1;
 
 	free(ed2.name);
 	fmprv_pcb2preview(ctx);
