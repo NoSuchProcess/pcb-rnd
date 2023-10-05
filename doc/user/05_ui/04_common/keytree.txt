@@ -48,7 +48,11 @@
 \	menu-default.lht	fullscreen(toggle) 	Full screen
 ]	menu-default.lht	Grid(up) 	Next grid
 a;a	menu-default.lht	Tool(Save);Tool(arc);Tool(Press)	Start routing an arc
-a;b;f;	menu-default.lht	ReplaceFootprint() 	Replace footprint
+a;b;a-shift;	menu-default.lht	BaSubc(selected, add)	Add subcircuits to netlist
+a;b;a;	menu-default.lht	BaSubc(object, add)	Add subcircuit to netlist
+a;b;f;	menu-default.lht	ReplaceFootprint()	Replace selected footprints
+a;b;r-shift;	menu-default.lht	BaSubc(selected, remove)	Remove subcircuits from netlist
+a;b;r;	menu-default.lht	BaSubc(object, remove)	Remove subcircuit from netlist
 a;b;s;	menu-default.lht	net(swap) 	Swap nets on two selected pins
 a;b;x	menu-default.lht	SavePatch() 	netlist patch for back annotation
 a;d;a;	menu-default.lht	DisperseElements(All) 	Disperse all subcircuits
