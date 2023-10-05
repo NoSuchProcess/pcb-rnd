@@ -565,6 +565,7 @@ static void pcb_dlg_fontmode_preview(void)
 				RND_DAD_LABEL(fmprv_ctx.dlg, "Not supported in font v1");
 #else
 				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, ent_hdr);
+					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					fmprv_ctx.wentt = RND_DAD_CURRENT(fmprv_ctx.dlg);
 
 				RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
@@ -582,6 +583,7 @@ static void pcb_dlg_fontmode_preview(void)
 				RND_DAD_LABEL(fmprv_ctx.dlg, "Not supported in font v1");
 #else
 				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, kern_hdr);
+					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					fmprv_ctx.wkernt = RND_DAD_CURRENT(fmprv_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
 					RND_DAD_BUTTON(fmprv_ctx.dlg, "Add");
