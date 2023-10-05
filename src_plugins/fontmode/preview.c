@@ -327,7 +327,7 @@ RND_INLINE void edit2_ent(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
 {
 	htsi_entry_t *e;
 
-	if (edit2(&ed2) != 0)
+	if ((edit2(&ed2) != 0) || (ed2.name == NULL) || (*ed2.name == '\0'))
 		return;
 
 	/* renamed: remove old entry */
