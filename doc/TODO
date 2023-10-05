@@ -25,7 +25,8 @@
 - BUG: double click on poly removes poly enforce clearance: bug_files/TODO/poly_enf_clr.rp [report: aron]
 - BUG: bug_files/TODO/out-extract*.rf, on which is not autocropped, triggers assert with scrolling, but the autocropped version does not. Polygon vertex coords are well under size limit for 32 bit coords in both cases. out-minimal.rf is a more minimal polygon version of the subc which triggers assert in footprint edit mode with {ze} and scroll bar use. [Report: Erich]
 - BUG: when fontv2 is enable, in fontedit() mode, autosave triggers an error about pre v9 losing kerning info [Report: Erich]
-- BUG: when in fontedit mode, fontsave() GUI looks like it will append ".font" to saved filename, but does not. [report: Erich]
+? BUG: when in fontedit mode, fontsave() GUI looks like it will append ".font" to saved filename, but does not. [report: Erich]
+	-> I don't think anything suggests that it's going to modify your file name
 - BUG: when in preview GUI window for fontv2, selecting a kerning pair, with an associated value, i.e. -2.0mil, when clicking edit, value comes up as "-0.000079 mil" instead of -2mil, but font saves to file with -2.0mil value. [report: Erich]
 - BUG: when in preview GUI window for fontv2, a large number of kerning pairs grow dialogue enough to extend below bottom of screen. Scrollable list may be better. [report: Erich]
 - BUG: start pcb-rnd, use font window to load aussiefont-sans-regular-v3, make it the active font, :fontedit(), open font preview window, add a value pair, i.e. "h-j", any dimension, 0mil, or -2mil, then hit "OK", segfault ensues [report: Erich]
