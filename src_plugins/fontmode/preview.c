@@ -410,7 +410,7 @@ RND_INLINE void edit2_kern(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
 	htkc_key_t key;
 	char *sep;
 
-	if (edit2(&ed2) != 0)
+	if ((edit2(&ed2) != 0) || (ed2.name == NULL) || (*ed2.name == '\0'))
 		return;
 
 	sep = strchr(ed2.name+1, '-'); /* +1 so if '-' is the left char it is preserved */
