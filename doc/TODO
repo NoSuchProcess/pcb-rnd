@@ -28,7 +28,7 @@
 ? BUG: when in fontedit mode, fontsave() GUI looks like it will append ".font" to saved filename, but does not. [report: Erich]
 	-> I don't think anything suggests that it's going to modify your file name
 - BUG: when in preview GUI window for fontv2, selecting a kerning pair, with an associated value, i.e. -2.0mil, when clicking edit, value comes up as "-0.000079 mil" instead of -2mil, but font saves to file with -2.0mil value. [report: Erich]
-- BUG: when in preview GUI window for fontv2, a large number of kerning pairs grow dialogue enough to extend below bottom of screen. Scrollable list may be better. [report: Erich]
++ BUG: when in preview GUI window for fontv2, a large number of kerning pairs grow dialogue enough to extend below bottom of screen. Scrollable list may be better. [report: Erich]
 - BUG: start pcb-rnd, use font window to load aussiefont-sans-regular-v3, make it the active font, :fontedit(), open font preview window, add a value pair, i.e. "h-j", any dimension, 0mil, or -2mil, then hit "OK", segfault ensues [report: Erich]
 
 2. For later releases ===============================================================================
