@@ -453,6 +453,7 @@ static void kern_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wkernt];
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 	edit2_t ed2;
+	rnd_bool succ;
 
 	if (r == NULL) {
 		rnd_message(RND_MSG_ERROR, "Select a row first\n");
@@ -461,7 +462,9 @@ static void kern_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 
 	ed2.name = rnd_strdup(r->cell[0]);
-	ed2.val = strtol(r->cell[1], NULL, 10);
+	ed2.val = rnd_get_value(r->cell[1], NULL, NULL, &succ);
+	if (!succ)
+		rnd_message(RND_MSG_ERROR, "invalid coord value '%s' (is the proper unit appended?)\n", r->cell[1]);
 	ed2.is_crd = 1;
 
 	edit2_kern(ctx, ed2, r->cell[0]);
