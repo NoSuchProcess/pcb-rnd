@@ -2888,7 +2888,7 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, rnd_font_t *Ptr, const char *Filena
 		return -1;
 	}
 
-	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-font-v1"))) {
+	if ((doc->root->type != LHT_LIST) || (strncmp(doc->root->name, "pcb-rnd-font-v", 14))) {
 		if (!pcb_io_err_inhibit)
 			rnd_message(RND_MSG_ERROR, "Not a font lihata.\n");
 		res = -1;
