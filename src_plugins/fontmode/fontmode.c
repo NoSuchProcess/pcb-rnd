@@ -176,7 +176,7 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 			}
 		}
 
-		w = maxx + g->xdelta + ox;
+		w = g->width + g->xdelta + ox;
 		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 }
