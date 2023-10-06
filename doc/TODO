@@ -28,7 +28,6 @@
 	-> this is not really a bug; autosave will be bumped to use v9 when v9 becomes official; the whole font2 mode is a temporary hack, we'll have to live with this error message until we release librnd 4.1.0
 ? BUG: when in fontedit mode, fontsave() GUI looks like it will append ".font" to saved filename, but does not. [report: Erich]
 	-> I don't think anything suggests that it's going to modify your file name
-+ BUG: when in preview GUI window for fontv2, selecting a kerning pair, with an associated value, i.e. -2.0mil, when clicking edit, value comes up as "-0.000079 mil" instead of -2mil, but font saves to file with -2.0mil value. [report: Erich]
 + BUG: when in preview GUI window for fontv2, a large number of kerning pairs grow dialogue enough to extend below bottom of screen. Scrollable list may be better. [report: Erich]
 
 2. For later releases ===============================================================================
