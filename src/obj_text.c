@@ -1073,8 +1073,15 @@ void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **s
 	pcb_data_t *data = Text->parent.layer->parent.data;
 	pcb_layer_t *orig_layer = *save;
 	unsigned long newflagbits = Text->Flags.f;
+	int rebbox = 0;
 
 	if ((oldflagbits & PCB_FLAG_DYNTEXT) || (newflagbits & PCB_FLAG_DYNTEXT) || (orig_layer != NULL))
+		rebbox = 1;
+
+	if ((oldflagbits & PCB_FLAG_ENTITY) != (newflagbits & PCB_FLAG_ENTITY))
+		rebbox = 1;
+
+	if (rebbox)
 		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
 
 	if (orig_layer != NULL)
