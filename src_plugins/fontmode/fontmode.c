@@ -639,11 +639,12 @@ static void font_set_xdelta(pcb_board_t *pcb, rnd_coord_t xd)
 	arclist_foreach(&lfont->Arc, &it, a) {
 		int cx = (a->BoundingBox.X1 + a->BoundingBox.X2)/2;
 		int cy = (a->BoundingBox.Y1 + a->BoundingBox.Y2)/2;
+		rnd_box_t bbx = pcb_arc_bbox_cline(a);
 
 		s = XYtoSym(cx, cy);
 		ox = (s % 16 + 1) * CELL_SIZE;
 
-		gw[s] = RND_MAX(gw[s], rnd_round(a->bbox_naked.X2 - ox - a->Thickness/2));
+		gw[s] = RND_MAX(gw[s], rnd_round(bbx.X2 - ox));
 	}
 
 	/* pick up polygons */
