@@ -30,6 +30,7 @@ ha:lht_tree_doc { ha:roots {
 									ha:height { valtype=coord; desc={height of the glyph}}
 									ha:width { valtype=coord; desc={width of the glyph}}
 									ha:delta { valtype=coord; desc={extra space always inserted after the current symbol, before the next character}}
+									ha:advance { valtype=coord; desc={x direction advance; if not specified, calculated as width+delta; because of rounding errors and historical reasons, advance is more stable than delta}}
 									ha:objects {
 										type=li
 										desc={objects that make up the symbol; IDs are per symbol local IDs counted from 0}
