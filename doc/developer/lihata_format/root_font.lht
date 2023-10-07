@@ -81,7 +81,7 @@ ha:lht_tree_doc { ha:roots {
 						type=ha
 						desc={kerning table: tune horizontal distance of character pairs}
 						li:children {
-							ha:CHAR1-CHAR2 { valtype=coord;   desc={if CHAR1 is followed by CHAR2 while rendering a string, move CHAR2 horizontally by the value; negative means CHAR2 is moved toward CHAR1}}
+							ha:CHAR1-CHAR2 { valtype=coord;   desc={if CHAR1 is followed by CHAR2 while rendering a string, move CHAR2 horizontally by the value; negative means CHAR2 is moved toward CHAR1; non-printable chars are represented by their &hh hex values (like in symbol names)}}
 						}
 					}
 				}

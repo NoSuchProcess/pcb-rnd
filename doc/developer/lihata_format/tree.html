@@ -174,7 +174,7 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v*/children/FONT-ID/children/entities"><td> &nbsp;&nbsp;ha:entities <td> &nbsp; <td> >=2 <td> table for translating named &entity; characters to character indices
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v*/children/FONT-ID/children/entities/children/ENTITYNAME"><td> &nbsp;&nbsp;&nbsp;ENTITYNAME <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> translate &ENTITYNAME; to the charatcter addressed by the integer value (should be between 1 and 254)
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v*/children/FONT-ID/children/kerning"><td> &nbsp;&nbsp;ha:kerning <td> &nbsp; <td> >=2 <td> kerning table: tune horizontal distance of character pairs
-<tr id="/lht_tree_doc/roots/pcb-rnd-font-v*/children/FONT-ID/children/kerning/children/CHAR1-CHAR2"><td> &nbsp;&nbsp;&nbsp;CHAR1-CHAR2 <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> if CHAR1 is followed by CHAR2 while rendering a string, move CHAR2 horizontally by the value; negative means CHAR2 is moved toward CHAR1
+<tr id="/lht_tree_doc/roots/pcb-rnd-font-v*/children/FONT-ID/children/kerning/children/CHAR1-CHAR2"><td> &nbsp;&nbsp;&nbsp;CHAR1-CHAR2 <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> if CHAR1 is followed by CHAR2 while rendering a string, move CHAR2 horizontally by the value; negative means CHAR2 is moved toward CHAR1; non-printable chars are represented by their &hh hex values (like in symbol names)
 </table>
 <h3 id="/lht_tree_doc/roots/pcb-rnd-log-v*">ha:pcb-rnd-log-v*</h3>
 <p>
