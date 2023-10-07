@@ -147,6 +147,7 @@ li:pcb-rnd-font-v*                font description
     height            coord       height of the glyph
     width             coord       width of the glyph
     delta             coord       extra space always inserted after the current symbol, before the next character
+    advance           coord       x direction advance; if not specified, calculated as width+delta; because of rounding errors and historical reasons, advance is more stable than delta
     li:objects                    objects that make up the symbol; IDs are per symbol local IDs counted from 0
      ha:line.ID                   round cap line, simplified
       x1              coord       line first endpoint, horizontal offset
@@ -524,6 +525,7 @@ ha:data                              Layers and global objects of the board
       termname          flag         when set the names of pins are shown.
       dyntext           flag         For text: dynamic string (substitute %patterns%)
       floater           flag         subc part can be moved after subc placing
+      entity            flag         For text: substitute &entity; with glyph
  li:padstack_prototypes          >=4
   unused                none         placeholder for marking unused slot to keep slot indices for early lihata v4
   ha:ps_proto_v4.PID                 padstack prototype specification, as introduced in lihata board v4

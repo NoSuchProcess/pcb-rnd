@@ -69,6 +69,7 @@ ha:lht_tree_doc { ha:comm {
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:dyntext { valtype=flag; desc={For text: dynamic string (substitute %patterns%)}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+			ha:entity { valtype=flag; desc={For text: substitute &entity; with glyph}}
 		}
 	}
 	ha:flags_subcircuit {
