@@ -1439,6 +1439,15 @@ static lht_node_t *build_glyph(rnd_glyph_t *g, const char *name)
 	lht_dom_hash_put(ndt, build_textf("height", CFMT, g->height));
 	lht_dom_hash_put(ndt, build_textf("delta", CFMT, g->xdelta));
 
+#ifdef PCB_WANT_FONT2
+	if (g->advance_valid) {
+		if (wrver >= 9)
+			lht_dom_hash_put(ndt, build_textf("advance", CFMT, g->advance));
+		else
+			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font glyph advance", "glyph width and delta are saved; there may be slight variations in glyph spacing (this error should be in the range of nanometers)");
+	}
+#endif
+
 	lst = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(ndt, lst);
 	for(n = 0, a = g->atoms.array; n < g->atoms.used; n++,a++) {
