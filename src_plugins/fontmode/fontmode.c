@@ -176,7 +176,14 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 			}
 		}
 
-		w = g->width + g->xdelta + ox;
+#ifdef PCB_WANT_FONT2
+		if ((s == 'i') || (s == 'q'))
+			rnd_trace("delta1: %c w=%ld + %ld + %ld=%ld | adv: %d %ld + %ld = %ld\n", s, g->width, g->xdelta, ox, g->width + g->xdelta + ox, g->advance_valid, g->advance, ox, g->advance + ox);
+		if (g->advance_valid)
+			w = g->advance + ox;
+		else
+#endif
+			w = g->width + g->xdelta + ox;
 		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 }
@@ -279,6 +286,14 @@ void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *orig_font
 		ox = (s % 16 + 1) * CELL_SIZE;
 		g = &font->glyph[s];
 
+#ifdef PCB_WANT_FONT2
+		g->advance = x1 - ox;
+		g->advance_valid = 1;
+		if (g->advance > 10)
+			g->valid = 1;
+		if ((s == 'i') || (s == 'q'))
+			rnd_trace("delta2: %c w=%ld - %ld - %ld=%ld | adv: %ld - %ld = %ld\n", s, x1, ox, g->width, x1-ox-g->width, x1, ox, x1-ox);
+#endif
 		x1 -= ox;
 
 		g->xdelta = x1 - g->width;
