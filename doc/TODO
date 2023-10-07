@@ -26,7 +26,8 @@
 - BUG: bug_files/TODO/out-extract*.rf, on which is not autocropped, triggers assert with scrolling, but the autocropped version does not. Polygon vertex coords are well under size limit for 32 bit coords in both cases. out-minimal.rf is a more minimal polygon version of the subc which triggers assert in footprint edit mode with {ze} and scroll bar use. [Report: Erich]
 / BUG: when fontv2 is enable, in fontedit() mode, autosave triggers an error about pre v9 losing kerning info [Report: Erich]
 	-> this is not really a bug; autosave will be bumped to use v9 when v9 becomes official; the whole font2 mode is a temporary hack, we'll have to live with this error message until we release librnd 4.1.0
-- BUG: fontsave() glyph ordering is not well ordered. It varies from save to save, adding noise to diffs. [report: Erich]
+? BUG: fontsave() glyph ordering is not well ordered. It varies from save to save, adding noise to diffs. [report: Erich]
+	-> can't break it with a dry load-save; ordering may change if you add or remove glyphs
 
 2. For later releases ===============================================================================
 - librnd4.1:
