@@ -583,6 +583,8 @@ static void pcb_dlg_fontmode_preview(void)
 					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
 						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, ent_edit_cb);
 				RND_DAD_END(fmprv_ctx.dlg);
+
+				RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: case sensitive entity name without the &; wrapping)");
 #endif
 			RND_DAD_END(fmprv_ctx.dlg);
 
@@ -600,6 +602,8 @@ static void pcb_dlg_fontmode_preview(void)
 					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
 						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_edit_cb);
 				RND_DAD_END(fmprv_ctx.dlg);
+
+				RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph index form)");
 #endif
 			RND_DAD_END(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
