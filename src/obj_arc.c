@@ -102,13 +102,12 @@ pcb_arc_t *pcb_arc_alloc(pcb_layer_t *layer)
 	return pcb_arc_alloc_id(layer, pcb_create_ID_get());
 }
 
-/* computes the bounding box of an arc */
-static rnd_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
+/* computes the centerline bounding box of an arc */
+rnd_box_t pcb_arc_bbox_cline(const pcb_arc_t *Arc)
 {
 	double ca1, ca2, sa1, sa2;
 	double minx, maxx, miny, maxy, delta;
 	rnd_angle_t ang1, ang2;
-	rnd_coord_t width;
 	rnd_box_t res;
 
 	/* first normalize angles: ang1 < ang2, both angles between 0 and 720 */
@@ -154,6 +153,17 @@ static rnd_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 	res.X2 = Arc->X - Arc->Width * minx;
 	res.Y1 = Arc->Y + Arc->Height * miny;
 	res.Y2 = Arc->Y + Arc->Height * maxy;
+
+	return res;
+}
+
+/* computes the bounding box of an arc */
+static rnd_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
+{
+	rnd_box_t res;
+	rnd_coord_t width;
+
+	res = pcb_arc_bbox_cline(Arc);
 
 	if (!mini) {
 		width = (Arc->Thickness + Arc->Clearance) / 2;
