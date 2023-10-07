@@ -3,7 +3,6 @@
 + BUG: footprint edit mode: convert selected to padstack fails with the wrong error message [report: bdale]
 
 1. For the upcoming release ===============================================================================
-- ANNOUNCE: subc-in-subc syntax proposal: refdes-refdes-term?
 - FEATURE: lihata board v9:
 	- BUG: changing flags using the flag dialog should recompute bbox: text entity flag change
 	- ANNOUNCE: netlist dialog: add conn and del conn button
@@ -29,6 +28,8 @@
 	-> can't break it with a dry load-save; ordering may change if you add or remove glyphs
 
 2. For later releases ===============================================================================
+- FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
+	- search for '-' and centralize parsing refdes-term id 
 - librnd4.1:
 	- remove PCB_WANT_FONT2, it's the default
 	- remove --enable-font2 and want_font2 from scconfig and config.h, it's the default
