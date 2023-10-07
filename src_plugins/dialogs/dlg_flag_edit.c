@@ -141,6 +141,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						if (PCB_FLAG_TEST(ctx.flag_bit[ctx.len], ctx.obj))
 							RND_DAD_DEFAULT_NUM(dlg, 1);
 						RND_DAD_LABEL(dlg, pcb_object_flagbits[n].name);
+							RND_DAD_HELP(dlg, pcb_object_flagbits[n].help);
 						ctx.len++;
 					RND_DAD_END(dlg);
 				}
