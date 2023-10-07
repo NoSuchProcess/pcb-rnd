@@ -4,7 +4,6 @@
 
 1. For the upcoming release ===============================================================================
 - ANNOUNCE: subc-in-subc syntax proposal: refdes-refdes-term?
-- FEATURE: copy sch-rnd's RtreeList action in act_read [report: Majenko]
 - FEATURE: lihata board v9:
 	- BUG: changing flags using the flag dialog should recompute bbox: text entity flag change
 	- ANNOUNCE: netlist dialog: add conn and del conn button
@@ -72,6 +71,7 @@
 
 3. Long term ===============================================================================
 - multi: merge sch-rnd r4718 for proper multiboard support later
+- FEATURE: copy sch-rnd's RtreeList action in act_read
 - CLEANUP: footprint lib rework
 	- BUG: bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout: 90 degree error [report: Erich]
 		-> wrong subx-aux x and y lines (names mixed up)
