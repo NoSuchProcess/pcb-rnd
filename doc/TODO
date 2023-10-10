@@ -5,7 +5,6 @@
 1. For the upcoming release ===============================================================================
 - FEATURE: lihata board v9:
 	- ANNOUNCE: netlist dialog: add conn and del conn button
-	- ANNOUNCE: netlist patch dialog box
 	- ANNOUNCE: back annotation upgrade: subc add and remove
 - BUG: bug_files/TODO/pro_assert.rp: export to projector from GUI with defaults -> assert [report: Igor2]
 - BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
