@@ -238,7 +238,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 
 	/* collect cutouts **/
 	{
-		pcb_topoly_cutout_opts_t opts;
+		pcb_topoly_cutout_opts_t opts = {0};
 
 		opts.pstk_omit_slot_poly = !options[HA_slotpoly].lng;
 		opts.pstk_min_drill_dia = options[HA_mindrill].crd;
