@@ -95,6 +95,7 @@
 		-> simpler reprodtion: just grow the coper shape by 10 mil
 		-> fix: in rnd_polo_offs() remove all redudnant vertices and subsequent vertices with the same norm in a loop before the main loop
 		-> this in turn needs rnd_polo_offs() to modify num_pts, which should be a pointer maybe
+	- at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: openems mesher: do not ignore padstack copper [report: Evan]
