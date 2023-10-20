@@ -20,10 +20,8 @@
 	-> example: have two terminals both called '1' with different thermals; replace footprint with another that also has two terminals called '1' but at different locations; suppose we somehow remember both thermals for the original '1's, but how do decide which one to assing to which new terminal?
 + BUG: load bug_files/TODO/rat-vertex.rp, select silk layer, and then select add point to polygon tool, click on visible rat, and see it turn into a silk line [report: Erich]
 	-> btw, that's not "add point to polygon"; it's an insert point in anything (lines, arcs, etc), the only exception should be rat line
-- BUG: thermal tool allows invalid polygon assert. might be a non bug. load bug_files/TODO/thermal-assert.rp and use thermal tool and shift click to start cycling through thermal types on padstack. Assert eventually occurs. [report: Erich]
 - BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
 - BUG: double click on poly removes poly enforce clearance: bug_files/TODO/poly_enf_clr.rp [report: aron]
-- BUG: bug_files/TODO/out-extract*.rf, on which is not autocropped, triggers assert with scrolling, but the autocropped version does not. Polygon vertex coords are well under size limit for 32 bit coords in both cases. out-minimal.rf is a more minimal polygon version of the subc which triggers assert in footprint edit mode with {ze} and scroll bar use. [Report: Erich]
 / BUG: when fontv2 is enable, in fontedit() mode, autosave triggers an error about pre v9 losing kerning info [Report: Erich]
 	-> this is not really a bug; autosave will be bumped to use v9 when v9 becomes official; the whole font2 mode is a temporary hack, we'll have to live with this error message until we release librnd 4.1.0
 ? BUG: fontsave() glyph ordering is not well ordered. It varies from save to save, adding noise to diffs. [report: Erich]
@@ -87,6 +85,8 @@
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter bwloe 0805, where the vectors are larger than the fp [report: aron]
 - poly lib rewrite:
+	- BUG: bug_files/TODO/out-extract*.rf, on which is not autocropped, triggers assert with scrolling, but the autocropped version does not. Polygon vertex coords are well under size limit for 32 bit coords in both cases. out-minimal.rf is a more minimal polygon version of the subc which triggers assert in footprint edit mode with {ze} and scroll bar use. [Report: Erich]
+	- BUG: thermal tool allows invalid polygon assert. might be a non bug. load bug_files/TODO/thermal-assert.rp and use thermal tool and shift click to start cycling through thermal types on padstack. Assert eventually occurs. [report: Erich]
 	- BUG: bug_files/Poly_rewrite/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 	- BUG: bug_files/Poly_rewrite/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
 	- BUG: bug_files/Poly_rewrite/intersect.* (thin hair gerber bug) [report: cuvoodoo]
