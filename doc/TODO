@@ -7,10 +7,6 @@
 	- ANNOUNCE: netlist dialog: add conn and del conn button
 	- ANNOUNCE: back annotation upgrade: subc add and remove
 + BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
-- BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
-	-> happens only if the export dialog is left open for the whole time
-	-> happens because the dialog remembers the old hidlib (design) ptr
-	-> maybe export dialog should be closed on design change?
 - FEATURE: attribute propagation from sch-rnd via tEDAx
 	- device attribute in subcricuits
 	- make a new bom template that includes that
@@ -70,6 +66,12 @@
 - rubber stretch routing:
 	- IGNORE: BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 	- remove auto_via from the conf and code
+- librnd 4.2.x
+	- BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
+		-> happens only if the export dialog is left open for the whole time
+		-> happens because the dialog remembers the old hidlib (design) ptr via hid_ctx within the HID
+		-> maybe export dialog should be closed on design change?
+		-> need to move CSCH_EVENT_SHEET_PREUNLOAD (or post unload? or just a new event?) to librnd to inform the GUI implemented in librnd
 
 3. Long term ===============================================================================
 - multi: merge sch-rnd r4718 for proper multiboard support later
