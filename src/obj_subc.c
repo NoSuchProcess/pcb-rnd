@@ -63,8 +63,6 @@
 #include <librnd/hid/hid_inlines.h>
 #include "extobj.h"
 
-#define SUBC_AUX_NAME "subc-aux"
-
 static const char core_subc_cookie[] = "core-subc";
 
 void pcb_subc_reg(pcb_data_t *data, pcb_subc_t *subc)

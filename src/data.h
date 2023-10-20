@@ -130,10 +130,11 @@ void pcb_data_free(pcb_data_t *data);
 
 rnd_bool pcb_data_is_empty(pcb_data_t *);
 
-/* gets minimum and maximum coordinates
- * returns NULL if layout is empty */
-rnd_box_t *pcb_data_bbox(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters);
-rnd_box_t *pcb_data_bbox_naked(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters);
+/* Gets minimum and maximum coordinates; returns NULL if data is empty;
+   If ignore_floaters_and_aux is true, floaters and aux layer objects
+   (unity vectors) are not considered for the bbox. */
+rnd_box_t *pcb_data_bbox(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters_and_aux);
+rnd_box_t *pcb_data_bbox_naked(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters_and_aux);
 
 /* Make sure all layers of data has their .parent field pointing to the data */
 void pcb_data_set_layer_parents(pcb_data_t *data);
@@ -252,5 +253,7 @@ char *pcb_data_name_by_addr(int addr, char *buf);
    buf with dynamic data and returns buf. Buf needs to be at least 16
    bytes long. Returns NULL if data is not the pcb or a buffer. */
 const char *pcb_data_to_name(pcb_board_t *pcb, pcb_data_t *data, char *buf, int buf_len);
+
+#define SUBC_AUX_NAME "subc-aux"
 
 #endif

@@ -240,9 +240,23 @@ rnd_bool pcb_data_is_empty(pcb_data_t *Data)
 
 rnd_box_t *pcb_data_bbox(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
 {
+	pcb_layer_t *aux = NULL;
+
 	/* preset identifiers with highest and lowest possible values */
 	out->X1 = out->Y1 = RND_MAX_COORD;
 	out->X2 = out->Y2 = -RND_MAX_COORD;
+
+	if (ignore_floaters) {
+		long n;
+
+		for(n = 0; n < Data->LayerN; n++) {
+			if (strcmp(Data->Layer[n].name, SUBC_AUX_NAME) == 0) {
+				aux = Data->Layer + n;
+				break;
+			}
+		}
+	}
+
 
 	/* now scan for the lowest/highest X and Y coordinate */
 	PCB_PADSTACK_LOOP(Data);
@@ -262,6 +276,7 @@ rnd_box_t *pcb_data_bbox(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_float
 	PCB_LINE_ALL_LOOP(Data);
 	{
 		pcb_line_bbox(line);
+		if (ignore_floaters && (aux != NULL) && (line->parent.layer == aux)) continue; /* ignore aux layer objects */
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, line))
 			rnd_box_bump_box(out, &line->BoundingBox);
 	}
