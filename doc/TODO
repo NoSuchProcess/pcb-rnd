@@ -20,7 +20,8 @@
 	-> example: have two terminals both called '1' with different thermals; replace footprint with another that also has two terminals called '1' but at different locations; suppose we somehow remember both thermals for the original '1's, but how do decide which one to assing to which new terminal?
 + BUG: load bug_files/TODO/rat-vertex.rp, select silk layer, and then select add point to polygon tool, click on visible rat, and see it turn into a silk line [report: Erich]
 	-> btw, that's not "add point to polygon"; it's an insert point in anything (lines, arcs, etc), the only exception should be rat line
-- BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
+/ BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
+	-> not a bug but a special casing: the line object has clearance=0 which overrides the clearance and makes a connection (for historical reasons); change it to 1mil and see the polygon forced clearance value overrides it
 - BUG: double click on poly removes poly enforce clearance: bug_files/TODO/poly_enf_clr.rp [report: aron]
 / BUG: when fontv2 is enable, in fontedit() mode, autosave triggers an error about pre v9 losing kerning info [Report: Erich]
 	-> this is not really a bug; autosave will be bumped to use v9 when v9 becomes official; the whole font2 mode is a temporary hack, we'll have to live with this error message until we release librnd 4.1.0
