@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2020,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -641,6 +641,7 @@ pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, rnd_coord_t dx, rnd
 	}
 	pcb_poly_bbox(Dest);
 	Dest->Flags = Src->Flags;
+	Dest->enforce_clearance = Src->enforce_clearance;
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, Dest);
 	return Dest;
 }
