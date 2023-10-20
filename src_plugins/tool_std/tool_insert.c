@@ -75,8 +75,13 @@ void pcb_tool_insert_notify_mode(rnd_design_t *hl)
 
 		if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
 			pcb_any_obj_t *obj = (pcb_any_obj_t *)pcb_crosshair.AttachedObject.Ptr2;
-			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
+			if (obj->type == PCB_OBJ_RAT) {
+				rnd_message(RND_MSG_WARNING, "Can not insert in a rat line\n");
+				goto cancel;
+			}
+			else if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
 				rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+				cancel:;
 				pcb_crosshair_attached_clean(hl);
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 				pcb_crosshair.extobj_edit = NULL;
