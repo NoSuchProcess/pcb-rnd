@@ -206,7 +206,7 @@ pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, const pcb_subc_t *src);
 pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids, rnd_bool undoable);
 
 /* Replace dst with a copy of src in place (preserving location and orientation
-   and attributes. If add_undo is true, add the old subc del and the new subc
+   and attributes). If add_undo is true, add the old subc del and the new subc
    creation to the undo list. If dub is true, do not try to match rotation or
    pick up coords, just use crosshair and current loc. */
 pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, rnd_bool add_undo, rnd_bool dumb);
