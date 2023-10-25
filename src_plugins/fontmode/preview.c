@@ -33,7 +33,9 @@
 #include "font.h"
 
 #define RND_TIMED_CHG_TIMEOUT 1000
+#ifdef PCB_WANT_FONT2
 #include <librnd/plugins/lib_hid_common/timed_chg.h>
+#endif
 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
@@ -43,8 +45,8 @@ typedef struct{
 	unsigned geo_changed:1;
 	unsigned ent_changed:1;
 	unsigned kern_changed:1;
-#endif
 	rnd_timed_chg_t timed_refresh;
+#endif
 	int active; /* already open - allow only one instance */
 	unsigned char *sample;
 	rnd_font_t font;
@@ -61,7 +63,9 @@ static void fmprv_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	fmprv_ctx_t *ctx = caller_data;
 
+#ifdef PCB_WANT_FONT2
 	rnd_timed_chg_cancel(&ctx->timed_refresh);
+#endif
 	rnd_font_free(&ctx->font);
 	RND_DAD_FREE(ctx->dlg);
 
@@ -238,8 +242,10 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 
 static void timed_refresh(fmprv_ctx_t *ctx)
 {
+#ifdef PCB_WANT_FONT2
 	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
 	rnd_timed_chg_schedule(&ctx->timed_refresh);
+#endif
 }
 
 static void refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -531,7 +537,9 @@ static void pcb_dlg_fontmode_preview(void)
 	if (fmprv_ctx.sample == NULL)
 		fmprv_ctx.sample = (unsigned char *)rnd_strdup("Sample string\nin multiple\nlines.");
 
+#ifdef PCB_WANT_FONT2
 	rnd_timed_chg_init(&fmprv_ctx.timed_refresh, fmprv_pcb2preview_timed, &fmprv_ctx);
+#endif
 
 	RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
 		RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
