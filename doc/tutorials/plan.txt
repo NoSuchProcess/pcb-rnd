@@ -16,23 +16,28 @@ Milestone A:
 		- decide that bottom is gnd, rename layers accordingly
 		- mention sizes (but do not deal with it); defaults are good for all techs
 	- sch import
-		- sch-rnd
+		- sch-rnd: import one or more sheets; prefer project.lht
 		- hint on other formats
 		- mention stdlib footprints are used
 		- zoom out for the footprints
 		- terminology: subcircuit
 		- look at the netlist
+		- re-import
 	- placement
 		- manual placement for this tutorial
 		- looking at sch
 		- looking at rats nest, {c r}
 		- drag&drop move: no need to select
+			- accidentally move a floater
+			- show undo {u u}
+			- lock floaters!
 		- grid basics, bottom status line, top coord readout
 		- show rotate
+		- {c f}
 		- show context menu move to the other side, show hotkey
-		- show undo {u u}
 	- routing
-		- routing with lines on top layer, leave out gnd
+		- routing with lines on top layer
+			- netlist window disable gnd
 			- hover over a pin for pin info/net
 			- line refraction with shift
 			- line refraction with '/' and menu (bottom status!)
@@ -42,8 +47,11 @@ Milestone A:
 				- tab, shift tab, ctrl tab
 				- bottom status
 				- via terminology: padstack
+		- netlist window re-enable gnd
 		- polygon on the bottom side
 		- thermals to connect (minimum thermals)
+	- draw the outline
+	- tune the silk
 	- mention export will be handled in a different video
 
 Milestone B:
