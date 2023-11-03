@@ -4,8 +4,12 @@ Milestone A:
 
 - getting started [25]
 	- normal workflow (diagram):
-	- layer stackup
+	- startup
 		- cd to project dir, start pcb-rnd from there (UNIX aspects)
+		- save (implicit save as; project directory)
+		- explain main window parts, especially the layer selector
+		- online support button
+	- layer stackup
 		- show preferences cross sect
 		- drag&drop remove intern layer groups
 		- remove extra layers, keep one layer per group for now
@@ -23,7 +27,7 @@ Milestone A:
 		- looking at sch
 		- looking at rats nest, {c r}
 		- drag&drop move: no need to select
-		- grid basics
+		- grid basics, bottom status line, top coord readout
 		- show rotate
 		- show context menu move to the other side, show hotkey
 		- show undo {u u}
