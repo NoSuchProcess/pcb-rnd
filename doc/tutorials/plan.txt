@@ -4,19 +4,12 @@ Milestone A:
 
 - getting started [25]
 	- normal workflow (diagram):
-		- setup (layer stackup)
-		- sch import
-		- placement
-		- routing
-		- tuning details (nope)
-		- sim & fixes (nope)
-		- drc & fixes (nope)
-		- prepare for fab (nope)
 	- layer stackup
 		- show preferences cross sect
 		- drag&drop remove intern layer groups
 		- remove extra layers, keep one layer per group for now
 		- decide that bottom is gnd, rename layers accordingly
+		- mention sizes (but do not deal with it); defaults are good for all techs
 	- sch import
 		- sch-rnd
 		- hint on other formats
