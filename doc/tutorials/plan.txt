@@ -5,6 +5,7 @@ Milestone A:
 - getting started [25]
 	- normal workflow (diagram):
 	- layer stackup
+		- cd to project dir, start pcb-rnd from there (UNIX aspects)
 		- show preferences cross sect
 		- drag&drop remove intern layer groups
 		- remove extra layers, keep one layer per group for now
