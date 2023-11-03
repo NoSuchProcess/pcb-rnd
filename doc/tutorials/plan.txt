@@ -22,17 +22,20 @@ Milestone A:
 		- hint on other formats
 		- mention stdlib footprints are used
 		- zoom out for the footprints
+		- terminology: subcircuit
 		- look at the netlist
 	- placement
-		- manual for this tutorial
-		- looking at rats nest, {c r}
+		- manual placement for this tutorial
 		- looking at sch
+		- looking at rats nest, {c r}
 		- drag&drop move: no need to select
+		- grid basics
 		- show rotate
 		- show context menu move to the other side, show hotkey
-		- terminology: subcircuit
+		- show undo {u u}
 	- routing
 		- routing with lines on top layer, leave out gnd
+			- hover over a pin for pin info/net
 			- line refraction with shift
 			- line refraction with '/' and menu (bottom status!)
 			- routing styles (selection only)
@@ -43,6 +46,7 @@ Milestone A:
 				- via terminology: padstack
 		- polygon on the bottom side
 		- thermals to connect (minimum thermals)
+	- mention export will be handled in a different video
 
 Milestone B:
 
