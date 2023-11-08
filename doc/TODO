@@ -2,13 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: import sch on sch-rnd as user test (while video recording the getting started example) failed to work, looks like a race condition, see sleep in the code [report: Igor2]
-- FEATURE: lihata board v9:
-	- ANNOUNCE: netlist dialog: add conn and del conn button
-	- ANNOUNCE: back annotation upgrade: subc add and remove
 + BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
-- FEATURE: attribute propagation from sch-rnd via tEDAx
-	- device attribute in subcricuits
-	- make a new bom template that includes that
 / BUG: load bug_files/TODO/thermals.rp and then import the subcircuit ATO_blade_fuse_holder.rf to the paste buffer and then shift click on the existing fuse holder on the layout. Thermal settings are not duplicated for electrically common padstacks when the existing subc is replaced. [report: Erich]
 	-> this is not a bug: it's not done by electrical connectivity but by terminal name
 	-> it is designed to work only in the case when you have an 1:1 mapping, anything more complicated can not be done properly anyway
@@ -24,9 +18,15 @@
 	-> can't break it with a dry load-save; ordering may change if you add or remove glyphs
 
 2. For later releases ===============================================================================
+- FEATURE: attribute propagation from sch-rnd via tEDAx
+	- device attribute in subcricuits
+	- make a new bom template that includes that
 - FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
 	- search for '-' and centralize parsing refdes-term id 
 - librnd4.1:
+	- FEATURE: lihata board v9:
+		- ANNOUNCE: netlist dialog: add conn and del conn button
+		- ANNOUNCE: back annotation upgrade: subc add and remove
 	- remove PCB_WANT_FONT2, it's the default
 	- remove --enable-font2 and want_font2 from scconfig and config.h, it's the default
 	- maybe remove path_to_design_relative() in favor of librnd core/compat_fs.h
