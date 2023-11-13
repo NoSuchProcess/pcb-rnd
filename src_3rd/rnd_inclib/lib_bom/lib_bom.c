@@ -319,6 +319,9 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 		return;
 
 	id = freeme = render_templ(ctx, ctx->templ->sort_id);
+	if (id == NULL)
+		return;
+
 	i = htsp_get(&ctx->tbl, id);
 	if (i == NULL) {
 		i = malloc(sizeof(bom_item_t));
