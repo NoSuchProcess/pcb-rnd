@@ -17,3 +17,5 @@ test:
 	@diff -w new_submenu.ref new_submenu.out
 
 clean:
+	touch dummy.out
+	rm *.out
