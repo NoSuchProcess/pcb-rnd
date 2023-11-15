@@ -4,6 +4,7 @@
 - BUG: import sch on sch-rnd as user test (while video recording the getting started example) failed to work, looks like a race condition, see sleep in the code [report: Igor2]
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
 	-> stock 0201 (and 0402)
+	-> fix was r38447
 / BUG: load bug_files/TODO/thermals.rp and then import the subcircuit ATO_blade_fuse_holder.rf to the paste buffer and then shift click on the existing fuse holder on the layout. Thermal settings are not duplicated for electrically common padstacks when the existing subc is replaced. [report: Erich]
 	-> this is not a bug: it's not done by electrical connectivity but by terminal name
 	-> it is designed to work only in the case when you have an 1:1 mapping, anything more complicated can not be done properly anyway
@@ -32,6 +33,7 @@
 	- maybe remove path_to_design_relative() in favor of librnd core/compat_fs.h
 	- rebind Export(): use rnd_act_Export(), remove pcb_act_Export()
 	- DRC test in make test: the invchar test bbox changes because of a bugfix
+- FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG: start pcb-rnd, { w l }, select tssop(), place on layout, shift click to replace tssop() on layout with tssop() in buffer, then { u u }, note "pcb_search_obj_by_id(): internal error, search for ID XXXX failed" [report: Erich] 
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
