@@ -12,7 +12,6 @@
 	-> btw, that's not "add point to polygon"; it's an insert point in anything (lines, arcs, etc), the only exception should be rat line
 / BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
 	-> not a bug but a special casing: the line object has clearance=0 which overrides the clearance and makes a connection (for historical reasons); change it to 1mil and see the polygon forced clearance value overrides it
-+ BUG: double click on poly removes poly enforce clearance: bug_files/TODO/poly_enf_clr.rp [report: aron]
 / BUG: when fontv2 is enable, in fontedit() mode, autosave triggers an error about pre v9 losing kerning info [Report: Erich]
 	-> this is not really a bug; autosave will be bumped to use v9 when v9 becomes official; the whole font2 mode is a temporary hack, we'll have to live with this error message until we release librnd 4.1.0
 ? BUG: fontsave() glyph ordering is not well ordered. It varies from save to save, adding noise to diffs. [report: Erich]
