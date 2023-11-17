@@ -656,6 +656,8 @@ static int pcbdoc_bin_parse_pads6_fields(rnd_design_t *hidlib, altium_tree_t *tr
 	return 0;
 }
 
+void d1() {}
+
 int pcbdoc_bin_parse_pads6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
@@ -682,9 +684,9 @@ int pcbdoc_bin_parse_pads6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_
 			tmp->data[len] = '\0';
 			strcpy(name, (char *)tmp->data+1);
 
-			for(n = 0; ; n++) {
+			for(n = 0; n < 5; n++) {
 				len = read_rec_l4b(fp, tmp);
-/*				printf("len[%d]=%ld\n", n, len);*/
+/*				rnd_trace("##len[%d]=%ld at %ld\n", n, len, fp->stream_offs);*/
 				if (len == 0)
 					break;
 				if (len < 0)
@@ -703,7 +705,7 @@ int pcbdoc_bin_parse_pads6(rnd_design_t *hidlib, altium_tree_t *tree, ucdf_file_
 		else { /* not a pad */
 			long len;
 
-			rnd_message(RND_MSG_ERROR, "non-pad object in padstack!\n");
+			rnd_message(RND_MSG_ERROR, "non-pad object in padstack: %d (0x%x) at 0x%x!\n", rtype, rtype, fp->stream_offs);
 			len = read_rec_l4b(fp, tmp);
 			if (len <= 0)
 				return len;
