@@ -60,10 +60,13 @@ field
  differentnets
  anynet
  samelayer
+ scope1expression
+ scope2expression
  scope1_0_kind
  scope1_0_value
  scope2_0_kind
  scope2_0_value
+ all
  board
  netclass
  gap

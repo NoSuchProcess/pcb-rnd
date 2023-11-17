@@ -660,6 +660,8 @@ static int altium_parse_rule(rctx_t *rctx)
 				case altium_kw_field_layerkind:      layerkind = altium_kw_sphash(field->val.str); break;
 				case altium_kw_field_scope1_0_kind:  assert(field->val_type == ALTIUM_FT_STR); scope_kind[0] = altium_kw_sphash(field->val.str); break;
 				case altium_kw_field_scope2_0_kind:  assert(field->val_type == ALTIUM_FT_STR); scope_kind[1] = altium_kw_sphash(field->val.str); break;
+				case altium_kw_field_scope1expression:  assert(field->val_type == ALTIUM_FT_STR); scope_kind[0] = altium_kw_sphash(field->val.str); break;
+				case altium_kw_field_scope2expression:  assert(field->val_type == ALTIUM_FT_STR); scope_kind[1] = altium_kw_sphash(field->val.str); break;
 				case altium_kw_field_scope1_0_value: scope_val[0] = field; break;
 				case altium_kw_field_scope2_0_value: scope_val[1] = field; break;
 				case altium_kw_field_gap:            gap = conv_coord_field(field); break;
@@ -683,10 +685,20 @@ static int altium_parse_rule(rctx_t *rctx)
 			sckind = scope_kind[0];
 			scval = scope_val[0];
 		}
+		else if (scope_kind[0] == altium_kw_field_all) {
+			sckind = scope_kind[1];
+			scval = scope_val[1];
+		}
+		else if (scope_kind[1] == altium_kw_field_all) {
+			sckind = scope_kind[1];
+			scval = scope_val[1];
+		}
 		else
 			continue;
 
-		assert(scval->val_type == ALTIUM_FT_STR);
+		if (scval != NULL) {
+			assert(scval->val_type == ALTIUM_FT_STR);
+		}
 
 		/* one scope is board, the other is sckind:scval */
 		if (gap == RND_COORD_MAX) {
@@ -701,10 +713,11 @@ static int altium_parse_rule(rctx_t *rctx)
 
 		switch(sckind) {
 			case altium_kw_field_board:
+			case altium_kw_field_all:
 				rctx->global_clr = gap;
 				break;
 			case altium_kw_field_netclass:
-				{
+				if (scval != NULL) {
 					htip_entry_t *e;
 					for(e = htip_first(&rctx->nets); e != NULL; e = htip_next(&rctx->nets, e)) {
 						pcb_net_t *net = e->value;
