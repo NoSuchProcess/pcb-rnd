@@ -83,7 +83,7 @@ static void trimesh_selected_lines(trimesh_t *ctx)
 }
 
 static const char pcb_acts_TriMesh[] = "TriMesh()\n";
-static const char pcb_acth_TriMesh[] = "replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer";
+static const char pcb_acth_TriMesh[] = "Generate triangular mesh for simulation";
 static fgw_error_t pcb_act_TriMesh(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	trimesh_t ctx = {0};
