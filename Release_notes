@@ -1,17 +1,17 @@
-pcb-rnd 3.1.2
+pcb-rnd 3.1.3
 ~~~~~~~~~~~~~
 
-This release contains a lot of code cleanup, some feature removal and
-a few new features:
+This release focuses on bugfixes and three features:
 
-1. Code cleanup: remove the dependency on the rtree compatibility layer, use
-   librnd native rtrees
+1. Major upgrade of the back annotation system (supported by sch-rnd):
+   - break connection
+   - create connection
+   - remove net
+   - add subcircuit
+   - remove subcircuit
+   - subcircuit attribute change or remove
 
-2. Feature removal: gsch2pcb-rnd removed and replaced with a dummy that prints
-   the alternatives, including CLI and GUI import sch 
+2. Experimental support for librnd's new font engine (compile time option),
+   including new fontmode features
 
-3. New 3d models: openscad models for all parametric footprints in the standard
-   footprint lib
-
-4. Rewrite of export_bom: BoM export uses user configurable templates instead
-   of a hardwired format
+3. Experimental lihata board v9 for the above features

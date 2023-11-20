@@ -1,4 +1,166 @@
-pcb-rnd 3.1.2 (r38156)
+pcb-rnd 3.1.3 (r38476)
+~~~~~~~~~~~~~~~~~~~~~~
+	[backann]
+		-Fix: rats patch "already done" check: when accepting component add/del, consider the input netlist, not the edited netlist (the edited netlist will always have the modifiaction, independently of whether it's been annotated back to the schematics)
+		-Add: CLI for attribute back annot: propset(), just make sure the right conf node is set
+
+	[core]
+		-Fix: typos in Net() help
+		-Fix: when generating file name for saving rats patch, remove the now default .rp suffix before appending .bap
+		-Fix: rats patch fwd annot verify: if a terminal is not on a net the call may return -1 (e.g. the net is missing) - accept thta as connection broken
+		-Fix: rats patch: back annotation on subc del: check connectivity before connections are removed, else the actual comp del line will always be missing
+		-Fix: separate netlist change event and netlist import event; clean up netlist patch list only after an import so back annotation entries are not lost accidentally (because they are already done on the board) without a forward annotation
+		-Fix: low level poly copy call should copy ->enforce_clearance so it is not lost on a through-buffer round-trip (including double clicking a polygon)
+		-Fix: do not consider aux layer when sizing subcircuit bbox
+		-Cleanup: rename PCB_RPE_ATTR_CHG to PCB_RPE_COMP_ATTR_CHG as it deals with components only and there would be another for nets
+		-Cleanup: rename RATP_CHANGE_ATTRIB to RATP_CHANGE_COMP_ATTRIB to make room for network attributes in back annotation
+		-Add: Net(remove, netname): remove a net (remove all connections of the net; back annotated)
+		-Add: expose net patch remove API
+		-Add: extend the rats patch API and action to take file format (more than just old/new)
+		-Add: back annotation save: throw error when unknown file format is specified
+		-Add: back annotation support for tEDAx backann v1
+		-Add: netlist patch: introduce separate net attribute case
+		-Add: netlist patch: enable saving tedax backann v2 with "attr_conn" for net attribute changes
+		-Add: implement the frame (op dispatcher) of BaSubc()
+		-Add: netlist patch: support for comp_add and comp_del; implement BaSubc() action for back annotating subc add/del
+		-Add: netlist patch: implement is_subc_created_on_patch() to avoid duplicate adds/removes
+		-Add: when a subc is added for back annotation, also add its main attributes (footprint and value) when available
+		-Add: when back-annot removing a subc, first break all its connections (also back-annot)
+		-Add: conf node for enabling subc attribute change back annotation
+		-Add: make rats_patch_is_subc_referenced() public for propedit
+		-Add: file format selector in rats patch export (back annotation export) dialog
+		-Add: action BaConn() for adding a new connection to the netlist patch
+		-Add: netlist patch: implement low level break conn for single terminal and all selected terminals; BaConn() operation: remove
+		-Add: prepare the font save action for saving in different font formats
+		-Add: when saving font pass on the format string so the saver can do things differently
+		-Add: publish pcb_font_draw_atom() for fontmode preview dialog
+		-Add: expose arc centerline bbox calculation function (to be used in fontmode)
+
+	[dialogs]
+		-Add: netlist dialog: button for breaking connection (removing a terminal from the conn list of a net), back annotatable
+		-Add: netlist dialog: button for adding terminals to nets (with back annotation)
+		-Add: netlist dialog: button tooltips mention if a change is back annotated
+		-Add: netlist dialog: frame a group of back annotated buttons
+		-Add: netlist dialog: del net button
+		-Add: netlist dialog: don't let a terminal back-annotation-connect to a net if the terminal is already connected to a net
+		-Add: netlist patch dialog
+		-Add: netlist patch window: export button
+		-Add: netlist patch dialog: remove button
+		-Add: netlist patch dialog: print comp attr change differently from net attr change
+		-Add: netlist patch window prints comp_add and comp_del lines
+		-Add: flag edit dialog: add the same tooltip to flag names as well, check boxes are smaller, less probably to get hover
+		-Change: make addconn functions public (preparation for actions)
+		-Change: decouple addconn functions from the netlist dialog (preparation for actions)
+		-Move: addconn functions from the dialog code to core (rats_patch) to make the functionality available in an action
+
+	[doc]
+		-Add: document new Netlist(Remove) for back annotation
+		-Add: lihata board v9 (netlist patch details for comp attr and net attr)
+		-Add: lihata board format: comp_add and comp_del ops for netlist patch
+		-Add: document lihata board v9 upgrade on drawing area box approach instead of width/height
+		-Add: empty page for documenting back annotation
+		-Add: back annotation: explain how it works, list file format and software versions
+		-Add: back annotation: list available operations
+		-Add: back annotation: document network related operations
+		-Add: back annotation: mention the back annotation window
+		-Add: back annotation: add/del subc
+		-Add: back annotation: claim net, replace footprint
+		-Add: back annotation: attribute changes
+		-Add: back annotation: board file formats and versions
+		-Add: back annotation: link the pool node for historical aspects
+		-Add: BaConn() and BaSubc() action doc
+		-Add: backann: CLI for conn add and break: the BaConn() action
+		-Add: backann: claimnet has an action for CLI
+		-Add: file format doc for pcb-rnd-font-v2
+		-Add: lihata versions: list changes between font v1 and font v2
+		-Add: lihata versions: list board v9 change: uses font v2
+		-Add: lihata board version changelog: text entity flag
+		-Add: new tutorial video link
+
+	[export_stl]
+		-Fix: potentially uninited stack var options may randomly tunr cutouts on/off
+
+	[font2]
+		-Fix: io_lihata: allow lihata font to have any version integer and let the librnd parser decide if the given version is supported or not
+		-Add: temporary ./configure --enable-font2 and --disable-font2; requires librnd >=4.1.0; controls config.h #define PCB_WANT_FONT2 for the new font support
+		-Add: extra argument for rendering opts when font2 is enabled
+		-Add: io_lihata uses font2 when enabled
+		-Add: rnd_font_invalid_chars() has an extra argument in font2 API
+		-Add: follow font2 API change on thin poly rendering
+		-Add: implement the format selector in font save
+		-Add: introduce text flag for &entity; substitution
+		-Add: io_lihata warns when entity flag is saved in pre-v9 board format
+		-Add: extend the low level text rendering API to receive text flags
+		-Add: text rendering: execute the entity text flag
+		-Add: io_lihata: save explicit glyph advance in font2
+		-Add: doc: lihata format: mention nonprintable kerning table chars are in &hh hex index format
+		-Add: fontmode preview: hint on key format
+
+	[fontmode]
+		-Fix: when converting a font into an editor board, the vertical blue line markers for total width are placed by the wrong calculation (calculation differing from the one done by the rendering code)
+		-Fix: setxdelta: rather recalculate arc centerline bbox instead of depending on naked bbox and thickness
+		-Add: store a pointer to the original font so metadata can be reproduced on save
+		-Add: font2: preserve input kerning table and input entity table when converting back from graphics to font for save
+		-Add: draw baseline when available
+		-Add: FontBaseline() action to create or modify the baseline
+		-Add: preserve tab_width and line_height on save
+		-Add: font mode preview dialog and action
+
+	[io_altium]
+		-Fix: terminate reading padstack after 4 fields, even if the 4th is not a terminator
+		-Add: support for global clearance (gap) for rules with all-all expression
+
+	[io_lihata]
+		-Cleanup: remove excess newlines from incompatibility list items
+		-Add: EXPERIMENTAL: register board file format version 9 (mainly for the back annotation upgrade and new font support)
+		-Add: introduce experimental v9 board format for the new netlist patch instructions
+		-Add: support for loading and saving comp_add and comp_del netlist patches in the v9 board format
+		-Add: board v9: save full drawing area box instead of just x;y (width;height) so that negative coords are fully supported by the file format
+		-Add: font2: save new font fields in v9
+		-Add: accept lihata format with version suffixes in the call writing font files; if format string ends in v2, set wrver to 9, put v2 in header and save in the v2 font format
+
+	[io_pcb]
+		-Add: test parse before old font open: ignore files that don't look like an old font file so syntax error is not thrown if the file is a lihata font
+
+	[lib_bom]
+		-Fix: don't crash if sort_id renters to NULL string
+
+	[lib_polyhelp]
+		-Fix: triangulate using doubles because coords are at least 32 bits but may even be 64 bits
+
+	[menu]
+		-Add: window menu item for the new back annotation dialog, key binding: {w b}
+		-Add: subc context popup: back annotate add/del menu
+		-Add: subc add/del back annotation (object and selected) in the back annotation menu
+		-Add: font editor preview (and table edit) in maintenance
+
+	[poly]
+		-Add: #define PCB_WANT_POLYBOOL when the new polygon lib is enabled
+
+	[propedit]
+		-Fix: network attribute changes should cause net attrib netlist patch lines, not comp attrib lines
+		-Add: propedit dialog: checkbox for enabling attribute back annotation
+		-Add: propedit dialog: update subc attr back annotation checkbox from the config node
+		-Add: propedit dialog: set backann config node when checkbox is changed
+		-Add: add subc attribute changes to back annotation list when the config node enables that
+		-Add: prepare the code for back annotating terminal attribute changes (attr_pin) but don't do it yet because forward annotation doesn't deliver them so they can never be removed from the patch list
+
+	[sign]
+		-Add: new repo.hu crl for 2023
+
+	[tests]
+		-Fix: menu test make clean shall remove all the .out files
+
+	[tool_std]
+		-Fix: the insert tool shouldn't allow inserting a point in a rat line (doesn't make any sense)
+
+	[trimesh]
+		-Add: new plugin; TriMesh() action and infra (triangular mesh for simulation)
+
+	[tutorials]
+		-Update: main "getting started" tutorial replaced with a new record
+
+pcb-rnd 3.1.2 (r38167)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[acompnet]
 		-Cleanup: replace compat rtree with native
