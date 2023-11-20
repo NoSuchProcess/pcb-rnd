@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: import sch on sch-rnd as user test (while video recording the getting started example) failed to work, looks like a race condition, see sleep in the code [report: Igor2]
 / BUG: load bug_files/TODO/thermals.rp and then import the subcircuit ATO_blade_fuse_holder.rf to the paste buffer and then shift click on the existing fuse holder on the layout. Thermal settings are not duplicated for electrically common padstacks when the existing subc is replaced. [report: Erich]
 	-> this is not a bug: it's not done by electrical connectivity but by terminal name
 	-> it is designed to work only in the case when you have an 1:1 mapping, anything more complicated can not be done properly anyway
