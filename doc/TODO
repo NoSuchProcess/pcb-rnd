@@ -5,8 +5,6 @@
 	-> btw, that's not "add point to polygon"; it's an insert point in anything (lines, arcs, etc), the only exception should be rat line
 / BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
 	-> not a bug but a special casing: the line object has clearance=0 which overrides the clearance and makes a connection (for historical reasons); change it to 1mil and see the polygon forced clearance value overrides it
-? BUG: fontsave() glyph ordering is not well ordered. It varies from save to save, adding noise to diffs. [report: Erich]
-	-> can't break it with a dry load-save; ordering may change if you add or remove glyphs
 
 2. For later releases ===============================================================================
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
