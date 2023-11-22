@@ -1,10 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-/ BUG: load bug_files/TODO/thermals.rp and then import the subcircuit ATO_blade_fuse_holder.rf to the paste buffer and then shift click on the existing fuse holder on the layout. Thermal settings are not duplicated for electrically common padstacks when the existing subc is replaced. [report: Erich]
-	-> this is not a bug: it's not done by electrical connectivity but by terminal name
-	-> it is designed to work only in the case when you have an 1:1 mapping, anything more complicated can not be done properly anyway
-	-> example: have two terminals both called '1' with different thermals; replace footprint with another that also has two terminals called '1' but at different locations; suppose we somehow remember both thermals for the original '1's, but how do decide which one to assing to which new terminal?
 + BUG: load bug_files/TODO/rat-vertex.rp, select silk layer, and then select add point to polygon tool, click on visible rat, and see it turn into a silk line [report: Erich]
 	-> btw, that's not "add point to polygon"; it's an insert point in anything (lines, arcs, etc), the only exception should be rat line
 / BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
