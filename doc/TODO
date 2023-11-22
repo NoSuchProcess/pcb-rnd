@@ -1,8 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: load bug_files/TODO/rat-vertex.rp, select silk layer, and then select add point to polygon tool, click on visible rat, and see it turn into a silk line [report: Erich]
-	-> btw, that's not "add point to polygon"; it's an insert point in anything (lines, arcs, etc), the only exception should be rat line
 / BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
 	-> not a bug but a special casing: the line object has clearance=0 which overrides the clearance and makes a connection (for historical reasons); change it to 1mil and see the polygon forced clearance value overrides it
 
