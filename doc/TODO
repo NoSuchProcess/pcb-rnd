@@ -10,6 +10,9 @@
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
 	-> stock 0201 (and 0402)
 	-> fix was r38447
+- FEATURE: font2 editor: preview dialog kerning table: [report: Erich]
+	- sort entries  (maybe on save too?)
+	- add a filter like in the library window
 - FEATURE: attribute propagation from sch-rnd via tEDAx
 	- device attribute in subcricuits
 	- make a new bom template that includes that
