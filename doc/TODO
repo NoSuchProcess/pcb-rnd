@@ -3,9 +3,9 @@
 1. For the upcoming release ===============================================================================
 / BUG: poly enforce clearance doesn't work: bug_files/TODO/poly_enf_clr.rp [report: aron]
 	-> not a bug but a special casing: the line object has clearance=0 which overrides the clearance and makes a connection (for historical reasons); change it to 1mil and see the polygon forced clearance value overrides it
-- BUG: bug_files/TODO/PCB.1349.save will segfault with :fontsave(). Was created in v2 font pcb-rnd, then loaded in v1 font pcb-rnd and saved, then loaded in v2 font pcb-rnd  [report: Erich]
 
 2. For later releases ===============================================================================
+- BUG: bug_files/TODO/PCB.1349.save will segfault with :fontsave(). Was created in v2 font pcb-rnd, then loaded in v1 font pcb-rnd and saved, then loaded in v2 font pcb-rnd  [report: Erich]
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
 	-> stock 0201 (and 0402)
 	-> fix was r38447
