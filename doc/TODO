@@ -12,6 +12,7 @@
 	- sort entries  (maybe on save too?)
 	- add a filter like in the library window
 	- some glyphs need the same kerning, being able to input a list like "N-}, M-}, I-}" and "-2mil" would be time saving in the font editor preview GUI
+	- & hex bug on kerning table: preview.c, search for &%d, should be &%x, should be line 159 and 164
 - FEATURE: attribute propagation from sch-rnd via tEDAx
 	- device attribute in subcricuits
 	- make a new bom template that includes that
