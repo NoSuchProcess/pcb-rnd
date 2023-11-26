@@ -11,6 +11,7 @@
 - FEATURE: font2 editor: preview dialog kerning table: [report: Erich]
 	- sort entries  (maybe on save too?)
 	- add a filter like in the library window
+	- some glyphs need the same kerning, being able to input a list like "N-}, M-}, I-}" and "-2mil" would be time saving in the font editor preview GUI
 - FEATURE: attribute propagation from sch-rnd via tEDAx
 	- device attribute in subcricuits
 	- make a new bom template that includes that
