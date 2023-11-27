@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 
 2. For later releases ===============================================================================
+- BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
 - BUG: bug_files/TODO/PCB.1349.save will segfault with :fontsave(). Was created in v2 font pcb-rnd, then loaded in v1 font pcb-rnd and saved, then loaded in v2 font pcb-rnd  [report: Erich]
 - BUG: start new layout when in font v2 enabled pcb-rnd running font edit mode. Use {w f} to load a font, select font, enter font edit mode, Subsequent fontsave() saves in v1 format [report: Erich]
 - BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
