@@ -136,6 +136,14 @@ static void fmprv_pcb2preview_entities(fmprv_ctx_t *ctx)
 /* Use the &number format for these */
 #define glyph_non_printable(n) ((n <= 32) || (n > 126) || (n == '&') || (n == '#') || (n == '{') || (n == '}') || (n == '/') || (n == ':') || (n == ';') || (n == '=') || (n == '\\') || (n == '\'') || (n == '`'))
 
+static int kern_key_cmp(const void *E1, const void *E2)
+{
+	const htkc_entry_t **e1 = E1, **e2 = E2;
+	if ((*e1)->key.left == (*e2)->key.left)
+		return (*e1)->key.right > (*e2)->key.right ? +1 : -1;
+	return (*e1)->key.left > (*e2)->key.left ? +1 : -1;
+}
+
 static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
 {
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wkernt];
@@ -143,6 +151,8 @@ static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
 	rnd_hid_row_t *r;
 	htkc_entry_t *e;
 	char *cursor_path = NULL;
+	vtp0_t sorted = {0};
+	long n;
 
 	/* remember cursor */
 	r = rnd_dad_tree_get_selected(attr);
@@ -151,10 +161,17 @@ static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
 
 	rnd_dad_tree_clear(tree);
 
-	for(e = htkc_first(&fontedit_src->kerning_tbl); e != NULL; e = htkc_next(&fontedit_src->kerning_tbl, e)) {
+	for(e = htkc_first(&fontedit_src->kerning_tbl); e != NULL; e = htkc_next(&fontedit_src->kerning_tbl, e))
+		vtp0_append(&sorted, e);
+
+	if (sorted.used > 0)
+		qsort(sorted.array, sorted.used, sizeof(htkc_entry_t *), kern_key_cmp);
+
+	for(n = 0; n < sorted.used; n++) {
 		char *cell[3];
 		gds_t tmp = {0};
 
+		e = sorted.array[n];
 		if (glyph_non_printable(e->key.left))
 			rnd_append_printf(&tmp, "&%02x-", e->key.left);
 		else
@@ -170,6 +187,8 @@ static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
 		cell[2] = NULL;
 		rnd_dad_tree_append(attr, NULL, cell);
 	}
+
+	vtp0_uninit(&sorted);
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
