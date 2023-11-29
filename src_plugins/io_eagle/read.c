@@ -1352,6 +1352,7 @@ static int eagle_read_package(read_state_t *st, trnode_t *n)
 	if (st->pcb == NULL)
 		st->fp_data = subc->data;
 
+	pcb_subc_cache_find_aux(subc);
 	pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 
 	if (st->pcb != NULL) {
@@ -1434,6 +1435,7 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 			}
 
 			subc = pcb_subc_alloc();
+			pcb_subc_cache_find_aux(subc);
 			eagle_read_pkg(st, n, subc);
 			if (pcb_subc_is_empty(subc)) {
 				rnd_message(RND_MSG_WARNING, "Ignoring empty package %s\n", name);
