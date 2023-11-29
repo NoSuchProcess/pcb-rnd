@@ -102,6 +102,8 @@ static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templ
 	templ->needs_escape = get_templ(templates, tid, "needs_escape");
 	templ->skip_if_empty= get_templ(templates, tid, "skip_if_empty");
 	templ->skip_if_nonempty = get_templ(templates, tid, "skip_if_nonempty");
+	templ->list_sep     = get_templ(templates, tid, "list_sep");
+
 }
 
 /*** subst ***/
@@ -284,6 +286,9 @@ static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t 
 	ctx->needs_escape = templ->needs_escape;
 	ctx->templ = templ;
 	ctx->f = f;
+	ctx->list_sep = templ->list_sep;
+	if (ctx->list_sep == NULL)
+		ctx->list_sep = " ";
 }
 
 static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name)
@@ -336,7 +341,7 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 	}
 	else {
 		i->cnt++;
-		gds_append(&i->name_list, ' ');
+		gds_append_str(&i->name_list, ctx->list_sep);
 	}
 
 	gds_append_str(&i->name_list, name);

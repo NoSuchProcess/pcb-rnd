@@ -42,6 +42,7 @@ typedef struct bom_template_s {
 	const char *escape; /* escape character */
 	const char *skip_if_empty; /* if this template is not empty: render the template for each item and do not include the item if the rendered string is empty */
 	const char *skip_if_nonempty; /* if this template is not empty: render the template for each item and do not include the item if the rendered string is not empty */
+	const char *list_sep; /* separator sequence used when building a list */
 } bom_template_t;
 
 static vts0_t bom_fmt_names; /* array of const char * long name of each format, pointing into the conf database */
@@ -81,6 +82,9 @@ typedef struct {
 	vtp0_t arr;
 	const bom_template_t *templ;
 	FILE *f;
+
+	/* separator sequence used when printing lists */
+	const char *list_sep;
 } bom_subst_ctx_t;
 
 /* Export a file; call begin, then loop over all items and call _add, then call
