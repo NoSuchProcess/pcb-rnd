@@ -441,32 +441,32 @@ RND_INLINE void edit2_kern(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
 
 	for(curr = ed2.name; curr != NULL; curr = end) {
 
-	while(isspace(*curr)) curr++;
-	if (*curr == '\0') break;
+		while(isspace(*curr)) curr++;
+		if (*curr == '\0') break;
 
-	sep = strchr(curr+1, '-'); /* +1 so if '-' is the left char it is preserved */
-	if (sep == NULL) {
-		rnd_message(RND_MSG_ERROR, "Key needs to be in the form of character pair, e.g. A-V\n");
-		return;
-	}
+		sep = strchr(curr+1, '-'); /* +1 so if '-' is the left char it is preserved */
+		if (sep == NULL) {
+			rnd_message(RND_MSG_ERROR, "Key needs to be in the form of character pair, e.g. A-V\n");
+			return;
+		}
 
-	key.left = load_kern_key(curr, sep, NULL);
-	key.right = load_kern_key(sep+1, NULL, &end);
+		key.left = load_kern_key(curr, sep, NULL);
+		key.right = load_kern_key(sep+1, NULL, &end);
 
-	/* renamed: remove old entry */
-	if ((orig_name != NULL) && (strcmp(ed2.name, orig_name) != 0))
-		htkc_popentry(&fontedit_src->kerning_tbl, key);
+		/* renamed: remove old entry */
+		if ((orig_name != NULL) && (strcmp(ed2.name, orig_name) != 0))
+			htkc_popentry(&fontedit_src->kerning_tbl, key);
 
-	if (!fontedit_src->kerning_tbl_valid) {
-		htkc_init(&fontedit_src->kerning_tbl, htkc_keyhash, htkc_keyeq);
-		fontedit_src->kerning_tbl_valid = 1;
-	}
+		if (!fontedit_src->kerning_tbl_valid) {
+			htkc_init(&fontedit_src->kerning_tbl, htkc_keyhash, htkc_keyeq);
+			fontedit_src->kerning_tbl_valid = 1;
+		}
 
-	e = htkc_getentry(&fontedit_src->kerning_tbl, key);
-	if (e != NULL) /* adding an entry that's already in - modify existing */
-		e->value = ed2.val;
-	else /* adding a new entry */
-		htkc_insert(&fontedit_src->kerning_tbl, key, ed2.val);
+		e = htkc_getentry(&fontedit_src->kerning_tbl, key);
+		if (e != NULL) /* adding an entry that's already in - modify existing */
+			e->value = ed2.val;
+		else /* adding a new entry */
+			htkc_insert(&fontedit_src->kerning_tbl, key, ed2.val);
 	}
 
 	free(ed2.name);
