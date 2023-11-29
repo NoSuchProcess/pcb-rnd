@@ -28,7 +28,8 @@
 	- maybe remove path_to_design_relative() in favor of librnd core/compat_fs.h
 	- rebind Export(): use rnd_act_Export(), remove pcb_act_Export()
 	- DRC test in make test: the invchar test bbox changes because of a bugfix
-- FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
++ FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
+	-> use list_sep = {foo} in your template
 - DOC: pool node on how to use pixmap for breadboading
 + BUG: start pcb-rnd, { w l }, select tssop(), place on layout, shift click to replace tssop() on layout with tssop() in buffer, then { u u }, note "pcb_search_obj_by_id(): internal error, search for ID XXXX failed" [report: Erich]
 
