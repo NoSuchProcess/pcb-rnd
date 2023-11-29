@@ -483,7 +483,7 @@ static void drc_rlist_pcb2dlg(void)
 		if (st->run_cnt > 0)
 			cell[3] = rnd_strdup_printf("%.3fs", st->last_run_time);
 		else
-			cell[3] = "-";
+			cell[3] = rnd_strdup_printf("-");
 
 		if (*src != '\0') {
 			rnd_hid_tree_t *tree = attr->wdata;
