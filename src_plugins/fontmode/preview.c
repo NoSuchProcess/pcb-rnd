@@ -568,7 +568,7 @@ static void change_sample_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 static void pcb_dlg_fontmode_preview(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	static rnd_box_t prvbb = {0, 0, RND_MM_TO_COORD(40), RND_MM_TO_COORD(20)};
+	static rnd_box_t prvbb = {0, 0, RND_MM_TO_COORD(40), RND_MM_TO_COORD(10)};
 	static const char *tab_names[] = {"geometry", "entities", "kerning", NULL};
 	static const char *ent_hdr[]   = {"entity name", "glyph index", NULL};
 	static const char *kern_hdr[]  = {"character pair", "displacement", NULL};
@@ -583,16 +583,18 @@ static void pcb_dlg_fontmode_preview(void)
 	rnd_timed_chg_init(&fmprv_ctx.timed_refresh, fmprv_pcb2preview_timed, &fmprv_ctx);
 #endif
 
-	RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
-		RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-		RND_DAD_PREVIEW(fmprv_ctx.dlg, font_prv_expose_cb, NULL, NULL, NULL, &prvbb, 400, 200, &fmprv_ctx);
-			fmprv_ctx.wprev = RND_DAD_CURRENT(fmprv_ctx.dlg);
+	RND_DAD_BEGIN_VPANE(fmprv_ctx.dlg, "vert_main");
+		RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
+			RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_PREVIEW(fmprv_ctx.dlg, font_prv_expose_cb, NULL, NULL, NULL, &prvbb, 400, 100, &fmprv_ctx);
+				fmprv_ctx.wprev = RND_DAD_CURRENT(fmprv_ctx.dlg);
 
-		RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
-			RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit sample text");
-				RND_DAD_CHANGE_CB(fmprv_ctx.dlg, change_sample_cb);
-			RND_DAD_LABEL(fmprv_ctx.dlg, "(pending refresh)");
-				fmprv_ctx.wpend = RND_DAD_CURRENT(fmprv_ctx.dlg);
+			RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
+				RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit sample text");
+					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, change_sample_cb);
+				RND_DAD_LABEL(fmprv_ctx.dlg, "(pending refresh)");
+					fmprv_ctx.wpend = RND_DAD_CURRENT(fmprv_ctx.dlg);
+			RND_DAD_END(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
 
 		RND_DAD_BEGIN_TABBED(fmprv_ctx.dlg, tab_names);
@@ -651,9 +653,8 @@ static void pcb_dlg_fontmode_preview(void)
 						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_add_cb);
 					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
 						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_edit_cb);
+					RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph\nindex form; multiple keys: space separated list like a-b c-d e-f)");
 				RND_DAD_END(fmprv_ctx.dlg);
-
-				RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph index form\nmultiple keys: space separated list like a-b c-d e-f)");
 #endif
 			RND_DAD_END(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
