@@ -2802,6 +2802,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	if (dst_on_bottom != src_on_bottom)
 		pcb_subc_change_side(placed, 2 * oy - PCB->hidlib.dwg.Y2);
 
+	pcb_undo_freeze_add();
 	if (pcb_subcrepl_apply_thermals_floaters(&repl, placed)) {
 		pcb_opctx_t clip;
 		clip.clip.pcb = pcb;
@@ -2811,7 +2812,6 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 		pcb_subc_op(pcb->Data, placed, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_NORMAL);
 	}
 
-	pcb_undo_freeze_add();
 	pcb_subc_select(pcb, placed, (flags & PCB_FLAG_SELECTED) ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, 0);
 	pcb_undo_unfreeze_add();
 
