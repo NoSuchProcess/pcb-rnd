@@ -156,12 +156,12 @@ static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
 		gds_t tmp = {0};
 
 		if (glyph_non_printable(e->key.left))
-			rnd_append_printf(&tmp, "&%d-", e->key.left);
+			rnd_append_printf(&tmp, "&%02x-", e->key.left);
 		else
 			rnd_append_printf(&tmp, "%c-", e->key.left);
 
 		if (glyph_non_printable(e->key.right))
-			rnd_append_printf(&tmp, "&%d", e->key.right);
+			rnd_append_printf(&tmp, "&%02x", e->key.right);
 		else
 			rnd_append_printf(&tmp, "%c", e->key.right);
 
