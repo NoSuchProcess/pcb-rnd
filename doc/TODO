@@ -1,24 +1,20 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
-- BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
-- BUG: bug_files/TODO/PCB.1349.save will segfault with :fontsave(). Was created in v2 font pcb-rnd, then loaded in v1 font pcb-rnd and saved, then loaded in v2 font pcb-rnd  [report: Erich]
-- BUG: start new layout when in font v2 enabled pcb-rnd running font edit mode. Use {w f} to load a font, select font, enter font edit mode, Subsequent fontsave() saves in v1 format [report: Erich]
-- BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
-	-> stock 0201 (and 0402)
-	-> fix was r38447
 - FEATURE: font2 editor: preview dialog kerning table: [report: Erich]
 	- sort entries  (maybe on save too?)
 	- add a filter like in the library window
 	- some glyphs need the same kerning, being able to input a list like "N-}, M-}, I-}" and "-2mil" would be time saving in the font editor preview GUI
 	- & hex bug on kerning table: preview.c, search for &%d, should be &%x, should be line 159 and 164
+	- BUG: bug_files/TODO/PCB.1349.save will segfault with :fontsave(). Was created in v2 font pcb-rnd, then loaded in v1 font pcb-rnd and saved, then loaded in v2 font pcb-rnd  [report: Erich]
+	- BUG: start new layout when in font v2 enabled pcb-rnd running font edit mode. Use {w f} to load a font, select font, enter font edit mode, Subsequent fontsave() saves in v1 format [report: Erich]
+- BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
+- BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
+	-> stock 0201 (and 0402)
+	-> fix was r38447
 - FEATURE: attribute propagation from sch-rnd via tEDAx
 	- device attribute in subcricuits
 	- make a new bom template that includes that
-- FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
-	- search for '-' and centralize parsing refdes-term id 
 - librnd4.1:
 	- FEATURE: lihata board v9:
 		- ANNOUNCE: netlist dialog: add conn and del conn button
@@ -29,12 +25,16 @@
 	- rebind Export(): use rnd_act_Export(), remove pcb_act_Export()
 	- DRC test in make test: the invchar test bbox changes because of a bugfix
 - FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
-- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
+- DOC: pool node on how to use pixmap for breadboading
 - BUG: start pcb-rnd, { w l }, select tssop(), place on layout, shift click to replace tssop() on layout with tssop() in buffer, then { u u }, note "pcb_search_obj_by_id(): internal error, search for ID XXXX failed" [report: Erich] 
+
+2. For later releases ===============================================================================
+- FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
+	- search for '-' and centralize parsing refdes-term id 
+- BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
-- DOC: pool node on how to use pixmap for breadboading
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
 - CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
@@ -46,7 +46,6 @@
 	- build a list of layers rendered, in the order of rendering while drawing layer groups; maybe use gdl and move the group to the end and use a terminator item;  get pcb_search_obj_by_location_() to use this list for ordering
 	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - CLEANUP: revise dialog boxes for string/integer input box character length
-- FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
@@ -62,12 +61,14 @@
 - rubber stretch routing:
 	- IGNORE: BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 	- remove auto_via from the conf and code
-- librnd 4.2.x
+- librnd 4.2.x:
 	- BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
 		-> happens only if the export dialog is left open for the whole time
 		-> happens because the dialog remembers the old hidlib (design) ptr via hid_ctx within the HID
 		-> maybe export dialog should be closed on design change?
 		-> need to move CSCH_EVENT_SHEET_PREUNLOAD (or post unload? or just a new event?) to librnd to inform the GUI implemented in librnd
+- librnd later:
+	- FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
 
 3. Long term ===============================================================================
 - multi: merge sch-rnd r4718 for proper multiboard support later
