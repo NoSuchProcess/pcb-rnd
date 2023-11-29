@@ -927,12 +927,15 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 	if (pcb != NULL)
 		pcb_data_clip_inhibit_inc(pcb->Data);
 
+	if (dst_sc->aux_layer == NULL)
+		pcb_subc_cache_find_aux(dst_sc);
+
 	linelist_foreach(&sl->Line, &it, line) {
 		nline = pcb_line_dup_at(dl, line, dx, dy);
 		MAYBE_KEEP_ID(nline, line);
 		if (nline != NULL) {
 			PCB_SET_PARENT(nline, layer, dl);
-			if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, nline)) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, nline) && (dl != dst_sc->aux_layer)) {
 				pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &nline->BoundingBox);
 				pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &nline->bbox_naked);
 			}
@@ -1181,6 +1184,9 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	sc->bbox_naked.X1 = sc->bbox_naked.Y1 = RND_MAX_COORD;
 	sc->bbox_naked.X2 = sc->bbox_naked.Y2 = -RND_MAX_COORD;
 
+	if (sc->aux_layer == NULL)
+		pcb_subc_cache_find_aux(sc);
+
 	/* execute on layer locals */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *sl = sc->data->Layer + n;
@@ -1191,10 +1197,9 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		pcb_gfx_t *gfx;
 		gdl_iterator_t it;
 
-
 		linelist_foreach(&sl->Line, &it, line) {
 			pcb_object_operation(opfunc, ctx, PCB_OBJ_LINE, sl, line, line);
-			if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, line)) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, line) && (sl != sc->aux_layer)) {
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &line->BoundingBox);
 				pcb_box_bump_box_noflt(&sc->bbox_naked, &line->bbox_naked);
 			}
