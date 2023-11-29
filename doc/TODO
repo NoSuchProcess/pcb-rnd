@@ -22,8 +22,6 @@
 	- make a new bom template that includes that
 - librnd4.1:
 	- FEATURE: lihata board v9:
-		- ANNOUNCE: netlist dialog: add conn and del conn button
-		- ANNOUNCE: back annotation upgrade: subc add and remove
 	- remove PCB_WANT_FONT2, it's the default
 	- remove --enable-font2 and want_font2 from scconfig and config.h, it's the default
 	- maybe remove path_to_design_relative() in favor of librnd core/compat_fs.h
