@@ -386,24 +386,41 @@ static void ent_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	edit2_ent(ctx, ed2, r->cell[0]);
 }
 
-static int load_kern_key(const char *start, const char *end)
+static int load_kern_key(const char *start, const char *end, char **end_out)
 {
 	/* single character cases, left or right */
-	if (end == start+1)
+	if (end == start+1) {
+		if (end_out != NULL)
+			*end_out = (char *)end;
 		return *start;
-	if ((end == NULL) && (start[0] != '\0') && (start[1] == '\0'))
+	}
+	if ((end == NULL) && (start[0] != '\0') && ((start[1] == '\0') || isspace(start[1]))) {
+		if (end_out != NULL)
+			*end_out = (char *)start+1;
 		return *start;
+	}
 
 	if (*start == '&') {
 		char *e;
 		long val = strtol(start+1, &e, 10);
 		if (end != NULL) {
-			if (e != end)
+			if (e != end) {
+				if (end_out != NULL)
+					*end_out = NULL;
 				return 0; /* non-numeric suffix on left side */
+			}
 		}
 		else {
-			if (*e != '\0')
+			if (end_out != NULL)
+				*end_out = e;
+			if (isspace(*e)) {
+				/* this is okay: multiple pairs are entered */
+			}
+			else if (*e != '\0') {
+				if (end_out != NULL)
+					*end_out = NULL;
 				return 0; /* non-numeric suffix on right side */
+			}
 		}
 		if ((val < 1) || (val > 254))
 			return 0;
@@ -417,19 +434,24 @@ RND_INLINE void edit2_kern(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
 {
 	htkc_entry_t *e;
 	htkc_key_t key;
-	char *sep;
+	char *sep, *end, *curr;
 
 	if ((edit2(&ed2) != 0) || (ed2.name == NULL) || (*ed2.name == '\0'))
 		return;
 
-	sep = strchr(ed2.name+1, '-'); /* +1 so if '-' is the left char it is preserved */
+	for(curr = ed2.name; curr != NULL; curr = end) {
+
+	while(isspace(*curr)) curr++;
+	if (*curr == '\0') break;
+
+	sep = strchr(curr+1, '-'); /* +1 so if '-' is the left char it is preserved */
 	if (sep == NULL) {
 		rnd_message(RND_MSG_ERROR, "Key needs to be in the form of character pair, e.g. A-V\n");
 		return;
 	}
 
-	key.left = load_kern_key(ed2.name, sep);
-	key.right = load_kern_key(sep+1, NULL);
+	key.left = load_kern_key(curr, sep, NULL);
+	key.right = load_kern_key(sep+1, NULL, &end);
 
 	/* renamed: remove old entry */
 	if ((orig_name != NULL) && (strcmp(ed2.name, orig_name) != 0))
@@ -445,6 +467,7 @@ RND_INLINE void edit2_kern(fmprv_ctx_t *ctx, edit2_t ed2, const char *orig_name)
 		e->value = ed2.val;
 	else /* adding a new entry */
 		htkc_insert(&fontedit_src->kerning_tbl, key, ed2.val);
+	}
 
 	free(ed2.name);
 	fmprv_pcb2preview(ctx);
@@ -611,7 +634,7 @@ static void pcb_dlg_fontmode_preview(void)
 						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_edit_cb);
 				RND_DAD_END(fmprv_ctx.dlg);
 
-				RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph index form)");
+				RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph index form\nmultiple keys: space separated list like a-b c-d e-f)");
 #endif
 			RND_DAD_END(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
