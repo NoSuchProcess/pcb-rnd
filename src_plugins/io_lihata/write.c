@@ -1488,14 +1488,14 @@ static lht_node_t *build_kerning_tbl(rnd_font_t *font)
 		tmp.used = 0;
 
 		if ((e->key.left == '-') || glyph_non_printable(e->key.left))
-			rnd_append_printf(&tmp, "&%d", e->key.left);
+			rnd_append_printf(&tmp, "&%02x", e->key.left);
 		else
 			gds_append(&tmp, e->key.left);
 
 		gds_append(&tmp, '-');
 
 		if ((e->key.right == '-') || glyph_non_printable(e->key.right))
-			rnd_append_printf(&tmp, "&%d", e->key.right);
+			rnd_append_printf(&tmp, "&%02x", e->key.right);
 		else
 			gds_append(&tmp, e->key.right);
 
