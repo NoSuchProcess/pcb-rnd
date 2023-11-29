@@ -917,6 +917,7 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 	pcb_gfx_t *gfx, *ngfx;
 	gdl_iterator_t it;
 	pcb_board_t *pcb = NULL;
+	pcb_subc_t *src_sc = sl->parent.data->parent.subc;
 
 	assert(dst_sc->parent_type == PCB_PARENT_DATA);
 	if (dst_sc->parent.data->parent_type != PCB_PARENT_INVALID) {
@@ -927,15 +928,15 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 	if (pcb != NULL)
 		pcb_data_clip_inhibit_inc(pcb->Data);
 
-	if (dst_sc->aux_layer == NULL)
-		pcb_subc_cache_find_aux(dst_sc);
+	if (src_sc->aux_layer == NULL)
+		pcb_subc_cache_find_aux(src_sc);
 
 	linelist_foreach(&sl->Line, &it, line) {
 		nline = pcb_line_dup_at(dl, line, dx, dy);
 		MAYBE_KEEP_ID(nline, line);
 		if (nline != NULL) {
 			PCB_SET_PARENT(nline, layer, dl);
-			if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, nline) && (dl != dst_sc->aux_layer)) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, nline) && (sl != src_sc->aux_layer)) {
 				pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &nline->BoundingBox);
 				pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &nline->bbox_naked);
 			}
