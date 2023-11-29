@@ -304,13 +304,20 @@ void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *orig_font
 
 #ifdef PCB_WANT_FONT2
 	/* copy metadata */
-	rnd_font_copy_tables(font, orig_font);
-	font->kerning_tbl_valid = orig_font->kerning_tbl_valid;
-	font->entity_tbl_valid = orig_font->entity_tbl_valid;
-	/* these numericals are not edited graphically */
-	font->baseline = orig_font->baseline;
-	font->tab_width = orig_font->tab_width;
-	font->line_height = orig_font->line_height;
+	if (orig_font != NULL) {
+		rnd_font_copy_tables(font, orig_font);
+		font->kerning_tbl_valid = orig_font->kerning_tbl_valid;
+		font->entity_tbl_valid = orig_font->entity_tbl_valid;
+
+		/* these numericals are not edited graphically */
+		font->baseline = orig_font->baseline;
+		font->tab_width = orig_font->tab_width;
+		font->line_height = orig_font->line_height;
+	}
+	else {
+		rnd_message(RND_MSG_ERROR, "Original font data not available, some metadata is lost\n(kerning, entities, baseline, tab/line size)\n");
+		rnd_message(RND_MSG_INFO, "Note: this typically happens if you save to board format\nfrom the font editor and load that board later\nPlease don't do that, it can't retain metadata.\n");
+	}
 #endif
 
 	rnd_font_normalize(font);
