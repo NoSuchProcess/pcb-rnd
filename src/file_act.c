@@ -51,6 +51,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/hid/hid_init.h>
 #include <librnd/hid/hid_menu.h>
+#include <librnd/hid/hid_export.h>
 #include "layer_vis.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/hid/tool.h>
@@ -557,48 +558,6 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_Export[] = "Export(exporter, [exporter-args])";
 static const char pcb_acth_Export[] = "Export the current layout, e.g. Export(png, --dpi, 600)";
-static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	rnd_design_t *dsg = RND_ACT_DESIGN;
-	char *args[128];
-	char **a;
-	int n;
-
-	if (argc < 1) {
-		rnd_message(RND_MSG_ERROR, "Export() needs at least one argument, the name of the export plugin\n");
-		return 1;
-	}
-
-	if (argc > sizeof(args)/sizeof(args[0])) {
-		rnd_message(RND_MSG_ERROR, "Export(): too many arguments\n");
-		return 1;
-	}
-
-	args[0] = NULL;
-	for(n = 1; n < argc; n++)
-		RND_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
-
-	rnd_exporter = rnd_hid_find_exporter(args[0]);
-	if (rnd_exporter == NULL) {
-		rnd_message(RND_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", args[0]);
-		return 1;
-	}
-
-	/* remove the name of the exporter */
-	argc-=2;
-
-	/* call the exporter */
-	rnd_event(RND_ACT_DESIGN, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
-	a = args;
-	a++;
-	rnd_exporter->parse_arguments(rnd_exporter, &argc, &a);
-	rnd_exporter->do_export(rnd_exporter, dsg, NULL, NULL);
-	rnd_event(RND_ACT_DESIGN, RND_EVENT_EXPORT_SESSION_END, NULL);
-
-	rnd_exporter = NULL;
-	RND_ACT_IRES(0);
-	return 0;
-}
 
 static const char pcb_acts_Backup[] = "Backup()";
 static const char pcb_acth_Backup[] = "Backup the current layout - save using the same method that the timed backup function uses";
@@ -611,7 +570,7 @@ static fgw_error_t pcb_act_Backup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static rnd_action_t file_action_list[] = {
 	{"Backup", pcb_act_Backup, pcb_acth_Backup, pcb_acts_Backup},
-	{"Export", pcb_act_Export, pcb_acth_Export, pcb_acts_Export},
+	{"Export", rnd_act_Export, pcb_acth_Export, pcb_acts_Export},
 	{"LoadFrom", pcb_act_LoadFrom, pcb_acth_LoadFrom, pcb_acts_LoadFrom},
 	{"New", pcb_act_New, pcb_acth_New, pcb_acts_New},
 	{"Normalize", pcb_act_normalize, pcb_acth_normalize, pcb_acts_normalize},
