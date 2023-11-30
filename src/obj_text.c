@@ -56,12 +56,8 @@
 #include "obj_line_draw.h"
 #include "obj_text_draw.h"
 #include "conf_core.h"
+#include <librnd/font2/font.h>
 
-#ifdef PCB_WANT_FONT2
-#	include <librnd/font2/font.h>
-#else
-#	include <librnd/font/font.h>
-#endif
 
 
 TODO("ui_layer parent fix: remove this")
@@ -306,12 +302,9 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 #define text_mirror_bits(t) \
 	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (t)) ? PCB_TXT_MIRROR_Y : 0) | ((t)->mirror_x ? PCB_TXT_MIRROR_X : 0))
 
-#ifdef PCB_WANT_FONT2
 #define text_render_bits(t) \
 	(PCB_FLAG_TEST(PCB_FLAG_ENTITY, (t)) ? RND_FONT_ENTITY : 0)
-#else
-#define text_render_bits(t) 0
-#endif
+
 
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 {
@@ -451,12 +444,8 @@ int pcb_text_invalid_chars(pcb_board_t *pcb, rnd_font_t *FontPtr, pcb_text_t *Te
 	if (rendered == NULL)
 		return 0;
 
-#ifdef PCB_WANT_FONT2
-	TODO("the second arg 0 may need to benon-zero for &entyiy, depending on Text");
+	TODO("font2: the second arg 0 may need to be non-zero for &entity, depending on Text");
 	ctr = rnd_font_invalid_chars(FontPtr, 0, rendered);
-#else
-	ctr = rnd_font_invalid_chars(FontPtr, rendered);
-#endif
 
 	pcb_text_free_str(Text, rendered);
 
@@ -1177,11 +1166,7 @@ int pcb_text_chg_any(pcb_text_t *text, const pcb_text_t *src, rnd_bool undoable)
 
 /*** draw ***/
 
-#ifdef PCB_WANT_FONT2
-#	define MAX_SIMPLE_POLY_POINTS RND_FONT2_MAX_SIMPLE_POLY_POINTS
-#else
-#	define MAX_SIMPLE_POLY_POINTS 256
-#endif
+#define MAX_SIMPLE_POLY_POINTS RND_FONT2_MAX_SIMPLE_POLY_POINTS
 
 void pcb_font_draw_atom(void *cb_ctx, const rnd_glyph_atom_t *a)
 {
@@ -1321,15 +1306,11 @@ RND_INLINE void pcb_text_draw_string_rnd(pcb_draw_info_t *info, rnd_font_t *font
 		cb_ctx = &ucb;
 	}
 
-#ifdef PCB_WANT_FONT2
 	if (poly_thin)
 		mirror |= RND_FONT_THIN_POLY;
 	if (text_flags & PCB_FLAG_ENTITY)
 		mirror |= RND_FONT_ENTITY;
 	rnd_font_draw_string(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, tiny, rcb, cb_ctx);
-#else
-	rnd_font_draw_string(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, rcb, cb_ctx);
-#endif
 }
 
 

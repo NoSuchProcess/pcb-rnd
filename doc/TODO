@@ -15,19 +15,16 @@
 	? BUG: start new layout when in font v2 enabled pcb-rnd running font edit mode. Use {w f} to load a font, select font, enter font edit mode, Subsequent fontsave() saves in v1 format [report: Erich]
 		-> can not reproduce
 		-> saving in v1 alone is not a bug: the dialog box always offers you a version selection widget; a bug is when you select a format there and it saves in a different format
-	- non-bug: drc_query test breaks with font2: text bbox got fixed for unknown chars in font2 (font1 was buggy) [report: Igor2]
 + BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
 + BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
 - FEATURE: attribute propagation from sch-rnd via tEDAx
 	- device attribute in subcricuits
 	- make a new bom template that includes that
 - librnd4.1:
-	- FEATURE: lihata board v9:
-	- remove PCB_WANT_FONT2, it's the default
-	- remove --enable-font2 and want_font2 from scconfig and config.h, it's the default
+	- FEATURE: lihata board v9
+	- TODO("font2:")
 	- maybe remove path_to_design_relative() in favor of librnd core/compat_fs.h
 	- rebind Export(): use rnd_act_Export(), remove pcb_act_Export()
-	- DRC test in make test: the invchar test bbox changes because of a bugfix
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
 	-> use list_sep = {foo} in your template
 - DOC: pool node on how to use pixmap for breadboading

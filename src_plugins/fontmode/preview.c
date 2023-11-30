@@ -33,20 +33,16 @@
 #include "font.h"
 
 #define RND_TIMED_CHG_TIMEOUT 1000
-#ifdef PCB_WANT_FONT2
 #include <librnd/plugins/lib_hid_common/timed_chg.h>
-#endif
 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int wprev, wpend;
-#ifdef PCB_WANT_FONT2
 	int wbaseline, wtab_width, wline_height, wentt, wkernt;
 	unsigned geo_changed:1;
 	unsigned ent_changed:1;
 	unsigned kern_changed:1;
 	rnd_timed_chg_t timed_refresh;
-#endif
 	int active; /* already open - allow only one instance */
 	unsigned char *sample;
 	rnd_font_t font;
@@ -63,9 +59,7 @@ static void fmprv_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	fmprv_ctx_t *ctx = caller_data;
 
-#ifdef PCB_WANT_FONT2
 	rnd_timed_chg_cancel(&ctx->timed_refresh);
-#endif
 	rnd_font_free(&ctx->font);
 	RND_DAD_FREE(ctx->dlg);
 
@@ -77,16 +71,13 @@ static void fmprv_pcb2preview_sample(fmprv_ctx_t *ctx)
 	rnd_font_free(&ctx->font);
 	memset(&ctx->font, 0, sizeof(ctx->font)); /* clear any cache */
 	editor2font(PCB, &ctx->font, fontedit_src);
-#ifdef PCB_WANT_FONT2
+
 	ctx->font.baseline = fontedit_src->baseline;
 	ctx->font.line_height = fontedit_src->line_height;
 	ctx->font.tab_width = fontedit_src->tab_width;
 	rnd_font_copy_tables(&ctx->font, fontedit_src);
-#endif
-
 }
 
-#ifdef PCB_WANT_FONT2
 static void fmprv_pcb2preview_geo(fmprv_ctx_t *ctx)
 {
 	rnd_hid_attr_val_t hv;
@@ -197,9 +188,7 @@ static void fmprv_pcb2preview_kerning(fmprv_ctx_t *ctx)
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wkernt, &hv);
 		free(cursor_path);
 	}
-
 }
-#endif
 
 
 static void fmprv_pcb2preview(fmprv_ctx_t *ctx)
@@ -211,15 +200,12 @@ static void fmprv_pcb2preview(fmprv_ctx_t *ctx)
 
 	fmprv_pcb2preview_sample(ctx);
 
-#ifdef PCB_WANT_FONT2
 	if (ctx->geo_changed)
 		fmprv_pcb2preview_geo(ctx);
 	if (ctx->ent_changed)
 		fmprv_pcb2preview_entities(ctx);
 	if (ctx->kern_changed)
 		fmprv_pcb2preview_kerning(ctx);
-
-#endif
 
 	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
 	rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], NULL); /* redraw */
@@ -236,11 +222,7 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 	fmprv_ctx_t *ctx = prv->user_ctx;
 	rnd_xform_t xform = {0};
 	pcb_draw_info_t info = {0};
-#ifdef PCB_WANT_FONT2
 	rnd_font_render_opts_t opts = RND_FONT_HTAB | RND_FONT_ENTITY | RND_FONT_MULTI_LINE;
-#else
-	int opts = 0;
-#endif
 
 	info.xform = &xform;
 	pcb_draw_setup_default_gui_xform(&xform);
@@ -248,28 +230,19 @@ static void font_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 
 	rnd_render->set_color(pcb_draw_out.fgGC, rnd_color_black);
 
-#ifdef PCB_WANT_FONT2
 	rnd_font_draw_string(&ctx->font, ctx->sample, 0, 0,
 		1.0, 1.0, 0.0,
 		opts, 0, 0, RND_FONT_TINY_ACCURATE, pcb_font_draw_atom, &info);
-#else
-	rnd_font_draw_string(&ctx->font, ctx->sample, 0, 0,
-		1.0, 1.0, 0.0,
-		opts, 0, 0, 0, RND_FONT_TINY_ACCURATE, pcb_font_draw_atom, &info);
-#endif
 }
 
 static void timed_refresh(fmprv_ctx_t *ctx)
 {
-#ifdef PCB_WANT_FONT2
 	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
 	rnd_timed_chg_schedule(&ctx->timed_refresh);
-#endif
 }
 
 static void refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-#ifdef PCB_WANT_FONT2
 	fmprv_ctx_t *ctx = caller_data;
 	int widx = attr - ctx->dlg;
 
@@ -289,10 +262,8 @@ static void refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 		return;
 
 	timed_refresh(ctx);
-#endif
 }
 
-#ifdef PCB_WANT_FONT2
 typedef struct {
 	char *name;
 	rnd_coord_t val;
@@ -523,8 +494,6 @@ static void kern_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	edit2_kern(ctx, ed2, r->cell[0]);
 }
-#endif
-
 
 static void sample_text_changed_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *atxt)
 {
@@ -579,9 +548,7 @@ static void pcb_dlg_fontmode_preview(void)
 	if (fmprv_ctx.sample == NULL)
 		fmprv_ctx.sample = (unsigned char *)rnd_strdup("Sample string\nin multiple\nlines.");
 
-#ifdef PCB_WANT_FONT2
 	rnd_timed_chg_init(&fmprv_ctx.timed_refresh, fmprv_pcb2preview_timed, &fmprv_ctx);
-#endif
 
 	RND_DAD_BEGIN_VPANE(fmprv_ctx.dlg, "vert_main");
 		RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
@@ -602,9 +569,6 @@ static void pcb_dlg_fontmode_preview(void)
 
 			RND_DAD_BEGIN_TABLE(fmprv_ctx.dlg, 2); /* geometry */
 				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-#ifndef PCB_WANT_FONT2
-				RND_DAD_LABEL(fmprv_ctx.dlg, "Not supported in font v1");
-#else
 				RND_DAD_LABEL(fmprv_ctx.dlg, "Baseline:");
 				RND_DAD_COORD(fmprv_ctx.dlg);
 					fmprv_ctx.wbaseline = RND_DAD_CURRENT(fmprv_ctx.dlg);
@@ -617,14 +581,10 @@ static void pcb_dlg_fontmode_preview(void)
 				RND_DAD_COORD(fmprv_ctx.dlg);
 					fmprv_ctx.wtab_width = RND_DAD_CURRENT(fmprv_ctx.dlg);
 					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
-#endif
 			RND_DAD_END(fmprv_ctx.dlg);
 
 			RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* entities */
 				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-#ifndef PCB_WANT_FONT2
-				RND_DAD_LABEL(fmprv_ctx.dlg, "Not supported in font v1");
-#else
 				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, ent_hdr);
 					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					fmprv_ctx.wentt = RND_DAD_CURRENT(fmprv_ctx.dlg);
@@ -637,14 +597,10 @@ static void pcb_dlg_fontmode_preview(void)
 				RND_DAD_END(fmprv_ctx.dlg);
 
 				RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: case sensitive entity name without the &; wrapping)");
-#endif
 			RND_DAD_END(fmprv_ctx.dlg);
 
 			RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* kerning */
 				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-#ifndef PCB_WANT_FONT2
-				RND_DAD_LABEL(fmprv_ctx.dlg, "Not supported in font v1");
-#else
 				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, kern_hdr);
 					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					fmprv_ctx.wkernt = RND_DAD_CURRENT(fmprv_ctx.dlg);
@@ -655,7 +611,6 @@ static void pcb_dlg_fontmode_preview(void)
 						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_edit_cb);
 					RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph\nindex form; multiple keys: space separated list like a-b c-d e-f)");
 				RND_DAD_END(fmprv_ctx.dlg);
-#endif
 			RND_DAD_END(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
 
@@ -667,9 +622,7 @@ static void pcb_dlg_fontmode_preview(void)
 
 	RND_DAD_NEW("font_mode_preview", fmprv_ctx.dlg, "Font editor: preview", &fmprv_ctx, rnd_false, fmprv_close_cb);
 
-#ifdef PCB_WANT_FONT2
 	fmprv_ctx.geo_changed = fmprv_ctx.ent_changed = fmprv_ctx.kern_changed = 1;
-#endif
 	fmprv_pcb2preview(&fmprv_ctx);
 }
 

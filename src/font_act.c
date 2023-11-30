@@ -124,11 +124,7 @@ static const char pcb_acth_save_font_to[] = "Save PCB font to a file";
 
 fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-#ifdef PCB_WANT_FONT2
 	const char *fmts[] = {"lihata font v2", "lihata font v1", NULL};
-#else
-	const char *fmts[] = {"lihata font v1", NULL};
-#endif
 	const char *fname = NULL, *sid = NULL, *fmt;
 	static char *default_file = NULL;
 	rnd_font_id_t fid;

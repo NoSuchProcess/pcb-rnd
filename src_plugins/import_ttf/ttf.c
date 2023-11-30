@@ -51,11 +51,7 @@ static const char *ttf_cookie = "ttf importer";
 
 #include "menu_internal.c"
 
-#ifdef PCB_WANT_FONT2
-#	define MAX_SIMPLE_POLY_POINTS RND_FONT2_MAX_SIMPLE_POLY_POINTS
-#else
-#	define MAX_SIMPLE_POLY_POINTS 256
-#endif
+#define MAX_SIMPLE_POLY_POINTS RND_FONT2_MAX_SIMPLE_POLY_POINTS
 
 static void str_init(pcb_ttf_stroke_t *s)
 {

@@ -2195,11 +2195,7 @@ static pcb_data_t *parse_data(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *ds
 #define HASH_GET(hash, name)        hash_get(hash, name, 0)
 #define RND_LHT_ERROR               iolht_error
 
-#ifdef PCB_WANT_FONT2
-#	include <librnd/font2/font_lht.h>
-#else
-#	include <librnd/font/font_lht.h>
-#endif
+#include <librnd/font2/font_lht.h>
 
 #undef PARSE_COORD
 #undef PARSE_DOUBLE
@@ -2234,12 +2230,10 @@ static int parse_fontkit(lht_read_t *rctx, pcb_fontkit_t *fk, lht_node_t *nd)
 			f = &fk->dflt;
 		}
 
-#ifdef PCB_WANT_FONT2
 		if (rctx->rdver >= 9)
 			f->filever = 2;
 		else
 			f->filever = 1;
-#endif
 
 		if (rnd_font_lht_parse_font(f, n) != 0)
 			return -1;

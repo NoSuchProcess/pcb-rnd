@@ -1,8 +1,8 @@
 x: text_char: Invalid character in text
-within (-15.50, 253.12, 469.50, 351.88) mil
+within (-21.75, 253.12, 525.75, 351.88) mil
 Text object contains character(s) that will not render with the given font Details: Number of invalid characters:1
 
 x: text_char: Invalid character in text
-within (-17.63, 326.25, 488.63, 443.75) mil
+within (-23.88, 326.25, 544.88, 443.75) mil
 Text object contains character(s) that will not render with the given font Details: Number of invalid characters:1
 

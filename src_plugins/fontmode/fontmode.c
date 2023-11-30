@@ -176,13 +176,11 @@ static void font2editor_new(pcb_board_t *pcb, rnd_font_t *font, pcb_layer_t *lfo
 			}
 		}
 
-#ifdef PCB_WANT_FONT2
 		if ((s == 'i') || (s == 'q'))
 			rnd_trace("delta1: %c w=%ld + %ld + %ld=%ld | adv: %d %ld + %ld = %ld\n", s, g->width, g->xdelta, ox, g->width + g->xdelta + ox, g->advance_valid, g->advance, ox, g->advance + ox);
 		if (g->advance_valid)
 			w = g->advance + ox;
 		else
-#endif
 			w = g->width + g->xdelta + ox;
 		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
@@ -286,14 +284,13 @@ void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *orig_font
 		ox = (s % 16 + 1) * CELL_SIZE;
 		g = &font->glyph[s];
 
-#ifdef PCB_WANT_FONT2
 		g->advance = x1 - ox;
 		g->advance_valid = 1;
 		if (g->advance > 10)
 			g->valid = 1;
 		if ((s == 'i') || (s == 'q'))
 			rnd_trace("delta2: %c w=%ld - %ld - %ld=%ld | adv: %ld - %ld = %ld\n", s, x1, ox, g->width, x1-ox-g->width, x1, ox, x1-ox);
-#endif
+
 		x1 -= ox;
 
 		g->xdelta = x1 - g->width;
@@ -302,7 +299,6 @@ void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *orig_font
 			g->valid = 1;
 	}
 
-#ifdef PCB_WANT_FONT2
 	/* copy metadata */
 	if (orig_font != NULL) {
 		rnd_font_copy_tables(font, orig_font);
@@ -318,7 +314,6 @@ void editor2font(pcb_board_t *pcb, rnd_font_t *font, const rnd_font_t *orig_font
 		rnd_message(RND_MSG_ERROR, "Original font data not available, some metadata is lost\n(kerning, entities, baseline, tab/line size)\n");
 		rnd_message(RND_MSG_INFO, "Note: this typically happens if you save to board format\nfrom the font editor and load that board later\nPlease don't do that, it can't retain metadata.\n");
 	}
-#endif
 
 	rnd_font_normalize(font);
 }
@@ -387,10 +382,8 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	lwidth = make_layer(pcb, grp[2], "Width");
 	lgrid  = make_layer(pcb, grp[3], "Grid");
 
-#ifdef PCB_WANT_FONT2
 	if (font->baseline > 0)
 		lbaslin = make_layer(pcb, grp[3], "Baseline");
-#endif
 
 	assert(pcb_layergrp_list(pcb, PCB_LYT_SILK, grp, 2) == 2);
 	make_layer(pcb, grp[0], "Silk");
@@ -413,15 +406,12 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_line_new_merge(lgrid, 0, y, pcb->hidlib.dwg.X2, y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 
-
-#ifdef PCB_WANT_FONT2
 	if (font->baseline > 0) {
 		for (l = 0; l <= PCB_MAX_FONTPOSITION / 16 + 1; l++) {
 			int y = (l + 1) * CELL_SIZE + font->baseline;
 			pcb_line_new_merge(lbaslin, 0, y, pcb->hidlib.dwg.X2, y, RND_MIL_TO_COORD(0.25), RND_MIL_TO_COORD(1), pcb_no_flags());
 		}
 	}
-#endif
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -713,7 +703,6 @@ static const char pcb_acts_FontBaseline[] = "FontBaseline(+-delta)";
 static const char pcb_acth_FontBaseline[] = "Change the baseline value and redraw. If there is no baseline, add baseline first.";
 static fgw_error_t pcb_act_FontBaseline(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-#ifdef PCB_WANT_FONT2
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_font_t *font = pcb_font(pcb, 0, 1);
 	rnd_coord_t delta = 0;
@@ -726,11 +715,6 @@ static fgw_error_t pcb_act_FontBaseline(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		font->baseline = RND_MIL_TO_COORD(50); /* default value that works with the default font */
 	font->baseline += delta;
 	return pcb_act_FontEdit(res, argc, argv);
-#else
-	rnd_message(RND_MSG_ERROR, "FontBaseline() is not implemented until librnd 4.1.0 (font v2 support)\n");
-	RND_ACT_IRES(-1);
-	return 0;
-#endif
 }
 
 rnd_action_t fontmode_action_list[] = {

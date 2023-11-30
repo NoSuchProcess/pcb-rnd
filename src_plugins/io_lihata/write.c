@@ -1439,14 +1439,12 @@ static lht_node_t *build_glyph(rnd_glyph_t *g, const char *name)
 	lht_dom_hash_put(ndt, build_textf("height", CFMT, g->height));
 	lht_dom_hash_put(ndt, build_textf("delta", CFMT, g->xdelta));
 
-#ifdef PCB_WANT_FONT2
 	if (g->advance_valid) {
 		if (wrver >= 9)
 			lht_dom_hash_put(ndt, build_textf("advance", CFMT, g->advance));
 		else
 			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font glyph advance", "glyph width and delta are saved; there may be slight variations in glyph spacing (this error should be in the range of nanometers)");
 	}
-#endif
 
 	lst = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(ndt, lst);
@@ -1461,7 +1459,6 @@ static lht_node_t *build_glyph(rnd_glyph_t *g, const char *name)
 	return ndt;
 }
 
-#ifdef PCB_WANT_FONT2
 static lht_node_t *build_entity_tbl(rnd_font_t *font)
 {
 	lht_node_t *ntbl;
@@ -1506,7 +1503,6 @@ static lht_node_t *build_kerning_tbl(rnd_font_t *font)
 	gds_uninit(&tmp);
 	return ntbl;
 }
-#endif
 
 static lht_node_t *build_font_rnd(rnd_font_t *font)
 {
@@ -1529,7 +1525,6 @@ static lht_node_t *build_font_rnd(rnd_font_t *font)
 	if (font->name != NULL)
 		lht_dom_hash_put(ndt, build_text("name", font->name));
 
-#ifdef PCB_WANT_FONT2
 	/* font v2 fields, avaliable from lihata board 9 */
 	if (wrver >= 9) {
 		/* fields always saved */
@@ -1575,7 +1570,6 @@ static lht_node_t *build_font_rnd(rnd_font_t *font)
 		if ((font->kerning_tbl_valid) && (font->kerning_tbl.used > 0))
 			pcb_io_incompat_save(NULL, NULL, "font", "lihata board before v9 did not have font kerning table", "Kerning table is lost, inter-glyph spacing will change when rendering this font");
 	}
-#endif
 
 	syms = lht_dom_node_alloc(LHT_HASH, "symbols");
 	lht_dom_hash_put(ndt, syms);

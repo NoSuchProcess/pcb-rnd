@@ -26,13 +26,6 @@ else
 	put /local/pcb/SO {.so}
 end
 
-# TODO: when removing want_font2 also remove font2_suffix and just hardwire 2
-if /local/pcb/want_font2 then
-	put /local/pcb/font2_suffix {2}
-else
-	put /local/pcb/font2_suffix {}
-end
-
 # These files are to be generated before make dep is run
 put /local/rnd/DEPDEPS { conf_core_fields.h conf_internal.c defpcb_internal.c buildin.c pcb_menu_default.c }
 
@@ -304,7 +297,7 @@ all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD) $(LIBRND_L)/librnd-hid$(SO) $(LIBRND_L)/librnd-poly$(SO) $(LIBRND_L)/librnd-3rd$(SO)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) \
-		-lrnd-hid -lrnd-font@/local/pcb/font2_suffix@ $(POLYCLIP)  -lrnd-core -lrnd-3rd \
+		-lrnd-hid -lrnd-font2 $(POLYCLIP)  -lrnd-core -lrnd-3rd \
 		$(LDFLAGS) $(LIBS)
 
 ### pcb-rnd infra ###
