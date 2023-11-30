@@ -52,6 +52,7 @@
 typedef struct {
 	char *value;
 	char *footprint;
+	char *device;
 } fp_t;
 
 static void *htsp_get2(htsp_t *ht, const char *key, size_t size)
@@ -95,6 +96,10 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 			fp_t *fp = htsp_get2(&fps, argv[1], sizeof(fp_t));
 			fp->value = rnd_strdup(argv[2]);
 		}
+		else if ((argc == 3) && (strcmp(argv[0], "device") == 0)) {
+			fp_t *fp = htsp_get2(&fps, argv[1], sizeof(fp_t));
+			fp->device = rnd_strdup(argv[2]);
+		}
 		else if ((argc == 4) && (strcmp(argv[0], "conn") == 0)) {
 			char id[512];
 			sprintf(id, "%s-%s", argv[2], argv[3]);
@@ -128,15 +133,16 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 		for (e = htsp_first(&fps); e; e = htsp_next(&fps, e)) {
 			fp_t *fp = e->value;
 
-/*			rnd_trace("tedax fp: refdes=%s val=%s fp=%s\n", e->key, fp->value, fp->footprint);*/
+/*			rnd_trace("tedax fp: refdes=%s val=%s fp=%s device=%s\n", e->key, fp->value, fp->footprint, fp->device);*/
 			if (fp->footprint == NULL)
 				rnd_message(RND_MSG_ERROR, "tedax: not importing refdes=%s: no footprint specified\n", e->key);
 			else
-				rnd_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), NULL);
+				rnd_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), fp->device, NULL);
 
 			free(e->key);
 			free(fp->value);
 			free(fp->footprint);
+			free(fp->device);
 			free(fp);
 		}
 		rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
