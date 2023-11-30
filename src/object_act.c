@@ -326,7 +326,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 	return 0;
 }
 
-static const char pcb_acts_ElementList[] = "ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)";
+static const char pcb_acts_ElementList[] = "ElementList(Start|Done|Need,<refdes>,<footprint>,<value>,[device])";
 static const char pcb_acth_ElementList[] = "Adds the given element if it doesn't already exist.";
 /* DOC: elementlist.html */
 static int number_of_footprints_not_found;
@@ -531,7 +531,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
 	pcb_subc_t *sc;
-	const char *refdes, *value, *footprint;
+	const char *refdes, *value, *footprint, *device = NULL;
 	fgw_arg_t rs, args[4];
 	int fx, fy, fs;
 	static placer_t plc;
@@ -575,6 +575,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	RND_ACT_CONVARG(2, FGW_STR, ElementList, refdes = argv[2].val.str);
 	RND_ACT_CONVARG(3, FGW_STR, ElementList, footprint = argv[3].val.str);
 	RND_ACT_CONVARG(4, FGW_STR, ElementList, value = argv[4].val.str);
+	RND_ACT_MAY_CONVARG(5, FGW_STR, ElementList, device = argv[5].val.str);
 
 	args[0].type = FGW_FUNC;
 	args[0].val.argv0.func = NULL;
@@ -596,6 +597,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	printf("  ... footprint = %s\n", footprint);
 	printf("  ... refdes = %s\n", refdes);
 	printf("  ... value = %s\n", value);
+	printf("  ... device = %s\n", device);
 #endif
 
 	sc = pcb_subc_by_refdes(pcb->Data, refdes);
@@ -688,6 +690,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	if (sc != NULL) {
 /*		pcb_attribute_put(&sc->Attributes, "refdes", refdes);*/
 		pcb_attribute_put(&sc->Attributes, "value", value);
+		if (device != NULL)
+			pcb_attribute_put(&sc->Attributes, "device", device);
 		PCB_FLAG_SET(PCB_FLAG_FOUND, sc);
 	}
 
