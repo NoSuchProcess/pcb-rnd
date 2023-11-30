@@ -119,14 +119,14 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 			tabdata->wtype = RND_DAD_CURRENT(ctx->dlg);
 			ctx->dlg[tabdata->wtype].name = rnd_strdup((pcb->is_footprint ? "footprint" : "PCB board"));
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
-		RND_DAD_LABEL(ctx->dlg, "Board attributes");
-		RND_DAD_BUTTON(ctx->dlg, "Edit...");
-			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_edit_attr);
 		RND_DAD_LABEL(ctx->dlg, "Loaded with");
 		RND_DAD_LABEL(ctx->dlg, "");
 			tabdata->wloader = RND_DAD_CURRENT(ctx->dlg);
 			ctx->dlg[tabdata->wtype].name = rnd_strdup(pcb->Data->loader == NULL ? "unknown" : pcb->Data->loader->description);
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
+		RND_DAD_LABEL(ctx->dlg, "Board attributes");
+		RND_DAD_BUTTON(ctx->dlg, "Edit...");
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_edit_attr);
 
 		RND_DAD_END(ctx->dlg);
 }
