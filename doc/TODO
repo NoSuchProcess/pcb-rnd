@@ -22,7 +22,6 @@
 	- make a new bom template that includes that
 - librnd4.1:
 	- maybe remove path_to_design_relative() in favor of librnd core/compat_fs.h
-	- rebind Export(): use rnd_act_Export(), remove pcb_act_Export()
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
 	-> use list_sep = {foo} in your template
 - DOC: pool node on how to use pixmap for breadboading
