@@ -21,7 +21,6 @@
 	- device attribute in subcricuits
 	- make a new bom template that includes that
 - librnd4.1:
-	- FEATURE: lihata board v9
 	- maybe remove path_to_design_relative() in favor of librnd core/compat_fs.h
 	- rebind Export(): use rnd_act_Export(), remove pcb_act_Export()
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
