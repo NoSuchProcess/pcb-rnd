@@ -30,12 +30,14 @@
 #include <librnd/core/actions.h>
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
 #include "board.h"
+#include "data.h"
+#include "plug_io.h"
 #include "event.h"
 #include "undo.h"
 #include "conf_core.h"
 
 typedef struct {
-	int wname, wthermscale, wtype;
+	int wname, wthermscale, wtype, wloader;
 } pref_board_t;
 
 #define RND_EMPTY(a)           ((a) ? (a) : "")
@@ -52,6 +54,7 @@ static void pref_board_brd2dlg(pref_ctx_t *ctx, rnd_design_t *dsg)
 	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wname, str, RND_EMPTY(dsg->name));
 	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wthermscale, dbl, pcb->ThermScale);
 	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wtype, str, (pcb->is_footprint ? "footprint" : "PCB board"));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wloader, str, pcb->Data->loader == NULL ? "unknown" : pcb->Data->loader->description);
 }
 
 /* Dialog box to actual board meta */
@@ -119,6 +122,12 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 		RND_DAD_LABEL(ctx->dlg, "Board attributes");
 		RND_DAD_BUTTON(ctx->dlg, "Edit...");
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_edit_attr);
+		RND_DAD_LABEL(ctx->dlg, "Loaded with");
+		RND_DAD_LABEL(ctx->dlg, "");
+			tabdata->wloader = RND_DAD_CURRENT(ctx->dlg);
+			ctx->dlg[tabdata->wtype].name = rnd_strdup(pcb->Data->loader == NULL ? "unknown" : pcb->Data->loader->description);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
+
 		RND_DAD_END(ctx->dlg);
 }
 
