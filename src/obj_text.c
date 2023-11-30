@@ -444,8 +444,7 @@ int pcb_text_invalid_chars(pcb_board_t *pcb, rnd_font_t *FontPtr, pcb_text_t *Te
 	if (rendered == NULL)
 		return 0;
 
-	TODO("font2: the second arg 0 may need to be non-zero for &entity, depending on Text");
-	ctr = rnd_font_invalid_chars(FontPtr, 0, rendered);
+	ctr = rnd_font_invalid_chars(FontPtr, text_render_bits(Text), rendered);
 
 	pcb_text_free_str(Text, rendered);
 
