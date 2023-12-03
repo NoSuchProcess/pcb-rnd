@@ -1,0 +1,54 @@
+Milestone A:
+
+- getting started [25]
+	- normal workflow (diagram):
+	- startup
+		- cd to project dir, start pcb-rnd from there (UNIX aspects)
+		- save (implicit save as; project directory)
+		- explain main window parts, especially the layer selector
+		- online support button
+	- layer stackup
+		- show preferences cross sect
+		- drag&drop remove intern layer groups
+		- remove extra layers, keep one layer per group for now
+		- decide that bottom is gnd, rename layers accordingly
+		- mention sizes (but do not deal with it); defaults are good for all techs
+	- sch import
+		- sch-rnd: import one or more sheets; prefer project.lht
+		- hint on other formats
+		- mention stdlib footprints are used
+		- zoom out for the footprints
+		- terminology: subcircuit
+		- look at the netlist
+		- re-import
+	- placement
+		- manual placement for this tutorial
+		- looking at sch
+		- looking at rats nest, {c r}
+		- drag&drop move: no need to select
+			- accidentally move a floater
+			- show undo {u u}
+			- lock floaters!
+		- grid basics, bottom status line, top coord readout
+		- show rotate
+		- {c f}
+		- show context menu move to the other side, show hotkey
+	- routing
+		- routing with lines on top layer
+			- netlist window disable gnd
+			- hover over a pin for pin info/net
+			- line refraction with shift
+			- line refraction with '/' and menu (bottom status!)
+			- routing styles (selection only)
+		- via & sides
+				- find a crossing show manual via placement + usig the other side
+				- tab, shift tab, ctrl tab
+				- bottom status
+				- via terminology: padstack
+		- netlist window re-enable gnd
+		- polygon on the bottom side
+		- thermals to connect (minimum thermals)
+	- draw the outline
+	- tune the silk
+	- mention export will be handled in a different video
+
