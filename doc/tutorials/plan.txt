@@ -10,7 +10,40 @@ Milestone B:
 	- show routing style configuration (no padstack yet)
 
 - per board and per subc padstack proto lib [5]
-	TODO (save load too!)
+	- switch to mm! (the default board has protos defined in mm)
+	- place a few vias of different style, multiple of each in a "table"
+	- draw poly around them
+	- show right-click propedit on the vias: different proto
+	- show right-click padstack editor:
+		- explain parts of the first tab:
+			- show the same proto id
+			- rot/mirror doesn't matter with round padstack -> later video
+		- explain second tab:
+			- per layer shape: grow and shrink internal copper by 0.5mm
+			- change hole dia and plating
+		- show third tab:
+			- generate a square via to replace this
+			- show that all vias of the same proto replaced
+			- show that the proto number did not change
+		- show the same process with duplicating first (first tab)
+		- first tab: click on the proto id, change proto in this one instance from lib
+		- dup:
+			- change it back to the original number
+			- show again that edit proto changes all vias sharing the same proto
+			- click on dup, show it got a new number
+			- changing now changes only this one
+			- but it's easy to pick this proto for any via
+		- close the dialog
+	- open the board padstack lib dialog fom the edit window
+		- same dialog we used for selecting a new proto
+		- show edit and new
+		- show select and switch 
+		- show count/del
+		- mention load/save and copy/paste
+	- place two dip(8)'s
+	- right click on one of the dip's round pins, switch to round
+	- right click on the subc, padstack proto lib
+
 
 - advanced routing: arcs and propedit on traces [3]
 	- arcs
