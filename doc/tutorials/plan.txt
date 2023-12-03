@@ -7,7 +7,6 @@ Milestone B:
 		- 90 degree
 		- all-direction
 	- rubber band modes
-	- route radius
 	- show routing style configuration (no padstack yet)
 
 - per board and per subc padstack proto lib [5]
