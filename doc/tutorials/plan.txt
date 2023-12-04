@@ -2,7 +2,7 @@
 
 Milestone B:
 
-- advanced routing: arcs and propedit on traces [3]
++ advanced routing: arcs and propedit on traces [3]
 	- arc example: go around large hole
 	- arcs
 		- same trace width
@@ -17,14 +17,14 @@ Milestone B:
 	- change clearance and trace thickness
 	- refer to sch-rnd propedit video
 
-- show routing style configuration (no padstack yet) [2]
++ show routing style configuration (no padstack yet) [2]
 	- select a style
 	- draw a polygon, a line and a text
 	- name (display name) - [objects don't remember]
 	- change geometry, show effect with new objects on the poly
 	- show attributes
 
-- advanced routing with lines [2]
++ advanced routing with lines [2]
 	- line refraction:
 		- normal, /
 		- 90 degree
