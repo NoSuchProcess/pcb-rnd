@@ -11,7 +11,6 @@
 	+ some glyphs need the same kerning, being able to input a list like "N-}, M-}, I-}" and "-2mil" would be time saving in the font editor preview GUI
 		-> space separated list, don't use comma
 + BUG: font2 bugs:
-	+ BUG: & hex bug on kerning table: preview.c, search for &%d, should be &%x, should be line 159 and 164 [report: Erich]
 	? BUG: start new layout when in font v2 enabled pcb-rnd running font edit mode. Use {w f} to load a font, select font, enter font edit mode, Subsequent fontsave() saves in v1 format [report: Erich]
 		-> can not reproduce
 		-> saving in v1 alone is not a bug: the dialog box always offers you a version selection widget; a bug is when you select a format there and it saves in a different format
