@@ -274,8 +274,11 @@ static void pcb_board_resize_(pcb_board_t *pcb, rnd_coord_t x1, rnd_coord_t y1, 
 	pcb->hidlib.dwg.X2 = x2;
 	pcb->hidlib.dwg.Y2 = y2;
 
-	if (pcb == PCB)
-		pcb_board_replaced();
+	if (pcb == PCB) {
+		rnd_event(&pcb->hidlib, RND_EVENT_DESIGN_META_CHANGED, NULL);
+		rnd_event(&pcb->hidlib, PCB_EVENT_BOARD_EDITED, NULL);
+		rnd_gui->invalidate_all(rnd_gui);
+	}
 }
 
 /*** undoable board resize ***/
