@@ -23,7 +23,6 @@
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
 	-> use list_sep = {foo} in your template
 - DOC: pool node on how to use pixmap for breadboading
-+ BUG: start pcb-rnd, { w l }, select tssop(), place on layout, shift click to replace tssop() on layout with tssop() in buffer, then { u u }, note "pcb_search_obj_by_id(): internal error, search for ID XXXX failed" [report: Erich]
 
 2. For later releases ===============================================================================
 - FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
