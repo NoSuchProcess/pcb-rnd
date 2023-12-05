@@ -379,10 +379,13 @@
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
- ../src_plugins/dialogs/dlg_pref_board.c event.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h \
- ../src_plugins/dialogs/dlg_pref_sizes.c drc.h view.h idpath.h \
- ../src_plugins/dialogs/dlg_pref_lib.c \
+ ../src_plugins/dialogs/dlg_pref_board.c data.h crosshair.h route.h \
+ buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h plug_io.h \
+ plug_footprint.h data.h event.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h conf_core.h ../src_plugins/dialogs/dlg_pref_sizes.c drc.h \
+ view.h ../src_plugins/dialogs/dlg_pref_lib.c \
  ../src_plugins/dialogs/dlg_pref_layer.c stub_draw.h draw.h \
  ../src_plugins/dialogs/dlg_pref_color.c
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
