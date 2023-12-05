@@ -8,8 +8,6 @@
 		-> too complicated with the current save mechanism
 	/ add a filter like in the library window
 		-> not complex,but too much code; sorting should be enough
-	+ some glyphs need the same kerning, being able to input a list like "N-}, M-}, I-}" and "-2mil" would be time saving in the font editor preview GUI
-		-> space separated list, don't use comma
 + BUG: font2 bugs:
 	? BUG: start new layout when in font v2 enabled pcb-rnd running font edit mode. Use {w f} to load a font, select font, enter font edit mode, Subsequent fontsave() saves in v1 format [report: Erich]
 		-> can not reproduce
