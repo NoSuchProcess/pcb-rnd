@@ -15,6 +15,7 @@
 		-> can not reproduce
 		-> saving in v1 alone is not a bug: the dialog box always offers you a version selection widget; a bug is when you select a format there and it saves in a different format
 	- BUG: kerning table hash ordering differs if font saved from pcb layout with fontsave vs font saved from fontedit, presumably because fontedit saves "li:pcb-rnd-font-v2 { ha:geda_pcb { ..." wheres as save from a layout has "li:pcb-rnd-font-v2 { ha:1 { ... " [report: Erich] 
+	- BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process [report: Erich]
 + BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
 + BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
 - ANNOUNCE: attribute propagation from sch-rnd via tEDAx
