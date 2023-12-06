@@ -5,9 +5,7 @@
 + BUG: font2 bugs:
 	- BUG: kerning table hash ordering seems to differ if font loaded from file then saved from pcb layout with :fontsave vs font saved from within fontedit mode with :fontsave [report: Erich]
 	- BUG: fontedit mode saves font with "li:pcb-rnd-font-v2 { ha:geda_pcb { ..." wheres as :fontsave from a layout saves font with "li:pcb-rnd-font-v2 { ha:1 { ... " as font header, producing different files for the same font data [report: Erich] 
-	? BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process [report: Erich]
-		-> can not reproduce it with font files that load without errors
-		-> aussiefont v3 currently has errors on load, and that obviosuly will result a different on save as we are not going to intentionally preserve or save errors
+	- BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process. start pcb-rnd, {w f}, load r1541 sans-regular-v3 font, make it the active font, then run :fontedit, then run :fontsave to save font file as test1.font. diff test1.font aussiefont-sans-regular-v3.font shows multiple kerning table differences [report: Erich]
 + BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
 + BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
