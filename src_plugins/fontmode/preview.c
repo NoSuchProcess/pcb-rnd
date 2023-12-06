@@ -495,6 +495,29 @@ static void kern_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	edit2_kern(ctx, ed2, r->cell[0]);
 }
 
+static void kern_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	fmprv_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wkernt];
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
+	htkc_key_t key;
+	char *sep;
+
+	if (r == NULL) {
+		rnd_message(RND_MSG_ERROR, "Select a row first\n");
+		return;
+	}
+
+	
+	sep = strchr(r->cell[0], '-'); /* +1 so if '-' is the left char it is preserved */
+
+	key.left = load_kern_key(r->cell[0], sep, NULL);
+	key.right = load_kern_key(sep+1, NULL, NULL);
+
+	htkc_pop(&fontedit_src->kerning_tbl, key);
+	fmprv_pcb2preview(ctx);
+}
+
 static void sample_text_changed_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *atxt)
 {
 	fmprv_ctx_t *ctx = caller_data;
@@ -609,6 +632,8 @@ static void pcb_dlg_fontmode_preview(void)
 						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_add_cb);
 					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
 						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_edit_cb);
+					RND_DAD_BUTTON(fmprv_ctx.dlg, "Del");
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_del_cb);
 					RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph\nindex form; multiple keys: space separated list like a-b c-d e-f)");
 				RND_DAD_END(fmprv_ctx.dlg);
 			RND_DAD_END(fmprv_ctx.dlg);
