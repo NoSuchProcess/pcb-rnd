@@ -3,9 +3,6 @@
 1. For the upcoming release ===============================================================================
 - FEATURE: font2 editor: preview dialog kerning table: [report: Erich]
 + BUG: font2 bugs:
-	? BUG: start new layout when in font v2 enabled pcb-rnd running font edit mode. Use {w f} to load a font, select font, enter font edit mode, Subsequent fontsave() saves in v1 format [report: Erich]
-		-> can not reproduce
-		-> saving in v1 alone is not a bug: the dialog box always offers you a version selection widget; a bug is when you select a format there and it saves in a different format
 	? BUG: kerning table hash ordering differs if font saved from pcb layout with fontsave vs font saved from fontedit, presumably because fontedit saves "li:pcb-rnd-font-v2 { ha:geda_pcb { ..." wheres as save from a layout has "li:pcb-rnd-font-v2 { ha:1 { ... " [report: Erich] 
 		-> I am not sure what you mean. There is no guarantee that saving different file types (i.e. board or font file) will have the same ordering
 	? BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process [report: Erich]
