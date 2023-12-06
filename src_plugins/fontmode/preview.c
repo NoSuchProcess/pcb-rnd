@@ -577,6 +577,8 @@ static void pcb_dlg_fontmode_preview(void)
 
 	rnd_timed_chg_init(&fmprv_ctx.timed_refresh, fmprv_pcb2preview_timed, &fmprv_ctx);
 
+	RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
+		RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
 	RND_DAD_BEGIN_VPANE(fmprv_ctx.dlg, "vert_main");
 		RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
 			RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
@@ -643,6 +645,7 @@ static void pcb_dlg_fontmode_preview(void)
 					RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph\nindex form; multiple keys: space separated list like a-b c-d e-f)");
 				RND_DAD_END(fmprv_ctx.dlg);
 			RND_DAD_END(fmprv_ctx.dlg);
+		RND_DAD_END(fmprv_ctx.dlg);
 		RND_DAD_END(fmprv_ctx.dlg);
 
 		RND_DAD_BUTTON_CLOSES(fmprv_ctx.dlg, clbtn);
