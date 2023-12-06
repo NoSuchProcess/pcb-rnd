@@ -3,8 +3,8 @@
 1. For the upcoming release ===============================================================================
 - FEATURE: font2 editor: preview dialog kerning table: [report: Erich]
 + BUG: font2 bugs:
-	? BUG: kerning table hash ordering differs if font saved from pcb layout with fontsave vs font saved from fontedit, presumably because fontedit saves "li:pcb-rnd-font-v2 { ha:geda_pcb { ..." wheres as save from a layout has "li:pcb-rnd-font-v2 { ha:1 { ... " [report: Erich] 
-		-> I am not sure what you mean. There is no guarantee that saving different file types (i.e. board or font file) will have the same ordering
+	- BUG: kerning table hash ordering seems to differ if font loaded from file then saved from pcb layout with :fontsave vs font saved from within fontedit mode with :fontsave [report: Erich]
+	- BUG: fontedit mode saves font with "li:pcb-rnd-font-v2 { ha:geda_pcb { ..." wheres as :fontsave from a layout saves font with "li:pcb-rnd-font-v2 { ha:1 { ... " as font header, producing different files for the same font data [report: Erich] 
 	? BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process [report: Erich]
 		-> can not reproduce it with font files that load without errors
 		-> aussiefont v3 currently has errors on load, and that obviosuly will result a different on save as we are not going to intentionally preserve or save errors
