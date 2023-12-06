@@ -579,74 +579,77 @@ static void pcb_dlg_fontmode_preview(void)
 
 	RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
 		RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-	RND_DAD_BEGIN_VPANE(fmprv_ctx.dlg, "vert_main");
-		RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
-			RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-			RND_DAD_PREVIEW(fmprv_ctx.dlg, font_prv_expose_cb, NULL, NULL, NULL, &prvbb, 400, 100, &fmprv_ctx);
-				fmprv_ctx.wprev = RND_DAD_CURRENT(fmprv_ctx.dlg);
 
-			RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
-				RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit sample text");
-					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, change_sample_cb);
-				RND_DAD_BUTTON(fmprv_ctx.dlg, "Save font");
-					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, prv_save_font_cb);
-				RND_DAD_LABEL(fmprv_ctx.dlg, "(pending refresh)");
-					fmprv_ctx.wpend = RND_DAD_CURRENT(fmprv_ctx.dlg);
-			RND_DAD_END(fmprv_ctx.dlg);
-		RND_DAD_END(fmprv_ctx.dlg);
-
-		RND_DAD_BEGIN_TABBED(fmprv_ctx.dlg, tab_names);
-			RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-
-			RND_DAD_BEGIN_TABLE(fmprv_ctx.dlg, 2); /* geometry */
+		RND_DAD_BEGIN_VPANE(fmprv_ctx.dlg, "vert_main");
+			/* pane top side */
+			RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg);
 				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_LABEL(fmprv_ctx.dlg, "Baseline:");
-				RND_DAD_COORD(fmprv_ctx.dlg);
-					fmprv_ctx.wbaseline = RND_DAD_CURRENT(fmprv_ctx.dlg);
-					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
-				RND_DAD_LABEL(fmprv_ctx.dlg, "Line height:");
-				RND_DAD_COORD(fmprv_ctx.dlg);
-					fmprv_ctx.wline_height = RND_DAD_CURRENT(fmprv_ctx.dlg);
-					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
-				RND_DAD_LABEL(fmprv_ctx.dlg, "Tab width:");
-				RND_DAD_COORD(fmprv_ctx.dlg);
-					fmprv_ctx.wtab_width = RND_DAD_CURRENT(fmprv_ctx.dlg);
-					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
-			RND_DAD_END(fmprv_ctx.dlg);
-
-			RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* entities */
-				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, ent_hdr);
-					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					fmprv_ctx.wentt = RND_DAD_CURRENT(fmprv_ctx.dlg);
+				RND_DAD_PREVIEW(fmprv_ctx.dlg, font_prv_expose_cb, NULL, NULL, NULL, &prvbb, 400, 100, &fmprv_ctx);
+					fmprv_ctx.wprev = RND_DAD_CURRENT(fmprv_ctx.dlg);
 
 				RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
-					RND_DAD_BUTTON(fmprv_ctx.dlg, "Add");
-						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, ent_add_cb);
-					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
-						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, ent_edit_cb);
+					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit sample text");
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, change_sample_cb);
+					RND_DAD_BUTTON(fmprv_ctx.dlg, "Save font");
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, prv_save_font_cb);
+					RND_DAD_LABEL(fmprv_ctx.dlg, "(pending refresh)");
+						fmprv_ctx.wpend = RND_DAD_CURRENT(fmprv_ctx.dlg);
 				RND_DAD_END(fmprv_ctx.dlg);
-
-				RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: case sensitive entity name without the &; wrapping)");
 			RND_DAD_END(fmprv_ctx.dlg);
 
-			RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* kerning */
+			/* pane bottom side */
+			RND_DAD_BEGIN_TABBED(fmprv_ctx.dlg, tab_names);
 				RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, kern_hdr);
-					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					fmprv_ctx.wkernt = RND_DAD_CURRENT(fmprv_ctx.dlg);
-				RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
-					RND_DAD_BUTTON(fmprv_ctx.dlg, "Add");
-						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_add_cb);
-					RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
-						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_edit_cb);
-					RND_DAD_BUTTON(fmprv_ctx.dlg, "Del");
-						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_del_cb);
-					RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph\nindex form; multiple keys: space separated list like a-b c-d e-f)");
+
+				RND_DAD_BEGIN_TABLE(fmprv_ctx.dlg, 2); /* geometry */
+					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
+					RND_DAD_LABEL(fmprv_ctx.dlg, "Baseline:");
+					RND_DAD_COORD(fmprv_ctx.dlg);
+						fmprv_ctx.wbaseline = RND_DAD_CURRENT(fmprv_ctx.dlg);
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
+					RND_DAD_LABEL(fmprv_ctx.dlg, "Line height:");
+					RND_DAD_COORD(fmprv_ctx.dlg);
+						fmprv_ctx.wline_height = RND_DAD_CURRENT(fmprv_ctx.dlg);
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
+					RND_DAD_LABEL(fmprv_ctx.dlg, "Tab width:");
+					RND_DAD_COORD(fmprv_ctx.dlg);
+						fmprv_ctx.wtab_width = RND_DAD_CURRENT(fmprv_ctx.dlg);
+						RND_DAD_CHANGE_CB(fmprv_ctx.dlg, refresh_cb);
 				RND_DAD_END(fmprv_ctx.dlg);
-			RND_DAD_END(fmprv_ctx.dlg);
-		RND_DAD_END(fmprv_ctx.dlg);
-		RND_DAD_END(fmprv_ctx.dlg);
+
+				RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* entities */
+					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
+					RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, ent_hdr);
+						RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+						fmprv_ctx.wentt = RND_DAD_CURRENT(fmprv_ctx.dlg);
+
+					RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
+						RND_DAD_BUTTON(fmprv_ctx.dlg, "Add");
+							RND_DAD_CHANGE_CB(fmprv_ctx.dlg, ent_add_cb);
+						RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
+							RND_DAD_CHANGE_CB(fmprv_ctx.dlg, ent_edit_cb);
+					RND_DAD_END(fmprv_ctx.dlg);
+
+					RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: case sensitive entity name without the &; wrapping)");
+				RND_DAD_END(fmprv_ctx.dlg);
+
+				RND_DAD_BEGIN_VBOX(fmprv_ctx.dlg); /* kerning */
+					RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL);
+					RND_DAD_TREE(fmprv_ctx.dlg, 2, 0, kern_hdr);
+						RND_DAD_COMPFLAG(fmprv_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+						fmprv_ctx.wkernt = RND_DAD_CURRENT(fmprv_ctx.dlg);
+					RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
+						RND_DAD_BUTTON(fmprv_ctx.dlg, "Add");
+							RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_add_cb);
+						RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit");
+							RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_edit_cb);
+						RND_DAD_BUTTON(fmprv_ctx.dlg, "Del");
+							RND_DAD_CHANGE_CB(fmprv_ctx.dlg, kern_del_cb);
+						RND_DAD_LABEL(fmprv_ctx.dlg, "(Key format: char1-char2, e.g. A-V or &6b-V or &6b-&a1 in &hh hex glyph\nindex form; multiple keys: space separated list like a-b c-d e-f)");
+					RND_DAD_END(fmprv_ctx.dlg);
+				RND_DAD_END(fmprv_ctx.dlg);
+			RND_DAD_END(fmprv_ctx.dlg); /* tabbed */
+		RND_DAD_END(fmprv_ctx.dlg); /* paned */
 
 		RND_DAD_BUTTON_CLOSES(fmprv_ctx.dlg, clbtn);
 	RND_DAD_END(fmprv_ctx.dlg);
