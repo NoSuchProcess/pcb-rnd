@@ -18,9 +18,6 @@
 		-> aussiefont v3 currently has errors on load, and that obviosuly will result a different on save as we are not going to intentionally preserve or save errors
 + BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
 + BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
-- ANNOUNCE: attribute propagation from sch-rnd via tEDAx
-	- device attribute in subcricuits
-	- new bom template that includes a device column
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
 	-> use list_sep = {foo} in your template
 - DOC: pool node on how to use pixmap for breadboading
