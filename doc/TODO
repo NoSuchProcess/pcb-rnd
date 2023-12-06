@@ -5,14 +5,17 @@
 	+ FEATURE: font2 editor, have widget to delete a selected kerning pair, or just set distance to zero to expunge? [report: Erich]
 	+ FEATURE: font2 editor, perhaps a widget in font editor preview screen to run :fontsave [report: Erich]
 	+ GUI: on launching font editor preview, get message log warning "Wrong number of pages for a paned widget (3): must be exactly 2" [report: Erich]
-	- GUI: try to add pair T-&23 T-&7b and end up with T-&17 and T-&00 in kerning table respectively. ?value parsing error [report: Erich] 
-	- GUI: add a kerning pair, i.e. Z-{ set to -2mil, then select "W-&7b  -2.0mil" in the kerning list, select "edit", change -2.0mil to a different value, i.e. -3.0mil, hit OK, see new entry Z-&00  -3.0mil  appear in kerning table [report: Erich] 
+	+ GUI: try to add pair T-&23 T-&7b and end up with T-&17 and T-&00 in kerning table respectively. ?value parsing error [report: Erich] 
+	+ GUI: add a kerning pair, i.e. Z-{ set to -2mil, then select "W-&7b  -2.0mil" in the kerning list, select "edit", change -2.0mil to a different value, i.e. -3.0mil, hit OK, see new entry Z-&00  -3.0mil  appear in kerning table [report: Erich] 
 + BUG: font2 bugs:
 	? BUG: start new layout when in font v2 enabled pcb-rnd running font edit mode. Use {w f} to load a font, select font, enter font edit mode, Subsequent fontsave() saves in v1 format [report: Erich]
 		-> can not reproduce
 		-> saving in v1 alone is not a bug: the dialog box always offers you a version selection widget; a bug is when you select a format there and it saves in a different format
-	- BUG: kerning table hash ordering differs if font saved from pcb layout with fontsave vs font saved from fontedit, presumably because fontedit saves "li:pcb-rnd-font-v2 { ha:geda_pcb { ..." wheres as save from a layout has "li:pcb-rnd-font-v2 { ha:1 { ... " [report: Erich] 
-	- BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process [report: Erich]
+	? BUG: kerning table hash ordering differs if font saved from pcb layout with fontsave vs font saved from fontedit, presumably because fontedit saves "li:pcb-rnd-font-v2 { ha:geda_pcb { ..." wheres as save from a layout has "li:pcb-rnd-font-v2 { ha:1 { ... " [report: Erich] 
+		-> I am not sure what you mean. There is no guarantee that saving different file types (i.e. board or font file) will have the same ordering
+	? BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process [report: Erich]
+		-> can not reproduce it with font files that load without errors
+		-> aussiefont v3 currently has errors on load, and that obviosuly will result a different on save as we are not going to intentionally preserve or save errors
 + BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
 + BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
 - ANNOUNCE: attribute propagation from sch-rnd via tEDAx
