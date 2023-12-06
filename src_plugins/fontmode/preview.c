@@ -395,7 +395,7 @@ static int load_kern_key(const char *start, const char *end, char **end_out)
 
 	if (*start == '&') {
 		char *e;
-		long val = strtol(start+1, &e, 10);
+		long val = strtol(start+1, &e, 16);
 		if (end != NULL) {
 			if (e != end) {
 				if (end_out != NULL)
