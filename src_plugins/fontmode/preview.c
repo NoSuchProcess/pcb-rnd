@@ -556,6 +556,10 @@ static void change_sample_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	RND_DAD_FREE(dlg);
 }
 
+static void prv_save_font_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	rnd_actionva(&PCB->hidlib, "fontsave", 0);
+}
 
 static void pcb_dlg_fontmode_preview(void)
 {
@@ -582,6 +586,8 @@ static void pcb_dlg_fontmode_preview(void)
 			RND_DAD_BEGIN_HBOX(fmprv_ctx.dlg);
 				RND_DAD_BUTTON(fmprv_ctx.dlg, "Edit sample text");
 					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, change_sample_cb);
+				RND_DAD_BUTTON(fmprv_ctx.dlg, "Save font");
+					RND_DAD_CHANGE_CB(fmprv_ctx.dlg, prv_save_font_cb);
 				RND_DAD_LABEL(fmprv_ctx.dlg, "(pending refresh)");
 					fmprv_ctx.wpend = RND_DAD_CURRENT(fmprv_ctx.dlg);
 			RND_DAD_END(fmprv_ctx.dlg);
