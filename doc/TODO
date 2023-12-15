@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- FEATURE: font2 editor: preview dialog kerning table: [report: Erich]
 + BUG: font2 bugs:
 	/ BUG: kerning table hash ordering seems to differ if font loaded from file then saved from pcb layout with :fontsave vs font saved from within fontedit mode with :fontsave [report: Erich]
 		- it's the same non-bug as the next one
