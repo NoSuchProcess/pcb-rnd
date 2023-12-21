@@ -799,7 +799,7 @@ void gfx_set_resize_gui(rnd_design_t *hl, pcb_gfx_t *gfx, rnd_bool allow_x, rnd_
 
 	len = rnd_get_value(lens, NULL, NULL, &succ);
 	if (succ)
-		gfx_set_resize_by_pixel_dist(gfx, px2-px1, py2-py1, len, allow_x, allow_y, 1);
+		gfx_set_resize_by_pixel_dist(gfx, RND_ABS(px2-px1), RND_ABS(py2-py1), len, allow_x, allow_y, 1);
 	free(lens);
 }
 
