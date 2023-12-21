@@ -78,6 +78,7 @@ void pcb_gfx_mirror(pcb_gfx_t *gfx, rnd_coord_t y_offs, rnd_bool undoable);
 void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx);
 void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth);
 void pcb_gfx_chg_geo(pcb_gfx_t *gfx, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy,  rnd_angle_t rot, rnd_bool undoable);
+void pcb_gfx_chg_mirror(pcb_gfx_t *gfx, int *xmir, int *ymir, rnd_bool undoable);
 
 /* assings pxm to gfx and free pxm (if needed) */
 void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, rnd_pixmap_t *pxm, rnd_bool undoable);

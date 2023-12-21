@@ -275,6 +275,7 @@ typedef struct {
 	pcb_gfx_t *gfx; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
 	rnd_coord_t cx, cy, sx, sy;
 	rnd_angle_t rot;
+	int xmirror, ymirror;
 } undo_gfx_geo_t;
 
 static int undo_gfx_geo_swap(void *udata)
@@ -291,7 +292,19 @@ static int undo_gfx_geo_swap(void *udata)
 	rnd_swap(rnd_coord_t, g->sy, g->gfx->sy);
 	rnd_swap(rnd_angle_t, g->rot, g->gfx->rot);
 
-	if (g->rot != g->gfx->rot)
+	if (g->xmirror != g->gfx->xmirror) {
+		int tmp = g->gfx->xmirror;
+		g->gfx->xmirror = g->xmirror;
+		g->xmirror = tmp;
+	}
+
+	if (g->ymirror != g->gfx->ymirror) {
+		int tmp = g->gfx->ymirror;
+		g->gfx->ymirror = g->ymirror;
+		g->ymirror = tmp;
+	}
+
+	if ((g->rot != g->gfx->rot) || (g->xmirror != g->gfx->xmirror) || (g->ymirror != g->gfx->ymirror))
 		g->gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, g->gfx->pxm_neutral, g->gfx->rot, g->sx, g->sy, g->gfx->xmirror, g->gfx->ymirror);
 
 	pcb_gfx_update(g->gfx);
@@ -520,7 +533,10 @@ void pcb_gfx_mirror(pcb_gfx_t *gfx, rnd_coord_t y_offs, rnd_bool undoable)
 	g->sx = gfx->sx;
 	g->sy = gfx->sy;
 	g->rot = gfx->rot;
-TODO("implement a mirror bit")
+	g->xmirror = gfx->xmirror;
+	g->ymirror = gfx->ymirror;
+
+TODO("probably need to swap y mirror");
 
 	undo_gfx_geo_swap(g);
 	if (undoable) pcb_undo_inc_serial();
@@ -549,10 +565,32 @@ void pcb_gfx_chg_geo(pcb_gfx_t *gfx, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t
 	g->sx = sx;
 	g->sy = sy;
 	g->rot = rot;
+	g->xmirror = gfx->xmirror;
+	g->ymirror = gfx->ymirror;
 
 	undo_gfx_geo_swap(g);
 	if (undoable) pcb_undo_inc_serial();
 }
+
+void pcb_gfx_chg_mirror(pcb_gfx_t *gfx, int *xmir, int *ymir, rnd_bool undoable)
+{
+	undo_gfx_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(gfx->parent.layer->parent.data), &undo_gfx_geo, sizeof(undo_gfx_geo_t));
+
+	g->gfx = gfx;
+	g->cx = gfx->cx;
+	g->cy = gfx->cy;
+	g->sx = gfx->sx;
+	g->sy = gfx->sy;
+	g->rot = gfx->rot;
+	g->xmirror = xmir == NULL ? gfx->xmirror : *xmir;
+	g->ymirror = ymir == NULL ? gfx->ymirror : *ymir;
+
+	undo_gfx_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+}
+
 
 void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth)
 {
