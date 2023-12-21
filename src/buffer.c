@@ -292,6 +292,7 @@ fgw_error_t pcb_act_LoadPixmap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double dpi = 600.0;
 	rnd_pixmap_t *pxm;
 	pcb_gfx_t *g;
+	pcb_layer_type_t lyt;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadPixmap, fn = argv[1].val.str);
 
@@ -322,6 +323,11 @@ fgw_error_t pcb_act_LoadPixmap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	g = pcb_gfx_new(&PCB_PASTEBUFFER->Data->Layer[PCB_CURRLID(pcb)], 0, 0,
 		RND_MIL_TO_COORD((double)pxm->sx / dpi * 1000.0), RND_MIL_TO_COORD((double)pxm->sy / dpi * 1000.0),
 		0, pcb_flag_make(0));
+
+	/* when imported onto a bottom layer, auto-set y-mirror (photo taken from the bottom side of the board) */
+	lyt = pcb_layer_flags_(g->parent.layer);
+	if (lyt & PCB_LYT_BOTTOM)
+		g->ymirror = 1;
 
 	pcb_gfx_set_pixmap_free(g, pxm, 0);
 
