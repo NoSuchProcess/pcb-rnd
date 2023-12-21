@@ -127,7 +127,11 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 	opm->tr_yscale = 1.0;
 	opm->has_transp = 1;
 
-	TODO("gfx: apply mirrors");
+	if (xmirror)
+		pcb_xform_mx_scale(mxr, -1.0, 1.0);
+
+	if (ymirror)
+		pcb_xform_mx_scale(mxr, 1.0, -1.0);
 
 	if (scaled)
 		pcb_xform_mx_scale(mxr, 1.0/scx, 1.0);
