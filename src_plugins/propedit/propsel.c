@@ -208,6 +208,8 @@ static void map_gfx(pcb_propedit_t *ctx, pcb_gfx_t *gfx)
 	map_add_prop(ctx, "p/gfx/sx",      rnd_coord_t, gfx->sx);
 	map_add_prop(ctx, "p/gfx/sy",      rnd_coord_t, gfx->sy);
 	map_add_prop(ctx, "p/gfx/rot",     rnd_angle_t, gfx->rot);
+	map_add_prop(ctx, "p/gfx/xmirror", bool, gfx->xmirror);
+	map_add_prop(ctx, "p/gfx/ymirror", bool, gfx->ymirror);
 	map_common(ctx, (pcb_any_obj_t *)gfx);
 	map_attr(ctx, &gfx->Attributes);
 	if (ctx->geo) {
@@ -853,6 +855,16 @@ static void set_gfx(pcb_propset_ctx_t *st, pcb_gfx_t *gfx)
 		}
 		if (st->d_valid && (strcmp(pn, "rot") == 0)) {
 			pcb_gfx_chg_geo(gfx, gfx->cx, gfx->cy, gfx->sx, gfx->sy, st->d, 1); DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "xmirror") == 0)) {
+			int tmp = st->c;
+			pcb_gfx_chg_mirror(gfx, &tmp, NULL, 1);
+			DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "ymirror") == 0)) {
+			int tmp = st->c;
+			pcb_gfx_chg_mirror(gfx, NULL, &tmp, 1);
+			DONE;
 		}
 	}
 }
