@@ -2,21 +2,6 @@
 
 Milestone B:
 
-+ advanced routing: arcs and propedit on traces [3]
-	- arc example: go around large hole
-	- arcs
-		- same trace width
-		- editing arc angles graphically
-	- draw a line, an arc and a via and a rectangle around them
-	- open propedit on the line from context menu, show scope
-	- explain thickness and clearance
-	- close propedit
-	- select line, arc, via
-	- use {p e} to open propedit, show scope
-	- show stats
-	- change clearance and trace thickness
-	- refer to sch-rnd propedit video
-
 + show routing style configuration (no padstack yet) [2]
 	- select a style
 	- draw a polygon, a line and a text
