@@ -66,3 +66,11 @@ Milestone A:
 	- show stats
 	- change clearance and trace thickness
 	- refer to sch-rnd propedit video
+
++ show routing style configuration (no padstack yet) [2]
+	- select a style
+	- draw a polygon, a line and a text
+	- name (display name) - [objects don't remember]
+	- change geometry, show effect with new objects on the poly
+	- show attributes
+
