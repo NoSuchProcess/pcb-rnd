@@ -13,8 +13,6 @@
 	/ BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process. start pcb-rnd, {w f}, load r1541 sans-regular-v3 font, make it the active font, then run :fontedit, then run :fontsave to save font file as test1.font. diff test1.font aussiefont-sans-regular-v3.font shows multiple kerning table differences [report: Erich]
 		- not a bug
 		- still the same thing: the error is trying to pull the font through a board file which introduces two extra unnecessary conversions
-+ BUG: segfault in drc dialog: bug_files/drc1.txt [report: aron]
-+ BUG: bbox used for subc boundary shouldn't include subc-aux vectors (maybe also should be the naked bbox) - this starts to matter below 0805, where the vectors are larger than the fp [report: aron]
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
 	-> use list_sep = {foo} in your template
 - DOC: pool node on how to use pixmap for breadboading
