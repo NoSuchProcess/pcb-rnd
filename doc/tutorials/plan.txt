@@ -2,15 +2,6 @@
 
 Milestone B:
 
-+ advanced routing with lines [2]
-	- line refraction:
-		- normal, /
-		- 90 degree
-		- all-direction
-	- rubber band modes
-	- show clearance: mode/cursor-snap
-	- auto-enforce clearance: mode/routing
-
 - per board and per subc padstack proto lib [5]
 	- switch to mm! (the default board has protos defined in mm)
 	- place a few vias of different style, multiple of each in a "table"

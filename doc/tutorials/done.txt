@@ -74,3 +74,11 @@ Milestone A:
 	- change geometry, show effect with new objects on the poly
 	- show attributes
 
++ advanced routing with lines [2 -> 4]
+	- line refraction:
+		- normal, /
+		- 90 degree
+		- all-direction
+	- rubber band modes
+	- show clearance: mode/cursor-snap
+	- auto-enforce clearance: mode/routing
