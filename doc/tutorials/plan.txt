@@ -2,7 +2,7 @@
 
 Milestone B:
 
-- per board and per subc padstack proto lib [5]
++ B4. per board and per subc padstack proto lib [5]
 	- switch to mm! (the default board has protos defined in mm)
 	- place a few vias of different style, multiple of each in a "table"
 	- draw poly around them
@@ -40,7 +40,7 @@ Milestone B:
 	- right click on the subc, padstack proto lib
 
 
-- poly [5]
+- B5. poly [5]
 	- drawing rectangles
 	- drawing arbitrary polygons
 		- all-direction line
