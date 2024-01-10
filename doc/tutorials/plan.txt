@@ -14,14 +14,12 @@ Milestone B:
 		- explain second tab:
 			- per layer shape: grow and shrink internal copper by 0.5mm
 			- change hole dia and plating
-		- show third tab:
+		- show third tab on a new one:
 			- generate a square via to replace this
-			- show that all vias of the same proto replaced
-			- show that the proto number did not change
-		- show the same process with duplicating first (first tab)
+			- show that the proto number did change
 		- first tab: click on the proto id, change proto in this one instance from lib
-		- dup:
-			- change it back to the original number
+		- dup id:
+			- pick a new pstk that has multiple instances
 			- show again that edit proto changes all vias sharing the same proto
 			- click on dup, show it got a new number
 			- changing now changes only this one
@@ -29,14 +27,17 @@ Milestone B:
 		- close the dialog
 	- open the board padstack lib dialog fom the edit window
 		- same dialog we used for selecting a new proto
-		- show edit and new
+		- show edit
+			- show generate:
+				- show that all vias of the same proto replaced
+				- show that the proto number did not change
+		- show new
 		- show select and switch 
 		- show count/del
 		- mention load/save and copy/paste
 	- place two dip(8)'s
 	- right click on one of the dip's round pins, switch to round
 	- right click on the subc, padstack proto lib
-
 
 
 - poly [5]
