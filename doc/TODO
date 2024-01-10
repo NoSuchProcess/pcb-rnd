@@ -5,6 +5,12 @@
 	- remove suggesting geda-gnetlist from the debian package
 	- add suggesting sch-rnd and camv-rnd and route-rnd
 	- consider a ringdove metapackage?
+- librnd 4.2.x:
+	- BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
+		-> happens only if the export dialog is left open for the whole time
+		-> happens because the dialog remembers the old hidlib (design) ptr via hid_ctx within the HID
+		-> maybe export dialog should be closed on design change?
+		-> need to move CSCH_EVENT_SHEET_PREUNLOAD (or post unload? or just a new event?) to librnd to inform the GUI implemented in librnd
 + BUG: font2 bugs:
 	/ BUG: kerning table hash ordering seems to differ if font loaded from file then saved from pcb layout with :fontsave vs font saved from within fontedit mode with :fontsave [report: Erich]
 		- it's the same non-bug as the next one
@@ -54,12 +60,6 @@
 - rubber stretch routing:
 	- IGNORE: BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 	- remove auto_via from the conf and code
-- librnd 4.2.x:
-	- BUG: start pcb-rnd. save empty layout as unkown.rp then export layout to unknown.scad then revert file { f r}, Viewing unknown.scad in openscad shows green soldermask. Now export again to unknown.scad, reload in openscad, soldermask is now yellow. Example pre and post {f r} exports are bug_files/TODO/unknown*.scad [report: Erich]
-		-> happens only if the export dialog is left open for the whole time
-		-> happens because the dialog remembers the old hidlib (design) ptr via hid_ctx within the HID
-		-> maybe export dialog should be closed on design change?
-		-> need to move CSCH_EVENT_SHEET_PREUNLOAD (or post unload? or just a new event?) to librnd to inform the GUI implemented in librnd
 - librnd later:
 	- FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
 
