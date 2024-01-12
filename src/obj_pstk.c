@@ -186,8 +186,8 @@ void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t
 
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
-				tmpbox.X1 = tmpbox.Y1 = -RND_COORD_MAX;
-				tmpbox.X2 = tmpbox.Y2 = +RND_COORD_MAX;
+				tmpbox.X1 = tmpbox.Y1 = +RND_COORD_MAX;
+				tmpbox.X2 = tmpbox.Y2 = -RND_COORD_MAX;
 
 				for(n = 0; n < shape->data.poly.len; n++)
 					rnd_box_bump_point(&tmpbox, shape->data.poly.x[n] + ox, shape->data.poly.y[n] + oy);
@@ -205,7 +205,7 @@ void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t
 				line.Point2.X = shape->data.line.x2 + ox;
 				line.Point2.Y = shape->data.line.y2 + oy;
 				line.Thickness = shape->data.line.thickness;
-				line.Clearance = clr;
+				line.Clearance = clr*2;
 				line.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
 				pcb_line_bbox(&line);
 				rnd_box_bump_box(dst, &line.BoundingBox);
