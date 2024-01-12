@@ -156,10 +156,12 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	PCB_SET_PARENT(ps, data, data);
 }
 
-void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, rnd_coord_t ox, rnd_coord_t oy)
+void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, rnd_coord_t ox, rnd_coord_t oy, rnd_bool with_clearance, rnd_coord_t ps_clearance)
 {
 	int n, sn;
 	pcb_line_t line;
+	rnd_coord_t max_clr = 0;
+
 	assert(proto != NULL);
 
 	dst->X1 = dst->X2 = ox;
@@ -168,10 +170,34 @@ void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t
 	if (ts != NULL)
 	for(sn = 0; sn < ts->len; sn++) {
 		pcb_pstk_shape_t *shape = ts->shape + sn;
+		rnd_coord_t clr = 0;
+		rnd_box_t tmpbox;
+
+		if (with_clearance) {
+			if (ps_clearance != 0) /* global clearance overrides */
+				clr = ps_clearance;
+			else
+				clr = shape->clearance/2;
+
+			if (clr > max_clr)
+				max_clr = clr;
+		}
+
+
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
+				tmpbox.X1 = tmpbox.Y1 = -RND_COORD_MAX;
+				tmpbox.X2 = tmpbox.Y2 = +RND_COORD_MAX;
+
 				for(n = 0; n < shape->data.poly.len; n++)
-					rnd_box_bump_point(dst, shape->data.poly.x[n] + ox, shape->data.poly.y[n] + oy);
+					rnd_box_bump_point(&tmpbox, shape->data.poly.x[n] + ox, shape->data.poly.y[n] + oy);
+
+				if (clr != 0) {
+					tmpbox.X1 -= clr; tmpbox.Y1 -= clr;
+					tmpbox.X2 += clr; tmpbox.Y2 += clr;
+				}
+
+				rnd_box_bump_box(dst, &tmpbox);
 				break;
 			case PCB_PSSH_LINE:
 				line.Point1.X = shape->data.line.x1 + ox;
@@ -179,14 +205,14 @@ void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t
 				line.Point2.X = shape->data.line.x2 + ox;
 				line.Point2.Y = shape->data.line.y2 + oy;
 				line.Thickness = shape->data.line.thickness;
-				line.Clearance = 0;
+				line.Clearance = clr;
 				line.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
 				pcb_line_bbox(&line);
 				rnd_box_bump_box(dst, &line.BoundingBox);
 				break;
 			case PCB_PSSH_CIRC:
-				rnd_box_bump_point(dst, ox - shape->data.circ.dia/2, oy - shape->data.circ.dia/2);
-				rnd_box_bump_point(dst, ox + shape->data.circ.dia/2, oy + shape->data.circ.dia/2);
+				rnd_box_bump_point(dst, ox - shape->data.circ.dia/2 - clr, oy - shape->data.circ.dia/2 - clr);
+				rnd_box_bump_point(dst, ox + shape->data.circ.dia/2 + clr, oy + shape->data.circ.dia/2 + clr);
 				break;
 			case PCB_PSSH_HSHADOW:
 				break;
@@ -195,26 +221,23 @@ void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t
 
 	if (proto->hdia != 0) {
 		/* corner case: no copper around the hole all 360 deg - let the hole stick out */
-		rnd_box_bump_point(dst, ox - proto->hdia/2, oy - proto->hdia/2);
-		rnd_box_bump_point(dst, ox + proto->hdia/2, oy + proto->hdia/2);
+		rnd_box_bump_point(dst, ox - proto->hdia/2 - max_clr, oy - proto->hdia/2 - max_clr);
+		rnd_box_bump_point(dst, ox + proto->hdia/2 + max_clr, oy + proto->hdia/2 + max_clr);
 	}
 
 	rnd_close_box(dst);
 }
+
+/* padstack is a special case: there can be local clearance in the proto when (obj)->Clearance is 0 */
+#define PCB_PSTK_HAS_CLEARANCE(obj) \
+	(PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (obj)))
 
 static void pcb_pstk_bbox_(rnd_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
 
-	pcb_pstk_bbox_ts(dst, proto, ts, ps->x, ps->y);
-
-	if (!copper_only && PCB_NONPOLY_HAS_CLEARANCE(ps)) {
-		dst->X1 -= ps->Clearance;
-		dst->Y1 -= ps->Clearance;
-		dst->X2 += ps->Clearance;
-		dst->Y2 += ps->Clearance;
-	}
+	pcb_pstk_bbox_ts(dst, proto, ts, ps->x, ps->y, !copper_only && PCB_PSTK_HAS_CLEARANCE(ps), ps->Clearance);
 }
 
 
@@ -1628,7 +1651,7 @@ rnd_coord_t pcb_pstk_pen_dia(pcb_board_t *pcb)
 	if (proto == NULL)
 		return 0;
 
-	pcb_pstk_bbox_ts(&bb, proto, &proto->tr.array[0], 0, 0);
+	pcb_pstk_bbox_ts(&bb, proto, &proto->tr.array[0], 0, 0, 0, 0);
 
 	return RND_MAX(bb.X2 - bb.X1, bb.Y2 - bb.Y1);
 }

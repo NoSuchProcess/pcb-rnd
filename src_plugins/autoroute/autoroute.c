@@ -2843,7 +2843,7 @@ static rnd_coord_t style_via_dia_(pcb_route_style_t *style)
 	if (proto == NULL)
 		return 0;
 
-	pcb_pstk_bbox_ts(&bb, proto, &proto->tr.array[0], 0, 0);
+	pcb_pstk_bbox_ts(&bb, proto, &proto->tr.array[0], 0, 0, 0, 0);
 
 	return RND_MAX(bb.X2 - bb.X1, bb.Y2 - bb.Y1);
 }

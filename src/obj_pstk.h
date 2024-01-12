@@ -97,7 +97,7 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, rnd_cardinal_t proto,
 void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps);
 void pcb_pstk_bbox(pcb_pstk_t *ps);
 void pcb_pstk_copper_bbox(rnd_box_t *dst, pcb_pstk_t *ps);
-void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, rnd_coord_t ox, rnd_coord_t oy);
+void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, rnd_coord_t ox, rnd_coord_t oy, rnd_bool with_clearance, rnd_coord_t ps_clearance);
 
 void pcb_pstk_reg(pcb_data_t *data, pcb_pstk_t *pstk);
 void pcb_pstk_unreg(pcb_pstk_t *pstk);
