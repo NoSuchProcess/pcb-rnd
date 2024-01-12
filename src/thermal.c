@@ -831,7 +831,7 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_laye
 			return NULL;
 	}
 
-	if (gclearance <= 0)
+	if (gclearance <= 0) /* global clearance overrides */
 		clearance = shp->clearance/2;
 	else
 		clearance = gclearance;
