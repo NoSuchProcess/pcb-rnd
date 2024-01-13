@@ -11,6 +11,11 @@
 		-> happens because the dialog remembers the old hidlib (design) ptr via hid_ctx within the HID
 		-> maybe export dialog should be closed on design change?
 		-> need to move CSCH_EVENT_SHEET_PREUNLOAD (or post unload? or just a new event?) to librnd to inform the GUI implemented in librnd
+- BUG: padstack local clearance is multiplied by 2 internally [report: gpaubert]
+	- document this in the file format doc
+	- document it in code comments
+	- tweak the GUI so it displays the half
+	- search the code for other uses and figure what to do
 + BUG: font2 bugs:
 	/ BUG: kerning table hash ordering seems to differ if font loaded from file then saved from pcb layout with :fontsave vs font saved from within fontedit mode with :fontsave [report: Erich]
 		- it's the same non-bug as the next one
