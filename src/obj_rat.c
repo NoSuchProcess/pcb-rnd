@@ -433,7 +433,9 @@ rnd_rtree_dir_t pcb_rat_draw_callback(void *cl, void *obj, const rnd_rtree_box_t
 	else
 		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.rat);
 
-	if (conf_core.appearance.rat_thickness < 20)
+	if (conf_core.appearance.rat_thickness < 0)
+		rat->Thickness = conf_core.appearance.rat_thickness;
+	else if (conf_core.appearance.rat_thickness < 20)
 		rat->Thickness = rnd_pixel_slop * conf_core.appearance.rat_thickness;
 	/* PCB_FLAG_VIA is set if this rat goes to a containing poly: draw a donut */
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, rat)) {
