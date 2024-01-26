@@ -1550,7 +1550,7 @@ void pcb_pstk_proto_move(pcb_pstk_proto_t *proto, rnd_coord_t dx, rnd_coord_t dy
 {
 	int n, i;
 
-	/* do the same growth on all shapes of all transformed variants */
+	/* do the same move on all shapes of all transformed variants */
 	for(n = 0; n < proto->tr.used; n++)
 		for(i = 0; i < proto->tr.array[n].len; i++)
 			pcb_pstk_shape_move(proto, n, i, dx, dy, undoable);
