@@ -17,9 +17,9 @@
 	- document it in code comments
 	- tweak the GUI so it displays the half
 	- search the code for other uses and figure what to do
-- BUG: rat thickness setting [report: aron]
-	- {i c p}, config tree -> rat thickness -> cli -> -10 -> apply
-	- limited to 0, rat line is single pixel
++ BUG: rat thickness setting [report: aron]
+	+ {i c p}, config tree -> rat thickness -> cli -> -10 -> apply
+	-> please use nm as unit; see config node help text for possible values
 + BUG: font2 bugs:
 	/ BUG: kerning table hash ordering seems to differ if font loaded from file then saved from pcb layout with :fontsave vs font saved from within fontedit mode with :fontsave [report: Erich]
 		- it's the same non-bug as the next one
