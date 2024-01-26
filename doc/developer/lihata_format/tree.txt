@@ -553,7 +553,7 @@ ha:data                              Layers and global objects of the board
      combining                       layer compositing match
       sub               flag         draw in negative
       auto              flag         padstacks draw their paste, mask and silk objects on the first layer (of matching type) that features the auto flag
-     clearance          coord        local, per-layer-type clearance halved; applied if global padstack clearance is 0; WARNING: for historical reasons this field stores the HALF of the actual clearance.
+     clearance          coord        local, per-layer-type clearance doubled; applied if global padstack clearance is 0; WARNING: for historical reasons this field stores the DOUBLE of the actual clearance.
      li:ps_poly                      arbitrary convex polygon shape; contains a list of x;y coordinates
      ha:ps_line                      straight line shape, round or square cap
       x1                coord        line first endpoint, horizontal offset

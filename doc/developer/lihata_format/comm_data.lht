@@ -212,7 +212,7 @@ ha:lht_tree_doc { ha:comm {
 												desc={layer compositing match}
 												sy:children   = {/lht_tree_doc/comm/combining/children}
 											}
-											ha:clearance  = { valtype=coord;   desc={local, per-layer-type clearance halved; applied if global padstack clearance is 0; WARNING: for historical reasons this field stores the HALF of the actual clearance. }}
+											ha:clearance  = { valtype=coord;   desc={local, per-layer-type clearance doubled; applied if global padstack clearance is 0; WARNING: for historical reasons this field stores the DOUBLE of the actual clearance. }}
 											ha:ps_poly {
 												type=li
 												desc={arbitrary convex polygon shape; contains a list of x;y coordinates }
