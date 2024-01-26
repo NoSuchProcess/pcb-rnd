@@ -199,6 +199,7 @@ void pcb_pstk_shape_free(pcb_pstk_shape_t *s);
 
 /* grow (or shrink) a prototype to or by val - change the proto in place */
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, rnd_bool is_absolute, rnd_coord_t val);
+void pcb_pstk_proto_move(pcb_pstk_proto_t *proto, rnd_coord_t dx, rnd_coord_t dy, int undoable);
 void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord_t val);
 void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_bool is_absolute, rnd_coord_t val, int undoable);
 void pcb_pstk_shape_clr_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord_t val);

@@ -1254,6 +1254,34 @@ void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord
 	}
 }
 
+void pcb_pstk_shape_move_(pcb_pstk_shape_t *shp, rnd_coord_t dx, rnd_coord_t dy)
+{
+	int n;
+
+	switch(shp->shape) {
+		case PCB_PSSH_LINE:
+			shp->data.line.x1 += dx;
+			shp->data.line.y1 += dy;
+			shp->data.line.x2 += dx;
+			shp->data.line.y2 += dy;
+			break;
+		case PCB_PSSH_CIRC:
+			shp->data.circ.x += dx;
+			shp->data.circ.y += dy;
+			break;
+		case PCB_PSSH_HSHADOW:
+			break;
+		case PCB_PSSH_POLY:
+			rnd_polyarea_free(&shp->data.poly.pa);
+			for(n = 0; n < shp->data.poly.len; n++) {
+				shp->data.poly.x[n] += dx;
+				shp->data.poly.y[n] += dy;
+			}
+			pcb_pstk_shape_update_pa(&shp->data.poly);
+			break;
+	}
+}
+
 
 static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 {
@@ -1472,6 +1500,23 @@ void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_boo
 	pcb_pstk_shape_grow_(shp, is_absolute, val);
 }
 
+void pcb_pstk_shape_move(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_coord_t dx, rnd_coord_t dy, int undoable)
+{
+	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
+	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
+
+	if (undoable) {
+		undo_shape_geo_t *g = pstk_shape_geo_undo_init(proto, tridx, shpidx);
+		if (g != NULL) {
+			pcb_pstk_shape_copy(&g->shp, shp);
+			g->shp_valid = 1;
+			pcb_undo_inc_serial();
+		}
+	}
+
+	pcb_pstk_shape_move_(shp, dx, dy);
+}
+
 void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double sx, double sy, int undoable)
 {
 	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
@@ -1498,6 +1543,17 @@ void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, rnd_bool is_absolute, rnd_coor
 	for(n = 0; n < proto->tr.used; n++)
 		for(i = 0; i < proto->tr.array[n].len; i++)
 			pcb_pstk_shape_grow(proto, n, i, is_absolute, val, undoable);
+	pcb_pstk_proto_update(proto);
+}
+
+void pcb_pstk_proto_move(pcb_pstk_proto_t *proto, rnd_coord_t dx, rnd_coord_t dy, int undoable)
+{
+	int n, i;
+
+	/* do the same growth on all shapes of all transformed variants */
+	for(n = 0; n < proto->tr.used; n++)
+		for(i = 0; i < proto->tr.array[n].len; i++)
+			pcb_pstk_shape_move(proto, n, i, dx, dy, undoable);
 	pcb_pstk_proto_update(proto);
 }
 
