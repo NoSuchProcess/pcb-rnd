@@ -191,7 +191,7 @@ typedef struct {
 /* @path appearance/color */
 	const struct {                       /* appearance */
 		RND_CFT_BOOLEAN compact;               /* when set: optimize GUI widget arrangement for small screen; may be wasting some screen space on large screen */
-		RND_CFT_COORD rat_thickness;
+		RND_CFT_COORD rat_thickness;           /* rat line thickness in render; if negative in nanometer, use pixel size (1 nm is 1 pixel); between 0..20 nm multiply value by slop and use that */
 		RND_CFT_COORD mark_size;               /* relative marker size */
 		RND_CFT_BOOLEAN text_host_bbox;        /* when moving a text object, the outline thin-draw should also include the bounding box */
 		RND_CFT_REAL term_label_size;          /* size of terminal labels, in pcb font scale (100 is for the normal size) */
