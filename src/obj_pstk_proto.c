@@ -1551,9 +1551,22 @@ void pcb_pstk_proto_move(pcb_pstk_proto_t *proto, rnd_coord_t dx, rnd_coord_t dy
 	int n, i;
 
 	/* do the same move on all shapes of all transformed variants */
-	for(n = 0; n < proto->tr.used; n++)
+	for(n = 0; n < proto->tr.used; n++) {
+		pcb_pstk_tshape_t *ts = &proto->tr.array[n];
+		rnd_coord_t tx = dx, ty = dy;
+
+		if (ts->rot != 0) {
+			double rad = (-ts->rot) / RND_RAD_TO_DEG;
+			rnd_rotate(&tx, &ty, 0, 0, cos(rad), sin(rad));
+		}
+		if (ts->smirror)
+			ty = -ty;
+		if (ts->xmirror)
+			tx = -tx;
+
 		for(i = 0; i < proto->tr.array[n].len; i++)
-			pcb_pstk_shape_move(proto, n, i, dx, dy, undoable);
+			pcb_pstk_shape_move(proto, n, i, tx, ty, undoable);
+	}
 	pcb_pstk_proto_update(proto);
 }
 
