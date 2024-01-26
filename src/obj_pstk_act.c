@@ -352,7 +352,7 @@ fgw_error_t pcb_act_PadstackMoveOrigin(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		return 0;
 	}
 
-	if ((type = pcb_search_screen(x, y, PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_PSTK) {
+	if ((type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_PSTK) {
 		rnd_message(RND_MSG_ERROR, "Need a padstack under the cursor\n");
 		RND_ACT_IRES(-1);
 		return 0;
