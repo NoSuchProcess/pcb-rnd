@@ -823,7 +823,7 @@
  ../src_3rd/libuundo/uundo.h undo_old.h event.h polygon.h obj_poly_draw.h \
  draw.h ../src_plugins/fontmode/preview.h brave.h
 ../src_plugins/fontmode/preview.o: ../src_plugins/fontmode/preview.c \
- board.h ../config.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
+ ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
  obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
@@ -3225,7 +3225,8 @@ obj_pstk_act.o: obj_pstk_act.c ../config.h obj_pstk.h obj_common.h flag.h \
  buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h vtpadstack.h \
  thermal.h operation.h funchash_core.h funchash_core_list.h conf_core.h \
- search.h data_list.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h
+ search.h data_list.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ draw.h move.h
 obj_pstk_list.o: obj_pstk_list.c obj_pstk_list.h obj_pstk.h obj_common.h \
  flag.h globalconst.h attrib.h global_typedefs.h data_parent.h
 obj_pstk_proto.o: obj_pstk_proto.c ../config.h board.h vtroutestyle.h \
