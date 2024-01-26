@@ -3703,7 +3703,7 @@
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/clearance -->
 <g id="node240" class="node">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/clearance</title>
-<g id="a_node240"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/clearance" xlink:title="local, per&#45;layer&#45;type clearance; applied if global padstack clearance is 0 ">
+<g id="a_node240"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4/children/clearance" xlink:title="local, per&#45;layer&#45;type clearance halved; applied if global padstack clearance is 0; WARNING: for historical reasons this field stores the HALF of the actual clearance. ">
 <ellipse fill="none" stroke="#000000" cx="9244.1838" cy="-1204.8053" rx="48.1667" ry="26.7407"/>
 <text text-anchor="middle" x="9244.1838" y="-1208.6053" font-family="Times,serif" font-size="14.00" fill="#000000">clearance</text>
 <text text-anchor="middle" x="9244.1838" y="-1193.6053" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
