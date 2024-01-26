@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 					strcpy(tmp, "<unknown>");
 			}
 			RND_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str, tmp);
-			RND_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], crd, shape->clearance);
+			RND_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], crd, (rnd_coord_t)rnd_round((double)shape->clearance/2.0));
 		}
 		else {
 			RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "");
@@ -405,7 +405,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		pcb_pstkop_clip(&ctx, pse->ps);
 
 		for(n = 0; n < proto->tr.used; n++)
-			pcb_pstk_shape_clr_grow(proto, n, sidx, rnd_true, pse->attrs[pse->proto_clr[idx]].val.crd, 1);
+			pcb_pstk_shape_clr_grow(proto, n, sidx, rnd_true, pse->attrs[pse->proto_clr[idx]].val.crd * 2, 1);
 
 		ctx.clip.clear = 1;
 		ctx.clip.restore = 0;
