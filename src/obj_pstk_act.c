@@ -37,6 +37,8 @@
 #include "search.h"
 #include "data_list.h"
 #include "undo.h"
+#include "draw.h"
+#include "move.h"
 
 #define PCB do_not_use_PCB
 
@@ -333,6 +335,7 @@ fgw_error_t pcb_act_PadstackMoveOrigin(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	void *ptr1, *ptr2, *ptr3;
 	pcb_pstk_t *ps = NULL;
 	pcb_pstk_proto_t *proto = NULL;
+	pcb_data_t *data;
 	pcb_objtype_t type;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, PadstackMoveOrigin, op = fgw_keyword(&argv[1]));
@@ -362,6 +365,7 @@ fgw_error_t pcb_act_PadstackMoveOrigin(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		RND_ACT_IRES(-1);
 		return 0;
 	}
+	data = ps->parent.data;
 
 	if (sy != NULL) {
 		rnd_bool absx, absy, succ;
@@ -383,10 +387,25 @@ fgw_error_t pcb_act_PadstackMoveOrigin(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		dy = y;
 	}
 	else {
-		dx = x - ps->x;
-		dy = y - ps->y;
+		dx = ps->x - x;
+		dy = ps->y - y;
 	}
 
+	pcb_undo_freeze_serial();
+	pcb_draw_inhibit_inc();
+	pcb_data_clip_inhibit_inc(data);
+
+	/* modify the prototype */
+	pcb_pstk_proto_move(proto, dx, dy, 1);
+
+	/* move all existing padstacks to compensate */
+	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = ps->link.next)
+		pcb_move_obj(PCB_OBJ_PSTK, data, ps, ps, -dx, -dy);
+
+	pcb_data_clip_inhibit_dec(data, 1);
+	pcb_draw_inhibit_dec();
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	RND_ACT_IRES(0);
 	return 0;
