@@ -34,6 +34,7 @@
 #include "conf_core.h"
 #include "data.h"
 #include <librnd/core/actions.h>
+#include <librnd/core/rotate.h>
 #include "search.h"
 #include "data_list.h"
 #include "undo.h"
@@ -399,8 +400,22 @@ fgw_error_t pcb_act_PadstackMoveOrigin(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	pcb_pstk_proto_move(proto, dx, dy, 1);
 
 	/* move all existing padstacks to compensate */
-	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = ps->link.next)
-		pcb_move_obj(PCB_OBJ_PSTK, data, ps, ps, -dx, -dy);
+	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = ps->link.next) {
+		rnd_coord_t tx = -dx, ty = -dy;
+
+		if (ps->rot != 0) {
+			double rad = (-ps->rot) / RND_RAD_TO_DEG;
+/*			rnd_trace("psrot: %mm;%mm for %f\n", tx, ty, ps->rot);*/
+			rnd_rotate(&tx, &ty, 0, 0, cos(rad), sin(rad));
+/*			rnd_trace("       %mm;%mm\n", tx, ty);*/
+		}
+		if (ps->smirror)
+			ty = -ty;
+		if (ps->xmirror)
+			tx = -tx;
+
+		pcb_move_obj(PCB_OBJ_PSTK, data, ps, ps, tx, ty);
+	}
 
 	pcb_data_clip_inhibit_dec(data, 1);
 	pcb_draw_inhibit_dec();
