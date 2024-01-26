@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -322,6 +322,75 @@ fgw_error_t pcb_act_PadstackReplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_PadstackMoveOrigin[] = "PadstackMoveOrigin(object, [x, y])";
+static const char pcb_acth_PadstackMoveOrigin[] = "Move origin of the padstack prototype to x;y or by delta x;y (if relative); if x;y is not specified, move origin to crosshair coords";
+fgw_error_t pcb_act_PadstackMoveOrigin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op;
+	char *sx = NULL, *sy = NULL;
+	rnd_coord_t x, y, dx, dy;
+	rnd_bool relative = 0;
+	void *ptr1, *ptr2, *ptr3;
+	pcb_pstk_t *ps = NULL;
+	pcb_pstk_proto_t *proto = NULL;
+	pcb_objtype_t type;
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, PadstackMoveOrigin, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, PadstackMoveOrigin, sx = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_KEYWORD, PadstackMoveOrigin, sy = argv[2].val.str);
+
+	if (op != F_Object) {
+		rnd_message(RND_MSG_ERROR, "PadstackMoveOrigin: first argument must be \"object\"\n");
+		return FGW_ERR_ARG_CONV;
+	}
+
+	if (rnd_hid_get_coords("Pick new origin for padstack", &x, &y, 0) < 0) {
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
+	if ((type = pcb_search_screen(x, y, PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_PSTK) {
+		rnd_message(RND_MSG_ERROR, "Need a padstack under the cursor\n");
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+	ps = (pcb_pstk_t *)ptr2;
+	if (ps != NULL)
+		proto = pcb_pstk_get_proto(ps);
+	if (proto == NULL) {
+		rnd_message(RND_MSG_ERROR, "Internal error: can't get padstack proto\n");
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
+	if (sy != NULL) {
+		rnd_bool absx, absy, succ;
+		if (sx == NULL) {
+			rnd_message(RND_MSG_ERROR, "PadstackMoveOrigin: need to specify both x and y\n");
+			return FGW_ERR_ARG_CONV;
+		}
+		x = rnd_get_value(sx, NULL, &absx, &succ);
+		y = rnd_get_value(sy, NULL, &absy, &succ);
+		relative = !absx || !absy;
+	}
+	else {
+		/* clicked on the new origin, it's in x;y already */
+		relative = 0;
+	}
+
+	if (relative) {
+		dx = x;
+		dy = y;
+	}
+	else {
+		dx = x - ps->x;
+		dy = y - ps->y;
+	}
+
+
+	RND_ACT_IRES(0);
+	return 0;
+}
 
 /* --------------------------------------------------------------------------- */
 
@@ -329,7 +398,8 @@ static rnd_action_t padstack_action_list[] = {
 	{"PadstackConvert", pcb_act_padstackconvert, pcb_acth_padstackconvert, pcb_acts_padstackconvert},
 	{"PadstackBreakup", pcb_act_padstackbreakup, pcb_acth_padstackbreakup, pcb_acts_padstackbreakup},
 	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace},
-	{"PadstackReplace", pcb_act_PadstackReplace, pcb_acth_PadstackReplace, pcb_acts_PadstackReplace}
+	{"PadstackReplace", pcb_act_PadstackReplace, pcb_acth_PadstackReplace, pcb_acts_PadstackReplace},
+	{"PadstackMoveOrigin", pcb_act_PadstackMoveOrigin, pcb_acth_PadstackMoveOrigin, pcb_acts_PadstackMoveOrigin}
 };
 
 void pcb_pstk_act_init2(void)
