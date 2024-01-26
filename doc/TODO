@@ -20,18 +20,6 @@
 + BUG: rat thickness setting [report: aron]
 	+ {i c p}, config tree -> rat thickness -> cli -> -10 -> apply
 	-> please use nm as unit; see config node help text for possible values
-+ BUG: font2 bugs:
-	/ BUG: kerning table hash ordering seems to differ if font loaded from file then saved from pcb layout with :fontsave vs font saved from within fontedit mode with :fontsave [report: Erich]
-		- it's the same non-bug as the next one
-	/ BUG: fontedit mode saves font with "li:pcb-rnd-font-v2 { ha:geda_pcb { ..." wheres as :fontsave from a layout saves font with "li:pcb-rnd-font-v2 { ha:1 { ... " as font header, producing different files for the same font data [report: Erich] 
-		- not a bug: that is the font slot within the board you saved from
-		- normally you should call fontsave only from fontedit
-		- you shouldn't ever pull your font file through a board file before editing, that only adds noise and risks
-		- if you editing a font, please open the font file directly, avoid importing the font file into a board first
-		- technically the code can save a font from a board, but there is only one special case when using this feature makes any sense: if you got a board with a font embedded and you do not have access to that font file elsewhere
-	/ BUG: kerning table hash ordering differs if font saved from fontedit with fontsave after restart and reload, i.e. hash ordering changes with a different pcb-rnd process. start pcb-rnd, {w f}, load r1541 sans-regular-v3 font, make it the active font, then run :fontedit, then run :fontsave to save font file as test1.font. diff test1.font aussiefont-sans-regular-v3.font shows multiple kerning table differences [report: Erich]
-		- not a bug
-		- still the same thing: the error is trying to pull the font through a board file which introduces two extra unnecessary conversions
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
 	-> use list_sep = {foo} in your template
 - DOC: pool node on how to use pixmap for breadboading
