@@ -6,11 +6,6 @@
 	- add suggesting sch-rnd and camv-rnd and route-rnd
 	- consider a ringdove metapackage?
 + FEATURE: action to relocate the reference point of a subc or a padstack [report: aron]
-+ BUG: padstack local clearance is multiplied by 2 internally [report: gpaubert]
-	+ document this in the file format doc
-	+ document it in code comments
-	+ tweak the GUI so it displays the half
-	+ search the code for other uses and figure what to do
 + BUG: rat thickness setting [report: aron]
 	+ {i c p}, config tree -> rat thickness -> cli -> -10 -> apply
 	-> please use nm as unit; see config node help text for possible values
