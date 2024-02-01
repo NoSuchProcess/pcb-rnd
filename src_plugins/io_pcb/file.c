@@ -224,7 +224,11 @@ static void WriteAttributeList(FILE * FP, pcb_attribute_list_t *list, const char
 					goto skip;
 			}
 		}
-		fprintf(FP, "%sAttribute(\"%s\" \"%s\")\n", prefix, list->List[i].name, list->List[i].value);
+		fprintf(FP, "%sAttribute(", prefix);
+		pcb_print_quoted_string(FP, list->List[i].name);
+		fputc(' ', FP);
+		pcb_print_quoted_string(FP, list->List[i].value);
+		fprintf(FP, ")\n");
 		skip:;
 	}
 }
