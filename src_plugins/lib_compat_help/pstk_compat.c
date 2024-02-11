@@ -780,6 +780,30 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 	return rnd_true;
 }
 
+int pcb_pstk_compat_pinvia_is_hole(pcb_pstk_t *ps)
+{
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	pcb_pstk_tshape_t *tshp;
+	long n;
+
+	/* a hole requires an unplated drilled hole */
+	if (proto->hplated || (proto->hdia <= 0))
+		return 0;
+
+	/* not a hole if it has any copper shape that's not a circle or is larger than 0 */
+	tshp = &proto->tr.array[0];
+	for(n = 0; n < tshp->len; n++) {
+		if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
+			if (tshp->shape[n].shape != PCB_PSSH_CIRC)
+				return 0;
+			if (tshp->shape[n].data.circ.dia > 0)
+				return 0;
+		}
+	}
+
+	return 1;
+}
+
 pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape, pcb_pstk_compat_t compat)
 {
 	pcb_flag_t flg;
@@ -787,6 +811,10 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
 
 	memset(&flg, 0, sizeof(flg));
 	flg.f = ps->Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
+
+	if (pcb_pstk_compat_pinvia_is_hole(ps))
+	flg.f |= PCB_FLAG_HOLE;
+
 	switch(cshape) {
 		case PCB_PSTK_COMPAT_ROUND:
 			break;
