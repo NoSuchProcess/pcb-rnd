@@ -168,16 +168,12 @@ static rnd_cardinal_t pcb_pstk_new_compat_via_proto_(pcb_data_t *data, rnd_coord
 		if (compat_via_shape_gen(&copper_master, cshape, pad_dia) != 0)
 			return -1;
 
-		if (pad_dia > 0) {
-			for(n = 0; n < 3; n++)
-				memcpy(&shape[n], &copper_master, sizeof(copper_master));
-			shape[0].layer_mask = PCB_LYT_COPPER | PCB_LYT_TOP;    shape[0].comb = 0;
-			shape[1].layer_mask = PCB_LYT_COPPER | PCB_LYT_BOTTOM; shape[1].comb = 0;
-			shape[2].layer_mask = PCB_LYT_COPPER | PCB_LYT_INTERN; shape[2].comb = 0;
-			tshp.len = 3;
-		}
-		else
-			tshp.len = 0; /* omit copper shapes if it's zero diameter */
+		for(n = 0; n < 3; n++)
+			memcpy(&shape[n], &copper_master, sizeof(copper_master));
+		shape[0].layer_mask = PCB_LYT_COPPER | PCB_LYT_TOP;    shape[0].comb = 0;
+		shape[1].layer_mask = PCB_LYT_COPPER | PCB_LYT_BOTTOM; shape[1].comb = 0;
+		shape[2].layer_mask = PCB_LYT_COPPER | PCB_LYT_INTERN; shape[2].comb = 0;
+		tshp.len = 3;
 	}
 	else
 		tshp.len = 0;
