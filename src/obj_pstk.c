@@ -1148,6 +1148,8 @@ static rnd_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, rnd_coord_t hdi
 		case PCB_PSSH_HSHADOW:
 			return 0; /* there's no copper that could break */
 		case PCB_PSSH_CIRC:
+			if (shp->data.circ.dia <= 0)
+				return 0; /* historical: compat padstack loader will create 0 sized copper circles for the clearance side effect */
 			dist = sqrt((double)shp->data.circ.x*(double)shp->data.circ.x + (double)shp->data.circ.y*(double)shp->data.circ.y);
 			neck = (double)(shp->data.circ.dia - hdia) / 2.0 - dist;
 			break;
