@@ -709,7 +709,11 @@ rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyare
 		rnd_coord_t ath = Arc->Thickness + Bloat;
 		if (ath < 2) {
 			ath = 2;
-			TODO("Need to shorten the arc on both ends, seebelow at line, search for ''shorten''");
+			TODO(
+				"Need to shorten the arc on both ends"
+				"see below at line, search for ''shorten''"
+				"see also bug_files/drc_arc_olap.rp: 10 mil thickness vs. 9 mil min olap"
+				);
 		}
 
 		if (!(arcp = pcb_poly_from_pcb_arc(Arc, ath)))
