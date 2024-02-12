@@ -706,8 +706,13 @@ rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyare
 	if ((Box->X1 <= pa->contours->xmax + Bloat) && (Box->X2 >= pa->contours->xmin - Bloat)
 			&& (Box->Y1 <= pa->contours->ymax + Bloat) && (Box->Y2 >= pa->contours->ymin - Bloat)) {
 		rnd_polyarea_t *arcp;
+		rnd_coord_t ath = Arc->Thickness + Bloat;
+		if (ath < 2) {
+			ath = 2;
+			TODO("Need to shorten the arc on both ends, seebelow at line, search for ''shorten''");
+		}
 
-		if (!(arcp = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
+		if (!(arcp = pcb_poly_from_pcb_arc(Arc, ath)))
 			return rnd_false; /* error */
 		res = rnd_polyarea_touching(arcp, pa);
 		rnd_polyarea_free(&arcp);
@@ -745,8 +750,37 @@ static rnd_bool pcb_isc_line_poly_blt(const pcb_find_t *ctx, pcb_line_t *Line, p
 		return pcb_poly_is_rect_in_p(x1, y1, x2, y2, Polygon);
 	}
 	if (box_isc_poly_any_island_bbox(ctx, Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
-		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + bloat*2)))
-			return rnd_false; /* error generating the line */
+		rnd_coord_t lth = Line->Thickness + bloat*2;
+		if (lth < 2) {
+			rnd_coord_t shorten = -bloat - Line->Thickness/2;
+			pcb_line_t ltmp;
+			double dx, dy, l;
+
+			ltmp.Point1.X = Line->Point1.X; ltmp.Point1.Y = Line->Point1.Y;
+			ltmp.Point2.X = Line->Point2.X; ltmp.Point2.Y = Line->Point2.Y;
+
+			/* make sure there's no negative line thickness; the resulting line is
+			   about zero thickness but still a thin hair. Need to short it, tho,
+			   so that the extend beyond the endpoint is correct too */
+			dx = (ltmp.Point2.X - ltmp.Point1.X);
+			dy = (ltmp.Point2.Y - ltmp.Point1.Y);
+			l = sqrt(dx*dx + dy*dy);
+			if (l < 2*shorten) {
+				/* line is a smaller than bloat so reduces to a single point, can't overlap enough */
+				return 0;
+			}
+			dx /= l;
+			dy /= l;
+			ltmp.Point1.X += dx * shorten; ltmp.Point1.Y += dy * shorten;
+			ltmp.Point2.X -= dx * shorten; ltmp.Point2.Y -= dy * shorten;
+
+			if (!(lp = pcb_poly_from_pcb_line(&ltmp, 2)))
+				return rnd_false; /* error generating the line */
+		}
+		else {
+			if (!(lp = pcb_poly_from_pcb_line(Line, lth)))
+				return rnd_false; /* error generating the line */
+		}
 		return box_isc_poly_any_island_free(lp, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon));
 	}
 	return rnd_false;
