@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018,2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2020,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ struct view_ctx_s {
 	pcb_view_list_t *lst;
 	pcb_view_list_t lst_local;
 	int alloced, active;
+	int zoom_target;
 
 	void (*refresh)(view_ctx_t *ctx);
 
@@ -541,6 +542,50 @@ static void view_select_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	}
 }
 
+static void view_cycle_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
+{
+	view_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
+	pcb_idpath_t *i;
+	rnd_box_t tmpbox;
+	int valid = 0;
+
+
+	if (row == NULL) {
+		rnd_message(RND_MSG_ERROR, "Need to select an item from the list first\n");
+		return;
+	}
+
+	ctx->zoom_target++;
+	if (ctx->zoom_target > 2)
+	ctx->zoom_target = 0;
+
+	switch(ctx->zoom_target) {
+		case 0:
+			rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
+			break;
+
+		case 1:
+		case 2:
+			tmpbox.X1 = tmpbox.Y1 = +RND_COORD_MAX;
+			tmpbox.X2 = tmpbox.Y2 = -RND_COORD_MAX;
+
+			for(i = pcb_idpath_list_first(&v->objs[ctx->zoom_target-1]); i != NULL; i = pcb_idpath_list_next(i)) {
+				pcb_any_obj_t *obj = pcb_idpath2obj_in(ctx->pcb->Data, i);
+				if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
+					valid = 1;
+					rnd_box_bump_box(&tmpbox, &obj->BoundingBox);
+				}
+			}
+			if (valid)
+				rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &tmpbox);
+			break;
+
+	}
+}
+
 static void simple_rewind(view_ctx_t *ctx)
 {
 	pcb_view_t *v = pcb_view_list_first(ctx->lst);
@@ -619,6 +664,9 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 						RND_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
 					RND_DAD_BUTTON(ctx->dlg, "Select");
 						RND_DAD_CHANGE_CB(ctx->dlg, view_select_btn_cb);
+					RND_DAD_BUTTON(ctx->dlg, "Cycle");
+						RND_DAD_CHANGE_CB(ctx->dlg, view_cycle_btn_cb);
+						RND_DAD_HELP(ctx->dlg, "Zoom onto another highlighted object or back to the original zoom setting");
 				RND_DAD_END(ctx->dlg);
 			RND_DAD_END(ctx->dlg);
 
