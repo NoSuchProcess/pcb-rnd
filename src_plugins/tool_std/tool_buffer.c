@@ -53,11 +53,11 @@ void pcb_tool_buffer_uninit(void)
 {
 }
 
-static void pcb_tool_buffer_notify_mode_(rnd_design_t *hl, rnd_bool keep_ids)
+static void pcb_tool_buffer_notify_mode_(rnd_design_t *hl, rnd_bool keep_ids, rnd_bool enable_fp_replace)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
-	if (rnd_gui->shift_is_pressed(rnd_gui)) {
+	if (enable_fp_replace && rnd_gui->shift_is_pressed(rnd_gui)) {
 		rnd_actionva(hl, "ReplaceFootprint", "object", "@buffer", "", NULL);
 		return;
 	}
@@ -70,7 +70,7 @@ static void pcb_tool_buffer_notify_mode_(rnd_design_t *hl, rnd_bool keep_ids)
 
 void pcb_tool_buffer_notify_mode(rnd_design_t *hl)
 {
-	pcb_tool_buffer_notify_mode_(hl, rnd_false);
+	pcb_tool_buffer_notify_mode_(hl, rnd_false, 1);
 }
 
 void pcb_tool_buffer_release_mode(rnd_design_t *hl)
@@ -85,7 +85,7 @@ void pcb_tool_buffer_release_mode(rnd_design_t *hl)
 		    3. drag&drop move it again (still selected)
 		    4. when undo, the removebuffer will have 2 objects with the same id #9!
 		*/
-		pcb_tool_buffer_notify_mode_(hl, rnd_false);
+		pcb_tool_buffer_notify_mode_(hl, rnd_false, rnd_false);
 		pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
 		pcb_buffer_set_number(pcb_crosshair_note.Buffer);
 		pcb_crosshair_note.Moving = rnd_false;
