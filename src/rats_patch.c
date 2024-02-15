@@ -1062,7 +1062,7 @@ static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, cha
 		case F_Object:
 			placed = pcb_subc_replace(PCB, olds, news, rnd_true, dumb);
 			if (placed != NULL) {
-				if (!dumb)
+				if (!dumb && (placed->refdes != NULL))
 					pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_COMP_ATTRIB, placed->refdes, "footprint", fpname);
 				changed = 1;
 			}
