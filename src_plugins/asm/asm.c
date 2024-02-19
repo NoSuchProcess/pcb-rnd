@@ -687,8 +687,10 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_DAD_NEW("asm", asm_ctx.dlg, "Hand assembly with pcb-rnd", &asm_ctx, rnd_false, asm_close_cb);
 
 	/* expand all groups by default */
-	for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++)
+	for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
+		group_progress_update(NULL, *g); /* so that the initial 0/n is printed, so the user knows how many subcircuits are in the group */
 		rnd_dad_tree_expcoll(&asm_ctx.dlg[asm_ctx.wtbl], (*g)->row, 1, 0);
+	}
 
 	RND_ACT_IRES(0);
 	return 0;
