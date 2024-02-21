@@ -14,11 +14,11 @@
 #@@optional:pin_mask
 #@@dim:pin_mask
 
-#@@param:pin_mask_offs how much bigger (+) or smaller (-) the mask opening should be compared to copper (in mil by default, mm suffix can be used)
+#@@param:pin_mask_offs how much bigger (+) or smaller (-) the mask opening should be compared to copper (in mil by default, mm suffix can be used); pin_mask must be set to 0
 #@@optional:pin_mask_offs
 #@@dim:pin_mask_offs
 
-#@@param:pin_mask_ratio pin mask opening should be copper size * this ratio (numbers larger than 1 mean opening with a gap, 1.00 means exactly as big as the copper shape)
+#@@param:pin_mask_ratio pin mask opening should be copper size * this ratio (numbers larger than 1 mean opening with a gap, 1.00 means exactly as big as the copper shape) - doesn't work in GUI
 #@@optional:pin_mask_ratio
 #@@dim:pin_mask_ratio
 
@@ -38,11 +38,11 @@
 #@@optional:pad_mask
 #@@dim:pad_mask
 
-#@@param:pad_mask_offs how much bigger (+) or smaller (-) the mask opening should be compared to copper (in mil by default, mm suffix can be used)
+#@@param:pad_mask_offs how much bigger (+) or smaller (-) the mask opening should be compared to copper (in mil by default, mm suffix can be used); pad_mask must be set to 0
 #@@optional:pad_mask_offs
 #@@dim:pad_mask_offs
 
-#@@param:pad_mask_ratio pad mask opening should be copper size * this ratio (numbers larger than 1 mean opening with a gap, 1.00 means exactly as big as the copper shape)
+#@@param:pad_mask_ratio pad mask opening should be copper size * this ratio (numbers larger than 1 mean opening with a gap, 1.00 means exactly as big as the copper shape) - doesn't work in GUI
 #@@optional:pad_mask_ratio
 #@@dim:pad_mask_ratio
 
@@ -50,11 +50,11 @@
 #@@optional:pad_paste
 #@@dim:pad_paste
 
-#@@param:pad_paste_offs how much bigger (+) or smaller (-) the paste should be compared to copper (in mil by default, mm suffix can be used)
+#@@param:pad_paste_offs how much bigger (+) or smaller (-) the paste should be compared to copper (in mil by default, mm suffix can be used); pad_paste must be set to 0
 #@@optional:pad_paste_offs
 #@@dim:pad_paste_offs
 
-#@@param:pad_paste_ratio pad paste should be copper size * this ratio (numbers smaller than 1 mean smaller paste, 1.00 means exactly as big as the copper shape)
+#@@param:pad_paste_ratio pad paste should be copper size * this ratio (numbers smaller than 1 mean smaller paste, 1.00 means exactly as big as the copper shape) - doesn't work in GUI
 #@@optional:pad_paste_ratio
 #@@dim:pad_paste_ratio
 
