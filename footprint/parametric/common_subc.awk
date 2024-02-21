@@ -569,11 +569,12 @@ function paste_or_mask_abs(copper, absval, offsval, ratio, prefix)
 		return copper+offsval
 	if ((ratio != 0) && (ratio != ""))
 		return copper*ratio
-	if ((DEFAULT[prefix] != "") && (DEFAULT[prefix] != "-"))
+
+	if ((DEFAULT[prefix] != "") && (DEFAULT[prefix] != "-") && (DEFAULT[prefix]+0 > 0))
 		return DEFAULT[prefix]
-	if (DEFAULT[prefix "_offs"] != "")
+	if ((DEFAULT[prefix "_offs"] != "") && (DEFAULT[prefix "_offs"] != "-"))
 		return copper+DEFAULT[prefix "_offs"]*2
-	if (DEFAULT[prefix "_ratio"] != "")
+	if ((DEFAULT[prefix "_ratio"] != "") && (DEFAULT[prefix "_ratio"] != "-"))
 		return copper*DEFAULT[prefix "_ratio"]
 	return copper
 }
@@ -622,10 +623,12 @@ function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
 	subc_pstk_add_shape_square_corners(proto, "top-copper", x1-thick/2, -thick/2, x2+thick/2, thick/2)
 
 	m = (pad_mask(thick, mask)-thick)/2
-	subc_pstk_add_shape_square_corners(proto, "top-mask", x1-thick/2-m, -thick/2-m, x2+thick/2+m, thick/2+m)
+	if (+thick/2+m > 0)
+		subc_pstk_add_shape_square_corners(proto, "top-mask", x1-thick/2-m, -thick/2-m, x2+thick/2+m, thick/2+m)
 
 	p = (pad_paste(thick, paste)-thick)/2
-	subc_pstk_add_shape_square_corners(proto, "top-paste", x1-thick/2-p, -thick/2-p, x2+thick/2+p, thick/2+p)
+	if (+thick/2+p > 0)
+		subc_pstk_add_shape_square_corners(proto, "top-paste", x1-thick/2-p, -thick/2-p, x2+thick/2+p, thick/2+p)
 
 	PROTO[proto] = PROTO[proto] "     }" NL
 
