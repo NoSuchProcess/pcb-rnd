@@ -2769,14 +2769,19 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 
 	io_pcb_preproc_board(PCB);
 
+	if (settings_dest != RND_CFR_invalid) {
+		/* Parse() will set items in settings_dest, reset before that so
+		   values from the previous design won't leak in */
+		rnd_conf_reset(settings_dest, "<io_pcb_ParsePCB>");
+		rnd_conf_main_root_replace_cnt[settings_dest]++;
+	}
+
 	pcb_data_clip_inhibit_inc(PCB->Data);
 	fcmd = conf_core.rc.file_command;
 	retval = Parse(NULL, fcmd, conf_core.rc.file_path, Filename);
 
 	if ((settings_dest != RND_CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
-		rnd_conf_reset(settings_dest, "<io_pcb_ParsePCB>");
-		rnd_conf_main_root_replace_cnt[settings_dest]++;
 		CONF_SET(settings_dest, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(PCB_ENABLEPCB_FLAG_MINCUT, yy_pcb_flags), RND_POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/show_number", -1, CONF_BOOL_FLAG(PCB_SHOWNUMBERFLAG, yy_pcb_flags), RND_POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/show_drc", -1, CONF_BOOL_FLAG(PCB_SHOWPCB_FLAG_DRC, yy_pcb_flags), RND_POL_OVERWRITE);
