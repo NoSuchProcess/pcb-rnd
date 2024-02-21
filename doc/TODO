@@ -12,7 +12,8 @@
 + FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
 	-> use list_sep = {foo} in your template
 - DOC: pool node on how to use pixmap for breadboading
-- BUG: start pcb-rnd, {w l}, select so(), try entering a value for pad_mask_offs or pad_mask_ratio and note that the placed footprint does not have any difference in mask aperture size for the pads vs default footprint with default mask aperture sizing [report: Erich]  
++ BUG: start pcb-rnd, {w l}, select so(), try entering a value for pad_mask_offs or pad_mask_ratio and note that the placed footprint does not have any difference in mask aperture size for the pads vs default footprint with default mask aperture sizing [report: Erich]
+	-> please also see the extended help text for these fields
 
 2. For later releases ===============================================================================
 - FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
