@@ -436,6 +436,15 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 
 		rnd_conf_update(NULL, -1);
 	}
+
+	/* Failed to load but had setting dest: remove any conf we may
+	   have read before the parser error */
+	if ((settings_dest != RND_CFR_invalid) && (retval != 0)) {
+		rnd_conf_reset(settings_dest, "<io_pcb_ParsePCB_fail>");
+		rnd_conf_update(NULL, -1);
+	}
+
+
 	if (retval == 0) {
 		/* restore loader so the next save will use the same units */
 		const char *loader = pcb_attribute_get(&PCB->Attributes, "PCB::loader");
