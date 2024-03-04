@@ -1,3 +1,103 @@
+pcb-rnd 3.1.4 (r38658)
+~~~~~~~~~~~~~~~~~~~~~~
+	[asm]
+		-Add: fill in group progress when the dialog box is created so the user sees how many subcircuits are in each group
+
+	[build]
+		-Update: depend on librnd >= 4.1.0 (transition to the new font engine)
+
+	[core]
+		-Fix: ignore aux layer lines when updating subc bbox (not calling the central data update)
+		-Fix: when ignoring aux layer for bbox recalc in layer obj dup, decide by source object/layer not by destination because destination layer binding may be incomplete
+		-Fix: subc replace (shift+click): do not add all the floater moves onto the undo list: the whole subc is created/removed at once on redo/undo
+		-Fix: be less intrusive with events and don't do a full librnd design replace on board size change - if it happens from the propedit that'd close the propedit during the GUI event which segfaults
+		-Fix: gfx measure resize should use the absolute value of pixel distance, direction shouldn't matter
+		-Fix: when calculating padstack bbox local clearance shall not be ignored when global clearance is 0
+		-Fix: proto move needs to reverse transform dx;dy when making modifications to transformed shapes
+		-Fix: drc padstack ring min thickness special casing for circle of diameter 0: should never break (used in compat pstk converter for the clearance side effect when loading e.g. geda/pcb pins)
+		-Fix: find.c: line-poly and arc-poly intersection: clamp line and arc thickness after bloat subtracting bloat so they don't ever become negative; fixes the corner case when minimum copper overlap requirement is comparable to trace thickness
+		-Fix: segfault on rats patch when shift-click replacing a subcircuit that had no refdes
+		-Del: replace pcb_act_Export() with librnd 4.1's rnd_act_Export()
+		-Add: ElementList(Need) has an optional extra argument to set the device attrib
+		-Add: implement low level x and y mirror in pixmap cache render
+		-Add: undoable change call for gfx mirror bits
+		-Add: when importing a pixmap onto a bottom side layer, auto-set y-mirror on the gfx so it appears correctly in the most common case (photo taken of the bottom side)
+		-Add: undoable prototype and shape move functions that translates the prototype by relative dx;dy coords
+		-Add: PadstackMoveOrigin() performs the actual prototype transformation and moves all users of the padstack back to its original position
+		-Add: negative rat thickness means size specified in pixels; also add explanation on rat_thickness conf node values
+		-Add: document the doubled local clearance value bug
+
+	[dialogs]
+		-Fix: padstack proto dialog: compensate for the confusing doubled-value local clearance storage so the UI always shows consistent "clearance means gap" values
+		-Add: preferences window tab "Board meta" prints a line with the loader plugin's name
+		-Add: view dialog 'cycle' button to cycle through zooming onto different highlight objects
+
+	[djopt]
+		-Fix: via removal should pass on via pointer as ptr2 (ptr1 is "parent")
+
+	[doc]
+		-Add: document that padstack per shape local clearance is stored as half
+
+	[drc_query]
+		-Fix: need to strdup() all strings entered into the tree-table widget else a crash may occur on drc dialog close
+
+	[export_bom]
+		-Add: make list separator sequence configurable
+		-Add: a second default template that includes the device attribute as an extra column (so that an opamp is not simply so(8) but also an lm358)
+
+	[font2]
+		-Del: PCB_WANT_FONT2: always require font2
+		-Del: ./configure time option that enables font2
+		-Update: tests/drc_query/invchar.ref was buggy with the old font engine because (invalid char bbox bug)
+		-Fix: use the usual rendering opts (for &entity;) when checking for invalid chars in text objects
+
+	[fontmode]
+		-Fix: font v2 kerning shall be translated to &xx hex glyphs instead of decimals in font preview window
+		-Fix: don't segfault when fontsave is ran outside of fontmode, but throw an error and some remarks
+		-Fix: preview dialog should have only 2 widgets in VPANE
+		-Fix: decoding &num from string in kerning table preview edit should use hex, not decimap
+		-Add: kerning table edit: allow multiple keys in a space separated list
+		-Add: sort kerning table in preview window
+		-Add: the font preview window should be split by a vertical pane windget so that there's more room for the kerning table when needed
+		-Add: preview dialog widget to remove a kerning table entry
+		-Add: preview: save font button
+		-Add: comments on which widget does what and ends where
+		-Tune: rearrange help text widget in the kerning table dialog for better screen estate utilization
+
+	[footprint]
+		-Fix: common_subc: get pad's mask and paste offs and ratio play better with absolute value being 0
+		-Add: common_subc: help text for generic offs and ratio parameters include hints on how to use them in practice
+
+	[io_eagle]
+		-Fix: create subc aux layer before any other layer when creating new subcircuits to avoid mixing layers
+
+	[io_lihata]
+		-Fix: font v2 kerning shall be saved with &xx hex glyphs insteadof decimals
+		-Change: make board v9 the default format
+
+	[io_pcb]
+		-Fix: save attribute names and values quoted so that " and \ won't break
+		-Fix: don't change drc settings in design conf when importing pcb into buffer
+		-Fix: reset design conf role before low level parse so previous settings don't leak in; also fixes: don't overwrite drc settings loaded by the low level parser
+		-Fix: undo partial config mods (anything in design role) when parsing a board fails
+
+	[io_tedax]
+		-Add: netlist load: save (component's) device and use it in ElementList() so the subcircuits placed get the right attribute
+
+	[lib_compat_help]
+		-Fix: when saving an smd pad in compatibility mode, double padstack global clearance but do not double the local clearance (it is already doubled)
+		-Fix: compatibility pin flags: recognize "holes" (padstack has unplated drilled hole and zero dia circle copper shapes or no copper shapes)
+
+	[propedit]
+		-Add: expose gfx x and y mirror bits
+
+	[tool_std]
+		-Fix: disable footprint replace on paste when doing a selected drag-and-drop move: if footprint replace broke, it messed up the sequence and the undo seqno, while it doesn't make sense to replace footprints on selected move with shift
+
+	[trimesh]
+		-Fix: action description
+
+
 pcb-rnd 3.1.3 (r38476)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[backann]
