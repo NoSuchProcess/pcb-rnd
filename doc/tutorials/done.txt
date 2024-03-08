@@ -121,3 +121,16 @@ Milestone B:
 	- place two dip(8)'s
 	- right click on one of the dip's round pins, switch to round
 	- right click on the subc, padstack proto lib
+
++ B5 select [3]
+	- click select single object
+	- unselect: click away (to another object or to empty)
+	- shift+click select multiple objects
+	- positive box
+	- negative box
+	- combininb boxes with shift
+	- avoid selection using visibility
+	- avoid selection using locking
+	- unselect tricks:
+		- box selection then shift-click unselect objects
+		- invert selection (everything-but-an-island)

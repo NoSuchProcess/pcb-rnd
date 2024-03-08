@@ -40,19 +40,6 @@ Milestone B:
 	- {e t} for text edit
 
 
-+ B5 select [3]
-	- click select single object
-	- unselect: click away (to another object or to empty)
-	- shift+click select multiple objects
-	- positive box
-	- negative box
-	- combininb boxes with shift
-	- avoid selection using visibility
-	- avoid selection using locking
-	- unselect tricks:
-		- box selection then shift-click unselect objects
-		- invert selection (everything-but-an-island)
-
 Milestone C:
 
 - placing footprints from the lib [5]
