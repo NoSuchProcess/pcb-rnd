@@ -2,7 +2,7 @@
 
 Milestone B:
 
-- B5. poly [5]
+- B6. poly [5]
 	- drawing rectangles
 	- drawing arbitrary polygons
 		- all-direction line
@@ -24,7 +24,7 @@ Milestone B:
 - text [3]
 	TODO
 
-- select [3]
++ B5 select [3]
 	- click select single object
 	- unselect: click away (to another object or to empty)
 	- shift+click select multiple objects
