@@ -2,7 +2,7 @@
 
 Milestone B:
 
-- B7 poly [5]
++ B7 poly [5]
 	- drawing rectangles
 	- drawing arbitrary polygons
 		- all-direction line
