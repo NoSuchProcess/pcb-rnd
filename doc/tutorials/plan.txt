@@ -6,20 +6,27 @@ Milestone B:
 	- drawing rectangles
 	- drawing arbitrary polygons
 		- all-direction line
-		- hotkey for close
+		- hotkey for close {p p c} or double click
 	- drawing holes
 	- explain that hole is part of the polygon object
 	- clearances in polygons
 		- normal object clearance
-		- as-drawn and clipped poly (turn on frame)
+		- as-drawn and clipped poly (turn on frame): mode, poly, as-drawn frame
 		- poly cut into multiple islands
 	- editing existing polygons
 		- grab a corner
-		- ortho-move (shift or ctrl?)
-		- show invisible corners with as-drawn frame and hover
+		- ortho-move with CTRL
+		- show invisible corners with as-drawn frame and hover - invisible can be grabbed!
 		- insert
-	- explain there are no pours or planes
 	- show poly clipping out of existence
+		- turn on clearance indication: mode/cursor/last
+		- place via
+		- draw little rect
+		- gradually move via over it
+		- show message log
+		- use {m d d} to show the poly is still there
+		- move via away, poly comes back
+	- explain there are no pours or planes
 
 + B6 text [3]
 	- draw text on anylayer (show a few)
