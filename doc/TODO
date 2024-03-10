@@ -1,8 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ FEATURE: bom export: template variable for the list separator (e.g. refdes output); it's space now but sometimes comma is needed [report: Majenko]
-	-> use list_sep = {foo} in your template
 
 2. For later releases ===============================================================================
 - revise release/packaging:
