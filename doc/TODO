@@ -39,6 +39,7 @@
 	- keep numeric format: test all
 	- keep unknown subtrees
 	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
+- BUG: using image2footprint parametric footprint, choose 0.25mm pixel size, white silk, black soldermask, yes to dithering and yes to FR4, choose either of the vader .pngs from bug files as the image and place on layout, then change .png to other png, place on layout, and continue alternating. segfault will typically ensue after a period. backtrace included as big-subc-bt.txt [report: erich]
 - BUG: I/O bugs:
 	- eagle:
 		- BUG: xml: eagle XML import fails on polygon import reported by miloh, test file pcb-rnd-aux poly_selfi/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
