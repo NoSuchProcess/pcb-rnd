@@ -1,4 +1,4 @@
-pcb-rnd 3.1.4 (r38658)
+pcb-rnd 3.1.4 (r38675)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[asm]
 		-Add: fill in group progress when the dialog box is created so the user sees how many subcircuits are in each group
