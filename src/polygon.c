@@ -585,7 +585,11 @@ static rnd_rtree_dir_t padstack_sub_callback(void *cl, void *obj, const rnd_rtre
 	info->batch_size++;
 	POLY_CLIP_PROG();
 
-	rnd_polyarea_boolean_free(info->accumulate, np, &merged, RND_PBO_UNITE);
+	if (info->accumulate == NULL)
+		merged = np;
+	else
+		rnd_polyarea_boolean_free(info->accumulate, np, &merged, RND_PBO_UNITE);
+
 	info->accumulate = merged;
 
 	if (info->batch_size == SUBTRACT_PADSTACK_BATCH_SIZE)
@@ -802,9 +806,14 @@ static rnd_rtree_dir_t line_sub_callback(void *cl, void *obj, const rnd_rtree_bo
 	if (!np)
 		return rnd_RTREE_DIR_NOT_FOUND_CONT;
 
-	rnd_polyarea_boolean_free(info->accumulate, np, &merged, RND_PBO_UNITE);
+	if (info->accumulate == NULL)
+		merged = np;
+	else
+		rnd_polyarea_boolean_free(info->accumulate, np, &merged, RND_PBO_UNITE);
+
 	info->accumulate = merged;
 	info->batch_size++;
+	assert(info->accumulate != NULL);
 
 	if (info->batch_size == SUBTRACT_LINE_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
