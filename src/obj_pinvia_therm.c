@@ -89,7 +89,7 @@ static rnd_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_
 rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t thickness, rnd_coord_t clearance, rnd_cardinal_t style)
 {
 	pcb_arc_t a;
-	rnd_polyarea_t *pa, *arc;
+	rnd_polyarea_t *pa, *pa1, *pa2, *arc;
 
 	/* must be circular */
 	switch (style) {
@@ -148,30 +148,41 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 		a.Flags = pcb_no_flags();
 		a.Delta = 90 - (a.Clearance * (1. + 2. * therm_scale) * 180) / (M_PI * a.Width);
 		a.StartAngle = 90 - a.Delta / 2 + (style == 4 ? 0 : 45);
-		pa = pcb_poly_from_pcb_arc(&a, a.Clearance);
-		if (!pa)
+
+		/* Create union of 4 arcs, in two pairs: pairs of opposite arcs (within
+		   pa1 and pa2) won't ever intersect so they can be simply linked together
+		   using ->f and ->b fields of polyareas. But adjacent arcs may intersect
+		   if clearance is large so the two pairs need to be combined using the
+		   more expensive rnd_polyarea_boolean_free(). Test case: place a via in
+		   a poly, use the standard round thermal, start increasing the clearance
+		   value until the arcs get very close and merge. */
+		pa1 = pcb_poly_from_pcb_arc(&a, a.Clearance);
+		if (!pa1)
 			return NULL;
+		a.StartAngle += 90;
+
+		pa2 = pcb_poly_from_pcb_arc(&a, a.Clearance);
+		if (!pa2)
+			return NULL;
+
+
 		a.StartAngle += 90;
 		arc = pcb_poly_from_pcb_arc(&a, a.Clearance);
 		if (!arc)
 			return NULL;
-		pa->f = arc;
-		arc->b = pa;
+		pa1->f = pa1->b = arc;
+		arc->f = arc->b = pa1;
+
 		a.StartAngle += 90;
 		arc = pcb_poly_from_pcb_arc(&a, a.Clearance);
 		if (!arc)
 			return NULL;
-		pa->f->f = arc;
-		arc->b = pa->f;
-		a.StartAngle += 90;
-		arc = pcb_poly_from_pcb_arc(&a, a.Clearance);
-		if (!arc)
-			return NULL;
-		pa->b = arc;
-		pa->f->f->f = arc;
-		arc->b = pa->f->f;
-		arc->f = pa;
-		pa->b = arc;
+		pa2->f = pa2->b = arc;
+		arc->f = arc->b = pa2;
+
+		pa = NULL;
+		rnd_polyarea_boolean_free(pa1, pa2, &pa, RND_PBO_UNITE);
+
 		return pa;
 	}
 	}
