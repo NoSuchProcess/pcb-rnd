@@ -610,6 +610,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 #endif
 		/* Not on board, need to add it. */
 		if (RND_ACT_CALL_C(RND_ACT_DESIGN, pcb_act_LoadFootprint, &rs, argc, args) != 0) {
+			rnd_message(RND_MSG_ERROR, "Failed to paste footprint '%s' for '%s' (not found in lib)\n", footprint, refdes);
 			number_of_footprints_not_found++;
 			RND_ACT_IRES(1);
 			return 0;
@@ -683,6 +684,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (pcb_buffer_copy_to_layout(pcb, orig_cx, orig_cy, rnd_false, rnd_false))
 				pcb_board_set_changed_flag(pcb,rnd_true);
 		}
+		else
+			rnd_message(RND_MSG_ERROR, "Failed to paste footprint '%s' for '%s' (not found in lib)\n", footprint, refdes);
 	}
 
 	/* Now reload footprint */
