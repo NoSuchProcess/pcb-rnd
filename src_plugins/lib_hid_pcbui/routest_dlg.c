@@ -277,7 +277,7 @@ static int rst_edit_attr(char **key, char **val)
 
 	RND_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, rnd_true, NULL);
 	res = RND_DAD_RUN(dlg);
-	if (res == 0) {
+	if ((res == 0) && (dlg[wkey].val.str != NULL) && (dlg[wval].val.str != NULL)) {
 		*key = rnd_strdup(dlg[wkey].val.str);
 		*val = rnd_strdup(dlg[wval].val.str);
 	}
