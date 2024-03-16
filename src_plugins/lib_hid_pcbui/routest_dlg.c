@@ -272,6 +272,7 @@ static int rst_edit_attr(char **key, char **val)
 				wval = RND_DAD_CURRENT(dlg);
 				if (*val != NULL)
 					RND_DAD_DEFAULT_PTR(dlg, rnd_strdup(*val));
+		RND_DAD_END(dlg);
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
