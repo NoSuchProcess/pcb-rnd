@@ -53,7 +53,7 @@
 	- BUG: select a subc, propedit selection: padstacks are counted twice (e.g. for lid/thermal) [report: gpaubert]
 - CLEANUP: layer order from data
 	- build a list of layers rendered, in the order of rendering while drawing layer groups; maybe use gdl and move the group to the end and use a terminator item;  get pcb_search_obj_by_location_() to use this list for ordering
-	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
+	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/TODO/farsilk.lht [report: Ade]
 - CLEANUP: revise dialog boxes for string/integer input box character length
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
