@@ -10,7 +10,6 @@
 - BUG: using image2footprint parametric footprint, choose 0.25mm pixel size, white silk, black soldermask, yes to dithering and yes to FR4, choose either of the vader .pngs from bug files as the image and place on layout, then change .png to other png, place on layout, and continue alternating. segfault will typically ensue after a period. backtrace included as big-subc-bt.txt [report: erich]
 - poly lib rewrite (fixed means it works with polybool):
 	+ BUG: Bdale's disappearing poly bugreport, hosted in librnd/work/poly_broken
-		- BUG: turned into an infinite loop bug in the poly dicer
 		- BUG: bug_files/Poly_rewrite/bdale4: broken clipping
 	- BUG: bug_files/Poly_rewrite/bdale3: disappearing clearance (dicing bug?): place a signal via right to the rectangular pin with no clarance overlap, rectangular pin's clearance disappears
 	+ BUG: bug_files/Poly_rewrite/out-extract*.rf, on which is not autocropped, triggers assert with scrolling, but the autocropped version does not. Polygon vertex coords are well under size limit for 32 bit coords in both cases. out-minimal.rf is a more minimal polygon version of the subc which triggers assert in footprint edit mode with {ze} and scroll bar use. [Report: Erich]
