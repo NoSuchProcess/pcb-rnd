@@ -30,6 +30,7 @@
 		-> the upper edge is now cut in half by the line's clearance; the whole poly is cut in half
 		-> so removing the smaller half of the poly is the proper thing to do
 	- at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
+- BUG: typo in autodisperse text: "diesperse restarted from the top." [report: erich]
 
 2. For later releases ===============================================================================
 - revise release/packaging:
