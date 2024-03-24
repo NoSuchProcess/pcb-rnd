@@ -113,7 +113,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t ox, r
 		*maxy = newy2;
 		if (*maxy > pcb->hidlib.dwg.Y2 - GAP) {
 			*maxy = GAP;
-			rnd_message(RND_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndiesperse restarted from the top.\nExpect overlapping subcircuits\n");
+			rnd_message(RND_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndisperse restarted from the top.\nExpect overlapping subcircuits\n");
 		}
 	}
 }
