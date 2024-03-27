@@ -154,7 +154,7 @@ static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t * pl, const rnd_bo
 	rnd_polyarea_t *draw_piece;
 	int x;
 
-	/* Optimization: the polygon has no holes; if it is smaller the clip_box,
+	/* Optimization: the polygon has no holes; if it is smaller than the clip_box,
 	   it is safe to draw directly */
 	if ((clip_box->X1 <= pl->xmin) && (clip_box->X2 >= pl->xmax) && (clip_box->Y1 <= pl->ymin) && (clip_box->Y2 >= pl->ymax)) {
 		fill_contour(gc, pl);
