@@ -1,0 +1,15 @@
+ha:rnd-menu-v1 {
+	li:main_menu {
+	ha:Connects = {
+		li:submenu {
+			ha:Rubber Band Stretch Routing {
+				li:submenu {
+					ha:Connect       = { a={<key>r;<key>s;<key>c;}; action=RbsConnect() }
+					ha:Stretch       = { a={<key>r;<key>s;<key>s;}; action=RbsStretch() }
+					}
+				}
+			}
+		}
+	}
+	}
+}

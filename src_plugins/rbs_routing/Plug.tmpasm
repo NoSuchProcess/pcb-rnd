@@ -1,0 +1,13 @@
+put /local/rnd/mod {rbs_routing}
+put /local/rnd/mod/MENUFILE {rbs_routing-menu.lht}
+put /local/rnd/mod/MENUVAR {rbs_routing_menu}
+append /local/rnd/mod/OBJS [@
+	$(PLUGDIR)/rbs_routing/rbs_routing.o
+@]
+
+switch /local/module/rbs_routing/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
+

@@ -99,6 +99,7 @@ include {../src_plugins/polystitch/Plug.tmpasm}
 include {../src_plugins/propedit/Plug.tmpasm}
 include {../src_plugins/puller/Plug.tmpasm}
 include {../src_plugins/query/Plug.tmpasm}
+include {../src_plugins/rbs_routing/Plug.tmpasm}
 include {../src_plugins/renumber/Plug.tmpasm}
 include {../src_plugins/report/Plug.tmpasm}
 include {../src_plugins/rubberband_orig/Plug.tmpasm}

@@ -1,3 +1,4 @@
+38724	configure	new experimental plugin: rubber band stretch router
 38523	configure	require librnd >=4.1.0 and enable font2
 38351	configure	font mode: preview dialog
 38025	configure	export_bom2: new bom plugin with templates

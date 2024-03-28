@@ -2359,6 +2359,16 @@
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h ../config.h \
  obj_text_list.h obj_text.h font.h obj_gfx_list.h obj_gfx.h flag_str.h \
  ../src_plugins/query/query_l.h
+../src_plugins/rbs_routing/rbs_routing.o: \
+ ../src_plugins/rbs_routing/rbs_routing.c ../config.h board.h \
+ vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
+ board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h ../src_plugins/rbs_routing/menu_internal.c
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
