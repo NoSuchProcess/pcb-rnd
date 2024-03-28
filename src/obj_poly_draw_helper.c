@@ -145,6 +145,68 @@ static void fill_contour_cb(rnd_pline_t * pl, void *user_data)
 	rnd_poly_contours_free(&local_pl);
 }
 
+#if PCB_WANT_POLYBOOL
+
+#include <librnd/polybool/pa_dicer.h>
+
+typedef struct fill_ctx_s {
+	long used;
+	rnd_hid_gc_t gc;
+} fill_ctx_t;
+
+static void fill_begin_pline(pa_dic_ctx_t *ctx)
+{
+	fill_ctx_t *fc = ctx->user_data;
+	fc->used = 0;
+}
+
+static void fill_append_coord(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
+{
+	fill_ctx_t *fc = ctx->user_data;
+
+	if (fc->used >= fc_alloced) {
+		fc_alloced = fc->used + 1024;
+		fc_x = realloc(fc_x, fc_alloced * sizeof(rnd_coord_t));
+		fc_y = realloc(fc_x, fc_alloced * sizeof(rnd_coord_t));
+	}
+	if (rnd_render->gui) {
+	TODO("optimize using the last three coords in the array");
+	}
+	fc_x[fc->used] = x;
+	fc_y[fc->used] = y;
+	fc->used++;
+}
+
+static void fill_end_pline(pa_dic_ctx_t *ctx)
+{
+	fill_ctx_t *fc = ctx->user_data;
+	rnd_render->fill_polygon(fc->gc, fc->used, fc_x, fc_y);
+}
+
+static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t *pl, const rnd_box_t * clip_box)
+{
+	static pa_dic_ctx_t ctx = {0};
+	fill_ctx_t fc;
+
+	/* Optimization: the polygon has no holes; if it is smaller than the clip_box,
+	   it is safe to draw directly */
+	if ((clip_box->X1 <= pl->xmin) && (clip_box->X2 >= pl->xmax) && (clip_box->Y1 <= pl->ymin) && (clip_box->Y2 >= pl->ymax)) {
+		fill_contour(gc, pl);
+		return;
+	}
+
+	ctx.clip = *clip_box;
+	ctx.begin_pline = fill_begin_pline;
+	ctx.append_coord = fill_append_coord;
+	ctx.end_pline = fill_end_pline;
+	ctx.user_data = &fc;
+	fc.gc = gc;
+	fc.used = 0;
+
+	rnd_pline_solid_clip_box_emit(&ctx, pl);
+}
+
+#else
 static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t * pl, const rnd_box_t * clip_box)
 {
 	rnd_pline_t *pl_copy;
@@ -177,6 +239,7 @@ static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t * pl, const rnd_bo
 	while ((draw_piece = draw_piece->f) != clipped_pieces);
 	rnd_polyarea_free(&clipped_pieces);
 }
+#endif
 
 /* If at least 50% of the bounding box of the polygon is on the screen,
  * lets compute the complete no-holes polygon.
