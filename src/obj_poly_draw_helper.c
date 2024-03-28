@@ -152,6 +152,7 @@ static void fill_contour_cb(rnd_pline_t * pl, void *user_data)
 typedef struct fill_ctx_s {
 	long used;
 	rnd_hid_gc_t gc;
+	rnd_coord_t mindist;
 } fill_ctx_t;
 
 static void fill_begin_pline(pa_dic_ctx_t *ctx)
@@ -164,13 +165,25 @@ static void fill_append_coord(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
 {
 	fill_ctx_t *fc = ctx->user_data;
 
+	if (rnd_render->gui && (fc->used > 3)) {
+		rnd_coord_t last2x = fc_x[fc->used-2], last2y = fc_y[fc->used-2];
+		rnd_coord_t last1x = fc_x[fc->used-1], last1y = fc_y[fc->used-2];
+
+		/* optimization: take the last two points and the current one:
+		   last2 -- last1 -- x;y
+		   If last1 is too close to both last2 and x;y then overwrite last1 with
+		   x;y (so there are less points drawn in crowded situations) */
+		if ((RND_ABS(last2x - last1x) < fc->mindist) && (RND_ABS(last2y - last1y) < fc->mindist)) {
+			if ((RND_ABS(x - last1x) < fc->mindist) && (RND_ABS(y - last1y) < fc->mindist)) {
+				fc->used--;
+			}
+		}
+	}
+
 	if (fc->used >= fc_alloced) {
 		fc_alloced = fc->used + 1024;
 		fc_x = realloc(fc_x, fc_alloced * sizeof(rnd_coord_t));
-		fc_y = realloc(fc_x, fc_alloced * sizeof(rnd_coord_t));
-	}
-	if (rnd_render->gui) {
-	TODO("optimize using the last three coords in the array");
+		fc_y = realloc(fc_y, fc_alloced * sizeof(rnd_coord_t));
 	}
 	fc_x[fc->used] = x;
 	fc_y[fc->used] = y;
@@ -202,6 +215,7 @@ static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t *pl, const rnd_box
 	ctx.user_data = &fc;
 	fc.gc = gc;
 	fc.used = 0;
+	fc.mindist = rnd_render->coord_per_pix * 2;
 
 	rnd_pline_solid_clip_box_emit(&ctx, pl);
 }
