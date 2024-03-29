@@ -35,6 +35,10 @@
 #include <librnd/hid/hid_menu.h>
 #include "menu_internal.c"
 
+#include "map.h"
+
+#include "map.c"
+
 static const char pcb_acts_RbsConnect[] = "RbsConnect()";
 static const char pcb_acth_RbsConnect[] = "Make a new rubber band stretch connection between two points";
 /* DOC: ... */
