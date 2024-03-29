@@ -1,7 +1,7 @@
 /*
  *                            COPYRIGHT
  *
- *  pcb-rnd, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design - Rubber Band Stretch Router
  *  Copyright (C) 2024 Tibor 'Igor2' Palinkas
  *  (Supported by NLnet NGI0 Entrust in 2024)
  *
