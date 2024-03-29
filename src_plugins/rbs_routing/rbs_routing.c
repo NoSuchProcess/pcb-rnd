@@ -29,6 +29,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "search.h"
 
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
@@ -51,6 +52,34 @@ static const char pcb_acth_RbsStretch[] = "Make a new rubber band stretch connec
 /* DOC: ... */
 static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	rbsr_map_t rbs = {0};
+	int type;
+	void *ptr1, *ptr2, *ptr3;
+	rnd_coord_t x, y;
+
+	if (rnd_hid_get_coords("Click on a copper line or arc", &x, &y, 0) != 0)
+		return -1;
+
+	type = pcb_search_obj_by_location(PCB_OBJ_LINE, &ptr1, &ptr2, &ptr3, x, y, 0);
+	if (type == 0)
+		type = pcb_search_obj_by_location(PCB_OBJ_LINE, &ptr1, &ptr2, &ptr3, x, y, rnd_pixel_slop);
+	if (type == 0)
+		type = pcb_search_obj_by_location(PCB_OBJ_LINE, &ptr1, &ptr2, &ptr3, x, y, rnd_pixel_slop*5);
+
+	if (type == PCB_OBJ_LINE) {
+		pcb_line_t *l = ptr2;
+		rnd_layer_id_t lid = pcb_layer_id(pcb->Data, l->parent.layer);
+
+		rnd_trace("map on %ld\n", (long)lid);
+
+		rbsr_map_pcb(&rbs, pcb, lid);
+	}
+	else {
+		rnd_message(RND_MSG_ERROR, "Failed to find a line or arc at that location");
+	}
+
+	return 0;
 }
 
 rnd_action_t rbs_routing_action_list[] = {

@@ -19,3 +19,6 @@ typedef struct rbsr_map_s {
 /* conversion between rnd coords and grbs coords forth and back; use micrometers for grbs */
 #define RBSR_R2G(v)  ((double)(v)/1000.0)
 #define RBSR_G2R(v)  ((rnd_coord_t)rnd_round((v)*1000.0))
+
+int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid);
+

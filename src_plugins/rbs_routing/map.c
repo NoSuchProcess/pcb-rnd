@@ -124,7 +124,6 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 {
 	int res;
 
-	grbs_uninit(&dst->grbs);
 	grbs_init(&dst->grbs);
 	dst->pcb = pcb;
 	dst->lid = lid;
