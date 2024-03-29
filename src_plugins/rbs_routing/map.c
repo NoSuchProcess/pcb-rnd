@@ -34,9 +34,9 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 	rnd_coord_t clr = obj_pstk_get_clearance(pcb, ps, ly);
 	rnd_coord_t copdia, x, y;
 	grbs_line_t *line;
-	grbs_point_t *pt, *pt2;
+	grbs_point_t *pt, *pt2, *prevpt = NULL, *firstpt = NULL;
 	grbs_2net_t *tn;
-	int tries = 0;
+	unsigned int tries = 0, n;
 
 	retry:;
 	switch(shp->shape) {
@@ -74,8 +74,26 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 			break;
 
 		case PCB_PSSH_POLY:
-			TODO("implement me");
-			abort();
+			
+			for(n = 0; n < shp->data.poly.len; n++) {
+				x = ps->x + shp->data.poly.x[n];
+				y = ps->y + shp->data.poly.y[n];
+				pt = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), 0, RBSR_R2G(clr));
+				if (firstpt == NULL)
+					firstpt = pt;
+				if (prevpt != NULL) {
+					tn = grbs_2net_new(&rbs->grbs, copdia, clr);
+					line = grbs_line_realize(&rbs->grbs, tn, prevpt, pt);
+					line->immutable = 1;
+				}
+				prevpt = pt;
+			}
+			if ((firstpt != NULL) && (firstpt != pt)) {
+				tn = grbs_2net_new(&rbs->grbs, copdia, clr);
+				line = grbs_line_realize(&rbs->grbs, tn, pt, firstpt);
+				line->immutable = 1;
+			}
+			break;
 	}
 }
 
