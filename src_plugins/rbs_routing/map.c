@@ -124,6 +124,9 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 {
 	int res;
 
+	if (pcb_map_2nets_init(&dst->twonets, pcb) != 0)
+		return -1;
+
 	grbs_init(&dst->grbs);
 	dst->pcb = pcb;
 	dst->lid = lid;
@@ -131,5 +134,14 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 	res = map_pstks(dst);
 
 	return res;
+}
+
+
+void rbsr_map_uninit(rbsr_map_t *dst)
+{
+	pcb_map_2nets_uninit(&dst->twonets);
+	dst->pcb = NULL;
+	dst->lid = -1;
+	TODO("free the locally allocated map");
 }
 
