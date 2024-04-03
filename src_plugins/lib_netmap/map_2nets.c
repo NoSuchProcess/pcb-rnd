@@ -63,6 +63,9 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if (seg == NULL)
 		return;
 
+	if (seg->junc_at[0] != NULL)
+		map->junc_at = seg->junc_at[0];
+
 	ns = calloc(sizeof(pcb_2netmap_iseg_t), 1);
 	if (!seg->has_invalid_hub) {
 		ns->next = map->isegs;
@@ -173,6 +176,7 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb)
 	ec.cfg_prefer_term = 1;
 
 	map->ec = &ec;
+	map->junc_at = NULL;
 
 	htpp_init(&map->o2n, ptrhash, ptrkeyeq);
 

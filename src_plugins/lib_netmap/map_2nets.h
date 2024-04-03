@@ -74,6 +74,7 @@ struct pcb_2netmap_oseg_s {
 
 typedef struct pcb_2netmap_s {
 	pcb_2netmap_oseg_t *osegs; /* output: head of a singly linked list */
+	pcb_any_obj_t *junc_at;    /* last junction detected at - if not NULL, input is not proper and can not be sorted into clean 2-nets */
 	unsigned find_rats:1;      /* config: set to 1 if rats shall be included */
 	unsigned find_floating:1;  /* include free floating nets that are not connected to any terminal */
 
