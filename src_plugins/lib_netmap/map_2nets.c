@@ -198,7 +198,7 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb)
 
 	pcb_qry_uninit(&ec);
 
-	return -1;
+	return 0;
 }
 
 int pcb_map_2nets_uninit(pcb_2netmap_t *map)
