@@ -238,6 +238,14 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	th = thr * thr;
 
 	for(n = 0; n < 4; n+=2) {
+		/* Ignore missing endpoints: padstacks have only one endpoint, so the other
+		   is filled in as RND_COORD_MAX; if two padstacks are compared, this
+		   makes any two of them touch unless the RND_COORD_MAX endpoint is ignored */
+		if ((old_end[0] == RND_COORD_MAX) || (old_end[1] == RND_COORD_MAX))
+			continue;
+		if ((old_end[2] == RND_COORD_MAX) || (old_end[3] == RND_COORD_MAX))
+			continue;
+
 		d2 = rnd_distance2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]);
 		if (d2 < th) {
 			if (dist != NULL) {
