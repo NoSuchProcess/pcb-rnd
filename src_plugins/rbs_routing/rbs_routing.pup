@@ -4,4 +4,5 @@ $long Assisted routing by stretching traces as if they were rubber bands
 $state WIP
 $package core
 default disable-all
+dep lib_netmap
 autoload 1
