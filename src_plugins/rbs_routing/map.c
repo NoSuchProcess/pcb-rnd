@@ -120,18 +120,45 @@ RND_INLINE int map_pstks(rbsr_map_t *rbs)
 	return 0;
 }
 
+
+RND_INLINE int map_2nets(rbsr_map_t *rbs)
+{
+	pcb_2netmap_oseg_t *seg;
+
+	for(seg = rbs->twonets.osegs; seg != NULL; seg = seg->next) {
+		long n;
+		rnd_trace("net %p\n", seg->net);
+		for(n = 0; n < seg->objs.used; n++) {
+			pcb_2netmap_obj_t *obj = seg->objs.array[n];
+			rnd_trace(" obj=%p orig=%p %ld\n", obj, obj->orig, obj->orig == NULL ? 0 : obj->orig->ID);
+		}
+	}
+
+	return 0;
+}
+
 int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 {
 	int res;
 
-	if (pcb_map_2nets_init(&dst->twonets, pcb) != 0)
+	dst->twonets.find_floating = 1;
+	if (pcb_map_2nets_init(&dst->twonets, pcb) != 0) {
+		rnd_msg_error("rbs_routing: failed to map 2-nets\n");
 		return -1;
+	}
+
+	if (dst->twonets.junc_at != NULL) {
+		rnd_msg_error("rbs_routing: failed to map 2-nets: there's a junction at object #%ld\n", dst->twonets.junc_at->ID);
+		pcb_map_2nets_uninit(&dst->twonets);
+		return -1;
+	}
 
 	grbs_init(&dst->grbs);
 	dst->pcb = pcb;
 	dst->lid = lid;
 
 	res = map_pstks(dst);
+	res |= map_2nets(dst);
 
 	return res;
 }
