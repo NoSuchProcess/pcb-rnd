@@ -2368,7 +2368,16 @@
  board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h ../src_plugins/rbs_routing/menu_internal.c
+ polygon.h vtpadstack_t.h search.h \
+ ../src_plugins/rbs_routing/menu_internal.c \
+ ../src_plugins/rbs_routing/map.h layer.h \
+ ../src_plugins/lib_netmap/map_2nets.h obj_rat.h obj_poly.h obj_pstk.h \
+ ../src_plugins/query/net_len.h ../src_plugins/query/query_exec.h \
+ ../src_plugins/query/query.h ../src_plugins/query/fields_sphash.h \
+ obj_common.h flag_str.h ../src_3rd/libgrbs/grbs.h \
+ ../src_3rd/libgrbs/rtree.h ../src_plugins/rbs_routing/map.c \
+ ../src_3rd/libgrbs/route.h ../src_3rd/libgrbs/debug.h obj_pstk_inlines.h \
+ data.h thermal.h operation.h
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -2778,6 +2787,31 @@
 ../src_3rd/libcdtr/triangle.o: ../src_3rd/libcdtr/triangle.c \
  ../src_3rd/libcdtr/triangle.h ../src_3rd/libcdtr/typedefs.h \
  ../src_3rd/libcdtr/list/list.h ../src_3rd/libcdtr/list/list.c
+../src_3rd/libgrbs/addr_hash.o: ../src_3rd/libgrbs/addr_hash.c \
+ ../src_3rd/libgrbs/addr_hash.h ../src_3rd/libgrbs/grbs.h \
+ ../src_3rd/libgrbs/rtree.h
+../src_3rd/libgrbs/debug.o: ../src_3rd/libgrbs/debug.c \
+ ../src_3rd/libgrbs/debug.h ../src_3rd/libgrbs/grbs.h \
+ ../src_3rd/libgrbs/rtree.h ../src_3rd/libgrbs/geo.h \
+ ../src_3rd/libgrbs/route.h
+../src_3rd/libgrbs/grbs.o: ../src_3rd/libgrbs/grbs.c \
+ ../src_3rd/libgrbs/grbs.h ../src_3rd/libgrbs/rtree.h \
+ ../src_3rd/libgrbs/route.h ../src_3rd/libgrbs/force_attach.h \
+ ../src_3rd/libgrbs/geo.c ../src_3rd/libgrbs/geo.h \
+ ../src_3rd/libgrbs/obj_line.c ../src_3rd/libgrbs/geo_isc.h \
+ ../src_3rd/libgrbs/config.h ../src_3rd/gengeo2d/typecfg_double_double.h \
+ ../src_3rd/opc89.h ../src_3rd/gengeo2d/common.h \
+ ../src_3rd/gengeo2d/prim.h ../src_3rd/gengeo2d/cline.h \
+ ../src_3rd/gengeo2d/vect.h ../src_3rd/gengeo2d/box.h \
+ ../src_3rd/gengeo2d/intersect.h ../src_3rd/gengeo2d/carc.h \
+ ../src_3rd/gengeo2d/sline.h ../src_3rd/gengeo2d/sarc.h \
+ ../src_3rd/libgrbs/obj_arc.c ../src_3rd/libgrbs/obj_point.c \
+ ../src_3rd/libgrbs/addr.c ../src_3rd/libgrbs/collision.c \
+ ../src_3rd/libgrbs/route_common.c ../src_3rd/libgrbs/route_next.c \
+ ../src_3rd/libgrbs/route_realize.c ../src_3rd/libgrbs/route_remove.c \
+ ../src_3rd/libgrbs/route_detach.c ../src_3rd/libgrbs/force_attach.c
+../src_3rd/libgrbs/rtree.o: ../src_3rd/libgrbs/rtree.c \
+ ../src_3rd/libgrbs/rtree.h
 ../src_3rd/libuhpgl/parse.o: ../src_3rd/libuhpgl/parse.c \
  ../src_3rd/libuhpgl/uhpgl_math.h ../src_3rd/libuhpgl/libuhpgl.h \
  ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/arc_iterate.h
