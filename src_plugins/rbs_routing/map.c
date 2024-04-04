@@ -26,7 +26,9 @@
  */
 
 #include <genht/hash.h>
+#include <librnd/core/safe_fs.h>
 #include <libgrbs/route.h>
+#include <libgrbs/debug.h>
 #include "obj_pstk_inlines.h"
 
 RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_pstk_shape_t *shp, pcb_layer_t *ly)
@@ -355,5 +357,39 @@ void rbsr_map_uninit(rbsr_map_t *dst)
 	dst->pcb = NULL;
 	dst->lid = -1;
 	TODO("free the locally allocated map");
+}
+
+
+void grbs_draw_wires(grbs_t *grbs, FILE *f);
+void grbs_dump_wires(grbs_t *grbs, FILE *f);
+void grbs_draw_2net(grbs_t *grbs, FILE *f, grbs_2net_t *tn);
+void grbs_dump_2net(grbs_t *grbs, FILE *f, grbs_2net_t *tn);
+
+void rbsr_map_debug_draw(rbsr_map_t *rbs, const char *fn)
+{
+	FILE *f = rnd_fopen(&rbs->pcb->hidlib, fn, "w");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to open debug output '%s' for write\n", fn);
+		return;
+	}
+
+	grbs_draw_points(&rbs->grbs, f);
+	grbs_draw_wires(&rbs->grbs, f);
+
+	fclose(f);
+}
+
+void rbsr_map_debug_dump(rbsr_map_t *rbs, const char *fn)
+{
+	FILE *f = rnd_fopen(&rbs->pcb->hidlib, fn, "w");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to open debug output '%s' for write\n", fn);
+		return;
+	}
+
+	grbs_dump_points(&rbs->grbs, f);
+	grbs_dump_wires(&rbs->grbs, f);
+
+	fclose(f);
 }
 

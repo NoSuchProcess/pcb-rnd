@@ -31,3 +31,6 @@ typedef struct rbsr_map_s {
 int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid);
 void rbsr_map_uninit(rbsr_map_t *dst);
 
+
+void rbsr_map_debug_draw(rbsr_map_t *rbs, const char *fn);
+void rbsr_map_debug_dump(rbsr_map_t *rbs, const char *fn);
