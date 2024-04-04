@@ -139,7 +139,23 @@ RND_INLINE int map_pstks(rbsr_map_t *rbs)
 	return 0;
 }
 
-static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *obj)
+/* When a new currarc is created, this function looks back if there is a
+   pending prevline from prevarc and finalizes it. Also updates prevarc. */
+static int bind_prev_line(rbsr_map_t *rbs, grbs_arc_t **prevarc, grbs_line_t **prevline, grbs_arc_t *currarc)
+{
+	if (*prevline != NULL) {
+		assert(*prevarc != NULL); assert(currarc != NULL);
+
+		grbs_line_attach(&rbs->grbs, *prevline, *prevarc, 1);
+		grbs_line_attach(&rbs->grbs, *prevline, currarc, 2);
+		grbs_line_bbox(*prevline);
+		grbs_line_reg(&rbs->grbs, *prevline);
+	}
+	*prevarc = currarc;
+}
+
+
+static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *obj, grbs_arc_t **prevarc, grbs_line_t **prevline)
 {
 	grbs_arc_t *a;
 	grbs_point_t *pt;
@@ -153,6 +169,8 @@ static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_
 
 	a = grbs_arc_new(&rbs->grbs, pt, 0, 0, 0, 0);
 	gdl_append(&tn->arcs, a, link_2net);
+
+	bind_prev_line(rbs, prevarc, prevline, a);
 
 	return 0;
 }
@@ -185,7 +203,7 @@ RND_INLINE grbs_point_t *find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx_, 
 	return best;
 }
 
-static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *prev, pcb_2netmap_obj_t *obj)
+static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *prev, pcb_2netmap_obj_t *obj, grbs_arc_t **prevarc, grbs_line_t **prevline)
 {
 	grbs_arc_t *a;
 	grbs_point_t *pt;
@@ -195,7 +213,8 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 		case PCB_OBJ_LINE:
 			if ((prev != NULL) && (prev->o.any.type == PCB_OBJ_LINE))
 				return -8;
-			/* do not add anything to the two-net, lines are implicit */
+			*prevline = grbs_line_new(&rbs->grbs);
+			(*prevline)->user_data = obj;
 			break;
 		case PCB_OBJ_ARC:
 			if ((prev != NULL) && (prev->o.any.type == PCB_OBJ_ARC))
@@ -210,11 +229,30 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 				return -64;
 			a = grbs_arc_new(&rbs->grbs, pt, 0, 0, 0, 0);
 			gdl_append(&tn->arcs, a, link_2net);
+			a->user_data = obj;
 
+			bind_prev_line(rbs, prevarc, prevline, a);
 			break;
 		default:
 			return -128;
 	}
+	return 0;
+}
+
+/* finalize a two-net */
+RND_INLINE int tn_postproc(rbsr_map_t *rbs, grbs_2net_t *tn)
+{
+	grbs_arc_t *last, *first;
+
+	first = gdl_first(&tn->arcs);
+	if (first == NULL)
+		return -256;
+	grbs_inc_ang_update(&rbs->grbs, first);
+
+	last = gdl_last(&tn->arcs);
+	if (first != last)
+		grbs_inc_ang_update(&rbs->grbs, last);
+
 	return 0;
 }
 
@@ -227,6 +265,8 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 	for(seg = rbs->twonets.osegs; seg != NULL; seg = seg->next) {
 		long n;
 		grbs_2net_t *tn;
+		grbs_arc_t *prevarc = NULL;
+		grbs_line_t *prevline = NULL;
 		double copper, clearance;
 
 		rnd_trace("net %p\n", seg->net);
@@ -234,13 +274,14 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		TODO("extract this from objects");
 		copper = clearance = RND_MM_TO_COORD(1);
 		tn = grbs_2net_new(&rbs->grbs, copper, clearance);
-		res |= map_2nets_incident(rbs, tn, seg->objs.array[0]);
+		res |= map_2nets_incident(rbs, tn, seg->objs.array[0], &prevarc, &prevline);
 		for(n = 1; n < seg->objs.used-1; n++) {
 			pcb_2netmap_obj_t *obj = seg->objs.array[n];
 			rnd_trace(" obj=%p orig=%p %ld\n", obj, obj->orig, obj->orig == NULL ? 0 : obj->orig->ID);
-			res |= map_2nets_intermediate(rbs, tn, seg->objs.array[n-1], seg->objs.array[n]);
+			res |= map_2nets_intermediate(rbs, tn, seg->objs.array[n-1], seg->objs.array[n], &prevarc, &prevline);
 		}
-		res |= map_2nets_incident(rbs, tn, seg->objs.array[seg->objs.used-1]);
+		res |= map_2nets_incident(rbs, tn, seg->objs.array[seg->objs.used-1], &prevarc, &prevline);
+		res |= tn_postproc(rbs, tn);
 
 		rnd_trace(" res=%d\n", res);
 	}
