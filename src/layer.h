@@ -163,6 +163,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 	   layer data, after setting up info an info->xform; lets plugins
 	   implement their own custom draw functions */
 	void (*plugin_draw)(pcb_draw_info_t *info, const pcb_layer_t *Layer);
+	void *plugin_draw_data;
 };
 
 /* returns the layer number for the passed copper or silk layer pointer */
