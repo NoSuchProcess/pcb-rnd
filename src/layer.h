@@ -117,6 +117,8 @@ typedef enum { /* bitfield */
 #include "obj_poly_list.h"
 #include "obj_text_list.h"
 #include "obj_gfx_list.h"
+#include "global_typedefs.h"
+
 
 struct pcb_layer_s {              /* holds information about one layer */
 	PCB_ANY_OBJ_FIELDS;
@@ -156,6 +158,11 @@ struct pcb_layer_s {              /* holds information about one layer */
 	} meta;
 
 	unsigned is_bound:1;
+
+	/* Optional: if not NULL, call this instead of rendering objects from
+	   layer data, after setting up info an info->xform; lets plugins
+	   implement their own custom draw functions */
+	void (*plugin_draw)(pcb_draw_info_t *info, const pcb_layer_t *Layer);
 };
 
 /* returns the layer number for the passed copper or silk layer pointer */

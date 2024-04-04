@@ -32,6 +32,7 @@
 #include "config.h"
 #include <librnd/hid/hid.h>
 #include "layer.h"
+#include "global_typedefs.h"
 
 /* holds information about output window */
 typedef struct {
@@ -50,7 +51,7 @@ typedef enum {
 } pcb_pstk_draw_hole_t;
 
 /* Some low level draw callback depend on this in their void *cl */
-typedef struct pcb_draw_info_s {
+struct pcb_draw_info_s {
 	pcb_board_t *pcb;
 	int exporting;                         /* 1 if doing an export, 0 if working to screen */
 	const char *export_name;               /* name of the export plugin */
@@ -78,7 +79,7 @@ typedef struct pcb_draw_info_s {
 			int per_side;
 		} subc;
 	} objcb;
-} pcb_draw_info_t;
+};
 
 /* Temporarily inhibid drawing if this is non-zero. A function that calls a
    lot of other functions that would call pcb_draw() a lot in turn may increase

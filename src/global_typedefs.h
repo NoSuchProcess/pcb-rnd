@@ -64,4 +64,6 @@ typedef struct pcb_plug_fp_map_s pcb_plug_fp_map_t;
 
 typedef struct pcb_view_s pcb_view_t;
 
+typedef struct pcb_draw_info_s pcb_draw_info_t;
+
 #endif
