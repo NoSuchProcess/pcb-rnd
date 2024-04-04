@@ -157,19 +157,63 @@ static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_
 	return 0;
 }
 
+/* How far the target point could be, +- manhattan distance */
+#define FIND_PT_DELTA   2
+#define FIND_PT_DELTA2  (FIND_PT_DELTA * FIND_PT_DELTA)
+
+/* Return the point that's close enough to cx;cy or NULL if nothing is close */
+RND_INLINE grbs_point_t *find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_)
+{
+	double cx = cx_, cy = cy_, bestd2 = FIND_PT_DELTA2+1;
+	grbs_point_t *pt, *best= NULL;
+	grbs_rtree_it_t it;
+	grbs_rtree_box_t bbox;
+
+	bbox.x1 = cx_ - FIND_PT_DELTA;
+	bbox.y1 = cy_ - FIND_PT_DELTA;
+	bbox.x2 = cx_ + FIND_PT_DELTA;
+	bbox.y2 = cy_ + FIND_PT_DELTA;
+
+	for(pt = grbs_rtree_first(&it, &rbs->grbs.point_tree, &bbox); pt != NULL; pt = grbs_rtree_next(&it)) {
+		double dx = cx - pt->x, dy = cy - pt->y, d2 = dx*dx + dy*dy;
+		if (d2 < bestd2) {
+			bestd2 = d2;
+			best = pt;
+		}
+	}
+
+	return best;
+}
+
 static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *prev, pcb_2netmap_obj_t *obj)
 {
+	grbs_arc_t *a;
+	grbs_point_t *pt;
+	pcb_arc_t *arc;
+
 	switch(obj->o.any.type) {
 		case PCB_OBJ_LINE:
 			if ((prev != NULL) && (prev->o.any.type == PCB_OBJ_LINE))
 				return -8;
+			/* do not add anything to the two-net, lines are implicit */
 			break;
 		case PCB_OBJ_ARC:
 			if ((prev != NULL) && (prev->o.any.type == PCB_OBJ_ARC))
 				return -16;
+
+			arc = (pcb_arc_t *)obj->orig;
+			if (arc == NULL)
+				return -32;
+
+			pt = find_point_by_center(rbs, arc->X, arc->Y);
+			if (pt == NULL)
+				return -64;
+			a = grbs_arc_new(&rbs->grbs, pt, 0, 0, 0, 0);
+			gdl_append(&tn->arcs, a, link_2net);
+
 			break;
 		default:
-			return -32;
+			return -128;
 	}
 	return 0;
 }
