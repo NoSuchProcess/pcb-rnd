@@ -273,7 +273,35 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		rnd_trace("net %p\n", seg->net);
 
 		TODO("extract this from objects");
-		copper = clearance = RND_MM_TO_COORD(1);
+		copper = clearance = 0;
+
+		for(n = 1; n < seg->objs.used-1; n++) {
+			pcb_2netmap_obj_t *obj = seg->objs.array[n];
+			if ((obj->o.any.type == PCB_OBJ_LINE) && (obj->orig != NULL)) {
+				pcb_line_t *line = (pcb_line_t *)obj;
+				if (copper == 0) {
+					copper = line->Thickness;
+					clearance = line->Clearance;
+				}
+				else {
+					if ((copper != line->Thickness) || (clearance != line->Clearance))
+						rnd_message(RND_MSG_ERROR, "rbs_routing: two-net with variable thickness or clearance\n");
+				}
+			}
+			if ((obj->o.any.type == PCB_OBJ_ARC) && (obj->orig != NULL)) {
+				pcb_arc_t *arc = (pcb_line_t *)obj;
+				if (copper == 0) {
+					copper = arc->Thickness;
+					clearance = arc->Clearance;
+				}
+				else {
+					if ((copper != arc->Thickness) || (clearance != arc->Clearance))
+						rnd_message(RND_MSG_ERROR, "rbs_routing: two-net with variable thickness or clearance\n");
+				}
+			}
+		}
+
+
 		tn = grbs_2net_new(&rbs->grbs, copper, clearance);
 		res |= map_2nets_incident(rbs, tn, seg->objs.array[0], &prevarc, &prevline);
 		for(n = 1; n < seg->objs.used-1; n++) {
