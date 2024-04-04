@@ -169,6 +169,7 @@ static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_
 
 	a = grbs_arc_new(&rbs->grbs, pt, 0, 0, 0, 0);
 	gdl_append(&tn->arcs, a, link_2net);
+	a->user_data = obj;
 
 	bind_prev_line(rbs, prevarc, prevline, a);
 
