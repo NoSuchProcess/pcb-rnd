@@ -245,6 +245,8 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		rnd_trace(" res=%d\n", res);
 	}
 
+	TODO("all arcs are in seg[0], need to fix that");
+
 	return res;
 }
 
