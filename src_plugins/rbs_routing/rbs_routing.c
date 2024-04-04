@@ -76,7 +76,7 @@ static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rbsr_map_pcb(&rbs, pcb, lid);
 	}
 	else {
-		rnd_message(RND_MSG_ERROR, "Failed to find a line or arc at that location");
+		rnd_message(RND_MSG_ERROR, "Failed to find a line or arc at that location\n");
 	}
 
 	return 0;
