@@ -22,6 +22,8 @@ typedef struct rbsr_map_s {
 
 	pcb_2netmap_t twonets;
 
+	pcb_layer_t *ui_layer;
+
 } rbsr_map_t;
 
 /* conversion between rnd coords and grbs coords forth and back; use micrometers for grbs */

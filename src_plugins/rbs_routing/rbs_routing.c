@@ -53,7 +53,7 @@ static const char pcb_acth_RbsStretch[] = "Make a new rubber band stretch connec
 static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	rbsr_map_t rbs = {0};
+	static rbsr_map_t rbs = {0};
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 	rnd_coord_t x, y;

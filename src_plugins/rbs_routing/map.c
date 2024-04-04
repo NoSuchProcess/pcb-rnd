@@ -27,9 +27,15 @@
 
 #include <genht/hash.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/hid/hid_inlines.h>
 #include <libgrbs/route.h>
 #include <libgrbs/debug.h>
 #include "obj_pstk_inlines.h"
+#include "layer_ui.h"
+#include "draw.h"
+#include "draw_wireframe.h"
+
+static const char rbs_routing_map_cookie[] = "rbs_routing map.c";
 
 RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_pstk_shape_t *shp, pcb_layer_t *ly)
 {
@@ -325,6 +331,71 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 	return res;
 }
 
+grbs_rtree_dir_t draw_point(void *cl, void *obj, const grbs_rtree_box_t *box)
+{
+	grbs_point_t *pt = obj;
+	pcb_draw_info_t *info = cl;
+	rnd_coord_t x = RBSR_G2R(pt->x), y = RBSR_G2R(pt->y);
+
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(pt->copper*2.0));
+	rnd_render->draw_line(pcb_draw_out.fgGC, x, y, x, y);
+
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
+	pcb_draw_wireframe_line(pcb_draw_out.fgGC, x, y, x, y, RBSR_G2R(pt->copper*2.0+pt->clearance), 0);
+
+	return rnd_RTREE_DIR_FOUND_CONT;
+}
+
+grbs_rtree_dir_t draw_line(void *cl, void *obj, const grbs_rtree_box_t *box)
+{
+	grbs_line_t *line = obj;
+	pcb_draw_info_t *info = cl;
+	rnd_coord_t x1 = RBSR_G2R(line->x1), y1 = RBSR_G2R(line->y1);
+	rnd_coord_t x2 = RBSR_G2R(line->x2), y2 = RBSR_G2R(line->y2);
+	grbs_2net_t *tn = NULL;
+	double copper = 1, clearance = 1;
+
+	if (line->a1 != NULL) tn = grbs_arc_parent_2net(line->a1);
+	if (line->a2 != NULL) tn = grbs_arc_parent_2net(line->a2);
+	if (tn != NULL) {
+		copper = RBSR_G2R(tn->copper);
+		clearance = RBSR_G2R(tn->clearance);
+	}
+
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper*2.0));
+	rnd_render->draw_line(pcb_draw_out.fgGC, x1, y1, x2, y2);
+
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
+	pcb_draw_wireframe_line(pcb_draw_out.fgGC, x1, y1, x2, y2, RBSR_G2R(copper*2.0+clearance), 0);
+
+	return rnd_RTREE_DIR_FOUND_CONT;
+}
+
+static void rbsr_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *Layer)
+{
+	rbsr_map_t *rbs = Layer->plugin_draw_data;
+	grbs_rtree_box_t gbox;
+
+	gbox.x1 = RBSR_R2G(info->drawn_area->X1);
+	gbox.y1 = RBSR_R2G(info->drawn_area->Y1);
+	gbox.x2 = RBSR_R2G(info->drawn_area->X2);
+	gbox.y2 = RBSR_R2G(info->drawn_area->Y2);
+
+	rnd_render->set_color(pcb_draw_out.fgGC, &Layer->meta.real.color);
+
+	grbs_rtree_search_any(&rbs->grbs.point_tree, &gbox, NULL, draw_point, info, NULL);
+	grbs_rtree_search_any(&rbs->grbs.line_tree, &gbox, NULL, draw_line, info, NULL);
+}
+
+static void setup_ui_layer(rbsr_map_t *rbs)
+{
+	pcb_layer_t *ly = pcb_get_layer(rbs->pcb->Data, rbs->lid);
+	rbs->ui_layer = pcb_uilayer_alloc(rbs->pcb, rbs_routing_map_cookie, "rbs_routing", &ly->meta.real.color);
+	rbs->ui_layer->plugin_draw = rbsr_plugin_draw;
+	rbs->ui_layer->plugin_draw_data = rbs;
+}
+
+
 int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 {
 	int res;
@@ -348,6 +419,8 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 
 	res = map_pstks(dst);
 	res |= map_2nets(dst);
+
+	setup_ui_layer(dst);
 
 	return res;
 }
