@@ -375,8 +375,14 @@ void rbsr_map_debug_draw(rbsr_map_t *rbs, const char *fn)
 		return;
 	}
 
+	grbs_draw_zoom = 0.001;
+
+	grbs_draw_begin(&rbs->grbs, f);
 	grbs_draw_points(&rbs->grbs, f);
 	grbs_draw_wires(&rbs->grbs, f);
+	grbs_draw_end(&rbs->grbs, f);
+
+	grbs_draw_zoom = 1;
 
 	fclose(f);
 }
