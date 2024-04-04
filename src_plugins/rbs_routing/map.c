@@ -25,6 +25,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <genht/hash.h>
 #include <libgrbs/route.h>
 #include "obj_pstk_inlines.h"
 
@@ -32,11 +33,12 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 {
 	pcb_board_t *pcb = rbs->pcb;
 	rnd_coord_t clr = obj_pstk_get_clearance(pcb, ps, ly);
-	rnd_coord_t copdia, x, y;
+	rnd_coord_t copdia, x, y, xc, yc;
 	grbs_line_t *line;
 	grbs_point_t *pt, *pt2, *prevpt = NULL, *firstpt = NULL;
 	grbs_2net_t *tn;
 	unsigned int tries = 0, n;
+
 
 	retry:;
 	switch(shp->shape) {
@@ -54,13 +56,21 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 			tn = grbs_2net_new(&rbs->grbs, copdia, clr);
 			line = grbs_line_realize(&rbs->grbs, tn, pt, pt2);
 			line->immutable = 1;
+
+			/* add the center point for incident lines */
+			xc = ps->x + rnd_round((shp->data.line.x1 + shp->data.line.x2)/2);
+			yc = ps->y + rnd_round((shp->data.line.y1 + shp->data.line.y2)/2);
+			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(xc), RBSR_R2G(yc), RBSR_R2G(copdia), RBSR_R2G(clr));
+			htpp_set(&rbs->term4incident, ps, pt);
+
 			break;
 
 		case PCB_PSSH_CIRC:
 			copdia = shp->data.circ.dia;
 			x = ps->x + shp->data.circ.x;
 			y = ps->y + shp->data.circ.y;
-			grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), RBSR_R2G(copdia), RBSR_R2G(clr));
+			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), RBSR_R2G(copdia), RBSR_R2G(clr));
+			htpp_set(&rbs->term4incident, ps, pt);
 			break;
 			
 		case PCB_PSSH_HSHADOW:
@@ -74,8 +84,10 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 			break;
 
 		case PCB_PSSH_POLY:
-			
+			xc = yc = 0;
 			for(n = 0; n < shp->data.poly.len; n++) {
+				xc += shp->data.poly.x[n];
+				yc += shp->data.poly.y[n];
 				x = ps->x + shp->data.poly.x[n];
 				y = ps->y + shp->data.poly.y[n];
 				pt = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), 0, RBSR_R2G(clr));
@@ -93,6 +105,13 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 				line = grbs_line_realize(&rbs->grbs, tn, pt, firstpt);
 				line->immutable = 1;
 			}
+
+			/* add the center point for incident lines */
+			xc = ps->x + rnd_round((double)xc/(double)shp->data.poly.len);
+			yc = ps->y + rnd_round((double)yc/(double)shp->data.poly.len);
+			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(xc), RBSR_R2G(yc), RBSR_R2G(copdia), RBSR_R2G(clr));
+			htpp_set(&rbs->term4incident, ps, pt);
+
 			break;
 	}
 }
@@ -120,21 +139,69 @@ RND_INLINE int map_pstks(rbsr_map_t *rbs)
 	return 0;
 }
 
+static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *obj)
+{
+	grbs_arc_t *a;
+	grbs_point_t *pt;
+
+	if (obj->orig == NULL)
+		return -2;
+
+	pt = htpp_get(&rbs->term4incident, obj->orig);
+	if (pt == NULL)
+		return -4;
+
+	a = grbs_arc_new(&rbs->grbs, pt, 0, 0, 0, 0);
+	gdl_append(&tn->arcs, a, link_2net);
+
+	return 0;
+}
+
+static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *prev, pcb_2netmap_obj_t *obj)
+{
+	switch(obj->o.any.type) {
+		case PCB_OBJ_LINE:
+			if ((prev != NULL) && (prev->o.any.type == PCB_OBJ_LINE))
+				return -8;
+			break;
+		case PCB_OBJ_ARC:
+			if ((prev != NULL) && (prev->o.any.type == PCB_OBJ_ARC))
+				return -16;
+			break;
+		default:
+			return -32;
+	}
+	return 0;
+}
+
 
 RND_INLINE int map_2nets(rbsr_map_t *rbs)
 {
 	pcb_2netmap_oseg_t *seg;
+	int res = 0;
 
 	for(seg = rbs->twonets.osegs; seg != NULL; seg = seg->next) {
 		long n;
+		grbs_2net_t *tn;
+		double copper, clearance;
+
 		rnd_trace("net %p\n", seg->net);
-		for(n = 0; n < seg->objs.used; n++) {
+
+		TODO("extract this from objects");
+		copper = clearance = RND_MM_TO_COORD(1);
+		tn = grbs_2net_new(&rbs->grbs, copper, clearance);
+		res |= map_2nets_incident(rbs, tn, seg->objs.array[0]);
+		for(n = 1; n < seg->objs.used-1; n++) {
 			pcb_2netmap_obj_t *obj = seg->objs.array[n];
 			rnd_trace(" obj=%p orig=%p %ld\n", obj, obj->orig, obj->orig == NULL ? 0 : obj->orig->ID);
+			res |= map_2nets_intermediate(rbs, tn, seg->objs.array[n-1], seg->objs.array[n]);
 		}
+		res |= map_2nets_incident(rbs, tn, seg->objs.array[seg->objs.used-1]);
+
+		rnd_trace(" res=%d\n", res);
 	}
 
-	return 0;
+	return res;
 }
 
 int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
@@ -153,6 +220,7 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 		return -1;
 	}
 
+	htpp_init(&dst->term4incident, ptrhash, ptrkeyeq);
 	grbs_init(&dst->grbs);
 	dst->pcb = pcb;
 	dst->lid = lid;
@@ -166,6 +234,7 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 
 void rbsr_map_uninit(rbsr_map_t *dst)
 {
+	htpp_uninit(&dst->term4incident);
 	pcb_map_2nets_uninit(&dst->twonets);
 	dst->pcb = NULL;
 	dst->lid = -1;

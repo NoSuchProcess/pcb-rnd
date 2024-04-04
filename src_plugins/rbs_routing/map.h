@@ -1,3 +1,5 @@
+#include <genht/htpp.h>
+
 #include "layer.h"
 
 #include "../src_plugins/lib_netmap/map_2nets.h"
@@ -15,6 +17,8 @@ typedef struct rbsr_map_s {
 	pcb_board_t *pcb;
 	rnd_layer_id_t lid;
 	grbs_t grbs;
+
+	htpp_t term4incident;  /* key: pcb_any_obj_t *; value: grbs_point_t *; grbs point to use for incident lines string/ending at each terminal */
 
 	pcb_2netmap_t twonets;
 
