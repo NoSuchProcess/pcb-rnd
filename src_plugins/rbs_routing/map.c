@@ -51,10 +51,10 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 				copdia *= sqrt(2);
 			x = ps->x + shp->data.line.x1;
 			y = ps->y + shp->data.line.y1;
-			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), RBSR_R2G(copdia), RBSR_R2G(clr));
+			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), RBSR_R2G(copdia/2.0), RBSR_R2G(clr));
 			x = ps->x + shp->data.line.x2;
 			y = ps->y + shp->data.line.y2;
-			pt2 = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), RBSR_R2G(copdia), RBSR_R2G(clr));
+			pt2 = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), RBSR_R2G(copdia/2.0), RBSR_R2G(clr));
 			tn = grbs_2net_new(&rbs->grbs, copdia, clr);
 			line = grbs_line_realize(&rbs->grbs, tn, pt, pt2);
 			line->immutable = 1;
@@ -62,7 +62,7 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 			/* add the center point for incident lines */
 			xc = ps->x + rnd_round((shp->data.line.x1 + shp->data.line.x2)/2);
 			yc = ps->y + rnd_round((shp->data.line.y1 + shp->data.line.y2)/2);
-			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(xc), RBSR_R2G(yc), RBSR_R2G(copdia), RBSR_R2G(clr));
+			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(xc), RBSR_R2G(yc), RBSR_R2G(copdia/2.0), RBSR_R2G(clr));
 			htpp_set(&rbs->term4incident, ps, pt);
 
 			break;
@@ -71,7 +71,7 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 			copdia = shp->data.circ.dia;
 			x = ps->x + shp->data.circ.x;
 			y = ps->y + shp->data.circ.y;
-			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), RBSR_R2G(copdia), RBSR_R2G(clr));
+			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(x), RBSR_R2G(y), RBSR_R2G(copdia/2.0), RBSR_R2G(clr));
 			htpp_set(&rbs->term4incident, ps, pt);
 			break;
 			
@@ -86,6 +86,7 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 			break;
 
 		case PCB_PSSH_POLY:
+			copdia = 0;
 			xc = yc = 0;
 			for(n = 0; n < shp->data.poly.len; n++) {
 				xc += shp->data.poly.x[n];
@@ -111,7 +112,7 @@ RND_INLINE void make_point_from_pstk_shape(rbsr_map_t *rbs, pcb_pstk_t *ps, pcb_
 			/* add the center point for incident lines */
 			xc = ps->x + rnd_round((double)xc/(double)shp->data.poly.len);
 			yc = ps->y + rnd_round((double)yc/(double)shp->data.poly.len);
-			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(xc), RBSR_R2G(yc), RBSR_R2G(copdia), RBSR_R2G(clr));
+			pt = grbs_point_new(&rbs->grbs, RBSR_R2G(xc), RBSR_R2G(yc), RBSR_R2G(copdia/2.0), RBSR_R2G(clr));
 			htpp_set(&rbs->term4incident, ps, pt);
 
 			break;
