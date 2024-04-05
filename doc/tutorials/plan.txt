@@ -3,7 +3,7 @@
 Milestone C:
 
 - placing footprints from the lib [5]
-	<chapter 1>: library window and placement
+	<chapter 1>: the library window
 	- manual nav
 	- placement
 		- place copies from buffer
@@ -37,16 +37,22 @@ Milestone C:
 		- place something, reimport -> gets removed
 		- nonetlist (connector(1) for test pad, logo)
 
-- grid, snap, wireframe [3]
-	TODO
-
 - drawing on any layer [3]
 	- turning layers on-off
 	- turning all layers on-off
-	- drawing on any layer
-	- explain negative layer
+	- drawing on any layer: silk, mask, paste, assembly
+	- explain layer compositing:
+		- layers of different color
+		- positive and negative layers on silk
+		- explain how the mask layer works
 	- moving objects between layers
+		- right click menu: single
+		- {s l}
+		- subc
 	- one object is always on one layer, except for subcircuits and padstacks
+
+- grid, snap, wireframe [3]
+	TODO
 
 - outline and cutouts [3]
 	TODO
