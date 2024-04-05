@@ -51,17 +51,27 @@ Milestone C:
 		- subc
 	- one object is always on one layer, except for subcircuits and padstacks
 
-- grid, snap, wireframe [3]
-	TODO
-
 - outline and cutouts [3]
-	TODO
+	- outline layer, centerline vs. tool diameter
+	- cutouts: plated and unplated (slot layers)
+	- lines and arcs, not polygons
+	- vias: plated and unpalted drills
+	- note on export into different files vs. copper around
+	- oval cutouts in padstacks: slots for tabs
 
-- export to fab [3]
+- export for pcb fabbing [3]
+	- difference between gerber and excellon
+	- confusion about gerber file names
+	- don't use the direct gerber export
 	- cam export to jlc
 		- explain gerber + excellon
 		- explain file naming
-	- export XY
+	- export XY and BoM (only mention)
+
+- grid, snap, wireframe [3]
+	TODO
+
+
 
 Milestone D:
 
