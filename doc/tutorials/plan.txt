@@ -3,15 +3,38 @@
 Milestone C:
 
 - placing footprints from the lib [5]
+	<chapter 1>: library window and placement
 	- manual nav
 	- placement
+		- place copies from buffer
+		- rotate (shift-f7, {b r r}, {b r l})
+		- other side: tab
 	- filter
+		- TO12  <- prefix
+		- 126   <- middle match (TO126)
+		- [12]6 <- regex! (show TO126 and SOT363)
+		- ^sot  <- regex, case insensitive
 	- parametric
-		- type in
+		- type in:
+			- so(6)
+			- so(6,500)
 		- gui edit
-	- edakrill
+			- row spacing 200 mil
+			- line_thickness 0.1mm
+		- show & edit edited params
+		- place; edit; place -> once placed, a copy is made
+	<chapter 2>: libraries, configuration
 	- configuring own library
+	- edakrill
+		- {i c p}, wget@edakrill
+		- maintenance re-scan
+		- have to refresh manually in the lib window
+		- search for sot23-5
+	<chapter 3>: netlist
 	- how this interferes with import
+		- import sch with a few parts
+		- arrange, reimport
+		- place something, reimport -> gets removed
 		- nonetlist (connector(1) for test pad, logo)
 
 - grid, snap, wireframe [3]
