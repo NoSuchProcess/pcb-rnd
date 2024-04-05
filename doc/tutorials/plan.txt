@@ -1,8 +1,5 @@
 === basic ===
 
-Milestone B:
-
-
 Milestone C:
 
 - placing footprints from the lib [5]
