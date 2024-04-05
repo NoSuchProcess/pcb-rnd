@@ -39,8 +39,8 @@ Milestone C:
 
 - drawing on any layer [3]
 	- turning layers on-off
-	- turning all layers on-off
 	- drawing on any layer: silk, mask, paste, assembly
+	- turning all layers on-off
 	- explain layer compositing:
 		- layers of different color
 		- positive and negative layers on silk
