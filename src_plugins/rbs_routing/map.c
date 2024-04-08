@@ -283,6 +283,7 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		grbs_2net_t *tn;
 		grbs_arc_t *prevarc = NULL;
 		grbs_line_t *prevline = NULL;
+		rnd_coord_t rcop, rclr;
 		double copper, clearance;
 
 		if (seg->objs.used <= 1)
@@ -297,7 +298,9 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 			if ((obj->o.any.type == PCB_OBJ_LINE) && (obj->orig != NULL)) {
 				pcb_line_t *line = (pcb_line_t *)obj->orig;
 				if (copper == 0) {
-					copper = RBSR_R2G(line->Thickness);
+					rcop = line->Thickness;
+					rclr = line->Clearance;
+					copper = RBSR_R2G(line->Thickness/2);
 					clearance = RBSR_R2G(line->Clearance/2);
 				}
 				else {
@@ -308,11 +311,13 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 			if ((obj->o.any.type == PCB_OBJ_ARC) && (obj->orig != NULL)) {
 				pcb_arc_t *arc = (pcb_arc_t *)obj->orig;
 				if (copper == 0) {
-					copper = RBSR_R2G(arc->Thickness);
+					rcop = arc->Thickness;
+					rclr = arc->Clearance;
+					copper = RBSR_R2G(arc->Thickness/2);
 					clearance = RBSR_R2G(arc->Clearance/2);
 				}
 				else {
-					if ((copper != arc->Thickness) || (clearance != arc->Clearance))
+					if ((rcop != arc->Thickness) || (rclr != arc->Clearance))
 						rnd_message(RND_MSG_ERROR, "rbs_routing: two-net with variable thickness or clearance\n");
 				}
 			}
@@ -368,11 +373,11 @@ grbs_rtree_dir_t draw_line(void *cl, void *obj, const grbs_rtree_box_t *box)
 		clearance = tn->clearance;
 	}
 
-	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper));
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper*2));
 	rnd_render->draw_line(pcb_draw_out.fgGC, x1, y1, x2, y2);
 
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
-	pcb_draw_wireframe_line(pcb_draw_out.fgGC, x1, y1, x2, y2, RBSR_G2R(copper+clearance*2), -1);
+	pcb_draw_wireframe_line(pcb_draw_out.fgGC, x1, y1, x2, y2, RBSR_G2R(copper*2+clearance*2), -1);
 
 	return rnd_RTREE_DIR_FOUND_CONT;
 }
@@ -395,7 +400,7 @@ grbs_rtree_dir_t draw_arc(void *cl, void *obj, const grbs_rtree_box_t *box)
 	sa = 180.0 - (arc->sa * RND_RAD_TO_DEG);
 	da = - (arc->da * RND_RAD_TO_DEG);
 
-	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper));
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper*2));
 	rnd_render->draw_arc(pcb_draw_out.fgGC, cx, cy, r, r, sa, da);
 
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
@@ -403,7 +408,7 @@ grbs_rtree_dir_t draw_arc(void *cl, void *obj, const grbs_rtree_box_t *box)
 	tmparc.X = cx; tmparc.Y = cy;
 	tmparc.Width = tmparc.Height = r;
 	tmparc.StartAngle = sa; tmparc.Delta = da;
-	pcb_draw_wireframe_arc_(pcb_draw_out.fgGC, &tmparc, RBSR_G2R(copper+clearance*2), 0);
+	pcb_draw_wireframe_arc_(pcb_draw_out.fgGC, &tmparc, RBSR_G2R(copper*2+clearance*2), 0);
 
 	return rnd_RTREE_DIR_FOUND_CONT;
 }
