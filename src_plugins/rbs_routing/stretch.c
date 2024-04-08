@@ -1,7 +1,8 @@
 
-int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, rnd_layer_id_t lid, pcb_line_t *line)
+int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *line)
 {
 	grbs_line_t *gl;
+	rnd_layer_id_t lid = pcb_layer_id(pcb->Data, line->parent.layer);
 
 	rbsr_map_pcb(&rbss->map, pcb, lid);
 	rbsr_map_debug_draw(&rbss->map, "rbss1.svg");
