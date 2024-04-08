@@ -2371,6 +2371,7 @@
  polygon.h vtpadstack_t.h search.h \
  ../src_plugins/rbs_routing/menu_internal.c \
  ../src_plugins/rbs_routing/map.h layer.h \
+ ../src_plugins/rbs_routing/stretch.h ../src_plugins/rbs_routing/stretch.c \
  ../src_plugins/lib_netmap/map_2nets.h obj_rat.h obj_poly.h obj_pstk.h \
  ../src_plugins/query/net_len.h ../src_plugins/query/query_exec.h \
  ../src_plugins/query/query.h ../src_plugins/query/fields_sphash.h \
