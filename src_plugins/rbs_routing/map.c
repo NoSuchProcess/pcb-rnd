@@ -298,7 +298,7 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 				pcb_line_t *line = (pcb_line_t *)obj->orig;
 				if (copper == 0) {
 					copper = RBSR_R2G(line->Thickness);
-					clearance = RBSR_R2G(line->Clearance);
+					clearance = RBSR_R2G(line->Clearance/2);
 				}
 				else {
 					if ((copper != line->Thickness) || (clearance != line->Clearance))
@@ -309,7 +309,7 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 				pcb_arc_t *arc = (pcb_arc_t *)obj->orig;
 				if (copper == 0) {
 					copper = RBSR_R2G(arc->Thickness);
-					clearance = RBSR_R2G(arc->Clearance);
+					clearance = RBSR_R2G(arc->Clearance/2);
 				}
 				else {
 					if ((copper != arc->Thickness) || (clearance != arc->Clearance))
@@ -372,7 +372,7 @@ grbs_rtree_dir_t draw_line(void *cl, void *obj, const grbs_rtree_box_t *box)
 	rnd_render->draw_line(pcb_draw_out.fgGC, x1, y1, x2, y2);
 
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
-	pcb_draw_wireframe_line(pcb_draw_out.fgGC, x1, y1, x2, y2, RBSR_G2R(copper+clearance), 0);
+	pcb_draw_wireframe_line(pcb_draw_out.fgGC, x1, y1, x2, y2, RBSR_G2R(copper+clearance*2), -1);
 
 	return rnd_RTREE_DIR_FOUND_CONT;
 }
@@ -403,7 +403,7 @@ grbs_rtree_dir_t draw_arc(void *cl, void *obj, const grbs_rtree_box_t *box)
 	tmparc.X = cx; tmparc.Y = cy;
 	tmparc.Width = tmparc.Height = r;
 	tmparc.StartAngle = sa; tmparc.Delta = da;
-	pcb_draw_wireframe_arc(pcb_draw_out.fgGC, &tmparc, RBSR_G2R(copper+clearance));
+	pcb_draw_wireframe_arc_(pcb_draw_out.fgGC, &tmparc, RBSR_G2R(copper+clearance*2), 0);
 
 	return rnd_RTREE_DIR_FOUND_CONT;
 }
