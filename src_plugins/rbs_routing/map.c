@@ -27,6 +27,7 @@
 
 #include <genht/hash.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/math_helper.h>
 #include <librnd/hid/hid_inlines.h>
 #include <libgrbs/route.h>
 #include <libgrbs/debug.h>
@@ -376,6 +377,37 @@ grbs_rtree_dir_t draw_line(void *cl, void *obj, const grbs_rtree_box_t *box)
 	return rnd_RTREE_DIR_FOUND_CONT;
 }
 
+grbs_rtree_dir_t draw_arc(void *cl, void *obj, const grbs_rtree_box_t *box)
+{
+	grbs_arc_t *arc = obj;
+	pcb_arc_t tmparc;
+	pcb_draw_info_t *info = cl;
+	rnd_coord_t cx = RBSR_G2R(arc->parent_pt->x), cy = RBSR_G2R(arc->parent_pt->y);
+	rnd_coord_t r = RBSR_G2R(arc->r);
+	grbs_2net_t *tn = grbs_arc_parent_2net(arc);
+	double copper = 1, clearance = 1, sa, da;
+
+	if (tn != NULL) {
+		copper = tn->copper;
+		clearance = tn->clearance;
+	}
+
+	sa = 180.0 - (arc->sa * RND_RAD_TO_DEG);
+	da = - (arc->da * RND_RAD_TO_DEG);
+
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper));
+	rnd_render->draw_arc(pcb_draw_out.fgGC, cx, cy, r, r, sa, da);
+
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
+
+	tmparc.X = cx; tmparc.Y = cy;
+	tmparc.Width = tmparc.Height = r;
+	tmparc.StartAngle = sa; tmparc.Delta = da;
+	pcb_draw_wireframe_arc(pcb_draw_out.fgGC, &tmparc, RBSR_G2R(copper+clearance));
+
+	return rnd_RTREE_DIR_FOUND_CONT;
+}
+
 static void rbsr_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 {
 	rbsr_map_t *rbs = Layer->plugin_draw_data;
@@ -390,6 +422,7 @@ static void rbsr_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 
 	grbs_rtree_search_any(&rbs->grbs.point_tree, &gbox, NULL, draw_point, info, NULL);
 	grbs_rtree_search_any(&rbs->grbs.line_tree, &gbox, NULL, draw_line, info, NULL);
+	grbs_rtree_search_any(&rbs->grbs.arc_tree, &gbox, NULL, draw_arc, info, NULL);
 }
 
 static void setup_ui_layer(rbsr_map_t *rbs)
