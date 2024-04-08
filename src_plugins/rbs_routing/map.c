@@ -226,6 +226,7 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 				return -8;
 			*prevline = grbs_line_new(&rbs->grbs);
 			(*prevline)->user_data = obj;
+			htpp_set(&rbs->robj2grbs, obj, *prevline);
 			break;
 		case PCB_OBJ_ARC:
 			if ((prev != NULL) && (prev->o.any.type == PCB_OBJ_ARC))
@@ -243,6 +244,7 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 			a->user_data = obj;
 			a->in_use = 1;
 
+			htpp_set(&rbs->robj2grbs, obj, a);
 			bind_prev_line(rbs, prevarc, prevline, a);
 			break;
 		default:
@@ -415,6 +417,7 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 	}
 
 	htpp_init(&dst->term4incident, ptrhash, ptrkeyeq);
+	htpp_init(&dst->robj2grbs, ptrhash, ptrkeyeq);
 	grbs_init(&dst->grbs);
 	dst->pcb = pcb;
 	dst->lid = lid;
@@ -431,6 +434,7 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 void rbsr_map_uninit(rbsr_map_t *dst)
 {
 	htpp_uninit(&dst->term4incident);
+	htpp_uninit(&dst->robj2grbs);
 	pcb_map_2nets_uninit(&dst->twonets);
 	dst->pcb = NULL;
 	dst->lid = -1;

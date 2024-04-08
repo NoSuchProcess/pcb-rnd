@@ -19,6 +19,7 @@ typedef struct rbsr_map_s {
 	grbs_t grbs;
 
 	htpp_t term4incident;  /* key: pcb_any_obj_t *; value: grbs_point_t *; grbs point to use for incident lines string/ending at each terminal */
+	htpp_t robj2grbs;      /* key: pcb_any_obj_t *; value: grbs_arc_t * or grbs_line_t *;  pcb-rnd routing object (line/arc) to grbs object */
 
 	pcb_2netmap_t twonets;
 
