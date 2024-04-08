@@ -73,8 +73,6 @@ static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_line_t *l = ptr2;
 		rnd_layer_id_t lid = pcb_layer_id(pcb->Data, l->parent.layer);
 
-		rnd_trace("map on %ld\n", (long)lid);
-
 		tx = x - RND_MM_TO_COORD(5);
 		ty = y;
 		rbsr_stretch_line_begin(&rbss, pcb, lid, l);
