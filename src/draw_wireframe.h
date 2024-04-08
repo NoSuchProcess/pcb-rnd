@@ -32,15 +32,21 @@
 #include "config.h"
 #include <librnd/hid/hid.h>
 
+/* Draws the outline of an arc */
+RND_INLINE void pcb_draw_wireframe_arc(rnd_hid_gc_t gc, pcb_arc_t *arc, rnd_coord_t thick);
 RND_INLINE void pcb_draw_wireframe_arc_(rnd_hid_gc_t gc, pcb_arc_t *arc, rnd_coord_t thick, int enable_cap);
+
+/* draws the outline of a line; if square is -1 assume round cap but don't
+   draw it */
+RND_INLINE void pcb_draw_wireframe_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, int square);
+
+
+/*** Implementation ***/
 RND_INLINE void pcb_draw_wireframe_arc(rnd_hid_gc_t gc, pcb_arc_t *arc, rnd_coord_t thick)
 {
 	pcb_draw_wireframe_arc_(gc, arc, thick, 1);
 }
 
-/*-----------------------------------------------------------
- * Draws the outline of an arc
- */
 RND_INLINE void pcb_draw_wireframe_arc_(rnd_hid_gc_t gc, pcb_arc_t *arc, rnd_coord_t thick, int enable_cap)
 {
 	rnd_coord_t wid = thick / 2;
@@ -68,10 +74,6 @@ RND_INLINE void pcb_draw_wireframe_arc_(rnd_hid_gc_t gc, pcb_arc_t *arc, rnd_coo
 	}
 }
 
-/*-----------------------------------------------------------
- * Draws the outline of a line; if square is
- * -1 assume round cap but don't draw it
- */
 RND_INLINE void pcb_draw_wireframe_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, int square)
 {
 	if((x1 != x2) || (y1 != y2)) {
