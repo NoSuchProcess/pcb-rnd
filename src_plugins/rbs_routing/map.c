@@ -283,9 +283,8 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 
 		rnd_trace("net %p\n", seg->net);
 
-		TODO("extract this from objects");
+		/* figure copper and clearance size for this two-net */
 		copper = clearance = 0;
-
 		for(n = 1; n < seg->objs.used-1; n++) {
 			pcb_2netmap_obj_t *obj = seg->objs.array[n];
 			if ((obj->o.any.type == PCB_OBJ_LINE) && (obj->orig != NULL)) {
