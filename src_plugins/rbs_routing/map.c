@@ -226,7 +226,8 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 				return -8;
 			*prevline = grbs_line_new(&rbs->grbs);
 			(*prevline)->user_data = obj;
-			htpp_set(&rbs->robj2grbs, obj, *prevline);
+			if (obj->orig != NULL)
+				htpp_set(&rbs->robj2grbs, obj->orig, *prevline);
 			break;
 		case PCB_OBJ_ARC:
 			if ((prev != NULL) && (prev->o.any.type == PCB_OBJ_ARC))
@@ -244,7 +245,7 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 			a->user_data = obj;
 			a->in_use = 1;
 
-			htpp_set(&rbs->robj2grbs, obj, a);
+			htpp_set(&rbs->robj2grbs, arc, a);
 			bind_prev_line(rbs, prevarc, prevline, a);
 			break;
 		default:
