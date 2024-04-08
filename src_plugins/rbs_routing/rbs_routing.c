@@ -37,8 +37,10 @@
 #include "menu_internal.c"
 
 #include "map.h"
+#include "stretch.h"
 
 #include "map.c"
+#include "stretch.c"
 
 static const char pcb_acts_RbsConnect[] = "RbsConnect()";
 static const char pcb_acth_RbsConnect[] = "Make a new rubber band stretch connection between two points";
@@ -53,10 +55,10 @@ static const char pcb_acth_RbsStretch[] = "Make a new rubber band stretch connec
 static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	static rbsr_map_t rbs = {0};
+	static rbsr_stretch_t rbss = {0};
 	int type;
 	void *ptr1, *ptr2, *ptr3;
-	rnd_coord_t x, y;
+	rnd_coord_t x, y, tx, ty;
 
 	if (rnd_hid_get_coords("Click on a copper line or arc", &x, &y, 0) != 0)
 		return -1;
@@ -73,10 +75,10 @@ static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		rnd_trace("map on %ld\n", (long)lid);
 
-		rbsr_map_pcb(&rbs, pcb, lid);
-		rbsr_map_debug_draw(&rbs, "rbs.svg");
-		rbsr_map_debug_dump(&rbs, "rbs.dump");
-
+		tx = x - RND_MM_TO_COORD(5);
+		ty = y;
+		rbsr_stretch_line_begin(&rbss, pcb, lid, l);
+		rbsr_stretch_line_end(&rbss);
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Failed to find a line or arc at that location\n");
