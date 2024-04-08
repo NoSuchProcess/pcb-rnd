@@ -8,7 +8,6 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, rnd_layer_id
 	rbsr_map_debug_dump(&rbss->map, "rbss1.dump");
 
 	gl = htpp_get(&rbss->map.robj2grbs, line);
-rnd_trace("line=%p -> %p\n", line, gl);
 	if (gl == NULL) {
 		rnd_message(RND_MSG_ERROR, "rbsr_stretch_line_begin(): can't stretch this line (not in the grbs map)\n");
 		return -1;
