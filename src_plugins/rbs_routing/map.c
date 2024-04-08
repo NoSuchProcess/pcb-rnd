@@ -281,6 +281,9 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		grbs_line_t *prevline = NULL;
 		double copper, clearance;
 
+		if (seg->objs.used <= 1)
+			continue;
+
 		rnd_trace("net %p\n", seg->net);
 
 		/* figure copper and clearance size for this two-net */
