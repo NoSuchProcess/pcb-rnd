@@ -14,6 +14,14 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 		return -1;
 	}
 
+	rbss->from.type = ADDR_ARC_END;
+	rbss->from.obj.arc = gl->a1;
+	rbss->from.last_real = NULL;
+
+	rbss->to.type = ADDR_ARC_START;
+	rbss->to.obj.arc = gl->a2;
+	rbss->to.last_real = NULL;
+
 	htpp_pop(&rbss->map.robj2grbs, line);
 	grbs_path_remove_line(&rbss->map.grbs, gl);
 
@@ -26,9 +34,18 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 void rbsr_stretch_line_end(rbsr_stretch_t *rbss)
 {
 	TODO("implement me");
+	/* No need to free rbss->via separately: it's part of the grbs map */
 }
 
 int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_t ty)
 {
+	if (rbss->via != NULL) {
+		grbs_point_unreg(&rbss->map.grbs, rbss->via);
+		rbss->via->x = RBSR_R2G(tx);
+		rbss->via->y = RBSR_R2G(ty);
+		grbs_point_reg(&rbss->map.grbs, rbss->via);
+	}
+	else
+		rbss->via = grbs_point_new(&rbss->map.grbs, RBSR_R2G(tx), RBSR_R2G(ty), RBSR_R2G(RND_MM_TO_COORD(0.1)), RBSR_R2G(RND_MM_TO_COORD(0.1)));
 
 }

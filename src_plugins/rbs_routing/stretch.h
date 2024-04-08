@@ -1,6 +1,6 @@
 typedef struct rbsr_stretch_s {
 	rbsr_map_t map;
-	grbs_addr_t *from, *to;
+	grbs_addr_t from, to;
 
 	grbs_point_t *via;
 } rbsr_stretch_t;
