@@ -25,6 +25,10 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 
 void rbsr_stretch_line_end(rbsr_stretch_t *rbss)
 {
-
+	TODO("implement me");
 }
 
+int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_t ty)
+{
+
+}

@@ -75,6 +75,7 @@ static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		tx = x - RND_MM_TO_COORD(5);
 		ty = y;
 		rbsr_stretch_line_begin(&rbss, pcb, l);
+		rbsr_stretch_line_to_coords(&rbss, tx, ty);
 		rbsr_stretch_line_end(&rbss);
 	}
 	else {
