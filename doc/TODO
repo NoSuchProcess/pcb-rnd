@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
 - BUG: bug_files/TODO/drc1/*: {w d} false positive [report: John Wehle]
 	- the main problem is: square cap bloat-line corner:
 		- at B.rp 175;187 the bottom right corner cuts into the horizontal edge of the bottom poly
