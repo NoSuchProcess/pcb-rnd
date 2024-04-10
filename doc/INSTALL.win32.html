@@ -22,7 +22,7 @@ time in compiling windows releases.
 <p>Unpack the zip anywhere, and run pcb-rnd from bin:
 <ul>
 	<li> start a shell (cmd.exe), cd to where you unpacked it, cd bin, pcb-rnd
-	<li> create a shortcut icon (TODO: what's needed for the exe to find the dlls?)
+	<li> optional: create a shortcut icon (<a href="#icon">see below</a>)
 </ul>
 
 <p>
@@ -76,8 +76,51 @@ a normal windows application:
 	     from windows. Workaround: resize the window manually to big.
 </ul>
 
+<h2 id="icon">3. Optinal: how to create a desktop icon</h2>
+	<p>
+	The above installation process doesn't create a desktop icon so you'll
+	need to start pcb-rnd from a cmd every time. In case you'd prefer a desktop
+	icon, here's a process submitted by a pcb-rnd user on Windows 10:
+	<p>
+	<ol>
+		<li> On Windows desktop, click right
+		<li> Click "NEW"
+		<li> Click "Shortcut"
+		<li> Fill in the "type the location" with the following:
+		     (this is correct on my system but depends on the location of your installation)
+		     <b>C:\Windows\System32\cmd.exe /k cd.. &amp;cd.. &amp;cd <i>pcb-rnd-3.0.4-win32</i> &amp; cd bin &amp; pcb-rnd.exe</b>
+	</ol>
+	<p>
+	Note: you need to change the name of the directory written with italic to
+	whatever path you have unpacked pcb-rnd into.
+	<p>
+	Explanation of each command:
+	<p>
+	<b>C:\Windows\System32\cmd.exe /k </b> starts the shell (cmd.exe); the
+	/k keeps this window open (for information /c will close it but that's not
+	recommended since some vital error messages may be printed there).
+	<p>
+	Initially the directory "System32" is opened in that cmd; the command
+	<b>cd.. </b>changes the directory up a level to the Windows directory.
+	So now we are in <b>C:\Windows</b>. The <b>&amp;</b> is put between two
+	commands as a separator. <b>cd.. </b> again changes the directory up a
+	level; we are now in C:
+	<p>
+	At this point you must find where you installed the directory for pcb-rnd
+	on your system while the <b>cmd.exe</b>is running you can use <b>/dir</b> to
+	list all the directories available (/dire / p if the list is long).
+	<p>
+	Use the command cd <i>your directory name where pcb-rnd is installed</i>
+	<p>
+	(you may need to use cd several times to get to your installation directory:
+	don't forget the <b>&amp;</b> to separate each command!)
+	<p>
+	Then again <b>cd bin</b> to get into the bin directory (pcb-rnd requires to
+	be run from there for finding the dlls).
+	<p>
+	Then <b>pcb-rnd.exe</b> will execute the program
 
-<h2>3. Cross compilation from Linux to win32</h2>
+<h2>4. Cross compilation from Linux to win32</h2>
 
 <b>(developers may need this, if you are an user, it is safe to skip.)</b>
 
