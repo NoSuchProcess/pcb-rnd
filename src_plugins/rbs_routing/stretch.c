@@ -69,10 +69,25 @@ int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_
 {
 	grbs_addr_t *a1, *a2;
 	if (rbss->via != NULL) {
+		int seg;
+
 		grbs_point_unreg(&rbss->map.grbs, rbss->via);
 		rbss->via->x = RBSR_R2G(tx);
 		rbss->via->y = RBSR_R2G(ty);
 		grbs_point_reg(&rbss->map.grbs, rbss->via);
+
+		/* remove the previous version of the arc */
+		for(seg = 0; seg < GRBS_MAX_SEG; seg++) {
+			grbs_arc_t *a;
+			for(a = gdl_first(&rbss->via->arcs[seg]); a != NULL; a = gdl_next(&rbss->via->arcs[seg], a)) {
+				if (grbs_arc_parent_2net(a) == rbss->tn) {
+					grbs_del_arc(&rbss->map.grbs, a);
+					break;
+				}
+			}
+		}
+
+		grbs_clean_unused_sentinel(&rbss->map.grbs, rbss->via);
 	}
 	else
 		rbss->via = grbs_point_new(&rbss->map.grbs, RBSR_R2G(tx), RBSR_R2G(ty), RBSR_R2G(RND_MM_TO_COORD(2.1)), RBSR_R2G(RND_MM_TO_COORD(0.1)));
