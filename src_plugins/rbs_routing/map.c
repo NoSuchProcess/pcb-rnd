@@ -220,6 +220,7 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 	grbs_arc_t *a;
 	grbs_point_t *pt;
 	pcb_arc_t *arc;
+	double r, da, sa;
 
 	switch(obj->o.any.type) {
 		case PCB_OBJ_LINE:
@@ -241,7 +242,12 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 			pt = find_point_by_center(rbs, arc->X, arc->Y);
 			if (pt == NULL)
 				return -64;
-			a = grbs_arc_new(&rbs->grbs, pt, 0, 0, 0, 0);
+
+			sa = -(arc->StartAngle - 180.0) / RND_RAD_TO_DEG;
+			da = -(arc->Delta / RND_RAD_TO_DEG);
+			r = RBSR_R2G(arc->Height);
+			a = grbs_arc_new(&rbs->grbs, pt, 0, r, sa, da);
+			assert(a != NULL);
 			gdl_append(&tn->arcs, a, link_2net);
 			a->user_data = obj;
 			a->in_use = 1;
