@@ -1,3 +1,5 @@
+static int rbsr_install_2net(rbsr_stretch_t *rbss, grbs_2net_t *tn);
+
 static int coll_ingore_tn_line(grbs_t *grbs, grbs_2net_t *tn, grbs_line_t *l)
 {
 	rnd_trace("ign coll line\n");
@@ -84,8 +86,35 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 
 void rbsr_stretch_line_end(rbsr_stretch_t *rbss)
 {
+	/* tune existing objects and install new objects */
+	rbsr_install_2net(rbss, rbss->tn);
+
 	TODO("implement me");
 	/* No need to free rbss->via separately: it's part of the grbs map */
+}
+
+static int rbsr_install_arc(rbsr_stretch_t *rbss, grbs_arc_t *arc)
+{
+	return 0;
+}
+
+static int rbsr_install_line(rbsr_stretch_t *rbss, grbs_line_t *line)
+{
+	return 0;
+}
+
+static int rbsr_install_2net(rbsr_stretch_t *rbss, grbs_2net_t *tn)
+{
+	grbs_arc_t *a, *prev = NULL;
+	int res = 0;
+
+	for(a = gdl_first(&tn->arcs); a != NULL; prev = a, a = gdl_next(&tn->arcs, a)) {
+		if (prev != NULL)
+			res |= rbsr_install_line(rbss, prev->sline);
+		res |= rbsr_install_arc(rbss, a);
+	}
+
+	return res;
 }
 
 int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_t ty)
@@ -136,6 +165,7 @@ int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_
 	grbs_path_realize(&rbss->map.grbs,rbss->tn, a2, 0);
 	grbs_path_realize(&rbss->map.grbs, rbss->tn, a1, 0);
 	grbs_path_realize(&rbss->map.grbs, rbss->tn, &rbss->from, 0);
+
 
 
 	rbsr_map_debug_draw(&rbss->map, "rbss4.svg");
