@@ -1,4 +1,16 @@
 
+static void coll_report_arc_cb(grbs_t *grbs, grbs_2net_t *tn, grbs_2net_t *coll_tn, grbs_arc_t *coll_arc)
+{
+	rnd_trace("coll arc report\n");
+}
+
+static void coll_report_pt_cb(grbs_t *grbs, grbs_2net_t *tn, grbs_point_t *coll_pt)
+{
+	rbsr_stretch_t *rbss = grbs->user_data;
+	rnd_trace("coll pt report at %f;%f\n", coll_pt->x, coll_pt->y);
+}
+
+
 int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *line)
 {
 	grbs_line_t *gl;
@@ -8,6 +20,10 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 	rbsr_map_pcb(&rbss->map, pcb, lid);
 	rbsr_map_debug_draw(&rbss->map, "rbss1.svg");
 	rbsr_map_debug_dump(&rbss->map, "rbss1.dump");
+
+	rbss->map.grbs.user_data = rbss;
+	rbss->map.grbs.coll_report_arc_cb = coll_report_arc_cb;
+	rbss->map.grbs.coll_report_pt_cb = coll_report_pt_cb;
 
 	gl = htpp_get(&rbss->map.robj2grbs, line);
 	if (gl == NULL) {
