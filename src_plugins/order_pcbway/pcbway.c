@@ -405,7 +405,7 @@ static void var_cb(pcb_ordc_ctx_t *ctx, pcb_ordc_val_t *dst, const char *varname
 	switch(f->type) {
 		case RND_HATT_INTEGER: dst->type = PCB_ORDC_VLNG; dst->val.l = f->val.lng; break;
 		case RND_HATT_COORD:   dst->type = PCB_ORDC_VDBL; dst->val.d = RND_COORD_TO_MM(f->val.crd); break;
-		case RND_HATT_STRING:  dst->type = PCB_ORDC_VCSTR; dst->val.s = f->val.str; break;
+		case RND_HATT_STRING:  dst->type = PCB_ORDC_VCSTR; dst->val.s = (char *)f->val.str; break;
 		case RND_HATT_ENUM:
 			dst->type = PCB_ORDC_VCSTR; 
 			if (f->val.lng >= 0)

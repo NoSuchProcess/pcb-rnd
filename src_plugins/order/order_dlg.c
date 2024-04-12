@@ -131,7 +131,7 @@ static void pcb_order_str_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 		rnd_message(RND_MSG_ERROR, "order_dlg internal error: can't find field for widget\nPlease report this bug!\n");
 		return;
 	}
-	free(f->val.str);
+	free((char *)f->val.str);
 	f->val.str = rnd_strdup(attr_btn->val.str);
 	cb_notify(octx, f);
 }
