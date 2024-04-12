@@ -5,8 +5,6 @@ typedef struct rbsr_stretch_s {
 
 	grbs_point_t *via;
 
-	/* collision */
-	grbs_point_t *coll_pt;
 } rbsr_stretch_t;
 
 
