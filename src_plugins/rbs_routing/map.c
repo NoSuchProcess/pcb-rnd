@@ -189,20 +189,20 @@ static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_
 
 /* How far the target point could be, +- manhattan distance */
 #define FIND_PT_DELTA   2
-#define FIND_PT_DELTA2  (FIND_PT_DELTA * FIND_PT_DELTA)
+#define FIND_PT_DELTA2  RBSR_R2G(FIND_PT_DELTA * FIND_PT_DELTA)
 
 /* Return the point that's close enough to cx;cy or NULL if nothing is close */
 RND_INLINE grbs_point_t *find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_)
 {
-	double cx = cx_, cy = cy_, bestd2 = FIND_PT_DELTA2+1;
+	double cx = RBSR_R2G(cx_), cy = RBSR_R2G(cy_), bestd2 = FIND_PT_DELTA2+1;
 	grbs_point_t *pt, *best= NULL;
 	grbs_rtree_it_t it;
 	grbs_rtree_box_t bbox;
 
-	bbox.x1 = cx_ - FIND_PT_DELTA;
-	bbox.y1 = cy_ - FIND_PT_DELTA;
-	bbox.x2 = cx_ + FIND_PT_DELTA;
-	bbox.y2 = cy_ + FIND_PT_DELTA;
+	bbox.x1 = cx - FIND_PT_DELTA;
+	bbox.y1 = cy - FIND_PT_DELTA;
+	bbox.x2 = cx + FIND_PT_DELTA;
+	bbox.y2 = cy + FIND_PT_DELTA;
 
 	for(pt = grbs_rtree_first(&it, &rbs->grbs.point_tree, &bbox); pt != NULL; pt = grbs_rtree_next(&it)) {
 		double dx = cx - pt->x, dy = cy - pt->y, d2 = dx*dx + dy*dy;
@@ -327,7 +327,10 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		res |= map_2nets_incident(rbs, tn, seg->objs.array[0], &prevarc, &prevline);
 		for(n = 1; n < seg->objs.used-1; n++) {
 			pcb_2netmap_obj_t *obj = seg->objs.array[n];
-			rnd_trace(" obj=%p orig=%p %ld\n", obj, obj->orig, obj->orig == NULL ? 0 : obj->orig->ID);
+			char typec = '?';
+			if (obj->o.any.type == PCB_OBJ_LINE) typec = 'L';
+			else if (obj->o.any.type == PCB_OBJ_ARC) typec = 'A';
+			rnd_trace(" obj=%c:%p orig=%p %ld\n", typec, obj, obj->orig, obj->orig == NULL ? 0 : obj->orig->ID);
 			res |= map_2nets_intermediate(rbs, tn, seg->objs.array[n-1], seg->objs.array[n], &prevarc, &prevline);
 		}
 		res |= map_2nets_incident(rbs, tn, seg->objs.array[seg->objs.used-1], &prevarc, &prevline);
