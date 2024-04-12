@@ -642,8 +642,6 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 
 		pcb_board_new_postproc(PCB, 0);
 		if (how == 0) {
-			pcb_board_t *pcb;
-
 			/* update cursor location */
 			PCB->hidlib.ch_x = pcb_crosshair.X = (PCB->hidlib.dwg.X1 + PCB->hidlib.dwg.X2) / 2;
 			PCB->hidlib.ch_y = pcb_crosshair.Y = (PCB->hidlib.dwg.Y1 + PCB->hidlib.dwg.Y2) / 2;
