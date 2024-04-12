@@ -251,6 +251,8 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 			gdl_append(&tn->arcs, a, link_2net);
 			a->user_data = obj;
 			a->in_use = 1;
+			grbs_arc_bbox(a);
+			grbs_arc_reg(&rbs->grbs, a);
 
 			htpp_set(&rbs->robj2grbs, arc, a);
 			bind_prev_line(rbs, prevarc, prevline, a);
