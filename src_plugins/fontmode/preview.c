@@ -132,7 +132,7 @@ static void fmprv_pcb2preview_entities(fmprv_ctx_t *ctx)
 
 static int kern_key_cmp(const void *E1, const void *E2)
 {
-	const htkc_entry_t **e1 = E1, **e2 = E2;
+	const htkc_entry_t * const *e1 = E1, * const *e2 = E2;
 	if ((*e1)->key.left == (*e2)->key.left)
 		return (*e1)->key.right > (*e2)->key.right ? +1 : -1;
 	return (*e1)->key.left > (*e2)->key.left ? +1 : -1;
