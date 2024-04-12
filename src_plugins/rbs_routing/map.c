@@ -283,8 +283,7 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		grbs_2net_t *tn;
 		grbs_arc_t *prevarc = NULL;
 		grbs_line_t *prevline = NULL;
-		rnd_coord_t rcop, rclr;
-		double copper, clearance;
+		double rcop, rclr, copper, clearance;
 
 		if (seg->objs.used <= 1)
 			continue;
@@ -297,27 +296,27 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 			pcb_2netmap_obj_t *obj = seg->objs.array[n];
 			if ((obj->o.any.type == PCB_OBJ_LINE) && (obj->orig != NULL)) {
 				pcb_line_t *line = (pcb_line_t *)obj->orig;
+				rcop = RBSR_R2G(line->Thickness/2);
+				rclr = RBSR_R2G(line->Clearance/2);
 				if (copper == 0) {
-					rcop = line->Thickness;
-					rclr = line->Clearance;
-					copper = RBSR_R2G(line->Thickness/2);
-					clearance = RBSR_R2G(line->Clearance/2);
+					copper = rcop;
+					clearance = rclr;
 				}
 				else {
-					if ((copper != line->Thickness) || (clearance != line->Clearance))
+					if ((rcop != copper) || (rclr != clearance))
 						rnd_message(RND_MSG_ERROR, "rbs_routing: two-net with variable thickness or clearance\n");
 				}
 			}
-			if ((obj->o.any.type == PCB_OBJ_ARC) && (obj->orig != NULL)) {
+			else if ((obj->o.any.type == PCB_OBJ_ARC) && (obj->orig != NULL)) {
 				pcb_arc_t *arc = (pcb_arc_t *)obj->orig;
+				rcop = RBSR_R2G(arc->Thickness/2);
+				rclr = RBSR_R2G(arc->Clearance/2);
 				if (copper == 0) {
-					rcop = arc->Thickness;
-					rclr = arc->Clearance;
-					copper = RBSR_R2G(arc->Thickness/2);
-					clearance = RBSR_R2G(arc->Clearance/2);
+					copper = rcop;
+					clearance = rclr;
 				}
 				else {
-					if ((rcop != arc->Thickness) || (rclr != arc->Clearance))
+					if ((rcop != copper) || (rclr != clearance))
 						rnd_message(RND_MSG_ERROR, "rbs_routing: two-net with variable thickness or clearance\n");
 				}
 			}
