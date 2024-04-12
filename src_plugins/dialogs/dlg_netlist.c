@@ -427,7 +427,7 @@ static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 				vtp0_append(&netlist_color_save, (char *)obj->override_color);
 			else
 				vtp0_append(&netlist_color_save, NULL);
-			obj->override_color = rnd_color_magenta;
+			obj->override_color = (rnd_color_t *)rnd_color_magenta;
 		}
 	}
 
