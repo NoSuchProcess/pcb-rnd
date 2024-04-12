@@ -8,6 +8,7 @@ static void coll_report_pt_cb(grbs_t *grbs, grbs_2net_t *tn, grbs_point_t *coll_
 {
 	rbsr_stretch_t *rbss = grbs->user_data;
 	rnd_trace("coll pt report at %f;%f\n", coll_pt->x, coll_pt->y);
+	rbss->coll_pt = coll_pt;
 }
 
 
@@ -83,7 +84,7 @@ void rbsr_stretch_line_end(rbsr_stretch_t *rbss)
 
 int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_t ty)
 {
-	grbs_addr_t *a1, *a2;
+	grbs_addr_t *a1, *a2, *a3 = NULL;
 	if (rbss->via != NULL) {
 		int seg;
 
@@ -117,8 +118,16 @@ int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_
 	rbss->to.obj.arc->new_in_use = 0; /* avoid spiral detection */
 	a2 = path_path_next_to_addr(&rbss->map.grbs, rbss->tn, a1, &rbss->to);
 	if (a2 == NULL) {
-		rnd_message(RND_MSG_ERROR, "rbsr_stretch_line_to_coord(): failed to route to a2\n");
-		return -1;
+		if (rbss->coll_pt != NULL) {
+			rnd_trace("route around coll pt\n");
+			a2 = grbs_path_next(&rbss->map.grbs, rbss->tn, a1, rbss->coll_pt, 0);
+			a3 = path_path_next_to_addr(&rbss->map.grbs, rbss->tn, a2, &rbss->to);
+			assert(a3 != NULL);
+		}
+		else {
+			rnd_message(RND_MSG_ERROR, "rbsr_stretch_line_to_coord(): failed to route to a2\n");
+			return -1;
+		}
 	}
 
 	rbsr_map_debug_draw(&rbss->map, "rbss3.svg");
@@ -126,6 +135,8 @@ int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_
 
 
 	/* realize backward */
+	if (a3 != NULL)
+		grbs_path_realize(&rbss->map.grbs,rbss->tn, a3, 0);
 	grbs_path_realize(&rbss->map.grbs,rbss->tn, a2, 0);
 	grbs_path_realize(&rbss->map.grbs, rbss->tn, a1, 0);
 	grbs_path_realize(&rbss->map.grbs, rbss->tn, &rbss->from, 0);
