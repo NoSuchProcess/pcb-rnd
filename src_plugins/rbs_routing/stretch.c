@@ -201,7 +201,7 @@ int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_
 
 	a1 = grbs_path_next(&rbss->map.grbs, rbss->tn, &rbss->from, rbss->via, GRBS_ADIR_CONVEX_CW);
 	if (a1 == NULL) {
-		rnd_message(RND_MSG_ERROR, "rbsr_stretch_line_to_coord(): failed to route to a2\n");
+		rnd_message(RND_MSG_ERROR, "rbsr_stretch_line_to_coord(): failed to route to a1\n");
 		return -1;
 	}
 
