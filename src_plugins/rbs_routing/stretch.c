@@ -41,7 +41,7 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 	}
 
 	if (gl->a1->r == 0) {
-		rbss->from.type = ADDR_ARC_END | ADDR_POINT;
+		rbss->from.type = ADDR_POINT;
 		rbss->from.obj.pt = gl->a1->parent_pt;
 	}
 	else {
@@ -58,7 +58,7 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 
 
 	if (gl->a2->r == 0) {
-		rbss->to.type = ADDR_ARC_END | ADDR_POINT;
+		rbss->to.type = ADDR_POINT;
 		rbss->to.obj.pt = gl->a2->parent_pt;
 	}
 	else {
