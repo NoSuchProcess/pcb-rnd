@@ -1,6 +1,8 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
+	- search for '-' and centralize parsing refdes-term id
 - BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
 - BUG: propedit: place so(64), draw a poly around it, propedit on the subc, change padstack/clearance -> the update is not bacthed, poly clipping is done padstack by padstack, very slow [report: aron]
 - BUG: bug_files/TODO/drc1/*: {w d} false positive [report: John Wehle]
@@ -39,8 +41,6 @@
 	- remove suggesting geda-gnetlist from the debian package
 	- add suggesting sch-rnd and camv-rnd and route-rnd
 	- consider a ringdove metapackage?
-- FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
-	- search for '-' and centralize parsing refdes-term id
 - FEATURE: svg colorspaces: bug_files/TODO/SVG.patch (requires librnd 4.2)
 - DOC: pool node on how to use pixmap for breadboading
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
