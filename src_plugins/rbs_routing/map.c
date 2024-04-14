@@ -25,12 +25,14 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <math.h>
 #include <genht/hash.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/hid/hid_inlines.h>
 #include <libgrbs/route.h>
 #include <libgrbs/debug.h>
+#include <libgrbs/geo.h>
 #include "obj_pstk_inlines.h"
 #include "layer_ui.h"
 #include "draw.h"
@@ -280,6 +282,75 @@ RND_INLINE int tn_postproc(rbsr_map_t *rbs, grbs_2net_t *tn)
 	return 0;
 }
 
+static int cmp_arc_ang(const void *A, const void *B)
+{
+	const grbs_arc_t * const *a = A;
+	const grbs_arc_t * const *b = B;
+
+	return (fabs((*a)->da) > fabs((*b)->da)) ? -1 : +1;
+}
+
+/* all arcs are in seg[0]; sort them into segments and insert sentinels */
+RND_INLINE int map_2nets_postproc_point(rbsr_map_t *rbs, grbs_point_t *pt, vtp0_t *tmp)
+{
+	grbs_arc_t *a, *snt;
+	long n;
+	int segid, res = 0;
+
+	tmp->used = 0;
+
+	while((a = gdl_first(&pt->arcs[0])) != NULL) {
+		gdl_remove(&pt->arcs[0], a, link_point);
+		vtp0_append(tmp, a);
+	}
+
+	qsort(tmp->array, tmp->used, sizeof(void *), cmp_arc_ang);
+
+	for(n = 0; n < tmp->used; n++) {
+		a = tmp->array[n];
+		segid = grbs_get_seg_idx(&rbs->grbs, pt, a->sa + a->da/2.0, 0);
+		if (segid < 0) segid = grbs_get_seg_idx(&rbs->grbs, pt, a->sa, 0);
+		if (segid < 0) segid = grbs_get_seg_idx(&rbs->grbs, pt, a->sa + a->da, 0);
+		if (segid < 0) {
+			/* need to create a new seg; we are inserting the largest arc first so
+			   it is safe to create the sentinel */
+
+			snt = grbs_new_sentinel(&rbs->grbs, pt, a->sa, a->da, &segid);
+			if (snt == NULL) {
+				rnd_message(RND_MSG_ERROR, "map_2nets_postproc_point(): failed to create sentinel, probably ran out of segments\n");
+				res = 1;
+				continue;
+			}
+
+			/* normalize sentinel angles */
+			if (snt->da < 0) { /* swap endpoints so da is always positive */
+				snt->sa = snt->sa + snt->da;
+				snt->da = -snt->da;
+			}
+			if (snt->sa < 0)
+				snt->sa += 2.0*GRBS_PI;
+			else if (snt->sa > 2.0*GRBS_PI)
+				snt->sa -= 2.0*GRBS_PI;
+		}
+		gdl_append(&pt->arcs[segid], a, link_point);
+	}
+
+	return res;
+}
+
+RND_INLINE int map_2nets_postproc_points(rbsr_map_t *rbs)
+{
+	grbs_point_t *pt;
+	grbs_rtree_it_t it;
+	vtp0_t tmp = {0};
+	int res = 0;
+
+	for(pt = grbs_rtree_all_first(&it, &rbs->grbs.point_tree); pt != NULL; pt = grbs_rtree_all_next(&it))
+		res |= map_2nets_postproc_point(rbs, pt, &tmp);
+
+	vtp0_uninit(&tmp);
+	return res;
+}
 
 RND_INLINE int map_2nets(rbsr_map_t *rbs)
 {
@@ -347,7 +418,7 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		rnd_trace(" res=%d\n", res);
 	}
 
-	TODO("all arcs are in seg[0], need to fix that");
+	res |= map_2nets_postproc_points(rbs);
 
 	return res;
 }
