@@ -5,6 +5,8 @@ typedef struct rbsr_stretch_s {
 
 	grbs_point_t *via;
 
+	htpp_t removes;        /* key: pcb_any_obj_t *; value: NULL; list of pcb-rnd objects to remove when the grbs route is copied back */
+
 } rbsr_stretch_t;
 
 

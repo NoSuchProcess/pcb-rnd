@@ -1,3 +1,5 @@
+#include "remove.h"
+
 static int rbsr_install_2net(rbsr_stretch_t *rbss, grbs_2net_t *tn);
 
 static int coll_ingore_tn_line(grbs_t *grbs, grbs_2net_t *tn, grbs_line_t *l)
@@ -18,6 +20,13 @@ static int coll_ingore_tn_point(grbs_t *grbs, grbs_2net_t *tn, grbs_point_t *p)
 	return 1;
 }
 
+RND_INLINE void schedule_remove(rbsr_stretch_t *rbss, void *user_data)
+{
+	pcb_2netmap_obj_t *obj = user_data;
+
+	if (obj->orig != NULL)
+		htpp_set(&rbss->removes, obj->orig, NULL);
+}
 
 int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *line)
 {
@@ -25,6 +34,8 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 	grbs_2net_t *orig_tn;
 	rnd_layer_id_t lid = pcb_layer_id(pcb->Data, line->parent.layer);
 	grbs_arc_t *target, *rem1 = NULL, *rem2 = NULL;
+
+	htpp_init(&rbss->removes, ptrhash, ptrkeyeq);
 
 	rbsr_map_pcb(&rbss->map, pcb, lid);
 	rbsr_map_debug_draw(&rbss->map, "rbss1.svg");
@@ -85,12 +96,17 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 	rbss->tn = grbs_2net_new(&rbss->map.grbs, orig_tn->copper, orig_tn->clearance);
 
 	htpp_pop(&rbss->map.robj2grbs, line);
+	schedule_remove(rbss, gl->user_data);
 	grbs_path_remove_line(&rbss->map.grbs, gl);
 
-	if (rem1 != NULL)
+	if (rem1 != NULL) {
+		schedule_remove(rbss, rem1->user_data);
 		grbs_path_remove_arc(&rbss->map.grbs, rem1);
-	if (rem2 != NULL)
+	}
+	if (rem2 != NULL) {
+		schedule_remove(rbss, rem2->user_data);
 		grbs_path_remove_arc(&rbss->map.grbs, rem2);
+	}
 
 
 	rbsr_map_debug_draw(&rbss->map, "rbss2.svg");
@@ -101,11 +117,19 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 
 void rbsr_stretch_line_end(rbsr_stretch_t *rbss)
 {
+	htpp_entry_t *e;
+
+	/* apply object removals */
+	for(e = htpp_first(&rbss->removes); e != NULL; e = htpp_next(&rbss->removes, e)) {
+		pcb_any_obj_t *obj = e->key;
+		pcb_remove_object(obj->type, obj->parent.layer, obj, obj);
+	}
+
 	/* tune existing objects and install new objects */
 	rbsr_install_2net(rbss, rbss->tn);
 
-	TODO("implement me");
 	/* No need to free rbss->via separately: it's part of the grbs map */
+	htpp_uninit(&rbss->removes);
 }
 
 static int rbsr_install_arc(rbsr_stretch_t *rbss, grbs_2net_t *tn, grbs_arc_t *arc)
