@@ -186,8 +186,8 @@ static int rbsr_install_pt_arcs(rbsr_stretch_t *rbss, grbs_2net_t *tn, grbs_poin
 	int seg, res = 0;
 
 	for(seg = 0; seg < GRBS_MAX_SEG; seg++) {
-		grbs_arc_t *a = gdl_first(&rbss->via->arcs[seg]);
-		for(a = gdl_next(&rbss->via->arcs[seg], a) ; a != NULL; a = gdl_next(&rbss->via->arcs[seg], a))
+		grbs_arc_t *a = gdl_first(&pt->arcs[seg]);
+		for(a = gdl_next(&pt->arcs[seg], a) ; a != NULL; a = gdl_next(&pt->arcs[seg], a))
 			res |= rbsr_install_arc(rbss, tn, a);
 	}
 
