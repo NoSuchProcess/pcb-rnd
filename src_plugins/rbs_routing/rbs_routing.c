@@ -63,6 +63,8 @@ static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (rnd_hid_get_coords("Click on a copper line or arc", &x, &y, 0) != 0)
 		return -1;
 
+	x = pcb_crosshair.X; y = pcb_crosshair.Y;
+
 	type = pcb_search_obj_by_location(PCB_OBJ_LINE, &ptr1, &ptr2, &ptr3, x, y, 0);
 	if (type == 0)
 		type = pcb_search_obj_by_location(PCB_OBJ_LINE, &ptr1, &ptr2, &ptr3, x, y, rnd_pixel_slop);
@@ -71,11 +73,25 @@ static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (type == PCB_OBJ_LINE) {
 		pcb_line_t *l = ptr2;
+		rnd_coord_t dx;
 
-		rbsr_stretch_line_begin(&rbss, pcb, l);
-		rbsr_stretch_line_to_coords(&rbss, x - RND_MM_TO_COORD(1), y);
-		rnd_gui->invalidate_all(rnd_gui);
+		rbsr_stretch_line_begin(&rbss, pcb, l, x, y);
+#if 1
+#if 1
+		for(dx = RND_MM_TO_COORD(0.1); dx < RND_MM_TO_COORD(6); dx += RND_MM_TO_COORD(0.2)) {
+			rbsr_stretch_line_to_coords(&rbss, x - dx, y);
+			rnd_gui->invalidate_all(rnd_gui);
+			rnd_gui->iterate(rnd_gui);
+			usleep(100000);
+		}
+#else
+		/* collision at 5 */
+		dx = RND_MM_TO_COORD(5);
+		rbsr_stretch_line_to_coords(&rbss, x - dx, y);
+#endif
+
 		rbsr_stretch_line_end(&rbss);
+#endif
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Failed to find a line or arc at that location\n");
