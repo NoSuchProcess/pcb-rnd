@@ -193,8 +193,7 @@ static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_
 #define FIND_PT_DELTA   2
 #define FIND_PT_DELTA2  RBSR_R2G(FIND_PT_DELTA * FIND_PT_DELTA)
 
-/* Return the point that's close enough to cx;cy or NULL if nothing is close */
-RND_INLINE grbs_point_t *find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_)
+RND_INLINE grbs_point_t *rbsr_find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_)
 {
 	double cx = RBSR_R2G(cx_), cy = RBSR_R2G(cy_), bestd2 = FIND_PT_DELTA2+1;
 	grbs_point_t *pt, *best= NULL;
@@ -241,7 +240,7 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 			if (arc == NULL)
 				return -32;
 
-			pt = find_point_by_center(rbs, arc->X, arc->Y);
+			pt = rbsr_find_point_by_center(rbs, arc->X, arc->Y);
 			if (pt == NULL)
 				return -64;
 

@@ -37,3 +37,9 @@ void rbsr_map_uninit(rbsr_map_t *dst);
 
 void rbsr_map_debug_draw(rbsr_map_t *rbs, const char *fn);
 void rbsr_map_debug_dump(rbsr_map_t *rbs, const char *fn);
+
+/*** utility ***/
+
+/* Return the point that's close enough to cx;cy or NULL if nothing is close */
+RND_INLINE grbs_point_t *rbsr_find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy);
+
