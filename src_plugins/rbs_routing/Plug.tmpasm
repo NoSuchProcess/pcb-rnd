@@ -6,6 +6,7 @@ append /local/rnd/mod/OBJS [@
 	$(SRC_3RD_DIR)/libgrbs/grbs.o
 	$(SRC_3RD_DIR)/libgrbs/debug.o
 	$(SRC_3RD_DIR)/libgrbs/addr_hash.o
+	$(SRC_3RD_DIR)/libgrbs/snapshot.o
 	$(SRC_3RD_DIR)/libgrbs/rtree.o
 @]
 
