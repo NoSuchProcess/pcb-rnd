@@ -2371,14 +2371,17 @@
  polygon.h vtpadstack_t.h search.h \
  ../src_plugins/rbs_routing/menu_internal.c \
  ../src_plugins/rbs_routing/map.h layer.h \
- ../src_plugins/rbs_routing/stretch.h ../src_plugins/rbs_routing/stretch.c \
  ../src_plugins/lib_netmap/map_2nets.h obj_rat.h obj_poly.h obj_pstk.h \
  ../src_plugins/query/net_len.h ../src_plugins/query/query_exec.h \
  ../src_plugins/query/query.h ../src_plugins/query/fields_sphash.h \
  obj_common.h flag_str.h ../src_3rd/libgrbs/grbs.h \
- ../src_3rd/libgrbs/rtree.h ../src_plugins/rbs_routing/map.c \
- ../src_3rd/libgrbs/route.h ../src_3rd/libgrbs/debug.h obj_pstk_inlines.h \
- data.h thermal.h operation.h
+ ../src_3rd/libgrbs/rtree.h ../src_plugins/rbs_routing/stretch.h \
+ ../src_3rd/libgrbs/snapshot.h ../src_plugins/rbs_routing/seq.h \
+ ../src_plugins/rbs_routing/map.c ../src_3rd/libgrbs/route.h \
+ ../src_3rd/libgrbs/debug.h ../src_3rd/libgrbs/geo.h obj_pstk_inlines.h \
+ data.h thermal.h operation.h layer_ui.h draw.h draw_wireframe.h \
+ ../src_plugins/rbs_routing/stretch.c remove.h \
+ ../src_plugins/rbs_routing/seq.c
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -2813,6 +2816,9 @@
  ../src_3rd/libgrbs/route_detach.c ../src_3rd/libgrbs/force_attach.c
 ../src_3rd/libgrbs/rtree.o: ../src_3rd/libgrbs/rtree.c \
  ../src_3rd/libgrbs/rtree.h
+../src_3rd/libgrbs/snapshot.o: ../src_3rd/libgrbs/snapshot.c \
+ ../src_3rd/libgrbs/config.h ../src_3rd/libgrbs/grbs.h \
+ ../src_3rd/libgrbs/rtree.h ../src_3rd/libgrbs/snapshot.h
 ../src_3rd/libuhpgl/parse.o: ../src_3rd/libuhpgl/parse.c \
  ../src_3rd/libuhpgl/uhpgl_math.h ../src_3rd/libuhpgl/libuhpgl.h \
  ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/arc_iterate.h
@@ -3600,10 +3606,10 @@ vtpadstack.o: vtpadstack.c obj_pstk.h obj_common.h flag.h globalconst.h \
  obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  ../config.h obj_text_list.h obj_text.h font.h obj_gfx_list.h obj_gfx.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h vtpadstack.h
-vtpadstack_t.o: vtpadstack_t.c vtpadstack_t.h obj_pstk_shape.h polygon.h \
- ../config.h global_typedefs.h flag.h globalconst.h layer.h attrib.h \
- obj_common.h data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h \
- obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
- obj_gfx_list.h obj_gfx.h
+vtpadstack_t.o: vtpadstack_t.c obj_pstk_shape.h polygon.h ../config.h \
+ global_typedefs.h flag.h globalconst.h layer.h attrib.h obj_common.h \
+ data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
+ obj_gfx_list.h obj_gfx.h vtpadstack_t.h
 vtr0.o: vtr0.c vtr0.h ../config.h
 vtroutestyle.o: vtroutestyle.c vtroutestyle.h attrib.h global_typedefs.h
