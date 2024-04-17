@@ -1,9 +1,13 @@
+#include <libgrbs/snapshot.h>
+
 typedef struct rbsr_stretch_s {
 	rbsr_map_t map;
 	grbs_addr_t from, to;
 	grbs_2net_t *tn;
 
 	grbs_point_t *via;
+
+	grbs_snapshot_t *snap;
 
 	htpp_t removes;        /* key: pcb_any_obj_t *; value: NULL; list of pcb-rnd objects to remove when the grbs route is copied back */
 

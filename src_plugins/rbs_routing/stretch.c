@@ -214,7 +214,17 @@ static int rbsr_install_2net(rbsr_stretch_t *rbss, grbs_2net_t *tn)
 int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_t ty)
 {
 	grbs_addr_t *a1, *a2;
-	if (rbss->via != NULL) {
+	int new_via = (rbss->via == NULL);
+
+	if (new_via)
+		rbss->via = grbs_point_new(&rbss->map.grbs, RBSR_R2G(tx), RBSR_R2G(ty), RBSR_R2G(RND_MM_TO_COORD(2.1)), RBSR_R2G(RND_MM_TO_COORD(0.1)));
+
+	if (rbss->snap == NULL)
+		rbss->snap = grbs_snapshot_save(&rbss->map.grbs);
+	else
+		grbs_snapshot_restore(rbss->snap);
+
+	if (!new_via) {
 		int seg;
 
 		grbs_point_unreg(&rbss->map.grbs, rbss->via);
@@ -235,8 +245,7 @@ int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_
 
 		grbs_clean_unused_sentinel(&rbss->map.grbs, rbss->via);
 	}
-	else
-		rbss->via = grbs_point_new(&rbss->map.grbs, RBSR_R2G(tx), RBSR_R2G(ty), RBSR_R2G(RND_MM_TO_COORD(2.1)), RBSR_R2G(RND_MM_TO_COORD(0.1)));
+
 
 	a1 = grbs_path_next(&rbss->map.grbs, rbss->tn, &rbss->from, rbss->via, GRBS_ADIR_CONVEX_CW);
 	if (a1 == NULL) {
