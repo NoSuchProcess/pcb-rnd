@@ -53,7 +53,7 @@ RND_INLINE void stretch_get_addr(rbsr_stretch_t *rbss, grbs_addr_t *dst, grbs_ar
 	dst->last_real = NULL;
 }
 
-int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *line)
+int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *line, rnd_coord_t tx, rnd_coord_t ty)
 {
 	grbs_line_t *gl;
 	grbs_2net_t *orig_tn;
@@ -95,6 +95,10 @@ int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *
 		schedule_remove(rbss, rem2->user_data);
 		grbs_path_remove_arc(&rbss->map.grbs, rem2);
 	}
+
+	rbss->via = grbs_point_new(&rbss->map.grbs, RBSR_R2G(tx), RBSR_R2G(ty), RBSR_R2G(RND_MM_TO_COORD(2.1)), RBSR_R2G(RND_MM_TO_COORD(0.1)));
+	rbss->snap = grbs_snapshot_save(&rbss->map.grbs);
+
 
 	rbsr_map_debug_draw(&rbss->map, "rbss2.svg");
 	rbsr_map_debug_dump(&rbss->map, "rbss2.dump");
@@ -201,39 +205,29 @@ static int rbsr_install_2net(rbsr_stretch_t *rbss, grbs_2net_t *tn)
 int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_t ty)
 {
 	grbs_addr_t *a1, *a2;
-	int new_via = (rbss->via == NULL);
+	int new_via = (rbss->via == NULL), seg;
 
-	if (new_via)
-		rbss->via = grbs_point_new(&rbss->map.grbs, RBSR_R2G(tx), RBSR_R2G(ty), RBSR_R2G(RND_MM_TO_COORD(2.1)), RBSR_R2G(RND_MM_TO_COORD(0.1)));
+	grbs_snapshot_restore(rbss->snap);
 
-	if (rbss->snap == NULL)
-		rbss->snap = grbs_snapshot_save(&rbss->map.grbs);
-	else
-		grbs_snapshot_restore(rbss->snap);
+	/* move the via point */
+	grbs_point_unreg(&rbss->map.grbs, rbss->via);
+	rbss->via->x = RBSR_R2G(tx);
+	rbss->via->y = RBSR_R2G(ty);
+	grbs_point_reg(&rbss->map.grbs, rbss->via);
 
-	if (!new_via) {
-		int seg;
-
-		grbs_point_unreg(&rbss->map.grbs, rbss->via);
-		rbss->via->x = RBSR_R2G(tx);
-		rbss->via->y = RBSR_R2G(ty);
-		grbs_point_reg(&rbss->map.grbs, rbss->via);
-
-		/* remove the previous version of the arc */
-		for(seg = 0; seg < GRBS_MAX_SEG; seg++) {
-			grbs_arc_t *a;
-			for(a = gdl_first(&rbss->via->arcs[seg]); a != NULL; a = gdl_next(&rbss->via->arcs[seg], a)) {
-				if (grbs_arc_parent_2net(a) == rbss->tn) {
-					grbs_del_arc(&rbss->map.grbs, a);
-					break;
-				}
+	/* remove the previous version of the bypass arc on the attached line */
+	for(seg = 0; seg < GRBS_MAX_SEG; seg++) {
+		grbs_arc_t *a;
+		for(a = gdl_first(&rbss->via->arcs[seg]); a != NULL; a = gdl_next(&rbss->via->arcs[seg], a)) {
+			if (grbs_arc_parent_2net(a) == rbss->tn) {
+				grbs_del_arc(&rbss->map.grbs, a);
+				break;
 			}
 		}
-
-		grbs_clean_unused_sentinel(&rbss->map.grbs, rbss->via);
 	}
+	grbs_clean_unused_sentinel(&rbss->map.grbs, rbss->via);
 
-
+	/* try routing the bypass anew */
 	a1 = grbs_path_next(&rbss->map.grbs, rbss->tn, &rbss->from, rbss->via, GRBS_ADIR_CONVEX_CW);
 	if (a1 == NULL) {
 		rnd_message(RND_MSG_ERROR, "rbsr_stretch_line_to_coord(): failed to route to a1\n");
@@ -255,7 +249,6 @@ int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_
 	grbs_path_realize(&rbss->map.grbs,rbss->tn, a2, 0);
 	grbs_path_realize(&rbss->map.grbs, rbss->tn, a1, 0);
 	grbs_path_realize(&rbss->map.grbs, rbss->tn, &rbss->from, 0);
-
 
 
 	rbsr_map_debug_draw(&rbss->map, "rbss4.svg");

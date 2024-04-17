@@ -15,7 +15,7 @@ typedef struct rbsr_stretch_s {
 
 
 /* Start stretching a routing line; returns 0 on success */
-int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *line);
+int rbsr_stretch_line_begin(rbsr_stretch_t *rbss, pcb_board_t *pcb, pcb_line_t *line, rnd_coord_t tx, rnd_coord_t ty);
 void rbsr_stretch_line_end(rbsr_stretch_t *rbss);
 
 /* Stretch the current line so it goes around tx;ty */
