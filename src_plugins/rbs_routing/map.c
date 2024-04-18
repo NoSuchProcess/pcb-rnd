@@ -464,11 +464,17 @@ grbs_rtree_dir_t draw_line(void *cl, void *obj, const grbs_rtree_box_t *box)
 		clearance = tn->clearance;
 	}
 
-	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper*2));
-	rnd_render->draw_line(pcb_draw_out.fgGC, x1, y1, x2, y2);
+	if (!line->RBSR_WIREFRAME_FLAG) {
+		rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper*2));
+		rnd_render->draw_line(pcb_draw_out.fgGC, x1, y1, x2, y2);
+	}
 
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
-	pcb_draw_wireframe_line(pcb_draw_out.fgGC, x1, y1, x2, y2, RBSR_G2R(copper*2+clearance*2), -1);
+
+	if (line->RBSR_WIREFRAME_FLAG)
+		pcb_draw_wireframe_line(pcb_draw_out.fgGC, x1, y1, x2, y2, RBSR_G2R(copper*2), -1);
+	else
+		pcb_draw_wireframe_line(pcb_draw_out.fgGC, x1, y1, x2, y2, RBSR_G2R(copper*2+clearance*2), -1);
 
 	return rnd_RTREE_DIR_FOUND_CONT;
 }
@@ -491,15 +497,21 @@ grbs_rtree_dir_t draw_arc(void *cl, void *obj, const grbs_rtree_box_t *box)
 	sa = 180.0 - (arc->sa * RND_RAD_TO_DEG);
 	da = - (arc->da * RND_RAD_TO_DEG);
 
-	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper*2));
-	rnd_render->draw_arc(pcb_draw_out.fgGC, cx, cy, r, r, sa, da);
+	if (!arc->RBSR_WIREFRAME_FLAG) {
+		rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(copper*2));
+		rnd_render->draw_arc(pcb_draw_out.fgGC, cx, cy, r, r, sa, da);
+	}
 
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
 
 	tmparc.X = cx; tmparc.Y = cy;
 	tmparc.Width = tmparc.Height = r;
 	tmparc.StartAngle = sa; tmparc.Delta = da;
-	pcb_draw_wireframe_arc_(pcb_draw_out.fgGC, &tmparc, RBSR_G2R(copper*2+clearance*2), 0);
+
+	if (arc->RBSR_WIREFRAME_FLAG)
+		pcb_draw_wireframe_arc_(pcb_draw_out.fgGC, &tmparc, RBSR_G2R(copper*2), 0);
+	else
+		pcb_draw_wireframe_arc_(pcb_draw_out.fgGC, &tmparc, RBSR_G2R(copper*2+clearance*2), 0);
 
 	return rnd_RTREE_DIR_FOUND_CONT;
 }

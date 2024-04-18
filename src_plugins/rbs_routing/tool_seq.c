@@ -106,7 +106,10 @@ void pcb_tool_seq_draw_attached(rnd_design_t *hl)
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND)
 		return;
 
-	rnd_render->draw_line(pcb_crosshair.GC, seq.last_x, seq.last_y, pcb_crosshair.X, pcb_crosshair.Y);
+	/* draw a single line from the last known point if the seq router couldn't
+	   offer a solution */
+	if (seq.consider.dir == RBS_ADIR_invalid)
+		rnd_render->draw_line(pcb_crosshair.GC, seq.last_x, seq.last_y, pcb_crosshair.X, pcb_crosshair.Y);
 }
 
 void pcb_tool_seq_escape(rnd_design_t *hl)

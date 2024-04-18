@@ -67,7 +67,7 @@ int rbsr_seq_begin_at(rbsr_seq_t *rbsq, pcb_board_t *pcb, rnd_layer_id_t lid, rn
 RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 {
 	grbs_t *grbs = &rbsq->map.grbs;
-	grbs_addr_t *last, *curr = NULL, *cons;
+	grbs_addr_t *last, *curr = NULL, *cons = NULL;
 	int n, broken = 0, res = 0;
 
 	grbs_path_remove_2net_addrs(grbs, rbsq->tn);
@@ -95,6 +95,7 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 			curr = cons;
 		else
 			res = -1;
+
 		rnd_trace(" cons=%p\n", cons);
 	}
 
@@ -126,6 +127,27 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 		grbs_path_realize(grbs, rbsq->tn, curr, 0);
 	}
 	rnd_trace("--\n");
+
+	/* turn the last section into wireframe */
+	if (cons != NULL) {
+		grbs_arc_t *arc = gdl_first(&rbsq->tn->arcs);
+		if (arc != NULL) {
+			arc->RBSR_WIREFRAME_FLAG = 1;
+			if (arc->da == 0) {
+				/* make the consider-arc non-zero in length to make it visible */
+				if (rbsq->consider.dir == GRBS_ADIR_CONVEX_CW)
+					arc->da = 1;
+				else if (rbsq->consider.dir == GRBS_ADIR_CONVEX_CCW)
+					arc->da = -1;
+			}
+			if (arc->eline != NULL) {
+				arc->eline->RBSR_WIREFRAME_FLAG = 1;
+				arc = gdl_next(&rbsq->tn->arcs, arc);
+				if (arc != NULL)
+					arc->RBSR_WIREFRAME_FLAG = 1;
+			}
+		}
+	}
 
 	return res;
 }
