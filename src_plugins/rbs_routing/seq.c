@@ -1,3 +1,5 @@
+#include <libgrbs/route.h>
+
 int rbsr_seq_begin_at(rbsr_seq_t *rbsq, pcb_board_t *pcb, rnd_layer_id_t lid, rnd_coord_t tx, rnd_coord_t ty, rnd_coord_t copper, rnd_coord_t clearance)
 {
 	grbs_point_t *start;
@@ -37,9 +39,36 @@ int rbsr_seq_begin_at(rbsr_seq_t *rbsq, pcb_board_t *pcb, rnd_layer_id_t lid, rn
 RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 {
 	grbs_t *grbs = &rbsq->map.grbs;
+	grbs_addr_t *last, *curr = NULL;
+	int n;
 
 	grbs_path_remove_2net_addrs(grbs, rbsq->tn);
 	grbs_snapshot_restore(rbsq->snap);
+
+	rnd_trace("-- route path\n");
+	last = grbs_addr_new(grbs, ADDR_POINT, rbsq->path[0].pt);
+	last->last_real = NULL;
+	rnd_trace(" strt=%p\n", last);
+
+	for(n = 1; n < rbsq->used; n++) {
+		curr = grbs_path_next(grbs, rbsq->tn, last, rbsq->path[n].pt, rbsq->path[n].dir);
+		rnd_trace(" curr=%p\n", curr);
+		last = curr;
+	}
+
+	if (rbsq->consider.dir != RBS_ADIR_invalid) {
+		curr = grbs_path_next(grbs, rbsq->tn, last, rbsq->consider.pt, rbsq->consider.dir);
+		rnd_trace(" cons=%p\n", curr);
+	}
+
+	rnd_trace("realize:\n");
+	for(; curr != NULL; curr = curr->last_real) {
+		rnd_trace(" r %p\n", curr);
+		grbs_path_realize(grbs, rbsq->tn, curr, 0);
+	}
+	rnd_trace("--\n");
+
+	return 0;
 }
 
 int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty)
