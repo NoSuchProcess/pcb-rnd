@@ -164,6 +164,7 @@ static int bind_prev_line(rbsr_map_t *rbs, grbs_arc_t **prevarc, grbs_line_t **p
 		grbs_line_reg(&rbs->grbs, *prevline);
 	}
 	*prevarc = currarc;
+	return 0;
 }
 
 
