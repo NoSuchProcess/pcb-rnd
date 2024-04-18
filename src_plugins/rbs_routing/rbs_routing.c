@@ -42,6 +42,7 @@
 
 #include "map.c"
 #include "stretch.c"
+#include "install.c"
 
 static const char pcb_acts_RbsConnect[] = "RbsConnect()";
 static const char pcb_acth_RbsConnect[] = "Make a new rubber band stretch connection between two points";

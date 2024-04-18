@@ -1,4 +1,5 @@
 #include <libgrbs/route.h>
+#include "install.h"
 
 int rbsr_seq_begin_at(rbsr_seq_t *rbsq, pcb_board_t *pcb, rnd_layer_id_t lid, rnd_coord_t tx, rnd_coord_t ty, rnd_coord_t copper, rnd_coord_t clearance)
 {

@@ -1,5 +1,5 @@
 #include "remove.h"
-#include "install.c"
+#include "install.h"
 
 static int rbsr_stretch_install_2net(rbsr_stretch_t *rbss, grbs_2net_t *tn)
 {
