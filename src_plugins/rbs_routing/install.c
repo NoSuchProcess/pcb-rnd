@@ -43,6 +43,11 @@ static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
 			RBSR_G2R(arc->r), RBSR_G2R(arc->r), sa, da,
 			RBSR_G2R(tn->copper*2), RBSR_G2R(tn->clearance*2),
 			pcb_flag_make(PCB_FLAG_CLEARLINE), 1);
+
+		if (pa == NULL) {
+			rnd_message(RND_MSG_ERROR, "rbsr_install: failed to create arc\n");
+			return -1;
+		}
 	}
 	else {
 		TODO("verify existing");
@@ -63,6 +68,10 @@ static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line
 			RBSR_G2R(line->x2), RBSR_G2R(line->y2),
 			RBSR_G2R(tn->copper*2), RBSR_G2R(tn->clearance*2),
 			pcb_flag_make(PCB_FLAG_CLEARLINE));
+		if (pl == NULL) {
+			rnd_message(RND_MSG_ERROR, "rbsr_install: failed to create line\n");
+			return -1;
+		}
 	}
 	else {
 		TODO("verify existing");
