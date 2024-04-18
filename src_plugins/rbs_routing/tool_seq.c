@@ -48,7 +48,7 @@ static rbsr_seq_t seq;
 void pcb_tool_seq_init(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
-	/* TODO: tool activated */
+	/* tool activated */
 	pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST;
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
