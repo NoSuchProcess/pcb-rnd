@@ -29,7 +29,6 @@ static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
 {
 	if (arc->user_data == NULL) { /* create new */
 		pcb_arc_t *pa;
-		;
 		double cx, cy, sa, da;
 
 		if (arc->r == 0)
