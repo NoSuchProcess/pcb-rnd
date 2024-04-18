@@ -79,8 +79,14 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 		}
 		else {
 			grbs_arc_t *arc = curr->obj.arc;
-			ex = arc->parent_pt->x + cos(arc->sa + arc->da) * arc->r;
-			ey = arc->parent_pt->y + sin(arc->sa + arc->da) * arc->r;
+			if (arc->new_in_use) {
+				ex = arc->parent_pt->x + cos(arc->new_sa + arc->new_da) * arc->new_r;
+				ey = arc->parent_pt->y + sin(arc->new_sa + arc->new_da) * arc->new_r;
+			}
+			else {
+				ex = arc->parent_pt->x + cos(arc->sa + arc->da) * arc->r;
+				ey = arc->parent_pt->y + sin(arc->sa + arc->da) * arc->r;
+			}
 		}
 		rbsq->rlast_x = RBSR_G2R(ex);
 		rbsq->rlast_y = RBSR_G2R(ey);
