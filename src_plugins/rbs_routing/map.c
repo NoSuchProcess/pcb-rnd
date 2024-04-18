@@ -436,7 +436,7 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 grbs_rtree_dir_t draw_point(void *cl, void *obj, const grbs_rtree_box_t *box)
 {
 	grbs_point_t *pt = obj;
-	pcb_draw_info_t *info = cl;
+/*	pcb_draw_info_t *info = cl;*/
 	rnd_coord_t x = RBSR_G2R(pt->x), y = RBSR_G2R(pt->y);
 
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, RBSR_G2R(pt->copper*2.0));
@@ -451,7 +451,7 @@ grbs_rtree_dir_t draw_point(void *cl, void *obj, const grbs_rtree_box_t *box)
 grbs_rtree_dir_t draw_line(void *cl, void *obj, const grbs_rtree_box_t *box)
 {
 	grbs_line_t *line = obj;
-	pcb_draw_info_t *info = cl;
+/*	pcb_draw_info_t *info = cl;*/
 	rnd_coord_t x1 = RBSR_G2R(line->x1), y1 = RBSR_G2R(line->y1);
 	rnd_coord_t x2 = RBSR_G2R(line->x2), y2 = RBSR_G2R(line->y2);
 	grbs_2net_t *tn = NULL;
@@ -477,7 +477,7 @@ grbs_rtree_dir_t draw_arc(void *cl, void *obj, const grbs_rtree_box_t *box)
 {
 	grbs_arc_t *arc = obj;
 	pcb_arc_t tmparc;
-	pcb_draw_info_t *info = cl;
+/*	pcb_draw_info_t *info = cl;*/
 	rnd_coord_t cx = RBSR_G2R(arc->parent_pt->x), cy = RBSR_G2R(arc->parent_pt->y);
 	rnd_coord_t r = RBSR_G2R(arc->r);
 	grbs_2net_t *tn = grbs_arc_parent_2net(arc);
