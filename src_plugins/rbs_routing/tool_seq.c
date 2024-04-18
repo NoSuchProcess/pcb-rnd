@@ -43,7 +43,7 @@
 
 #include "tool_seq.h"
 
-static pcb_layer_t *last_layer;
+static rbsr_seq_t seq;
 
 void pcb_tool_seq_init(void)
 {
@@ -59,56 +59,46 @@ void pcb_tool_seq_uninit(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
-/* creates next point of the route */
-static void notify_line(rnd_design_t *hl)
+/* click: creates next point of the route */
+void pcb_tool_seq_notify_mode(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
+	pcb_layer_t *ly;
+	rnd_layer_id_t lid;
 
-	switch (pcb_crosshair.AttachedLine.State) {
+
+	switch(pcb_crosshair.AttachedLine.State) {
 		case PCB_CH_STATE_FIRST:
 			if (pcb->RatDraw)
 				return; /* do not route rats */
 
-		/* TODO: start routing */
-			last_layer = PCB_CURRLAYER(pcb);
-/*			pcb_crosshair.X, pcb_crosshair.Y
-			pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;*/
+			ly = PCB_CURRLAYER(pcb);
+			lid = pcb_layer_id(pcb->Data, ly);
+
+			if (rbsr_seq_begin_at(&seq, pcb, lid, pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.line_thickness, conf_core.design.clearance) == 0)
+				pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 			break;
 
 		case PCB_CH_STATE_SECOND:
-			/* TODO: route to next point */
+			/* TODO: if (pcb_crosshair.X == pcb_crosshair.AttachedLine.Point1.X && pcb_crosshair.Y == pcb_crosshair.AttachedLine.Point1.Y) 		rnd_tool_select_by_name(hl, "line"); */
+			rbsr_seq_accept(&seq);
 			break;
 	}
-}
-
-void pcb_tool_seq_notify_mode(rnd_design_t *hl)
-{
-	/* TODO: consider next */
-/*	if (pcb_crosshair.X == pcb_crosshair.AttachedLine.Point1.X && pcb_crosshair.Y == pcb_crosshair.AttachedLine.Point1.Y) {
-		rnd_tool_select_by_name(hl, "line");
-		return;
-	}*/
 }
 
 void pcb_tool_seq_adjust_attached_objects(rnd_design_t *hl)
 {
-	/* TODO: figure if we need this: */
-/*
-	if (rnd_gui->control_is_pressed(rnd_gui)) {
-		pcb_crosshair.AttachedLine.draw = rnd_false;
-	}
-	else {
-		pcb_crosshair.AttachedLine.draw = rnd_true;
-		pcb_line_adjust_attached();
-	}
-*/
+	rbsr_seq_consider(&seq, pcb_crosshair.X, pcb_crosshair.Y);
 }
 
 void pcb_tool_seq_draw_attached(rnd_design_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
-	/* TODO: draw attached to pcb_crosshair.X, pcb_crosshair.Y, consider new route point */
+	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND)
+		return;
+
+	rnd_render->draw_line(pcb_crosshair.GC, seq.last_x, seq.last_y, pcb_crosshair.X, pcb_crosshair.Y);
 }
 
 void pcb_tool_seq_escape(rnd_design_t *hl)

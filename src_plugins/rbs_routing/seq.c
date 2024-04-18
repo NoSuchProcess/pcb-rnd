@@ -16,12 +16,16 @@ int rbsr_seq_begin_at(rbsr_seq_t *rbsq, pcb_board_t *pcb, rnd_layer_id_t lid, rn
 	start = rbsr_find_point_by_center(&rbsq->map, tx, ty);
 	if (start == NULL) {
 		rnd_message(RND_MSG_ERROR, "No suitable starting point\n");
+		rbsr_map_uninit(&rbsq->map);
 		return -1;
 	}
 
 	rbsq->tn = grbs_2net_new(&rbsq->map.grbs, RBSR_R2G(copper), RBSR_R2G(clearance));
 
 	rbsq->snap = grbs_snapshot_save(&rbsq->map.grbs);
+
+	rbsq->last_x = RBSR_G2R(start->x);
+	rbsq->last_y = RBSR_G2R(start->y);
 
 	return 0;
 }
@@ -38,3 +42,9 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty)
 
 	return -1;
 }
+
+int rbsr_seq_accept(rbsr_seq_t *rbss)
+{
+	return -1;
+}
+
