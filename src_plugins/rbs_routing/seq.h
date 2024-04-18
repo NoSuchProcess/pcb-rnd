@@ -7,14 +7,20 @@
 #include <libgrbs/snapshot.h>
 
 #define RBSR_SEQ_MAX 256
+#define RBS_ADIR_invalid -42
+
+typedef struct rbsr_seq_addr_s {
+	grbs_point_t *pt;
+	grbs_arc_dir_t dir;
+} rbsr_seq_addr_t;
 
 typedef struct rbsr_seq_s {
 	rbsr_map_t map;
 	grbs_2net_t *tn;
 
-	grbs_addr_t path[RBSR_SEQ_MAX];
+	rbsr_seq_addr_t consider; /* next point to route to, before click; valid if .adir != RBS_ADIR_invalid */
+	rbsr_seq_addr_t path[RBSR_SEQ_MAX];
 	long used; /* number of path items already accepted */
-	grbs_addr_t consider;
 
 	rnd_coord_t last_x, last_y; /* last point coords on the path for the tool code */
 
