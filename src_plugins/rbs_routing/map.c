@@ -286,7 +286,7 @@ RND_INLINE int tn_postproc(rbsr_map_t *rbs, grbs_2net_t *tn)
 	grbs_inc_ang_update(&rbs->grbs, first);
 
 	last = gdl_last(&tn->arcs);
-	if (first != last)
+	if ((first != last) && (last->r == 0))
 		grbs_inc_ang_update(&rbs->grbs, last);
 
 	return 0;
