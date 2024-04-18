@@ -154,6 +154,9 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *nee
 		return 0; /* do not redraw if there's no change */
 	}
 
+	TODO("step back if end:dir matches the previous");
+
+
 	rbsq->consider.pt = end;
 	rbsq->consider.dir = dir;
 
@@ -178,5 +181,13 @@ rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbsq)
 	}
 
 	return res;
+}
+
+
+void rbsr_seq_end(rbsr_seq_t *rbss)
+{
+	/* tune existing objects and install new objects */
+/*	rbsr_install_2net(rbss, rbss->tn);*/
+
 }
 
