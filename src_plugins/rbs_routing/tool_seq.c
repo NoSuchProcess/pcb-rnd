@@ -82,7 +82,9 @@ void pcb_tool_seq_notify_mode(rnd_design_t *hl)
 
 		case PCB_CH_STATE_SECOND:
 			/* TODO: if (pcb_crosshair.X == pcb_crosshair.AttachedLine.Point1.X && pcb_crosshair.Y == pcb_crosshair.AttachedLine.Point1.Y) 		rnd_tool_select_by_name(hl, "line"); */
-			rbsr_seq_accept(&seq);
+			if (rbsr_seq_accept(&seq) == RBSR_SQA_TERMINATE) {
+				pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+			}
 			break;
 	}
 }

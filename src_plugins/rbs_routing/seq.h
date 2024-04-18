@@ -28,11 +28,15 @@ typedef struct rbsr_seq_s {
 	grbs_snapshot_t *snap;
 } rbsr_seq_t;
 
+typedef enum rbsr_seq_accept_e {
+	RBSR_SQA_CONTINUE,   /* intermediate point go on with routing */
+	RBSR_SQA_TERMINATE  /* finished a twonet, terminate routing */
+} rbsr_seq_accept_t;
 
 /* Start seqing a routing from tx;ty; returns 0 on success */
 int rbsr_seq_begin_at(rbsr_seq_t *rbss, pcb_board_t *pcb, rnd_layer_id_t lid, rnd_coord_t tx, rnd_coord_t ty, rnd_coord_t copper, rnd_coord_t clearance);
 void rbsr_seq_end(rbsr_seq_t *rbss);
 
 int rbsr_seq_consider(rbsr_seq_t *rbss, rnd_coord_t tx, rnd_coord_t ty, int *need_redraw_out);
-int rbsr_seq_accept(rbsr_seq_t *rbss);
+rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbss);
 

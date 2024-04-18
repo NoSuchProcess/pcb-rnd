@@ -161,12 +161,22 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *nee
 	return rbsr_seq_redraw(rbsq);
 }
 
-int rbsr_seq_accept(rbsr_seq_t *rbsq)
+rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbsq)
 {
+	rbsr_seq_accept_t res = RBSR_SQA_CONTINUE;
+
+
 	rbsq->path[rbsq->used] = rbsq->consider;
 	rbsq->used++;
 	rbsq->last_x = rbsq->rlast_x;
 	rbsq->last_y = rbsq->rlast_y;
-	return 0;
+
+	if (rbsq->consider.dir == GRBS_ADIR_INC) {
+		res = RBSR_SQA_TERMINATE;
+		TODO("copy back");
+		rbsq->consider.dir = 0;
+	}
+
+	return res;
 }
 
