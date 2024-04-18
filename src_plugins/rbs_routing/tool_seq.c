@@ -76,7 +76,7 @@ void pcb_tool_seq_notify_mode(rnd_design_t *hl)
 			ly = PCB_CURRLAYER(pcb);
 			lid = pcb_layer_id(pcb->Data, ly);
 
-			if (rbsr_seq_begin_at(&seq, pcb, lid, pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.line_thickness, conf_core.design.clearance) == 0)
+			if (rbsr_seq_begin_at(&seq, pcb, lid, pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.line_thickness/2, conf_core.design.clearance) == 0)
 				pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 			break;
 
