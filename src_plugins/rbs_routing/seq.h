@@ -1,3 +1,11 @@
+/* undo leftover from librnd's own rtree before including grbs' rtree */
+#undef RTR
+#undef RTRU
+#undef RTREE_NO_TREE_TYPEDEFS
+
+#include <libgrbs/grbs.h>
+#include <libgrbs/snapshot.h>
+
 #define RBSR_SEQ_MAX 256
 
 typedef struct rbsr_seq_s {

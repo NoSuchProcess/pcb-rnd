@@ -38,11 +38,10 @@
 
 #include "map.h"
 #include "stretch.h"
-#include "seq.h"
+#include "tool_seq.h"
 
 #include "map.c"
 #include "stretch.c"
-#include "seq.c"
 
 static const char pcb_acts_RbsConnect[] = "RbsConnect()";
 static const char pcb_acth_RbsConnect[] = "Make a new rubber band stretch connection between two points";
@@ -116,11 +115,13 @@ void pplg_uninit_rbs_routing(void)
 {
 	rnd_remove_actions_by_cookie(rbs_routing_cookie);
 	rnd_hid_menu_unload(rnd_gui, rbs_routing_cookie);
+	rnd_tool_unreg_by_cookie(rbs_routing_cookie);
 }
 
 int pplg_init_rbs_routing(void)
 {
 	RND_API_CHK_VER;
+	rnd_tool_reg(&pcb_tool_seq, rbs_routing_cookie);
 	RND_REGISTER_ACTIONS(rbs_routing_action_list, rbs_routing_cookie)
 	rnd_hid_menu_load(rnd_gui, NULL, rbs_routing_cookie, 175, NULL, 0, rbs_routing_menu, "plugin: rbs_routing");
 	return 0;

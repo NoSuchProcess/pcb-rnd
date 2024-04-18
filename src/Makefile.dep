@@ -2376,12 +2376,29 @@
  ../src_plugins/query/query.h ../src_plugins/query/fields_sphash.h \
  obj_common.h flag_str.h ../src_3rd/libgrbs/grbs.h \
  ../src_3rd/libgrbs/rtree.h ../src_plugins/rbs_routing/stretch.h \
- ../src_3rd/libgrbs/snapshot.h ../src_plugins/rbs_routing/seq.h \
+ ../src_3rd/libgrbs/snapshot.h ../src_plugins/rbs_routing/tool_seq.h \
  ../src_plugins/rbs_routing/map.c ../src_3rd/libgrbs/route.h \
  ../src_3rd/libgrbs/debug.h ../src_3rd/libgrbs/geo.h obj_pstk_inlines.h \
  data.h thermal.h operation.h layer_ui.h draw.h draw_wireframe.h \
- ../src_plugins/rbs_routing/stretch.c remove.h \
- ../src_plugins/rbs_routing/seq.c
+ ../src_plugins/rbs_routing/stretch.c remove.h
+../src_plugins/rbs_routing/tool_seq.o: \
+ ../src_plugins/rbs_routing/tool_seq.c ../config.h conf_core.h \
+ globalconst.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
+ board.h crosshair.h route.h data.h crosshair.h buffer.h obj_rat_list.h \
+ obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
+ draw_wireframe.h tool_logic.h ../src_plugins/rbs_routing/map.h layer.h \
+ ../src_plugins/lib_netmap/map_2nets.h obj_rat.h obj_poly.h obj_pstk.h \
+ ../src_plugins/query/net_len.h ../src_plugins/query/query_exec.h \
+ ../src_plugins/query/query.h ../src_plugins/query/fields_sphash.h \
+ obj_common.h flag_str.h ../src_3rd/libgrbs/grbs.h \
+ ../src_3rd/libgrbs/rtree.h ../src_plugins/rbs_routing/seq.h \
+ ../src_3rd/libgrbs/snapshot.h ../src_plugins/rbs_routing/seq.c \
+ ../src_plugins/rbs_routing/tool_seq.h
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \

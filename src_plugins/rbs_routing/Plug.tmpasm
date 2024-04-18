@@ -3,6 +3,7 @@ put /local/rnd/mod/MENUFILE {rbs_routing-menu.lht}
 put /local/rnd/mod/MENUVAR {rbs_routing_menu}
 append /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/rbs_routing/rbs_routing.o
+	$(PLUGDIR)/rbs_routing/tool_seq.o
 	$(SRC_3RD_DIR)/libgrbs/grbs.o
 	$(SRC_3RD_DIR)/libgrbs/debug.o
 	$(SRC_3RD_DIR)/libgrbs/addr_hash.o
