@@ -49,6 +49,7 @@ static const char pcb_acth_RbsConnect[] = "Make a new rubber band stretch connec
 /* DOC: ... */
 static fgw_error_t pcb_act_RbsConnect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	return -1;
 }
 
 static const char pcb_acts_RbsStretch[] = "RbsStretch()";
