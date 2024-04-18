@@ -227,6 +227,14 @@ grbs_point_t *rbsr_find_point(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy)
 	return rbsr_find_point_(rbs, cx, cy, RND_COORD_MAX);
 }
 
+/* whether two coords are matching within 10 nm */
+#define   CRDEQ_DELTA   RBSR_R2G(10)
+RND_INLINE int crdeq(double c1, double c2)
+{
+	double d = c1-c2;
+	return ((d > -CRDEQ_DELTA) && (d < +CRDEQ_DELTA));
+}
+
 static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *prev, pcb_2netmap_obj_t *obj, grbs_arc_t **prevarc, grbs_line_t **prevline)
 {
 	grbs_arc_t *a;
@@ -258,6 +266,34 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 			sa = -(arc->StartAngle - 180.0) / RND_RAD_TO_DEG;
 			da = -(arc->Delta / RND_RAD_TO_DEG);
 			r = RBSR_R2G(arc->Height);
+
+			/* the pcb object's arc may not be oriented to suit the sequential
+			   order; this is detected by prev line's endpoint matching not the
+			   starting endpoint (sa) of the arc but the ending endpoint (sa+da);
+			   in this case swap arc orientation */
+			if (*prevline != NULL) {
+				double e2x, e2y, l1x, l1y, l2x, l2y, ea;
+				pcb_2netmap_obj_t *lineo = (*prevline)->user_data;
+				pcb_line_t *line = (pcb_line_t *)lineo->orig;
+
+				assert(line->type == PCB_OBJ_LINE);
+
+				ea = sa+da;
+				l1x = RBSR_R2G(line->Point1.X);
+				l1y = RBSR_R2G(line->Point1.Y);
+				l2x = RBSR_R2G(line->Point2.X);
+				l2y = RBSR_R2G(line->Point2.Y);
+				e2x = pt->x + cos(ea) * r;
+				e2y = pt->y + sin(ea) * r;
+
+				/* if either endpoint of the line is too close to the sa+da end of
+				   the arc we need to swap angles */
+				if ((crdeq(l1x, e2x) && crdeq(l1y, e2y)) || (crdeq(l2x, e2x) && crdeq(l2y, e2y))) {
+					sa = ea;
+					da = -da;
+				}
+			}
+
 			a = grbs_arc_new(&rbs->grbs, pt, 0, r, sa, da);
 			assert(a != NULL);
 			gdl_append(&tn->arcs, a, link_2net);
@@ -411,7 +447,7 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 			}
 		}
 
-
+		/* map arcs and lines into a sequence */
 		tn = grbs_2net_new(&rbs->grbs, copper, clearance);
 		res |= map_2nets_incident(rbs, tn, seg->objs.array[0], &prevarc, &prevline);
 		for(n = 1; n < seg->objs.used-1; n++) {
