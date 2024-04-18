@@ -159,7 +159,7 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *nee
 	double l1x, l1y, l2x, l2y, px, py, side, dist2, dx, dy, cop2;
 	grbs_arc_dir_t dir;
 
-	end = rbsr_find_point(&rbsq->map, tx, ty);
+	end = rbsr_find_point_thick(&rbsq->map, tx, ty, RBSR_R2G((double)rnd_pixel_slop*10.0));
 	if (end == NULL) {
 		int need_redraw = 0;
 		if (rbsq->consider.dir != RBS_ADIR_invalid)

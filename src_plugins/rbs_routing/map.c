@@ -194,17 +194,17 @@ static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_
 #define FIND_PT_DELTA   2
 #define FIND_PT_DELTA2  RBSR_R2G(FIND_PT_DELTA * FIND_PT_DELTA)
 
-RND_INLINE grbs_point_t *rbsr_find_point_(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_, double bestd2)
+RND_INLINE grbs_point_t *rbsr_find_point_(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_, double bestd2, double delta)
 {
 	double cx = RBSR_R2G(cx_), cy = RBSR_R2G(cy_);
 	grbs_point_t *pt, *best = NULL;
 	grbs_rtree_it_t it;
 	grbs_rtree_box_t bbox;
 
-	bbox.x1 = cx - FIND_PT_DELTA;
-	bbox.y1 = cy - FIND_PT_DELTA;
-	bbox.x2 = cx + FIND_PT_DELTA;
-	bbox.y2 = cy + FIND_PT_DELTA;
+	bbox.x1 = cx - delta;
+	bbox.y1 = cy - delta;
+	bbox.x2 = cx + delta;
+	bbox.y2 = cy + delta;
 
 	for(pt = grbs_rtree_first(&it, &rbs->grbs.point_tree, &bbox); pt != NULL; pt = grbs_rtree_next(&it)) {
 		double dx = cx - pt->x, dy = cy - pt->y, d2 = dx*dx + dy*dy;
@@ -219,12 +219,17 @@ RND_INLINE grbs_point_t *rbsr_find_point_(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_
 
 grbs_point_t *rbsr_find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy)
 {
-	return rbsr_find_point_(rbs, cx, cy, FIND_PT_DELTA2+1);
+	return rbsr_find_point_(rbs, cx, cy, FIND_PT_DELTA2+1, FIND_PT_DELTA);
 }
 
 grbs_point_t *rbsr_find_point(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy)
 {
-	return rbsr_find_point_(rbs, cx, cy, RND_COORD_MAX);
+	return rbsr_find_point_(rbs, cx, cy, RND_COORD_MAX, FIND_PT_DELTA);
+}
+
+grbs_point_t *rbsr_find_point_thick(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t delta)
+{
+	return rbsr_find_point_(rbs, cx, cy, RND_COORD_MAX, delta);
 }
 
 /* whether two coords are matching within 10 nm */

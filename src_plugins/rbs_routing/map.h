@@ -49,3 +49,5 @@ grbs_point_t *rbsr_find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coo
 /* Return the point that is close enough to cx;cy or NULL if nothing is close */
 grbs_point_t *rbsr_find_point(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy);
 
+/* Same as rbsr_find_point but searches with a bigger box (of width 2*delta) */
+grbs_point_t *rbsr_find_point_thick(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t delta);
