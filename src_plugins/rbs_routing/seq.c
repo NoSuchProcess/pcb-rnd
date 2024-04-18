@@ -40,7 +40,7 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 {
 	grbs_t *grbs = &rbsq->map.grbs;
 	grbs_addr_t *last, *curr = NULL;
-	int n;
+	int n, broken = 0;;
 
 	grbs_path_remove_2net_addrs(grbs, rbsq->tn);
 	grbs_snapshot_restore(rbsq->snap);
@@ -53,12 +53,33 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 	for(n = 1; n < rbsq->used; n++) {
 		curr = grbs_path_next(grbs, rbsq->tn, last, rbsq->path[n].pt, rbsq->path[n].dir);
 		rnd_trace(" curr=%p\n", curr);
+		if (curr == NULL) {
+			curr = last;
+			broken = 1;
+			break;
+		}
 		last = curr;
 	}
 
-	if (rbsq->consider.dir != RBS_ADIR_invalid) {
+	if (!broken && (rbsq->consider.dir != RBS_ADIR_invalid)) {
 		curr = grbs_path_next(grbs, rbsq->tn, last, rbsq->consider.pt, rbsq->consider.dir);
 		rnd_trace(" cons=%p\n", curr);
+	}
+
+	if (curr != NULL) {
+		double ex, ey;
+
+		if ((curr->type & 0x0F) == ADDR_POINT) {
+			ex = curr->obj.pt->x;
+			ey = curr->obj.pt->y;
+		}
+		else {
+			grbs_arc_t *arc = curr->obj.arc;
+			ex = arc->parent_pt->x + cos(arc->sa + arc->da) * arc->r;
+			ey = arc->parent_pt->y + sin(arc->sa + arc->da) * arc->r;
+		}
+		rbsq->rlast_x = RBSR_G2R(ex);
+		rbsq->rlast_y = RBSR_G2R(ey);
 	}
 
 	rnd_trace("realize:\n");
@@ -134,7 +155,8 @@ int rbsr_seq_accept(rbsr_seq_t *rbsq)
 {
 	rbsq->path[rbsq->used] = rbsq->consider;
 	rbsq->used++;
-TODO("update last_x and last_y");
+	rbsq->last_x = rbsq->rlast_x;
+	rbsq->last_y = rbsq->rlast_y;
 	return 0;
 }
 

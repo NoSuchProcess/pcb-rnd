@@ -24,6 +24,7 @@ typedef struct rbsr_seq_s {
 
 	rnd_coord_t last_x, last_y; /* last point coords on the path for the tool code */
 
+	rnd_coord_t rlast_x, rlast_y; /* last points realized in the last redraw */
 	grbs_snapshot_t *snap;
 } rbsr_seq_t;
 
