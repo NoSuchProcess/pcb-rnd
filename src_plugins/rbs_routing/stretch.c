@@ -158,7 +158,7 @@ void rbsr_stretch_line_end(rbsr_stretch_t *rbss)
 int rbsr_stretch_line_to_coords(rbsr_stretch_t *rbss, rnd_coord_t tx, rnd_coord_t ty)
 {
 	grbs_addr_t *a1, *a2;
-	int new_via = (rbss->via == NULL), seg;
+	int seg;
 
 	grbs_snapshot_restore(rbss->snap);
 

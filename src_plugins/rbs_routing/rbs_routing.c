@@ -60,7 +60,7 @@ static fgw_error_t pcb_act_RbsStretch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static rbsr_stretch_t rbss = {0};
 	int type;
 	void *ptr1, *ptr2, *ptr3;
-	rnd_coord_t x, y, tx, ty;
+	rnd_coord_t x, y;
 
 	if (rnd_hid_get_coords("Click on a copper line or arc", &x, &y, 0) != 0)
 		return -1;
