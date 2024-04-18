@@ -103,8 +103,6 @@ void pcb_tool_seq_adjust_attached_objects(rnd_design_t *hl)
 
 void pcb_tool_seq_draw_attached(rnd_design_t *hl)
 {
-	pcb_board_t *pcb = (pcb_board_t *)hl;
-
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND)
 		return;
 
