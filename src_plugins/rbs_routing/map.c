@@ -193,9 +193,9 @@ static int map_2nets_incident(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_
 #define FIND_PT_DELTA   2
 #define FIND_PT_DELTA2  RBSR_R2G(FIND_PT_DELTA * FIND_PT_DELTA)
 
-grbs_point_t *rbsr_find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_)
+RND_INLINE grbs_point_t *rbsr_find_point_(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_, double bestd2)
 {
-	double cx = RBSR_R2G(cx_), cy = RBSR_R2G(cy_), bestd2 = FIND_PT_DELTA2+1;
+	double cx = RBSR_R2G(cx_), cy = RBSR_R2G(cy_);
 	grbs_point_t *pt, *best = NULL;
 	grbs_rtree_it_t it;
 	grbs_rtree_box_t bbox;
@@ -214,6 +214,16 @@ grbs_point_t *rbsr_find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_co
 	}
 
 	return best;
+}
+
+grbs_point_t *rbsr_find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy)
+{
+	return rbsr_find_point_(rbs, cx, cy, FIND_PT_DELTA2+1);
+}
+
+grbs_point_t *rbsr_find_point(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy)
+{
+	return rbsr_find_point_(rbs, cx, cy, RND_COORD_MAX);
 }
 
 static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *prev, pcb_2netmap_obj_t *obj, grbs_arc_t **prevarc, grbs_line_t **prevline)

@@ -35,10 +35,14 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty)
 {
 	grbs_point_t *end;
 
-	end = rbsr_find_point_by_center(&rbsq->map, tx, ty);
+		rnd_trace("consider: ");
+
+	end = rbsr_find_point(&rbsq->map, tx, ty);
 	if (end != NULL) {
-	
+		rnd_trace("found pt\n");
 	}
+	else
+		rnd_trace("nope\n");
 
 	return -1;
 }

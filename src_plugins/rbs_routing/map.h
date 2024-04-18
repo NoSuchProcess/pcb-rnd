@@ -40,6 +40,10 @@ void rbsr_map_debug_dump(rbsr_map_t *rbs, const char *fn);
 
 /*** utility ***/
 
-/* Return the point that's close enough to cx;cy or NULL if nothing is close */
+/* Return the point whose center point is close enough to cx;cy or NULL if
+   nothing is close */
 grbs_point_t *rbsr_find_point_by_center(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy);
+
+/* Return the point that is close enough to cx;cy or NULL if nothing is close */
+grbs_point_t *rbsr_find_point(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy);
 
