@@ -2380,7 +2380,9 @@
  ../src_plugins/rbs_routing/map.c ../src_3rd/libgrbs/route.h \
  ../src_3rd/libgrbs/debug.h ../src_3rd/libgrbs/geo.h obj_pstk_inlines.h \
  data.h thermal.h operation.h layer_ui.h draw.h draw_wireframe.h \
- ../src_plugins/rbs_routing/stretch.c remove.h
+ ../src_plugins/rbs_routing/stretch.c remove.h \
+ ../src_plugins/rbs_routing/install.h \
+ ../src_plugins/rbs_routing/install.c
 ../src_plugins/rbs_routing/tool_seq.o: \
  ../src_plugins/rbs_routing/tool_seq.c ../config.h conf_core.h \
  globalconst.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
@@ -2398,6 +2400,7 @@
  obj_common.h flag_str.h ../src_3rd/libgrbs/grbs.h \
  ../src_3rd/libgrbs/rtree.h ../src_plugins/rbs_routing/seq.h \
  ../src_3rd/libgrbs/snapshot.h ../src_plugins/rbs_routing/seq.c \
+ ../src_3rd/libgrbs/route.h ../src_plugins/rbs_routing/install.h \
  ../src_plugins/rbs_routing/tool_seq.h
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
