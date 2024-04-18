@@ -89,10 +89,14 @@ void pcb_tool_seq_notify_mode(rnd_design_t *hl)
 
 void pcb_tool_seq_adjust_attached_objects(rnd_design_t *hl)
 {
+	int rdrw;
+
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND)
 		return;
 
-	rbsr_seq_consider(&seq, pcb_crosshair.X, pcb_crosshair.Y);
+	rbsr_seq_consider(&seq, pcb_crosshair.X, pcb_crosshair.Y, &rdrw);
+	if (rdrw)
+		rnd_gui->invalidate_all(rnd_gui);
 }
 
 void pcb_tool_seq_draw_attached(rnd_design_t *hl)

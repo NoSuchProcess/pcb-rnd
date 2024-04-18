@@ -32,6 +32,6 @@ typedef struct rbsr_seq_s {
 int rbsr_seq_begin_at(rbsr_seq_t *rbss, pcb_board_t *pcb, rnd_layer_id_t lid, rnd_coord_t tx, rnd_coord_t ty, rnd_coord_t copper, rnd_coord_t clearance);
 void rbsr_seq_end(rbsr_seq_t *rbss);
 
-int rbsr_seq_consider(rbsr_seq_t *rbss, rnd_coord_t tx, rnd_coord_t ty);
+int rbsr_seq_consider(rbsr_seq_t *rbss, rnd_coord_t tx, rnd_coord_t ty, int *need_redraw_out);
 int rbsr_seq_accept(rbsr_seq_t *rbss);
 

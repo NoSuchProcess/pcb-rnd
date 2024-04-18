@@ -71,7 +71,7 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 	return 0;
 }
 
-int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty)
+int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *need_redraw_out)
 {
 	grbs_point_t *end;
 	rnd_coord_t ptcx, ptcy;
@@ -87,6 +87,7 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty)
 		rbsq->consider.dir = RBS_ADIR_invalid;
 		if (need_redraw)
 			rbsr_seq_redraw(rbsq);
+		*need_redraw_out = need_redraw;
 		return -1;
 	}
 
@@ -117,12 +118,15 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty)
 		dir = GRBS_ADIR_INC;
 	}
 
-	if ((rbsq->consider.pt == end) && (rbsq->consider.dir == dir))
+	if ((rbsq->consider.pt == end) && (rbsq->consider.dir == dir)) {
+		*need_redraw_out = 0;
 		return 0; /* do not redraw if there's no change */
+	}
 
 	rbsq->consider.pt = end;
 	rbsq->consider.dir = dir;
 
+	*need_redraw_out = 1;
 	return rbsr_seq_redraw(rbsq);
 }
 
