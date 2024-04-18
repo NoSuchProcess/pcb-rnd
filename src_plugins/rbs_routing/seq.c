@@ -39,8 +39,8 @@ int rbsr_seq_begin_at(rbsr_seq_t *rbsq, pcb_board_t *pcb, rnd_layer_id_t lid, rn
 RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 {
 	grbs_t *grbs = &rbsq->map.grbs;
-	grbs_addr_t *last, *curr = NULL;
-	int n, broken = 0;;
+	grbs_addr_t *last, *curr = NULL, *cons;
+	int n, broken = 0, res = 0;
 
 	grbs_path_remove_2net_addrs(grbs, rbsq->tn);
 	grbs_snapshot_restore(rbsq->snap);
@@ -62,8 +62,12 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 	}
 
 	if (!broken && (rbsq->consider.dir != RBS_ADIR_invalid)) {
-		curr = grbs_path_next(grbs, rbsq->tn, last, rbsq->consider.pt, rbsq->consider.dir);
-		rnd_trace(" cons=%p\n", curr);
+		cons = grbs_path_next(grbs, rbsq->tn, last, rbsq->consider.pt, rbsq->consider.dir);
+		if (cons != NULL)
+			curr = cons;
+		else
+			res = -1;
+		rnd_trace(" cons=%p\n", cons);
 	}
 
 	if (curr != NULL) {
@@ -89,7 +93,7 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 	}
 	rnd_trace("--\n");
 
-	return 0;
+	return res;
 }
 
 int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *need_redraw_out)
