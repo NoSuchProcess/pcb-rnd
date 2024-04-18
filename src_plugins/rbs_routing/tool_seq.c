@@ -85,6 +85,7 @@ void pcb_tool_seq_notify_mode(rnd_design_t *hl)
 				pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 				rbsr_seq_end(&seq);
 			}
+			rnd_gui->invalidate_all(rnd_gui);
 			break;
 	}
 }

@@ -230,6 +230,7 @@ rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbsq)
 		rbsq->consider.dir = 0;
 	}
 
+	rbsr_seq_redraw(rbsq);
 	return res;
 }
 
