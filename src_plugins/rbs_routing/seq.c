@@ -212,10 +212,11 @@ rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbsq)
 }
 
 
-void rbsr_seq_end(rbsr_seq_t *rbss)
+void rbsr_seq_end(rbsr_seq_t *rbsq)
 {
-	/* tune existing objects and install new objects */
-/*	rbsr_install_2net(rbss, rbss->tn);*/
+	pcb_layer_t *ly = pcb_get_layer(rbsq->map.pcb->Data, rbsq->map.lid);
 
+	/* tune existing objects and install new objects */
+	rbsr_install_2net(ly, rbsq->tn);
 }
 
