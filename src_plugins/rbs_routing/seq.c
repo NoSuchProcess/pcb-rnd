@@ -264,7 +264,6 @@ rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbsq)
 
 	if (rbsq->consider.dir == GRBS_ADIR_INC) {
 		res = RBSR_SQA_TERMINATE;
-		TODO("copy back");
 		rbsq->consider.dir = 0;
 	}
 
