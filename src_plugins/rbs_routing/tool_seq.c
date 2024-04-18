@@ -49,6 +49,7 @@ void pcb_tool_seq_init(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	/* TODO: tool activated */
+	pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST;
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
@@ -88,6 +89,9 @@ void pcb_tool_seq_notify_mode(rnd_design_t *hl)
 
 void pcb_tool_seq_adjust_attached_objects(rnd_design_t *hl)
 {
+	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND)
+		return;
+
 	rbsr_seq_consider(&seq, pcb_crosshair.X, pcb_crosshair.Y);
 }
 
