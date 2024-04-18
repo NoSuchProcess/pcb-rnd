@@ -3,7 +3,8 @@
 
 static int rbsr_stretch_install_2net(rbsr_stretch_t *rbss, grbs_2net_t *tn)
 {
-	return rbsr_install_2net(rbss, tn);
+	pcb_layer_t *ly = pcb_get_layer(rbss->map.pcb->Data, rbss->map.lid);
+	return rbsr_install_2net(ly, tn);
 }
 
 
