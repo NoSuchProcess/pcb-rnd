@@ -152,15 +152,49 @@ RND_INLINE int rbsr_seq_redraw(rbsr_seq_t *rbsq)
 	return res;
 }
 
+RND_INLINE grbs_point_t *rbsr_find_point_by_arc_thick(rbsr_map_t *rbs, rnd_coord_t cx_, rnd_coord_t cy_, double bestd2, double delta)
+{
+	double cx = RBSR_R2G(cx_), cy = RBSR_R2G(cy_);
+	grbs_arc_t *arc;
+	grbs_point_t *best = NULL;
+	grbs_rtree_it_t it;
+	grbs_rtree_box_t bbox;
+
+	bbox.x1 = cx - delta;
+	bbox.y1 = cy - delta;
+	bbox.x2 = cx + delta;
+	bbox.y2 = cy + delta;
+
+	for(arc = grbs_rtree_first(&it, &rbs->grbs.arc_tree, &bbox); arc != NULL; arc = grbs_rtree_next(&it)) {
+		grbs_point_t *pt = arc->parent_pt;
+		double dx = cx - pt->x, dy = cy - pt->y, d2 = dx*dx + dy*dy;
+		if (d2 < bestd2) {
+			bestd2 = d2;
+			best = pt;
+		}
+	}
+
+	return best;
+}
+
+
 int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *need_redraw_out)
 {
 	grbs_point_t *end;
 	rnd_coord_t ptcx, ptcy;
-	double l1x, l1y, l2x, l2y, px, py, side, dist2, dx, dy, cop2;
+	double l1x, l1y, l2x, l2y, px, py, side, dist2, dx, dy, cop2, gslop;
 	grbs_arc_dir_t dir;
+	int refuse_incident = 0;
 
-	end = rbsr_find_point_thick(&rbsq->map, tx, ty, RBSR_R2G((double)rnd_pixel_slop*10.0));
+	gslop = RBSR_R2G((double)rnd_pixel_slop*10.0);
+	end = rbsr_find_point_thick(&rbsq->map, tx, ty, gslop);
 	if (end == NULL) {
+		refuse_incident = 0;
+		end = rbsr_find_point_by_arc_thick(&rbsq->map, tx, ty, RND_COORD_MAX, gslop);
+	}
+
+	if (end == NULL) {
+		refuse: {
 		int need_redraw = 0;
 		if (rbsq->consider.dir != RBS_ADIR_invalid)
 			need_redraw = 1;
@@ -170,6 +204,7 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *nee
 			rbsr_seq_redraw(rbsq);
 		*need_redraw_out = need_redraw;
 		return -1;
+		}
 	}
 
 	ptcx = RBSR_G2R(end->x);
@@ -195,6 +230,9 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *nee
 		dir = (side < 0) ? GRBS_ADIR_CONVEX_CW : GRBS_ADIR_CONVEX_CCW;
 	}
 	else {
+		if (refuse_incident)
+			goto refuse;
+
 		rnd_trace(" incident\n");
 		dir = GRBS_ADIR_INC;
 	}
