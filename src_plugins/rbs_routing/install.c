@@ -25,6 +25,12 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+RND_INLINE int angeq(double a1, double a2)
+{
+	double d = a1 - a2;
+	return (d >= -0.01) && (d < +0.01);
+}
+
 static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line)
 {
 	pcb_2netmap_obj_t *obj = line->user_data;
@@ -64,20 +70,22 @@ static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line
 
 static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
 {
-	if (arc->user_data == NULL) { /* create new */
-		pcb_arc_t *pa;
-		double cx, cy, sa, da;
+	pcb_2netmap_obj_t *obj = arc->user_data;
+	pcb_arc_t *pa;
+	double sa, da;
+	rnd_coord_t cx, cy, r;
 
+	sa = 180.0 - (arc->sa * RND_RAD_TO_DEG);
+	da = - (arc->da * RND_RAD_TO_DEG);
+	cx = RBSR_G2R(arc->parent_pt->x);
+	cy = RBSR_G2R(arc->parent_pt->y);
+	r = RBSR_G2R(arc->r);
+
+	if (obj == NULL) { /* create new */
 		if (arc->r == 0)
 			return 0; /* do not create dummy arcs used for incident lines */
 
-		sa = 180.0 - (arc->sa * RND_RAD_TO_DEG);
-		da = - (arc->da * RND_RAD_TO_DEG);
-		cx = arc->parent_pt->x;
-		cy = arc->parent_pt->y;
-
-		pa = pcb_arc_new(ly, RBSR_G2R(cx), RBSR_G2R(cy),
-			RBSR_G2R(arc->r), RBSR_G2R(arc->r), sa, da,
+		pa = pcb_arc_new(ly, cx, cy, r, r, sa, da,
 			RBSR_G2R(tn->copper*2), RBSR_G2R(tn->clearance*2),
 			pcb_flag_make(PCB_FLAG_CLEARLINE), 1);
 
@@ -87,7 +95,35 @@ static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
 		}
 	}
 	else {
-		TODO("verify existing");
+		double sa2 = sa+da, da2 = -da, *new_sa = NULL, *new_da = NULL;
+		int match_cent, match_radi, match_ang1, match_ang2;
+		rnd_coord_t *new_cx = NULL, *new_cy = NULL, *new_r = NULL;
+
+		pa = obj->orig;
+		assert(pa->type == PCB_OBJ_ARC);
+
+		/* figure which parameters match */
+		match_cent = (rcrdeq(cx, pa->X) && rcrdeq(cy, pa->Y));
+		match_radi = rcrdeq(r, pa->Width);
+		match_ang1 = (angeq(sa, pa->StartAngle) && angeq(da, pa->Delta));
+		match_ang2 = (angeq(sa2, pa->StartAngle) && angeq(da2, pa->Delta));
+
+		/* no change */
+		if (match_cent && match_radi && (match_ang1 || match_ang2)) return 0;
+
+		/* figure what needs change */
+		if (!match_cent) {
+			new_cx = &cx;
+			new_cy = &cy;
+		}
+		if (!match_radi)
+			new_r = &r;
+		if (!match_ang1 && !match_ang2) {
+			new_sa = &sa;
+			new_da = &da;
+		}
+
+		pcb_arc_modify(pa, new_cx, new_cy, new_r, new_r, new_sa, new_da, NULL, NULL, 1);
 	}
 	return 0;
 }
