@@ -12,6 +12,12 @@ CONVERT=convert
 COMPARE=compare
 SCCBOX=$TRUNK/scconfig/sccbox
 
+polyb=`grep "[ \t]*#define[ \t]*PCB_WANT_POLYBOOL[ \t]*1" $TRUNK/config.h`
+if test ! -z "$polyb"
+then
+	REF_FLAVOR=polybool
+fi
+
 if test -z "$pcb_rnd_bin"
 then
 # running from source
@@ -314,9 +320,18 @@ run_test()
 
 	base=${fn%%.pcb}
 	base=${base%%.lht}
-	ref_fn=ref/$base$ext
 	fmt_fn=$base$ext
 	out_fn=out/$base$ext
+
+	# the ref file is from the flavor we figured from config.h, e.g. for polybool
+	# or as a fallback the standard set if there is no flavor-specific file for
+	# this input
+	ref_fn=ref-$REF_FLAVOR/$base$ext
+	if test ! -f $ref_fn
+	then
+		ref_fn=ref/$base$ext
+	fi
+
 
 	move_out "$fmt_fn" "$out_fn"
 	cmp_fmt "$ref_fn" "$out_fn"
