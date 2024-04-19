@@ -16,6 +16,8 @@
 #define REQ_LIBRND_MAJOR 4
 #define REQ_LIBRND_MINOR 2
 
+#define WANT_POLYBOOL_DEFAULT strue
+
 #define TOSTR_(x) #x
 #define TOSTR(x) TOSTR_(x)
 
@@ -106,7 +108,7 @@ int hook_postinit()
 	put("/local/pcb/want_bison", sfalse);
 	put("/local/pcb/want_byaccic", sfalse);
 	put("/local/pcb/want_static", sfalse);
-	put("/local/pcb/want_polybool", sfalse);
+	put("/local/pcb/want_polybool", WANT_POLYBOOL_DEFAULT);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 	put("/local/pcb/librnd_prefix", TO_STR(LIBRND_PREFIX));
 
