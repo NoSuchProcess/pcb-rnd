@@ -25,36 +25,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
-{
-	if (arc->user_data == NULL) { /* create new */
-		pcb_arc_t *pa;
-		double cx, cy, sa, da;
-
-		if (arc->r == 0)
-			return 0; /* do not create dummy arcs used for incident lines */
-
-		sa = 180.0 - (arc->sa * RND_RAD_TO_DEG);
-		da = - (arc->da * RND_RAD_TO_DEG);
-		cx = arc->parent_pt->x;
-		cy = arc->parent_pt->y;
-
-		pa = pcb_arc_new(ly, RBSR_G2R(cx), RBSR_G2R(cy),
-			RBSR_G2R(arc->r), RBSR_G2R(arc->r), sa, da,
-			RBSR_G2R(tn->copper*2), RBSR_G2R(tn->clearance*2),
-			pcb_flag_make(PCB_FLAG_CLEARLINE), 1);
-
-		if (pa == NULL) {
-			rnd_message(RND_MSG_ERROR, "rbsr_install: failed to create arc\n");
-			return -1;
-		}
-	}
-	else {
-		TODO("verify existing");
-	}
-	return 0;
-}
-
 static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line)
 {
 	pcb_2netmap_obj_t *obj = line->user_data;
@@ -88,6 +58,36 @@ static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line
 			pcb_line_modify(pl, &l1x, &l1y, &l2x, &l2y, NULL, NULL, 1);
 		else
 			pcb_line_modify(pl, &l2x, &l2y, &l1x, &l1y, NULL, NULL, 1);
+	}
+	return 0;
+}
+
+static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
+{
+	if (arc->user_data == NULL) { /* create new */
+		pcb_arc_t *pa;
+		double cx, cy, sa, da;
+
+		if (arc->r == 0)
+			return 0; /* do not create dummy arcs used for incident lines */
+
+		sa = 180.0 - (arc->sa * RND_RAD_TO_DEG);
+		da = - (arc->da * RND_RAD_TO_DEG);
+		cx = arc->parent_pt->x;
+		cy = arc->parent_pt->y;
+
+		pa = pcb_arc_new(ly, RBSR_G2R(cx), RBSR_G2R(cy),
+			RBSR_G2R(arc->r), RBSR_G2R(arc->r), sa, da,
+			RBSR_G2R(tn->copper*2), RBSR_G2R(tn->clearance*2),
+			pcb_flag_make(PCB_FLAG_CLEARLINE), 1);
+
+		if (pa == NULL) {
+			rnd_message(RND_MSG_ERROR, "rbsr_install: failed to create arc\n");
+			return -1;
+		}
+	}
+	else {
+		TODO("verify existing");
 	}
 	return 0;
 }
