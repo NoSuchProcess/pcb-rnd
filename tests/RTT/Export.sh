@@ -327,7 +327,7 @@ run_test()
 	# or as a fallback the standard set if there is no flavor-specific file for
 	# this input
 	ref_fn=ref-$REF_FLAVOR/$base$ext
-	if test ! -f $ref_fn
+	if test ! -f $ref_fn -a ! -f $ref_fn.gz
 	then
 		ref_fn=ref/$base$ext
 	fi
