@@ -256,6 +256,10 @@ rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbsq)
 {
 	rbsr_seq_accept_t res = RBSR_SQA_CONTINUE;
 
+	if (rbsq->used >= RBSR_SEQ_MAX) {
+		rnd_message(RND_MSG_ERROR, "rbsr_seq_accept(): path too long\n");
+		return res;
+	}
 
 	rbsq->path[rbsq->used] = rbsq->consider;
 	rbsq->used++;
