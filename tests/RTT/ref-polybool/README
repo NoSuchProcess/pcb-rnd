@@ -1,0 +1,4 @@
+Alternative references for when the polybool lib is enabled because polybool
+emits polygon islands in a different order still producing essentially the same
+output.
+
