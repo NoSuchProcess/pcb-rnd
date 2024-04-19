@@ -49,10 +49,13 @@ static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line
 		pl = pcb_line_new(ly, l1x, l1y, l2x, l2y,
 			RBSR_G2R(tn->copper*2), RBSR_G2R(tn->clearance*2),
 			pcb_flag_make(PCB_FLAG_CLEARLINE));
+
 		if (pl == NULL) {
 			rnd_message(RND_MSG_ERROR, "rbsr_install: failed to create line\n");
 			return -1;
 		}
+
+		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ly, pl, pl);
 	}
 	else {
 		pl = obj->orig;
@@ -100,6 +103,8 @@ static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
 			rnd_message(RND_MSG_ERROR, "rbsr_install: failed to create arc\n");
 			return -1;
 		}
+
+		pcb_undo_add_obj_to_create(PCB_OBJ_ARC, ly, pa, pa);
 	}
 	else {
 		double sa2 = sa+da, da2 = -da, *new_sa = NULL, *new_da = NULL;
