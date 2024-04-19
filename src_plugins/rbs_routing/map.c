@@ -613,8 +613,8 @@ void rbsr_map_uninit(rbsr_map_t *dst)
 	pcb_map_2nets_uninit(&dst->twonets);
 	dst->pcb = NULL;
 	dst->lid = -1;
-	TODO("free the locally allocated map");
 
+	grbs_uninit(&dst->grbs);
 	pcb_uilayer_free(dst->ui_layer);
 }
 
