@@ -14,7 +14,7 @@
 #define version "3.1.5-dev"
 
 #define REQ_LIBRND_MAJOR 4
-#define REQ_LIBRND_MINOR 1
+#define REQ_LIBRND_MINOR 2
 
 #define TOSTR_(x) #x
 #define TOSTR(x) TOSTR_(x)

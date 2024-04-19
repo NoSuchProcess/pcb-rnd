@@ -12,7 +12,7 @@ Summary of dependencies:
 For users:
  - mandatory: C compiler
  - mandatory: make (BSD make won't work)
- - mandatory: librnd >=4.1.0 installed
+ - mandatory: librnd >=4.2.0 installed
               Get it at: see http://www.repo.hu/projects/librnd
               Standard: install librnd in /usr/local or /usr
               Non-standard installation: doc/INSTALL.librnd.txt
