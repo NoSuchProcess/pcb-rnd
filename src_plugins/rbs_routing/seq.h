@@ -26,6 +26,8 @@ typedef struct rbsr_seq_s {
 
 	rnd_coord_t rlast_x, rlast_y; /* last points realized in the last redraw */
 	grbs_snapshot_t *snap;
+
+	unsigned consider_step_back:1; /* accept() should step back one */
 } rbsr_seq_t;
 
 typedef enum rbsr_seq_accept_e {

@@ -242,8 +242,28 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *nee
 		return 0; /* do not redraw if there's no change */
 	}
 
-	TODO("step back if end:dir matches the previous");
+	if ((rbsq->used > 2) && (end == rbsq->path[rbsq->used-2].pt)) {
+		int res;
+		grbs_arc_t *arc;
 
+		rnd_trace("jajj ------------------------------!\n");
+		rbsq->consider.dir = RBS_ADIR_invalid;
+		
+		
+		*need_redraw_out = 1;
+		res = rbsr_seq_redraw(rbsq);
+
+		arc = gdl_first(&rbsq->tn->arcs);
+		if (arc != NULL) {
+			arc->RBSR_WIREFRAME_FLAG = 1;
+			if (arc->eline != NULL)
+				arc->eline->RBSR_WIREFRAME_FLAG = 1;
+		}
+
+		rbsq->consider_step_back = 1;
+		return res;
+	}
+	rbsq->consider_step_back = 0;
 
 	rbsq->consider.pt = end;
 	rbsq->consider.dir = dir;
@@ -255,6 +275,12 @@ int rbsr_seq_consider(rbsr_seq_t *rbsq, rnd_coord_t tx, rnd_coord_t ty, int *nee
 rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbsq)
 {
 	rbsr_seq_accept_t res = RBSR_SQA_CONTINUE;
+
+	if (rbsq->consider_step_back) {
+		rbsr_seq_step_back(rbsq);
+		rbsq->consider_step_back = 0;
+		return res;
+	}
 
 	if (rbsq->used >= RBSR_SEQ_MAX) {
 		rnd_message(RND_MSG_ERROR, "rbsr_seq_accept(): path too long\n");
