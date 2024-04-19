@@ -38,6 +38,9 @@ static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line
 	rnd_coord_t l1x = RBSR_G2R(line->x1), l1y = RBSR_G2R(line->y1);
 	rnd_coord_t l2x = RBSR_G2R(line->x2), l2y = RBSR_G2R(line->y2);
 
+	if (line->RBSR_WIREFRAME_COPIED_BACK)
+		return 0;
+	line->RBSR_WIREFRAME_COPIED_BACK = 1;
 
 	if (obj == NULL) { /* create new */
 		if ((line->x1 == line->x2) && (line->y1 == line->y2))
@@ -74,6 +77,10 @@ static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
 	pcb_arc_t *pa;
 	double sa, da;
 	rnd_coord_t cx, cy, r;
+
+	if (arc->RBSR_WIREFRAME_COPIED_BACK)
+		return 0;
+	arc->RBSR_WIREFRAME_COPIED_BACK = 1;
 
 	sa = 180.0 - (arc->sa * RND_RAD_TO_DEG);
 	da = - (arc->da * RND_RAD_TO_DEG);
@@ -124,6 +131,15 @@ static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
 		}
 
 		pcb_arc_modify(pa, new_cx, new_cy, new_r, new_r, new_sa, new_da, NULL, NULL, 1);
+
+		/* A change in an arc typically means change in connected lines; the lines
+		   on our target tn are tuned but lines of innocent bystander twonets are
+		   not. Arcs of those bystander twonets are updated and are getting
+		   here because all arcs of an affected point-segment is checked */
+		if (arc->sline != NULL)
+			rbsr_install_line(ly, tn, arc->sline);
+		if (arc->eline != NULL)
+			rbsr_install_line(ly, tn, arc->eline);
 	}
 	return 0;
 }

@@ -32,6 +32,7 @@ typedef struct rbsr_map_s {
 #define RBSR_G2R(v)  ((rnd_coord_t)rnd_round((v)*1000.0))
 
 #define RBSR_WIREFRAME_FLAG user_flg1
+#define RBSR_WIREFRAME_COPIED_BACK user_flg2
 
 int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid);
 void rbsr_map_uninit(rbsr_map_t *dst);
