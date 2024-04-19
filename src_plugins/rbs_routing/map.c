@@ -399,6 +399,8 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 {
 	pcb_2netmap_oseg_t *seg;
 	int res = 0;
+	pcb_layer_t *ly = pcb_get_layer(rbs->pcb->Data, rbs->lid);
+	rnd_layergrp_id_t my_grp = ly->meta.real.grp;
 
 	for(seg = rbs->twonets.osegs; seg != NULL; seg = seg->next) {
 		long n;
@@ -418,6 +420,11 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 			pcb_2netmap_obj_t *obj = seg->objs.array[n];
 			if ((obj->o.any.type == PCB_OBJ_LINE) && (obj->orig != NULL)) {
 				pcb_line_t *line = (pcb_line_t *)obj->orig;
+
+				if ((line->parent.layer != NULL) && !line->parent.layer->is_bound)
+					if (line->parent.layer->meta.real.grp != my_grp)
+						goto skip; /* do not map twonets on other layers */
+
 				rcop = RBSR_R2G(line->Thickness/2);
 				rclr = RBSR_R2G(line->Clearance/2);
 				if (copper == 0) {
@@ -431,6 +438,11 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 			}
 			else if ((obj->o.any.type == PCB_OBJ_ARC) && (obj->orig != NULL)) {
 				pcb_arc_t *arc = (pcb_arc_t *)obj->orig;
+
+				if ((arc->parent.layer != NULL) && !arc->parent.layer->is_bound)
+					if (arc->parent.layer->meta.real.grp != my_grp)
+						goto skip; /* do not map twonets on other layers */
+
 				rcop = RBSR_R2G(arc->Thickness/2);
 				rclr = RBSR_R2G(arc->Clearance/2);
 				if (copper == 0) {
@@ -459,6 +471,7 @@ RND_INLINE int map_2nets(rbsr_map_t *rbs)
 		res |= tn_postproc(rbs, tn);
 
 		rnd_trace(" res=%d\n", res);
+		skip:;
 	}
 
 	res |= map_2nets_postproc_points(rbs);
