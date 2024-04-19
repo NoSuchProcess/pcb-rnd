@@ -236,7 +236,15 @@ cmp_fmt()
 			for n in `ls $ref.gbr/*.gbr 2>/dev/null`
 			do
 				bn=`basename $n`
-				diff -u "$n" "$out.gbr/$bn"
+				alt_n=ref-$REF_FLAVOR/${n#ref/}
+				if test -f $alt_n
+				then
+					# compare to flavored ref
+					diff -u "$alt_n" "$out.gbr/$bn"
+				else
+					# compare to the generic ref
+					diff -u "$n" "$out.gbr/$bn"
+				fi
 			done
 			;;
 		excellon)
