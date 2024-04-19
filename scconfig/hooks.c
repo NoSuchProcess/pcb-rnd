@@ -344,6 +344,7 @@ int hook_generate()
 	print_sum_cfg_val("/local/prefix",             "installation prefix (--prefix)");
 	print_sum_cfg_val("/local/confdir",            "configuration directory (--confdir)");
 	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
+	print_sum_cfg_val("/local/pcb/want_polybool",  "use the new polygon lib (polybool)");
 
 #undef plugin_def
 #undef plugin_header
