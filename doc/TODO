@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - rbs_routing:
-	- BUG: need to update the rtree after restore
 - FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
 	- search for '-' and centralize parsing refdes-term id
 - BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
