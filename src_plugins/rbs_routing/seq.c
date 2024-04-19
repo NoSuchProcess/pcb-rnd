@@ -278,5 +278,7 @@ void rbsr_seq_end(rbsr_seq_t *rbsq)
 
 	/* tune existing objects and install new objects */
 	rbsr_install_2net(ly, rbsq->tn);
+
+	rbsr_map_uninit(&rbsq->map);
 }
 

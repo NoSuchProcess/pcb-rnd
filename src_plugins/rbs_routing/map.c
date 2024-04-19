@@ -614,6 +614,8 @@ void rbsr_map_uninit(rbsr_map_t *dst)
 	dst->pcb = NULL;
 	dst->lid = -1;
 	TODO("free the locally allocated map");
+
+	pcb_uilayer_free(dst->ui_layer);
 }
 
 
