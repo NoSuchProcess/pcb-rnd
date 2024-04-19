@@ -285,7 +285,7 @@ static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_
 
 				/* if either endpoint of the line is too close to the sa+da end of
 				   the arc we need to swap angles */
-				if ((crdeq(l1x, e2x) && crdeq(l1y, e2y)) || (crdeq(l2x, e2x) && crdeq(l2y, e2y))) {
+				if ((gcrdeq(l1x, e2x) && gcrdeq(l1y, e2y)) || (gcrdeq(l2x, e2x) && gcrdeq(l2y, e2y))) {
 					sa = ea;
 					da = -da;
 				}

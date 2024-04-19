@@ -53,9 +53,16 @@ grbs_point_t *rbsr_find_point(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy);
 grbs_point_t *rbsr_find_point_thick(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t delta);
 
 /* whether two coords are matching within 10 nm */
-#define   CRDEQ_DELTA   RBSR_R2G(10)
-RND_INLINE int crdeq(double c1, double c2)
+#define   RCRDEQ_DELTA   10
+#define   GCRDEQ_DELTA   RBSR_R2G(RCRDEQ_DELTA)
+RND_INLINE int gcrdeq(double c1, double c2)
 {
 	double d = c1-c2;
-	return ((d > -CRDEQ_DELTA) && (d < +CRDEQ_DELTA));
+	return ((d > -GCRDEQ_DELTA) && (d < +GCRDEQ_DELTA));
+}
+
+RND_INLINE int rcrdeq(rnd_coord_t c1, rnd_coord_t c2)
+{
+	rnd_coord_t d = c1-c2;
+	return ((d > -RCRDEQ_DELTA) && (d < +RCRDEQ_DELTA));
 }
