@@ -232,14 +232,6 @@ grbs_point_t *rbsr_find_point_thick(rbsr_map_t *rbs, rnd_coord_t cx, rnd_coord_t
 	return rbsr_find_point_(rbs, cx, cy, RND_COORD_MAX, delta);
 }
 
-/* whether two coords are matching within 10 nm */
-#define   CRDEQ_DELTA   RBSR_R2G(10)
-RND_INLINE int crdeq(double c1, double c2)
-{
-	double d = c1-c2;
-	return ((d > -CRDEQ_DELTA) && (d < +CRDEQ_DELTA));
-}
-
 static int map_2nets_intermediate(rbsr_map_t *rbs, grbs_2net_t *tn, pcb_2netmap_obj_t *prev, pcb_2netmap_obj_t *obj, grbs_arc_t **prevarc, grbs_line_t **prevline)
 {
 	grbs_arc_t *a;
