@@ -53,13 +53,6 @@ void pcb_tool_seq_init(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
-void pcb_tool_seq_uninit(void)
-{
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
-	/* TODO: do we need this? */
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
-}
-
 /* click: creates next point of the route */
 void pcb_tool_seq_notify_mode(rnd_design_t *hl)
 {
@@ -119,6 +112,7 @@ void pcb_tool_seq_escape(rnd_design_t *hl)
 		seq.used = 0; /* do not create any object */
 		rbsr_seq_end(&seq);
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		rnd_gui->invalidate_all(rnd_gui);
 	}
 	else
 		rnd_tool_select_by_name(hl, "arrow");
@@ -129,13 +123,23 @@ rnd_bool pcb_tool_seq_undo_act(rnd_design_t *hl)
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND)
 		return rnd_true;
 
-	if (seq.used <= 1)
-		pcb_tool_seq_escape(hl); /* undo starting click: return to STATE_FIRST */
-	else
+	if (seq.used <= 1) {
+		/* undo starting click: return to STATE_FIRST */
+		pcb_tool_seq_escape(hl);
+	}
+	else {
 		rbsr_seq_step_back(&seq);
+		rnd_gui->invalidate_all(rnd_gui);
+	}
 
-	rnd_gui->invalidate_all(rnd_gui);
 	return rnd_false;
+}
+
+void pcb_tool_seq_uninit(void)
+{
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
+	pcb_tool_seq_escape(&PCB->hidlib);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 
