@@ -57,15 +57,17 @@ static int rbsr_install_arc(pcb_layer_t *ly, grbs_2net_t *tn, grbs_arc_t *arc)
 
 static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line)
 {
-	if (line->user_data == NULL) { /* create new */
-		pcb_line_t *pl;
+	pcb_2netmap_obj_t *obj = line->user_data;
+	pcb_line_t *pl;
+	rnd_coord_t l1x = RBSR_G2R(line->x1), l1y = RBSR_G2R(line->y1);
+	rnd_coord_t l2x = RBSR_G2R(line->x2), l2y = RBSR_G2R(line->y2);
 
+
+	if (obj == NULL) { /* create new */
 		if ((line->x1 == line->x2) && (line->y1 == line->y2))
 			return 0;
 
-		pl = pcb_line_new(ly,
-			RBSR_G2R(line->x1), RBSR_G2R(line->y1),
-			RBSR_G2R(line->x2), RBSR_G2R(line->y2),
+		pl = pcb_line_new(ly, l1x, l1y, l2x, l2y,
 			RBSR_G2R(tn->copper*2), RBSR_G2R(tn->clearance*2),
 			pcb_flag_make(PCB_FLAG_CLEARLINE));
 		if (pl == NULL) {
@@ -74,7 +76,18 @@ static int rbsr_install_line(pcb_layer_t *ly, grbs_2net_t *tn, grbs_line_t *line
 		}
 	}
 	else {
-		TODO("verify existing");
+		pl = obj->orig;
+		assert(pl->type == PCB_OBJ_LINE);
+
+		/* don't touch lines that have no change */
+		if (rcrdeq(l1x, pl->Point1.X) && rcrdeq(l1y, pl->Point1.Y) && rcrdeq(l2x, pl->Point2.X) && rcrdeq(l2y, pl->Point2.Y)) return 0;
+		if (rcrdeq(l2x, pl->Point1.X) && rcrdeq(l2y, pl->Point1.Y) && rcrdeq(l1x, pl->Point2.X) && rcrdeq(l1y, pl->Point2.Y)) return 0;
+
+		/* modify trying to keep original direction */
+		if ((rcrdeq(l1x, pl->Point1.X) && rcrdeq(l1y, pl->Point1.Y)) || (rcrdeq(l2x, pl->Point2.X) && rcrdeq(l2y, pl->Point2.Y)))
+			pcb_line_modify(pl, &l1x, &l1y, &l2x, &l2y, NULL, NULL, 1);
+		else
+			pcb_line_modify(pl, &l2x, &l2y, &l1x, &l1y, NULL, NULL, 1);
 	}
 	return 0;
 }
