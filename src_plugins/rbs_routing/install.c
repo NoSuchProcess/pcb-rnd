@@ -25,6 +25,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "undo.h"
+
 RND_INLINE int angeq(double a1, double a2)
 {
 	double d = a1 - a2;
@@ -167,6 +169,8 @@ int rbsr_install_2net(pcb_layer_t *ly, grbs_2net_t *tn)
 	grbs_arc_t *a, *prev = NULL;
 	int res = 0;
 
+	pcb_undo_freeze_serial();
+
 	for(a = gdl_first(&tn->arcs); a != NULL; prev = a, a = gdl_next(&tn->arcs, a)) {
 		if (prev != NULL)
 			res |= rbsr_install_line(ly, tn, a->sline);
@@ -175,6 +179,9 @@ int rbsr_install_2net(pcb_layer_t *ly, grbs_2net_t *tn)
 		   inserted */
 		res |= rbsr_install_pt_arcs(ly, tn, a->parent_pt);
 	}
+
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	return res;
 }
