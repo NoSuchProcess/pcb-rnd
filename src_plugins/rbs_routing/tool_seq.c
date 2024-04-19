@@ -115,8 +115,29 @@ void pcb_tool_seq_draw_attached(rnd_design_t *hl)
 
 void pcb_tool_seq_escape(rnd_design_t *hl)
 {
-	rnd_tool_select_by_name(hl, "arrow");
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) {
+		seq.used = 0; /* do not create any object */
+		rbsr_seq_end(&seq);
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+	}
+	else
+		rnd_tool_select_by_name(hl, "arrow");
 }
+
+rnd_bool pcb_tool_seq_undo_act(rnd_design_t *hl)
+{
+	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND)
+		return rnd_true;
+
+	if (seq.used <= 1)
+		pcb_tool_seq_escape(hl); /* undo starting click: return to STATE_FIRST */
+	else
+		rbsr_seq_step_back(&seq);
+
+	rnd_gui->invalidate_all(rnd_gui);
+	return rnd_false;
+}
+
 
 /* XPM */
 static const char *seq_icon[] = {
@@ -160,8 +181,8 @@ rnd_tool_t pcb_tool_seq = {
 	NULL,
 	pcb_tool_seq_adjust_attached_objects,
 	pcb_tool_seq_draw_attached,
-	NULL, /* pcb_tool_seq_undo_act, */
-	NULL, /* pcb_tool_seq_redo_act, */
+	pcb_tool_seq_undo_act,
+	NULL, /*pcb_tool_seq_redo_act,*/
 	pcb_tool_seq_escape,
 
 	PCB_TLF_RAT

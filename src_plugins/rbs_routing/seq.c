@@ -271,13 +271,36 @@ rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbsq)
 	return res;
 }
 
+void rbsr_seq_step_back(rbsr_seq_t *rbsq)
+{
+	grbs_point_t *start;
+
+	if (rbsq->used <= 1)
+		return;
+
+	/* fallback for undoing the first seg., when rbsr_seq_redraw() won't fill
+	   it in: revert to start from the starting obj */
+	start = rbsq->path[0].pt;
+	rbsq->rlast_x = RBSR_G2R(start->x);
+	rbsq->rlast_y = RBSR_G2R(start->y);
+
+	/* remove the last segment from path and reset "consider" */
+	rbsq->used--;
+	rbsq->consider.dir = RBS_ADIR_invalid;
+	rbsr_seq_redraw(rbsq);
+
+	/* update routing-from coords for the tool code */
+	rbsq->last_x = rbsq->rlast_x;
+	rbsq->last_y = rbsq->rlast_y;
+}
 
 void rbsr_seq_end(rbsr_seq_t *rbsq)
 {
 	pcb_layer_t *ly = pcb_get_layer(rbsq->map.pcb->Data, rbsq->map.lid);
 
 	/* tune existing objects and install new objects */
-	rbsr_install_2net(ly, rbsq->tn);
+	if (rbsq->used > 0)
+		rbsr_install_2net(ly, rbsq->tn);
 
 	rbsr_map_uninit(&rbsq->map);
 }

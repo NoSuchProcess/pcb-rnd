@@ -39,4 +39,5 @@ void rbsr_seq_end(rbsr_seq_t *rbss);
 
 int rbsr_seq_consider(rbsr_seq_t *rbss, rnd_coord_t tx, rnd_coord_t ty, int *need_redraw_out);
 rbsr_seq_accept_t rbsr_seq_accept(rbsr_seq_t *rbss);
+void rbsr_seq_step_back(rbsr_seq_t *rbsq);
 
