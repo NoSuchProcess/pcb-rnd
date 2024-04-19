@@ -578,6 +578,12 @@ static void setup_ui_layer(rbsr_map_t *rbs)
 int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 {
 	int res;
+	pcb_layer_t *ly = pcb_get_layer(pcb->Data, lid);
+
+	if ((ly == NULL) || (ly->is_bound)) {
+		rnd_msg_error("rbs_routing: failed to resolve layer\n");
+		return -1;
+	}
 
 	dst->twonets.find_floating = 1;
 	if (pcb_map_2nets_init(&dst->twonets, pcb) != 0) {
@@ -601,6 +607,7 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 	res |= map_2nets(dst);
 
 	setup_ui_layer(dst);
+	ly->meta.real.vis = 0;
 
 	return res;
 }
@@ -608,6 +615,10 @@ int rbsr_map_pcb(rbsr_map_t *dst, pcb_board_t *pcb, rnd_layer_id_t lid)
 
 void rbsr_map_uninit(rbsr_map_t *dst)
 {
+	pcb_layer_t *ly = pcb_get_layer(dst->pcb->Data, dst->lid);
+
+	ly->meta.real.vis = 1;
+
 	htpp_uninit(&dst->term4incident);
 	htpp_uninit(&dst->robj2grbs);
 	pcb_map_2nets_uninit(&dst->twonets);
