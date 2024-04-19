@@ -908,6 +908,26 @@ void pcb_arc_mirror(pcb_arc_t *arc, rnd_coord_t y_offs, rnd_bool undoable)
 	if (undoable) pcb_undo_inc_serial();
 }
 
+void pcb_arc_modify(pcb_arc_t *arc, rnd_coord_t *cx, rnd_coord_t *cy, rnd_coord_t *width, rnd_coord_t *height, double *sa, double *da, rnd_coord_t *thick, rnd_coord_t *clr, rnd_bool undoable)
+{
+	undo_arc_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(arc->parent.layer->parent.data), &undo_arc_geo, sizeof(undo_arc_geo_t));
+
+	g->arc = arc;
+	g->X = (cx == NULL) ? arc->X : *cx;
+	g->Y = (cy == NULL) ? arc->Y : *cy;
+	g->Width = (width == NULL) ? arc->Width : *width;
+	g->Height = (height == NULL) ? arc->Height : *height;
+	g->StartAngle = (sa == NULL) ? arc->StartAngle : *sa;
+	g->Delta = (da == NULL) ? arc->Delta : *da;
+	g->Thickness = (thick == NULL) ? arc->Thickness : *thick;
+	g->Clearance = (clr == NULL) ? arc->Clearance : *clr;
+
+	undo_arc_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+}
+
 void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc)
 {
 	rnd_rtree_delete(layer->arc_tree, arc, (rnd_rtree_box_t *)arc);
