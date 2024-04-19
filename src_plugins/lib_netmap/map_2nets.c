@@ -213,6 +213,7 @@ int pcb_map_2nets_uninit(pcb_2netmap_t *map)
 		vtp0_uninit(&oseg->objs);
 		free(oseg);
 	}
+	map->osegs = NULL;
 	htpp_uninit(&map->o2n);
 	return -1;
 }
