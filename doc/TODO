@@ -1,10 +1,17 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- polybool
+	- make test fixed
+	- scconfig prints polybool in summary (top section)
+	- polybool enabled by default: --disable-polybool
+	- small tasks + miniboxtk
 - rbs_routing:
 - FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
 	- search for '-' and centralize parsing refdes-term id
-- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
+- BUG: extended object "bus" bugs:
+	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
+	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
 - BUG: propedit: place so(64), draw a poly around it, propedit on the subc, change padstack/clearance -> the update is not bacthed, poly clipping is done padstack by padstack, very slow [report: aron]
 - BUG: bug_files/TODO/drc1/*: {w d} false positive [report: John Wehle]
 	- the main problem is: square cap bloat-line corner:
