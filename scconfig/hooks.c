@@ -17,6 +17,7 @@
 #define REQ_LIBRND_MINOR 2
 
 #define WANT_POLYBOOL_DEFAULT strue
+#define WANT_POLYBOOL2_DEFAULT sfalse
 
 #define TOSTR_(x) #x
 #define TOSTR(x) TOSTR_(x)
@@ -37,8 +38,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files using bison/flex"},
 	{"enable-byaccic",    "/local/pcb/want_byaccic",      arg_true,      "$enable generating language files using byaccic/ureglex"},
 	{"disable-byaccic",   "/local/pcb/want_byaccic",      arg_false,     "$disable generating language files byaccic/ureglex"},
-	{"enable-polybool",   "/local/pcb/want_polybool",     arg_true,      "$enable the new polygon clipping library"},
-	{"disable-polybool",  "/local/pcb/want_polybool",     arg_false,     "$disable the new polygon clipping library"},
+	{"enable-polybool",   "/local/pcb/want_polybool",     arg_true,      "$enable the first new polygon clipping library"},
+	{"disable-polybool",  "/local/pcb/want_polybool",     arg_false,     "$disable the first new polygon clipping library"},
+	{"enable-polybool2",  "/local/pcb/want_polybool2",    arg_true,      "$enable the second new polygon clipping library"},
+	{"disable-polybool2", "/local/pcb/want_polybool2",    arg_false,     "$disable the second new polygon clipping library"},
 
 #undef plugin_def
 #undef plugin_header
@@ -109,6 +112,7 @@ int hook_postinit()
 	put("/local/pcb/want_byaccic", sfalse);
 	put("/local/pcb/want_static", sfalse);
 	put("/local/pcb/want_polybool", WANT_POLYBOOL_DEFAULT);
+	put("/local/pcb/want_polybool2", WANT_POLYBOOL2_DEFAULT);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 	put("/local/pcb/librnd_prefix", TO_STR(LIBRND_PREFIX));
 
@@ -344,7 +348,8 @@ int hook_generate()
 	print_sum_cfg_val("/local/prefix",             "installation prefix (--prefix)");
 	print_sum_cfg_val("/local/confdir",            "configuration directory (--confdir)");
 	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
-	print_sum_cfg_val("/local/pcb/want_polybool",  "use the new polygon lib (polybool)");
+	print_sum_cfg_val("/local/pcb/want_polybool",  "use the first new polygon lib (polybool)");
+	print_sum_cfg_val("/local/pcb/want_polybool2", "use the second new polygon lib (polybool2)");
 
 #undef plugin_def
 #undef plugin_header

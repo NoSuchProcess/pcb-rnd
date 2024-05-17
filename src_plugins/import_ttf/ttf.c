@@ -105,6 +105,7 @@ static void poly_flush(pcb_ttf_stroke_t *str)
 		is_neg = 1;
 	}
 
+#ifndef PCB_WANT_POLYBOOL2
 	if (rnd_pline_is_selfint(str->contour)) {
 		int n;
 		vtp0_t pls;
@@ -118,6 +119,9 @@ static void poly_flush(pcb_ttf_stroke_t *str)
 		rnd_poly_contour_del(&str->contour);
 	}
 	else
+#else
+TODO("polybool: use the new pa based API instead, probably within poly_create()");
+#endif
 		poly_create(str, str->contour, is_neg);
 
 	str->contour = NULL;

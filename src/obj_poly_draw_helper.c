@@ -145,7 +145,7 @@ static void fill_contour_cb(rnd_pline_t * pl, void *user_data)
 	rnd_poly_contours_free(&local_pl);
 }
 
-#if PCB_WANT_POLYBOOL
+#if PCB_WANT_POLYBOOL || PCB_WANT_POLYBOOL2
 
 #include <librnd/polybool/pa_dicer.h>
 

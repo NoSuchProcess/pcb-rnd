@@ -60,8 +60,11 @@ print_ternary ?libs/gui/gd/gdImageSetResolution/presents {#define PCB_HAVE_GD_RE
 print {\n\n/* Define to 1 if you have libxml2 installed. */\n}
 print_ternary ?libs/sul/libxml2/presents {#define PCB_HAVE_LIBXML2 1} {/* #undef PCB_HAVE_LIBXML2 */}
 
-print {\n\n/* Define to 1 if we are using the new polybool lib. */\n}
+print {\n\n/* Define to 1 if we are using the first new polybool lib. */\n}
 print_ternary ?/local/pcb/want_polybool {#define PCB_WANT_POLYBOOL 1} {/* #undef PCB_WANT_POLYBOOL */}
+
+print {\n\n/* Define to 1 if we are using the second new polybool lib. */\n}
+print_ternary ?/local/pcb/want_polybool2 {#define PCB_WANT_POLYBOOL2 1} {/* #undef PCB_WANT_POLYBOOL2 */}
 
 
 

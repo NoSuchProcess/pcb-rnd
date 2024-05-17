@@ -229,11 +229,16 @@ put /local/pcb/C99CFLAGS /local/rnd/CFLAGS
 sub /local/pcb/C99CFLAGS {-ansi } {}
 
 # decide which poly clipping library to use
-if /local/pcb/want_polybool
+if /local/pcb/want_polybool2
 then
-	put /local/pcb/polyclip {-lrnd-polybool}
+	put /local/pcb/polyclip {-lrnd-polybool2}
 else
-	put /local/pcb/polyclip {-lrnd-poly}
+	if /local/pcb/want_polybool
+	then
+		put /local/pcb/polyclip {-lrnd-polybool}
+	else
+		put /local/pcb/polyclip {-lrnd-poly}
+	end
 end
 
 # Makefile, static
