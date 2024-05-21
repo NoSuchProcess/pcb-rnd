@@ -642,6 +642,40 @@ static rnd_polyarea_t *poly_sub_callback_line(rnd_coord_t x1, rnd_coord_t y1, rn
 	return pcb_poly_from_pcb_line(&lin, width);
 }
 
+
+
+
+#if PCB_WANT_POLYBOOL2
+
+#include <librnd/polybool2/offset.h>
+
+#define pa_append(src) \
+	do { \
+		rnd_polyarea_boolean_free(*dst, src, &tmp, RND_PBO_UNITE); \
+		*dst = tmp; \
+	} while(0)
+
+void pcb_poly_pa_clearance_construct(rnd_polyarea_t **dst, pcb_poly_it_t *it, rnd_coord_t clearance)
+{
+	rnd_pline_t *pl, *opl;
+	rnd_polyarea_t *opa, *tmp;
+
+
+	pl = pcb_poly_contour(it);
+	opl = rnd_pline_dup_with_offset_round(pl, clearance);
+	if (opl == NULL)
+		return;
+	opa = rnd_poly_from_contour_nochk(opl);
+
+	if (*dst != NULL)
+		pa_append(opa);
+	else
+		rnd_polyarea_copy0(dst, opa);
+}
+
+
+#else
+
 #define pa_append(src) \
 	do { \
 		rnd_polyarea_boolean(*dst, src, &tmp, RND_PBO_UNITE); \
@@ -691,6 +725,8 @@ void pcb_poly_pa_clearance_construct(rnd_polyarea_t **dst, pcb_poly_it_t *it, rn
 		}
 	}
 }
+#endif
+
 #undef pa_append
 
 /* Construct a poly area that represents the enlarged subpoly - so it can be
