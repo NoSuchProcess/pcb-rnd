@@ -670,7 +670,7 @@ void pcb_poly_pa_clearance_construct(rnd_polyarea_t **dst, pcb_poly_it_t *it, rn
 	if (*dst != NULL)
 		pa_append(opa);
 	else
-		rnd_polyarea_copy0(dst, opa);
+		*dst = opa;
 }
 
 
