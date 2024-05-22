@@ -934,7 +934,9 @@ static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t
 		info.batch_size = 0;
 
 		rnd_rtree_search_any(Data->padstack_tree, (rnd_rtree_box_t *)&region, NULL, padstack_sub_callback, &info, &seen);
+#ifndef PCB_WANT_POLYBOOL2
 		subtract_accumulated(&info, polygon);
+#endif
 		r += seen;
 
 		PCB_COPPER_GROUP_LOOP(Data, group);
