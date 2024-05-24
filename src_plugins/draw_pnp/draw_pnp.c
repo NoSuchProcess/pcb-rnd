@@ -81,16 +81,27 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 typedef struct {
 	pcb_draw_info_t *info;
 	const pcb_layer_t *layer;
+	long layer_flags;
 } draw_pnp_t;
 
 static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_subc_t *subc = (pcb_subc_t *)obj;
-	pcb_draw_info_t *info = cl;
+	draw_pnp_t *ctx = cl;
 	rnd_coord_t x, y;
 	const char *refdes;
+	int on_bottom;
+
+	/* render only for subcircuits on the same side as the layer we are rendering on */
+	if (pcb_subc_get_side(subc, &on_bottom) == 0) {
+		if (on_bottom && !(ctx->layer_flags & PCB_LYT_BOTTOM))
+			return;
+		if (!on_bottom && !(ctx->layer_flags & PCB_LYT_TOP))
+			return;
+	}
 
 	pcb_subc_get_origin(subc, &x, &y);
+
 
 	refdes = subc->refdes;
 	if ((refdes == NULL) || (*refdes == '\0'))
@@ -109,6 +120,7 @@ static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer
 
 	ctx.info = info;
 	ctx.layer = layer;
+	ctx.layer_flags = pcb_layer_flags_(layer);
 
 	rnd_render->set_color(pcb_draw_out.fgGC, &layer->meta.real.color);
 
