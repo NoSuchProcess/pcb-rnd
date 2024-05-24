@@ -2,6 +2,9 @@ put /local/rnd/mod {draw_pnp}
 append /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/draw_pnp/draw_pnp.o
 @]
+put /local/rnd/mod/CONF {$(PLUGDIR)/draw_pnp/draw_pnp_conf.h}
+put /local/rnd/mod/CONFFILE {draw_pnp.conf}
+put /local/rnd/mod/CONFVAR {draw_pnp_conf_internal}
 
 switch /local/module/draw_pnp/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

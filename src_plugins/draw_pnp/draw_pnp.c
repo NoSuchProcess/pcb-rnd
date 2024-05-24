@@ -39,11 +39,19 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/rnd_conf.h>
+#include <librnd/core/conf_multi.h>
 #include "conf_core.h"
 
 #include "obj_text.h"
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
+
+#include "../src_plugins/draw_pnp/draw_pnp_conf.h"
+
+#include "../src_plugins/draw_pnp/conf_internal.c"
+
+conf_draw_pnp_t conf_draw_pnp;
 
 static const char draw_pnp_cookie[] = "draw_pnp";
 
@@ -284,13 +292,21 @@ void pplg_uninit_draw_pnp(void)
 	TODO("remove layer bindings");
 	rnd_event_unbind_allcookie(draw_pnp_cookie);
 	rnd_remove_actions_by_cookie(draw_pnp_cookie);
+	rnd_conf_plug_unreg("plugins/draw_pnp/", draw_pnp_conf_internal, draw_pnp_cookie);
 }
 
 int pplg_init_draw_pnp(void)
 {
 	RND_API_CHK_VER;
+
+	rnd_conf_plug_reg(conf_draw_pnp, draw_pnp_conf_internal, draw_pnp_cookie);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_draw_pnp, field,isarray,type_name,cpath,cname,desc,flags);
+#include "draw_pnp_conf_fields.h"
+
 	rnd_event_bind(PCB_EVENT_LAYER_PLUGIN_DRAW_CHANGE, draw_pnp_layer_attr_ev, NULL, draw_pnp_cookie);
 	rnd_event_bind(RND_EVENT_LOAD_POST, draw_pnp_new_brd_ev, NULL, draw_pnp_cookie);
+
 	RND_REGISTER_ACTIONS(draw_pnp_action_list, draw_pnp_cookie);
 	return 0;
 }
