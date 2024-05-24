@@ -1147,6 +1147,94 @@ static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_RefdesText[] = "RefdesText(object|selected, create)";
+static const char pcb_acth_RefdesText[] = "Manipulate refdes text object on subcircuit(s)";
+static fgw_error_t pcb_act_RefdesText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	rnd_coord_t x, y;
+	long sn;
+	int op1, op2;
+	void *ptrtmp;
+	vtp0_t objs = {0};
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, RefdesText, op1 = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_KEYWORD, RefdesText, op2 = fgw_keyword(&argv[2]));
+
+	switch(op2) {
+		case F_Create: break;
+		default:
+			rnd_message(RND_MSG_ERROR, "invalid second argument for RefdesText()\n");
+			RND_ACT_FAIL(RefdesText);
+			return -1;
+	}
+
+	switch(op1) {
+		case F_Object:
+			rnd_hid_get_coords("Click on subcircuit for refdes manipulation", &x, &y, 0);
+			if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
+				vtp0_append(&objs, ptrtmp);
+			break;
+		case F_Selected:
+			PCB_SUBC_LOOP(pcb->Data);
+			{
+				if (PCB_FLAGS_TEST(PCB_FLAG_SELECTED, subc))
+					vtp0_append(&objs, subc);
+			}
+			PCB_END_LOOP;
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "invalid first argument for RefdesText()\n");
+			RND_ACT_FAIL(RefdesText);
+			return -1;
+	}
+
+	if (objs.used == 0) {
+		rnd_message(RND_MSG_ERROR, "Failed to pick up any subcircuit, nothing to do\n");
+		return 0;
+	}
+
+
+	/* do the actual thing on objs */
+
+	pcb_undo_freeze_serial();
+
+	for(sn = 0; sn < objs.used; sn++) {
+		pcb_subc_t *subc = objs.array[sn];
+		switch(op2) {
+			case F_Create:
+				{
+					long n;
+					pcb_layer_t *dstly = NULL;
+
+					for(n = 0; n < subc->data->LayerN; n++) {
+						pcb_layer_t *layer = &subc->data->Layer[n];
+						if (layer->meta.bound.type & (PCB_LYT_SILK)) {
+							dstly = layer;
+							break;
+						}
+					}
+
+
+					if (dstly != NULL) {
+						rnd_coord_t x, y;
+						pcb_subc_get_origin(subc, &x, &y);
+						pcb_text_new(dstly, pcb_font(PCB, 0, 0), x, y,  0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
+					}
+					else
+						rnd_message(RND_MSG_ERROR, "Failed to create refdes text in #%ld (%s): no silk layer\n", subc->ID, subc->refdes);
+				}
+				break;
+		}
+	}
+
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
+	pcb_draw();
+	return 0;
+}
+
+
 static rnd_action_t object_action_list[] = {
 	{"DisperseElements", pcb_act_DisperseElements, pcb_acth_DisperseElements, pcb_acts_DisperseElements},
 	{"Flip", pcb_act_Flip, pcb_acth_Flip, pcb_acts_Flip},
@@ -1159,7 +1247,8 @@ static rnd_action_t object_action_list[] = {
 	{"subc", pcb_act_subc, pcb_acth_subc, pcb_acts_subc},
 	{"CreateText", pcb_act_CreateText, pcb_acth_CreateText, pcb_acts_CreateText},
 	{"Rotate90", pcb_act_Rotate90, pcb_acth_Rotate90, pcb_acts_Rotate90},
-	{"GfxMod", pcb_act_GfxMod, pcb_acth_GfxMod, pcb_acts_GfxMod}
+	{"GfxMod", pcb_act_GfxMod, pcb_acth_GfxMod, pcb_acts_GfxMod},
+	{"RefdesText", pcb_act_RefdesText, pcb_acth_RefdesText, pcb_acts_RefdesText}
 };
 
 void pcb_object_act_init2(void)
