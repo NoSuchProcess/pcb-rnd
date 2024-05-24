@@ -64,6 +64,7 @@ enum {
 	PCB_EVENT_NET_INDICATE_SHORT,         /* [d] called by core to get a shortcircuit indicated (e.g. by mincut). Args: (pcb_net_t *net, pcb_any_obj_t *offending_term, pcb_net_t *offending_net, int *handled, int *cancel) - if *handled is non-zero, the short is already indicated; if *cancel is non-zero the whole process is cancelled, no more advanced short checking should take place in this session */
 
 	PCB_EVENT_LAYER_KEY_CHANGE,           /* [d] called by core if a pcb-rnd::key::* attribute on a layer changes */
+	PCB_EVENT_LAYER_PLUGIN_DRAW_CHANGE,   /* [d] called by core if a pcb-rnd::plugin_draw attribute on a layer changes. Args: (pcb_layer_t *ly) */
 
 	PCB_EVENT_CROSSHAIR_NEW_POS,          /* [d] called when the crosshair is moved to a new position; screen indications may need to be updated; args: (pcb_crosshair_t *), pcb_coord_t oldx, pcb_coord_t oldy */
 

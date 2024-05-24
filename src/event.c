@@ -51,6 +51,7 @@ static const char *pcb_evnames[] = {
 	"pcbev_drc_run",
 	"pcbev_net_indicate_short",
 	"pcbev_layer_key_change",
+	"pcbev_layer_plugin_draw_change",
 	"pcbev_crosshair_new_pos"
 };
 

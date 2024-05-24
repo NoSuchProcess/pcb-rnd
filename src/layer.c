@@ -28,6 +28,9 @@
  */
 
 #include "config.h"
+
+#include <stddef.h>
+
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
@@ -131,6 +134,10 @@ static void layer_post_change(pcb_attribute_list_t *list, const char *name, cons
 {
 	if (strncmp(name, "pcb-rnd::key::", 14) == 0)
 		rnd_event(&PCB->hidlib, PCB_EVENT_LAYER_KEY_CHANGE, NULL);
+	if (strcmp(name, "pcb-rnd::plugin_draw") == 0) {
+		pcb_layer_t *layer = (pcb_layer_t *)((char *)list - (offsetof(pcb_layer_t, Attributes)));
+		rnd_event(&PCB->hidlib, PCB_EVENT_LAYER_PLUGIN_DRAW_CHANGE, "p", layer);
+	}
 }
 
 
