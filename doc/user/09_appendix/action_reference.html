@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.0.3-dev running with librnd version 4.0.3-dev ,  Revision: 38278
+This is pcb-rnd 3.1.5-dev (svn r38674) an interactive printed circuit board editor from the Ringdove EDA suite compiled using librnd version 4.3.0-dev running with librnd version 4.3.0-dev ,  Revision: 38893
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -37,7 +37,7 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#autoroute">AutoRoute</a></td><td>Auto-route some or all rat lines.</td><td>AutoRoute(AllRats|SelectedRats)</td><td>autoroute plugin</td>
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>Backup</td><td>Backup the current layout - save using the same method that the timed backup function uses</td><td>Backup()</td><td></td>
-<tr><td><a href="action_details.html#baconn">baconn</a></td><td>Add a terminal-net connection to the back annotation list</td><td>BaConn(object|selected, add, [netname])</td><td></td>
+<tr><td><a href="action_details.html#baconn">baconn</a></td><td>Add a terminal-net connection to the back annotation list or add a terminal-net connection removal to the back annotation list</td><td>BaConn(object|selected, add, [netname])<br>BaConn(object|selected, remove)</td><td></td>
 <tr><td>bas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#basubc">basubc</a></td><td>Add new subcircuits to the back annotation list or remove and back annotate removal of a subcircuit</td><td>BaSubc(object|selected, add|remove)</td><td></td>
 <tr><td>Bell</td><td>Attempt to produce audible notification (e.g. beep the speaker).</td><td>Bell()</td><td>oldactions plugin</td>
@@ -138,7 +138,7 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td>DupGroup</td><td>Duplicate a layer group; if the first argument is not specified, the current group is duplicated</td><td>DupGroup([@group])</td><td></td>
 <tr><td>EditGroup</td><td>Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.</td><td>Editgroup([@group], [name=text|type=+bit|type=-bit])]<br>Editlayer([@layer], attrib, key=value)</td><td></td>
 <tr><td>EditLayer</td><td>Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.</td><td>Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]<br>Editlayer([@layer], attrib, key=value)</td><td></td>
-<tr><td><a href="action_details.html#elementlist">ElementList</a></td><td>Adds the given element if it doesn't already exist.</td><td>ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)</td><td></td>
+<tr><td><a href="action_details.html#elementlist">ElementList</a></td><td>Adds the given element if it doesn't already exist.</td><td>ElementList(Start|Done|Need,<refdes>,<footprint>,<value>,[device])</td><td></td>
 <tr><td><a href="action_details.html#elementsetattr">ElementSetAttr</a></td><td>Sets or clears an element-specific attribute.</td><td>ElementSetAttr(refdes,name[,value])</td><td></td>
 <tr><td>EnableVendor</td><td>Enables automatic drill size mapping.</td><td>EnableVendor()</td><td>oldactions plugin</td>
 <tr><td>estutter</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
@@ -163,7 +163,9 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td>find2perf</td><td>Measure the peformance of find2.c</td><td>find2perf()</td><td>diag plugin</td>
 <tr><td>FlagEdit</td><td>Change the layer binding.</td><td>FlagEdit(object)</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#flip">Flip</a></td><td>Flip a subcircuit to the opposite side of the board.</td><td>Flip(Object|Selected)</td><td></td>
+<tr><td>FontBaseline</td><td>Change the baseline value and redraw. If there is no baseline, add baseline first.</td><td>FontBaseline(+-delta)</td><td>fontmode plugin</td>
 <tr><td>FontEdit</td><td>Convert the current font to a PCB for editing.</td><td>FontEdit()</td><td>fontmode plugin</td>
+<tr><td>FontModePreview</td><td>Open the font mode preview dialog that also helps editing font tables</td><td>FontModePreview()</td><td>fontmode plugin</td>
 <tr><td>FontNormalize</td><td>Normalize all glyphs (left justify)</td><td>FontNormalize()</td><td>fontmode plugin</td>
 <tr><td>FontSave</td><td>Convert the current PCB back to a font.</td><td>FontSave([filename])</td><td>fontmode plugin</td>
 <tr><td>Fontsel</td><td>Open the font selection dialog</td><td>Fontsel()</td><td>dialogs plugin</td>
@@ -295,6 +297,7 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td>PadstackBreakup</td><td>Break up a padstack into one non-padstack object per layer type (the hole is ignored)</td><td>PadstackBreakup(buffer|selected|objet)</td><td></td>
 <tr><td>PadstackConvert</td><td>Convert selection or current buffer to padstack</td><td>PadstackConvert(buffer|selected, [originx, originy])</td><td></td>
 <tr><td>PadstackEdit</td><td>interactive pad stack editor</td><td>PadstackEdit(object, [tab])</td><td>dialogs plugin</td>
+<tr><td>PadstackMoveOrigin</td><td>Move origin of the padstack prototype to x;y or by delta x;y (if relative); if x;y is not specified, move origin to crosshair coords</td><td>PadstackMoveOrigin(object, [x, y])</td><td></td>
 <tr><td>PadstackPlace</td><td>Place a pad stack (either proto_id, or if not specified, the default for style)</td><td>PadstackPlace([proto_id|default], [x, y])</td><td></td>
 <tr><td><a href="action_details.html#padstackreplace">PadstackReplace</a></td><td>Replace padstack prototypes from buffer's first padstack or from the via tool</td><td>PadstackReplace(object|selected, buffer|tool)</td><td></td>
 <tr><td>PadstackSave</td><td>Save padstack to file.</td><td>PadstackSave(buffer, [filename], [fmt])</td><td></td>
@@ -361,10 +364,13 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td>QueryCompileField</td><td>With "compile": precompiles textual field name to field ID; with "free": frees the memory allocated for a previously precompiled fieldID.</td><td>QueryCompileField(compile, fieldname)<br>QueryCompileField(free, fieldID)</td><td>query plugin</td>
 <tr><td>QueryObj</td><td>Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.</td><td>QueryObj(idpath, [.fieldname|fieldID])</td><td>query plugin</td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
+<tr><td>RbsConnect</td><td>Make a new rubber band stretch connection between two points</td><td>RbsConnect()</td><td>rbs_routing plugin</td>
+<tr><td>RbsStretch</td><td>Make a new rubber band stretch connection between two points</td><td>RbsStretch()</td><td>rbs_routing plugin</td>
 <tr><td>ReadBoard</td><td>Return board dimensions</td><td>ReadBoard(width|size_x|height|size_y)</td><td>act_read</td>
 <tr><td>ReadGroup</td><td>Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.</td><td>ReadGroup(length)<br>ReadGroup(field, group, [init_invis|ltype|ltypestr|ltypehas|name|open|purpose|vis|length])<br>ReadGroup(layerid, group, idx)</td><td>act_read</td>
 <tr><td><a href="action_details.html#redo">Redo</a></td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
 <tr><td>Redraw</td><td>Redraw the entire screen</td><td>Redraw()</td><td></td>
+<tr><td><a href="action_details.html#refdestext">RefdesText</a></td><td>Manipulate refdes text object on subcircuit(s)</td><td>RefdesText(object|selected, create)</td><td></td>
 <tr><td>regpoly</td><td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td><td>regpoly([where,] corners, radius [,rotation])</td><td>shape plugin</td>
 <tr><td><a href="action_details.html#reloadscript">ReloadScript</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Reload a fungw script</td><td>ReloadScript(id)</td><td>script plugin</td>
 <tr><td>RemoveMenu</td><td>Recursively removes a new menu, popup (only path specified) or submenu. </td><td>RemoveMenu(path, cookie)</td><td></td>
@@ -421,7 +427,7 @@ This is pcb-rnd 3.1.2-dev (svn r37876) an interactive printed circuit board edit
 <tr><td>SafeFsSystem</td><td>Runs cmdline with a shell using librnd safe_fs. Return value is the same integer as system()'s</td><td>SafeFsSystem(cmdline)</td><td></td>
 <tr><td>SafeFsUnlink</td><td>Unlink a file from the file system. Return value is the same as unlink(2)'s</td><td>SafeFsUnlink(path)</td><td></td>
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout)<br>Save(LayoutAs, [path])<br>Save(AllConnections|AllUnusedPins|ElementConnections, [path])<br>Save(PasteBuffer, [path])<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
-<tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
+<tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id, fmt])</td><td></td>
 <tr><td><a href="action_details.html#savelib">SaveLib</a></td><td>Saves all subcircuits to a library file or directory from a board or buffer.</td><td>SaveLib(file|dir, board|buffer, [filename], [fmt])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation. File format can be specified in fmt, which should be one of: @bap (for the old gschem/sch-rnd format), @backannv1 or @backannv2 (for tEDAx), @pcb (for the old gEDA/PCB format, read by pcb-rnd only)</td><td>SavePatch([fmt], filename)</td><td></td>
 <tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)<br>SaveTedax(drc_query, filename, [rule_name])SaveTedax(route_req, filename, [confkey=value, confkey=value, ...])</td><td>tEDAx IO</td>
