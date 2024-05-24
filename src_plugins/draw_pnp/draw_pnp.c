@@ -131,8 +131,10 @@ static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer
 
 	rnd_rtree_search_any(data->subc_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, draw_pnp_draw_cb, &ctx, NULL);
 
-
-/*	pcb_draw_layer(info, layer) */
+	/* render normal layer drawing objects as well */
+	info->disable_plugin_draw = 1;
+	pcb_draw_layer(info, layer);
+	info->disable_plugin_draw = 0;
 }
 
 RND_INLINE void draw_pnp_layer_setup(pcb_layer_t *layer)
