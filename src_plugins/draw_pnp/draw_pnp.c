@@ -33,9 +33,10 @@
 #include "data_it.h"
 #include "draw.h"
 #include "event.h"
+#include "undo.h"
+#include "funchash_core.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
-#include "stub_draw.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include "conf_core.h"
@@ -189,12 +190,100 @@ static void draw_pnp_new_brd_ev(rnd_design_t *hidlib, void *user_data, int argc,
 		draw_pnp_layer_setup(pcb->Data->Layer+n);
 }
 
+static void draw_pnp_create_layer(pcb_board_t *pcb, pcb_layer_type_t loc)
+{
+	pcb_layergrp_t *g;
+	rnd_layer_id_t lid;
+
+	g = pcb_get_grp_new_misc(pcb);
+	if (g == NULL)
+		return;
+
+	pcb_layergrp_set_purpose__(g, rnd_strdup("pnp"), 1);
+	free(g->name);
+	g->name = rnd_strdup(loc == PCB_LYT_TOP ? "pnp-top" : "pnp-bot");
+	g->ltype = PCB_LYT_DOC | loc;
+	g->vis = 1;
+	g->open = 1;
+	pcb_layergrp_undoable_created(g);
+
+
+	lid = pcb_layer_create(PCB, g - PCB->LayerGroups.grp, loc == PCB_LYT_TOP ? "pnp-top" : "pnp-bottom", 1);
+	if (lid >= 0) {
+		pcb_layer_t *ly = &pcb->Data->Layer[lid];
+		ly->meta.real.vis = 1;
+		pcb_attribute_put(&ly->Attributes, "pcb-rnd::plugin_draw", "draw_pnp");
+		draw_pnp_layer_setup(ly);
+	}
+}
+
+static const char pcb_acts_DrawPnpLayers[] = "DrawPnpLayers(create)\n";
+static const char pcb_acth_DrawPnpLayers[] = "Create a new doc layers for pnp helper, one for top, one for bottom";
+static fgw_error_t pcb_act_DrawPnpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	long n;
+	int op1, found_top = 0, found_bottom = 0;
+
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, DrawPnpLayers, op1 = fgw_keyword(&argv[1]));
+
+	switch(op1) {
+		case F_Create:
+			for(n = 0; n < pcb->Data->LayerN; n++) {
+				pcb_layer_t *layer = pcb->Data->Layer+n;
+				const char *name = pcb_attribute_get(&layer->Attributes, "pcb-rnd::plugin_draw");
+				if (!layer->is_bound && (name != NULL) && (strcmp(name, "draw_pnp") == 0)) {
+					long layer_flags = pcb_layer_flags_(layer);
+					if (layer_flags & PCB_LYT_TOP) found_top = 1;
+					if (layer_flags & PCB_LYT_BOTTOM) found_bottom = 1;
+				}
+			}
+
+			pcb_layergrp_inhibit_inc();
+			pcb_undo_freeze_serial();
+
+			if (!found_top) {
+				rnd_message(RND_MSG_INFO, "Creating top side pnp doc layer\n");
+				draw_pnp_create_layer(pcb, PCB_LYT_TOP);
+			}
+			else
+				rnd_message(RND_MSG_INFO, "Not creating top side pnp doc layer: already exists\n");
+
+			if (!found_bottom) {
+				rnd_message(RND_MSG_INFO, "Creating bottom side pnp doc layer\n");
+				draw_pnp_create_layer(pcb, PCB_LYT_BOTTOM);
+			}
+			else
+				rnd_message(RND_MSG_INFO, "Not creating bottom side pnp doc layer: already exists\n");
+
+			pcb_undo_unfreeze_serial();
+			pcb_undo_inc_serial();
+			pcb_layergrp_inhibit_dec();
+			pcb_layergrp_notify_chg(pcb);
+
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "Invalid first argument for DrawPnpLayers()\n");
+			RND_ACT_FAIL(DrawPnpLayers);
+			return -1;
+	}
+	
+	return 0;
+}
+
+static rnd_action_t draw_pnp_action_list[] = {
+	{"drawpnplayers", pcb_act_DrawPnpLayers, pcb_acth_DrawPnpLayers, pcb_acts_DrawPnpLayers}
+};
+
 
 int pplg_check_ver_draw_pnp(int ver_needed) { return 0; }
 
 void pplg_uninit_draw_pnp(void)
 {
+	TODO("remove layer bindings");
 	rnd_event_unbind_allcookie(draw_pnp_cookie);
+	rnd_remove_actions_by_cookie(draw_pnp_cookie);
 }
 
 int pplg_init_draw_pnp(void)
@@ -202,5 +291,6 @@ int pplg_init_draw_pnp(void)
 	RND_API_CHK_VER;
 	rnd_event_bind(PCB_EVENT_LAYER_PLUGIN_DRAW_CHANGE, draw_pnp_layer_attr_ev, NULL, draw_pnp_cookie);
 	rnd_event_bind(RND_EVENT_LOAD_POST, draw_pnp_new_brd_ev, NULL, draw_pnp_cookie);
+	RND_REGISTER_ACTIONS(draw_pnp_action_list, draw_pnp_cookie);
 	return 0;
 }
