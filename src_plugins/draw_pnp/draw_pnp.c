@@ -130,18 +130,18 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 
 	/* draw frame */
 	if (frame_thick > 0) {
-		dline(subc->bbox_naked.X1, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y1, frame_thick);
-		dline(subc->bbox_naked.X2, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y2, frame_thick);
-		dline(subc->bbox_naked.X2, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y2, frame_thick);
-		dline(subc->bbox_naked.X1, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y1, frame_thick);
+		dline(subc->BoundingBox.X1, subc->BoundingBox.Y1, subc->BoundingBox.X2, subc->BoundingBox.Y1, frame_thick);
+		dline(subc->BoundingBox.X2, subc->BoundingBox.Y1, subc->BoundingBox.X2, subc->BoundingBox.Y2, frame_thick);
+		dline(subc->BoundingBox.X2, subc->BoundingBox.Y2, subc->BoundingBox.X1, subc->BoundingBox.Y2, frame_thick);
+		dline(subc->BoundingBox.X1, subc->BoundingBox.Y2, subc->BoundingBox.X1, subc->BoundingBox.Y1, frame_thick);
 	}
 
 	/* place a dot at term 1, first object found */
 	if (term1_thick > 0) {
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_TERM); o != NULL; o = pcb_data_next(&it)) {
 			if ((o->term != NULL) && (o->term[0] == '1') && (o->term[1] == '\0')) {
-				rnd_coord_t x = (o->bbox_naked.X1 + o->bbox_naked.X2)/2;
-				rnd_coord_t y = (o->bbox_naked.Y1 + o->bbox_naked.Y2)/2;
+				rnd_coord_t x = (o->BoundingBox.X1 + o->BoundingBox.X2)/2;
+				rnd_coord_t y = (o->BoundingBox.Y1 + o->BoundingBox.Y2)/2;
 				dline(x, y, x, y, term1_thick);
 				break;
 			}
