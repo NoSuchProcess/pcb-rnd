@@ -1149,6 +1149,7 @@ static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_RefdesText[] = "RefdesText(object|selected, create)";
 static const char pcb_acth_RefdesText[] = "Manipulate refdes text object on subcircuit(s)";
+/* DOC: refdestext.html */
 static fgw_error_t pcb_act_RefdesText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
