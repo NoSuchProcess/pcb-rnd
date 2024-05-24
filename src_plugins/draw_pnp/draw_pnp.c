@@ -118,16 +118,10 @@ static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer
 /*	pcb_draw_layer(info, layer) */
 }
 
-
-static void draw_pnp_layer_attr_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+RND_INLINE void draw_pnp_layer_setup(pcb_layer_t *layer)
 {
-	pcb_layer_t *layer;
 	const char *name;
 
-	if ((argc < 2) || (argv[1].type != RND_EVARG_PTR))
-		return;
-
-	layer = argv[1].d.p;
 	name = pcb_attribute_get(&layer->Attributes, "pcb-rnd::plugin_draw");
 	if (!layer->is_bound && (name != NULL) && (strcmp(name, "draw_pnp") == 0)) {
 		rnd_trace("install draw_pnp!\n");
@@ -141,6 +135,24 @@ static void draw_pnp_layer_attr_ev(rnd_design_t *hidlib, void *user_data, int ar
 	}
 }
 
+/* set up draw_pnp layer hook on a layer that changed the relevant attribute */
+static void draw_pnp_layer_attr_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	if ((argc < 2) || (argv[1].type != RND_EVARG_PTR))
+		return;
+
+	draw_pnp_layer_setup(argv[1].d.p);
+}
+
+/* set up draw_pnp layer hook on all affected layers after loading a board */
+static void draw_pnp_new_brd_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
+	long n;
+
+	for(n = 0; n < pcb->Data->LayerN; n++)
+		draw_pnp_layer_setup(pcb->Data->Layer+n);
+}
 
 
 int pplg_check_ver_draw_pnp(int ver_needed) { return 0; }
@@ -154,5 +166,6 @@ int pplg_init_draw_pnp(void)
 {
 	RND_API_CHK_VER;
 	rnd_event_bind(PCB_EVENT_LAYER_PLUGIN_DRAW_CHANGE, draw_pnp_layer_attr_ev, NULL, draw_pnp_cookie);
+	rnd_event_bind(RND_EVENT_LOAD_POST, draw_pnp_new_brd_ev, NULL, draw_pnp_cookie);
 	return 0;
 }
