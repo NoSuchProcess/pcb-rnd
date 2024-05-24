@@ -41,6 +41,7 @@
 
 #include "obj_text.h"
 #include "obj_text_draw.h"
+#include "obj_line_draw.h"
 
 static const char draw_pnp_cookie[] = "draw_pnp";
 
