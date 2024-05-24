@@ -445,6 +445,7 @@ ha:rnd-menu-v1 {
 								ha:with first padstack in buffer = { action=PadstackReplace(selected, buffer) }
 							}
 						}
+						ha:Create subcircuit refdes text     = { action=RefdesText(selected, create) }
 						-
 						ha:Edit properties   = { a={<key>s; <key>p}; action=propedit(selection) }
 					}
@@ -785,6 +786,11 @@ ha:rnd-menu-v1 {
 					li:submenu {
 						ha:Add (to back annotate)           { action=basubc(object, add) }
 						ha:Del (back annotate removal)      { action=basubc(object, remove) }
+					}
+				}
+				ha:Edit subcircuit content {
+					li:submenu {
+						ha:Create refdes text               { action=RefdesText(object, create) }
 					}
 				}
 				ha:Remove subcircuit      { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
