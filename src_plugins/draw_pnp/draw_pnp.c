@@ -111,7 +111,6 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 	if ((refdes == NULL) || (*refdes == '\0'))
 		refdes = "N/A";
 
-rnd_trace("draw '%s' at %mm;%mm \n", refdes, x, y);
 	dtext(x, y, 100, 0, refdes);
 
 	/* draw frame */
@@ -125,8 +124,6 @@ static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer
 {
 	pcb_data_t *data = layer->parent.data;
 	draw_pnp_t ctx;
-
-	rnd_trace("draw_pnp!\n");
 
 	ctx.info = info;
 	ctx.layer = layer;
@@ -148,14 +145,11 @@ RND_INLINE void draw_pnp_layer_setup(pcb_layer_t *layer)
 
 	name = pcb_attribute_get(&layer->Attributes, "pcb-rnd::plugin_draw");
 	if (!layer->is_bound && (name != NULL) && (strcmp(name, "draw_pnp") == 0)) {
-		rnd_trace("install draw_pnp!\n");
 		layer->plugin_draw = draw_pnp_plugin_draw;
 	}
 	else {
-		if (layer->plugin_draw == draw_pnp_plugin_draw) {
+		if (layer->plugin_draw == draw_pnp_plugin_draw)
 			layer->plugin_draw = NULL;
-			rnd_trace("uninstall draw_pnp!\n");
-		}
 	}
 }
 
