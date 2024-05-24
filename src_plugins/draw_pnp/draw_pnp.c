@@ -58,7 +58,7 @@ static const char draw_pnp_cookie[] = "draw_pnp";
 static pcb_draw_info_t dinfo;
 static rnd_xform_t dxform;
 
-static pcb_text_t *dtext(rnd_coord_t x, rnd_coord_t y, int scale, rnd_font_id_t fid, const char *txt)
+static pcb_text_t *dtext(rnd_coord_t x, rnd_coord_t y, int scale, rnd_coord_t thick, rnd_font_id_t fid, const char *txt)
 {
 	static pcb_text_t t = {0};
 
@@ -68,6 +68,7 @@ static pcb_text_t *dtext(rnd_coord_t x, rnd_coord_t y, int scale, rnd_font_id_t 
 	t.Y = y;
 	t.TextString = (char *)txt;
 	t.Scale = scale;
+	t.thickness = thick;
 	t.fid = fid;
 	t.Flags = pcb_no_flags();
 
@@ -105,8 +106,8 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 	rnd_coord_t x, y;
 	const char *refdes;
 	int on_bottom;
-	rnd_coord_t frame_thick = RND_MM_TO_COORD(0.1);
-	rnd_coord_t term1_thick = RND_MM_TO_COORD(0.4);
+	rnd_coord_t frame_thick = conf_draw_pnp.plugins.draw_pnp.frame_thickness;
+	rnd_coord_t term1_thick = conf_draw_pnp.plugins.draw_pnp.term1_diameter;
 	pcb_data_it_t it;
 	pcb_any_obj_t *o;
 
@@ -125,21 +126,25 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 	if ((refdes == NULL) || (*refdes == '\0'))
 		refdes = "N/A";
 
-	dtext(x, y, 100, 0, refdes);
+	dtext(x, y, conf_draw_pnp.plugins.draw_pnp.text.scale, conf_draw_pnp.plugins.draw_pnp.text.thickness, 0, refdes);
 
 	/* draw frame */
-	dline(subc->bbox_naked.X1, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y1, frame_thick);
-	dline(subc->bbox_naked.X2, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y2, frame_thick);
-	dline(subc->bbox_naked.X2, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y2, frame_thick);
-	dline(subc->bbox_naked.X1, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y1, frame_thick);
+	if (frame_thick > 0) {
+		dline(subc->bbox_naked.X1, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y1, frame_thick);
+		dline(subc->bbox_naked.X2, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y2, frame_thick);
+		dline(subc->bbox_naked.X2, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y2, frame_thick);
+		dline(subc->bbox_naked.X1, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y1, frame_thick);
+	}
 
 	/* place a dot at term 1, first object found */
-	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_TERM); o != NULL; o = pcb_data_next(&it)) {
-		if ((o->term != NULL) && (o->term[0] == '1') && (o->term[1] == '\0')) {
-			rnd_coord_t x = (o->bbox_naked.X1 + o->bbox_naked.X2)/2;
-			rnd_coord_t y = (o->bbox_naked.Y1 + o->bbox_naked.Y2)/2;
-			dline(x, y, x, y, term1_thick);
-			break;
+	if (term1_thick > 0) {
+		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_TERM); o != NULL; o = pcb_data_next(&it)) {
+			if ((o->term != NULL) && (o->term[0] == '1') && (o->term[1] == '\0')) {
+				rnd_coord_t x = (o->bbox_naked.X1 + o->bbox_naked.X2)/2;
+				rnd_coord_t y = (o->bbox_naked.Y1 + o->bbox_naked.Y2)/2;
+				dline(x, y, x, y, term1_thick);
+				break;
+			}
 		}
 	}
 
