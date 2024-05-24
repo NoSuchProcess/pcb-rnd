@@ -7,11 +7,11 @@ typedef struct {
 	const struct {
 		const struct {
 			const struct {
-				RND_CFT_INTEGER scale;
-				RND_CFT_COORD thickness;
+				RND_CFT_INTEGER scale;            /* Refdes text scale in integer percent (100 being normal text size) */
+				RND_CFT_COORD thickness;          /* Refdes text stroke thickness; 0 means auto */
 			} text;
-			RND_CFT_COORD frame_thickness;
-			RND_CFT_COORD term1_diameter;
+			RND_CFT_COORD frame_thickness;      /* Thickness of the rectangular frame drawn around subcircuits; 0 means do not draw a frame */
+			RND_CFT_COORD term1_diameter;       /* Diameter of the dot placed on terminal 1; 0 means no dot is placed */
 		} draw_pnp;
 	} plugins;
 } conf_draw_pnp_t;
