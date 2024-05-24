@@ -47,9 +47,6 @@ static const char draw_pnp_cookie[] = "draw_pnp";
 static pcb_draw_info_t dinfo;
 static rnd_xform_t dxform;
 
-/* Safe color that is always visible on the background color, even if the user changed background to dark */
-#define BLACK  (&conf_core.appearance.color.element)
-
 static pcb_text_t *dtext(rnd_coord_t x, rnd_coord_t y, int scale, rnd_font_id_t fid, const char *txt)
 {
 	static pcb_text_t t = {0};
@@ -112,6 +109,8 @@ static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer
 
 	ctx.info = info;
 	ctx.layer = layer;
+
+	rnd_render->set_color(pcb_draw_out.fgGC, &layer->meta.real.color);
 
 	rnd_rtree_search_any(data->subc_tree, (rnd_rtree_box_t *)info->drawn_area, NULL, draw_pnp_draw_cb, &ctx, NULL);
 
