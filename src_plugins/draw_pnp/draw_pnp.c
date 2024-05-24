@@ -219,7 +219,7 @@ static void draw_pnp_create_layer(pcb_board_t *pcb, pcb_layer_type_t loc)
 	g->vis = 1;
 	g->open = 1;
 	pcb_layergrp_undoable_created(g);
-
+	pcb_attribute_put(&g->Attributes, "init-invis", "1");
 
 	lid = pcb_layer_create(PCB, g - PCB->LayerGroups.grp, loc == PCB_LYT_TOP ? "pnp-top" : "pnp-bottom", 1);
 	if (lid >= 0) {
