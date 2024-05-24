@@ -130,6 +130,7 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 			rnd_coord_t x = (o->bbox_naked.X1 + o->bbox_naked.X2)/2;
 			rnd_coord_t y = (o->bbox_naked.Y1 + o->bbox_naked.Y2)/2;
 			dline(x, y, x, y, term1_thick);
+			break;
 		}
 	}
 
