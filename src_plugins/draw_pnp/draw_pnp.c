@@ -100,9 +100,9 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 	/* render only for subcircuits on the same side as the layer we are rendering on */
 	if (pcb_subc_get_side(subc, &on_bottom) == 0) {
 		if (on_bottom && !(ctx->layer_flags & PCB_LYT_BOTTOM))
-			return;
+			return 0;
 		if (!on_bottom && !(ctx->layer_flags & PCB_LYT_TOP))
-			return;
+			return 0;
 	}
 
 	pcb_subc_get_origin(subc, &x, &y);
@@ -119,6 +119,8 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 	dline(subc->bbox_naked.X2, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y2, thick);
 	dline(subc->bbox_naked.X2, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y2, thick);
 	dline(subc->bbox_naked.X1, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y1, thick);
+
+	return 0;
 }
 
 static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer)
