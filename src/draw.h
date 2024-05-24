@@ -61,6 +61,8 @@ struct pcb_draw_info_s {
 	rnd_xform_t *xform_exporter;           /* the extra transformation the exporter requested (e.g. because of cam) */
 	rnd_xform_t *xform;                    /* the final transformation applied on objects */
 
+	unsigned disable_plugin_draw:1;        /* temporarily disable calling plugin_draw instead of drawing the layer normally; useful for calling ack the layer draw routines from a plugin_draw to draw normal content of the layer */
+
 	const pcb_layer_t *layer;
 
 	int draw_stamp;

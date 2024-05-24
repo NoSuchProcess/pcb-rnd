@@ -533,7 +533,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		}
 	}
 
-	if (Layer->plugin_draw != NULL) {
+	if (!info->disable_plugin_draw && (Layer->plugin_draw != NULL)) {
 		Layer->plugin_draw(info, Layer);
 		goto out;
 	}
