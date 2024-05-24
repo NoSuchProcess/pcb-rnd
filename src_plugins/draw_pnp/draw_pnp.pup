@@ -4,3 +4,4 @@ $long Draw a Pick-aNd-Place helper layer
 $package (core)
 $state WIP
 default buildin
+autoload 1
