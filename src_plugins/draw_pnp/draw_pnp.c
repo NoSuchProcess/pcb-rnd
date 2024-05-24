@@ -69,17 +69,15 @@ static pcb_text_t *dtext(rnd_coord_t x, rnd_coord_t y, int scale, rnd_font_id_t 
 }
 
 /* draw a line of a specific thickness */
-static void dline(int x1, int y1, int x2, int y2, float thick)
+static void dline(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick)
 {
 	pcb_line_t l = {0};
 
 	if (dinfo.xform == NULL) dinfo.xform = &dxform;
 
-	l.Point1.X = RND_MM_TO_COORD(x1);
-	l.Point1.Y = RND_MM_TO_COORD(y1);
-	l.Point2.X = RND_MM_TO_COORD(x2);
-	l.Point2.Y = RND_MM_TO_COORD(y2);
-	l.Thickness = RND_MM_TO_COORD(thick);
+	l.Point1.X = x1; l.Point1.Y = y1;
+	l.Point2.X = x2; l.Point2.Y = y2;
+	l.Thickness = thick;
 	pcb_line_draw_(&dinfo, &l, 0);
 }
 
@@ -96,6 +94,7 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 	rnd_coord_t x, y;
 	const char *refdes;
 	int on_bottom;
+	rnd_coord_t thick = RND_MM_TO_COORD(0.1);
 
 	/* render only for subcircuits on the same side as the layer we are rendering on */
 	if (pcb_subc_get_side(subc, &on_bottom) == 0) {
@@ -114,6 +113,12 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 
 rnd_trace("draw '%s' at %mm;%mm \n", refdes, x, y);
 	dtext(x, y, 100, 0, refdes);
+
+	/* draw frame */
+	dline(subc->bbox_naked.X1, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y1, thick);
+	dline(subc->bbox_naked.X2, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y2, thick);
+	dline(subc->bbox_naked.X2, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y2, thick);
+	dline(subc->bbox_naked.X1, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y1, thick);
 }
 
 static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer)
