@@ -1,0 +1,10 @@
+put /local/rnd/mod {draw_pnp}
+append /local/rnd/mod/OBJS [@
+	$(PLUGDIR)/draw_pnp/draw_pnp.o
+@]
+
+switch /local/module/draw_pnp/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

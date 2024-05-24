@@ -1,0 +1,6 @@
+$class feature
+$short auto-generated pnp layer
+$long Draw a Pick-aNd-Place helper layer
+$package (core)
+$state WIP
+default buildin
