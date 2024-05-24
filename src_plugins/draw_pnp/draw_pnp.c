@@ -30,6 +30,7 @@
 #include "board.h"
 #include "build_run.h"
 #include "data.h"
+#include "data_it.h"
 #include "draw.h"
 #include "event.h"
 #include <librnd/core/actions.h>
@@ -95,7 +96,10 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 	rnd_coord_t x, y;
 	const char *refdes;
 	int on_bottom;
-	rnd_coord_t thick = RND_MM_TO_COORD(0.1);
+	rnd_coord_t frame_thick = RND_MM_TO_COORD(0.1);
+	rnd_coord_t term1_thick = RND_MM_TO_COORD(0.4);
+	pcb_data_it_t it;
+	pcb_any_obj_t *o;
 
 	/* render only for subcircuits on the same side as the layer we are rendering on */
 	if (pcb_subc_get_side(subc, &on_bottom) == 0) {
@@ -115,10 +119,19 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 	dtext(x, y, 100, 0, refdes);
 
 	/* draw frame */
-	dline(subc->bbox_naked.X1, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y1, thick);
-	dline(subc->bbox_naked.X2, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y2, thick);
-	dline(subc->bbox_naked.X2, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y2, thick);
-	dline(subc->bbox_naked.X1, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y1, thick);
+	dline(subc->bbox_naked.X1, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y1, frame_thick);
+	dline(subc->bbox_naked.X2, subc->bbox_naked.Y1, subc->bbox_naked.X2, subc->bbox_naked.Y2, frame_thick);
+	dline(subc->bbox_naked.X2, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y2, frame_thick);
+	dline(subc->bbox_naked.X1, subc->bbox_naked.Y2, subc->bbox_naked.X1, subc->bbox_naked.Y1, frame_thick);
+
+	/* place a dot at term 1, first object found */
+	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_TERM); o != NULL; o = pcb_data_next(&it)) {
+		if ((o->term != NULL) && (o->term[0] == '1') && (o->term[1] == '\0')) {
+			rnd_coord_t x = (o->bbox_naked.X1 + o->bbox_naked.X2)/2;
+			rnd_coord_t y = (o->bbox_naked.Y1 + o->bbox_naked.Y2)/2;
+			dline(x, y, x, y, term1_thick);
+		}
+	}
 
 	return 0;
 }
