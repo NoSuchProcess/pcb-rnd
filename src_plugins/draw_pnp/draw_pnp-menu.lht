@@ -1,0 +1,13 @@
+ha:rnd-menu-v1 {
+	li:popups {
+		ha:group {
+			li:submenu {
+				ha:Create new group {
+					li:submenu {
+						ha:Create pnp helper doc groups and layers = { action=drawpnplayers(create) }
+					}
+				}
+			}
+		}
+	}
+}

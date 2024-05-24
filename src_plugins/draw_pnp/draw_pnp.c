@@ -41,6 +41,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/rnd_conf.h>
 #include <librnd/core/conf_multi.h>
+#include <librnd/hid/hid_menu.h>
 #include "conf_core.h"
 
 #include "obj_text.h"
@@ -48,8 +49,8 @@
 #include "obj_line_draw.h"
 
 #include "../src_plugins/draw_pnp/draw_pnp_conf.h"
-
 #include "../src_plugins/draw_pnp/conf_internal.c"
+#include "../src_plugins/draw_pnp/menu_internal.c"
 
 conf_draw_pnp_t conf_draw_pnp;
 
@@ -298,6 +299,7 @@ void pplg_uninit_draw_pnp(void)
 	rnd_event_unbind_allcookie(draw_pnp_cookie);
 	rnd_remove_actions_by_cookie(draw_pnp_cookie);
 	rnd_conf_plug_unreg("plugins/draw_pnp/", draw_pnp_conf_internal, draw_pnp_cookie);
+	rnd_hid_menu_unload(rnd_gui, draw_pnp_cookie);
 }
 
 int pplg_init_draw_pnp(void)
@@ -313,5 +315,8 @@ int pplg_init_draw_pnp(void)
 	rnd_event_bind(RND_EVENT_LOAD_POST, draw_pnp_new_brd_ev, NULL, draw_pnp_cookie);
 
 	RND_REGISTER_ACTIONS(draw_pnp_action_list, draw_pnp_cookie);
+
+	rnd_hid_menu_load(rnd_gui, NULL, draw_pnp_cookie, 100, NULL, 0, draw_pnp_menu, "plugin: draw_pnp");
+
 	return 0;
 }

@@ -480,6 +480,7 @@
  obj_text_draw.h draw.h obj_line_draw.h \
  ../src_plugins/draw_pnp/draw_pnp_conf.h \
  ../src_plugins/draw_pnp/conf_internal.c \
+ ../src_plugins/draw_pnp/menu_internal.c \
  ../src_plugins/draw_pnp/draw_pnp_conf_fields.h
 ../src_plugins/drc_query/drc_query.o: \
  ../src_plugins/drc_query/drc_query.c ../config.h board.h vtroutestyle.h \

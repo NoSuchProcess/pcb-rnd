@@ -5,6 +5,8 @@ append /local/rnd/mod/OBJS [@
 put /local/rnd/mod/CONF {$(PLUGDIR)/draw_pnp/draw_pnp_conf.h}
 put /local/rnd/mod/CONFFILE {draw_pnp.conf}
 put /local/rnd/mod/CONFVAR {draw_pnp_conf_internal}
+put /local/rnd/mod/MENUFILE {draw_pnp-menu.lht}
+put /local/rnd/mod/MENUVAR {draw_pnp_menu}
 
 switch /local/module/draw_pnp/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
