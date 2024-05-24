@@ -129,7 +129,7 @@ static void draw_pnp_layer_attr_ev(rnd_design_t *hidlib, void *user_data, int ar
 
 	layer = argv[1].d.p;
 	name = pcb_attribute_get(&layer->Attributes, "pcb-rnd::plugin_draw");
-	if ((name != NULL) && (strcmp(name, "draw_pnp") == 0)) {
+	if (!layer->is_bound && (name != NULL) && (strcmp(name, "draw_pnp") == 0)) {
 		rnd_trace("install draw_pnp!\n");
 		layer->plugin_draw = draw_pnp_plugin_draw;
 	}
