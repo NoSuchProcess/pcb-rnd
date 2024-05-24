@@ -59,6 +59,11 @@ static pcb_text_t *dtext(rnd_coord_t x, rnd_coord_t y, int scale, rnd_font_id_t 
 	t.Scale = scale;
 	t.fid = fid;
 	t.Flags = pcb_no_flags();
+
+	pcb_text_bbox(NULL, &t);
+	t.X -= (t.bbox_naked.X2 - t.bbox_naked.X1)/2;
+	t.Y -= (t.bbox_naked.Y2 - t.bbox_naked.Y1)/2;
+
 	pcb_text_draw_(&dinfo, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
 	return &t;
 }
