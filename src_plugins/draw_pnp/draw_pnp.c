@@ -98,6 +98,7 @@ typedef struct {
 	pcb_draw_info_t *info;
 	const pcb_layer_t *layer;
 	long layer_flags;
+	int dry;
 } draw_pnp_t;
 
 static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box_t *box)
@@ -120,8 +121,10 @@ static rnd_rtree_dir_t draw_pnp_draw_cb(void *cl, void *obj, const rnd_rtree_box
 			return 0;
 	}
 
-	pcb_subc_get_origin(subc, &x, &y);
+	if (ctx->dry)
+		return rnd_RTREE_DIR_FOUND_STOP;
 
+	pcb_subc_get_origin(subc, &x, &y);
 
 	refdes = subc->refdes;
 	if ((refdes == NULL) || (*refdes == '\0'))
@@ -160,6 +163,7 @@ static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer
 	ctx.info = info;
 	ctx.layer = layer;
 	ctx.layer_flags = pcb_layer_flags_(layer);
+	ctx.dry = 0;
 
 	rnd_render->set_color(pcb_draw_out.fgGC, &layer->meta.real.color);
 
@@ -171,6 +175,34 @@ static void draw_pnp_plugin_draw(pcb_draw_info_t *info, const pcb_layer_t *layer
 	info->disable_plugin_draw = 0;
 }
 
+static rnd_bool_t draw_pnp_plugin_draw_is_empty(const pcb_layer_t *layer)
+{
+	pcb_data_t *data = layer->parent.data;
+	rnd_rtree_box_t sb;
+	draw_pnp_t ctx;
+	int res;
+
+	ctx.info = NULL;
+	ctx.layer = layer;
+	ctx.layer_flags = pcb_layer_flags_(layer);
+	ctx.dry = 1;
+
+	if (ctx.layer_flags == 0)
+		return 1;
+
+	/* quick check: direct object */
+	if (!pcb_layer_is_pure_empty(layer))
+		return 0;
+
+	/* dry-run until the first object to draw is found */
+	sb.x1 = sb.y1 = -RND_COORD_MAX;
+	sb.x2 = sb.y2 = +RND_COORD_MAX;
+	res = rnd_rtree_search_any(data->subc_tree, &sb, NULL, draw_pnp_draw_cb, &ctx, NULL);
+
+	return !(res & rnd_RTREE_DIR_FOUND);
+}
+
+
 RND_INLINE void draw_pnp_layer_setup(pcb_layer_t *layer)
 {
 	const char *name;
@@ -178,10 +210,13 @@ RND_INLINE void draw_pnp_layer_setup(pcb_layer_t *layer)
 	name = pcb_attribute_get(&layer->Attributes, "pcb-rnd::plugin_draw");
 	if (!layer->is_bound && (name != NULL) && (strcmp(name, "draw_pnp") == 0)) {
 		layer->plugin_draw = draw_pnp_plugin_draw;
+		layer->plugin_draw_is_empty = draw_pnp_plugin_draw_is_empty;
 	}
 	else {
-		if (layer->plugin_draw == draw_pnp_plugin_draw)
+		if (layer->plugin_draw == draw_pnp_plugin_draw) {
 			layer->plugin_draw = NULL;
+			layer->plugin_draw_is_empty = NULL;
+		}
 	}
 }
 
