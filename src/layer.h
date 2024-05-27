@@ -164,6 +164,13 @@ struct pcb_layer_s {              /* holds information about one layer */
 	   implement their own custom draw functions */
 	void (*plugin_draw)(pcb_draw_info_t *info, const pcb_layer_t *Layer);
 	void *plugin_draw_data;
+
+
+	/* Optional: if not NULL overrides the normal layer_is_empty() decision
+	   mechanism and shall returns 1 if the plugin wouldn't draw anything on
+	   this layer; if NULL, the normal layer_is_empty() mechanism is used for
+	   this layer */
+	rnd_bool_t (*plugin_draw_is_empty)(const pcb_layer_t *layer);
 };
 
 /* returns the layer number for the passed copper or silk layer pointer */

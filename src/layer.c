@@ -245,6 +245,12 @@ static rnd_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_
 rnd_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	pcb_layer_type_t flags = pcb_layer_flags_(layer);
+
+	/* for plugin drawn layers: override the decision; the plugin can decide
+	   to draw explicit local or global objects so skip the rest of the checks */
+	if (layer->plugin_draw_is_empty != 0)
+		return layer->plugin_draw_is_empty(layer);
+
 	if (flags == 0)
 		return 1;
 
