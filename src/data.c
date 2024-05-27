@@ -813,12 +813,46 @@ static void data_clip_all_cb(void *ctx_)
 	}
 }
 
+#if PCB_WANT_POLYBOOL2
+	extern int rnd_pb2_inhibit_edge_tree; /* this is a polybool2-only feature */
+
+	/* Polybool2 doesn't need pline edge trees while doing multiple operations
+	   for figuring the final clearance so stop it computing all edge trees on
+	   its output; once all clearances are done, find plines with missing
+	   edge trees and compute them once */
+	RND_INLINE void clip_all_pre(pcb_data_t *data)
+	{
+		rnd_pb2_inhibit_edge_tree = 1;
+	}
+
+	RND_INLINE void clip_all_post(pcb_data_t *data)
+	{
+		rnd_pb2_inhibit_edge_tree = 0;
+
+		/* create all missing pline edge trees */
+		PCB_POLY_ALL_LOOP(data); {
+			rnd_polyarea_t *pa = polygon->Clipped;
+			do {
+				rnd_pline_t *pl;
+				for(pl = pa->contours; pl != NULL; pl = pl->next)
+					if (pl->tree == NULL)
+						pl->tree = rnd_poly_make_edge_tree(pl);
+			} while((pa = pa->f) != polygon->Clipped);
+		} PCB_ENDALL_LOOP;
+	}
+#else
+#	define clip_all_pre(d)
+#	define clip_all_post(d)
+#endif
+
 void pcb_data_clip_all_poly(pcb_data_t *data, rnd_bool enable_progbar, rnd_bool force_all)
 {
 	data_clip_all_t ctx;
 
 	if (data->clip_inhibit != 0)
 		return;
+
+	clip_all_pre(data);
 
 	PCB_SUBC_LOOP(data); {
 		pcb_data_clip_dirty(subc->data, enable_progbar);
@@ -829,6 +863,7 @@ void pcb_data_clip_all_poly(pcb_data_t *data, rnd_bool enable_progbar, rnd_bool 
 	ctx.nextt = time(NULL) + 2;
 	ctx.total = ctx.at = 0;
 	ctx.inited = 0;
+
 
 	/* have to go in two passes, to make sure that clearing polygons are done
 	   before the polygons that are potentially being cleared - this way we
@@ -846,6 +881,8 @@ void pcb_data_clip_all_poly(pcb_data_t *data, rnd_bool enable_progbar, rnd_bool 
 
 	if (enable_progbar)
 		rnd_hid_progress(0, 0, NULL);
+
+	clip_all_post(data);
 }
 
 void pcb_data_clip_dirty(pcb_data_t *data, rnd_bool enable_progbar)
