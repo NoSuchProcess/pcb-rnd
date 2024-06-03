@@ -1760,6 +1760,8 @@ long io_altium_obj2netid(void *ctx, void *obj)
 
 static void altium_postproc(rctx_t *rctx)
 {
+	pcb_data_clip_inhibit_inc(rctx->pcb->Data);
+
 	PCB_POLY_COPPER_LOOP(rctx->pcb->Data) {
 		long netid = io_altium_obj2netid(rctx, polygon);
 		if (netid < 0)
@@ -1768,6 +1770,7 @@ static void altium_postproc(rctx_t *rctx)
 	}
 	PCB_ENDALL_LOOP;
 
+	pcb_data_clip_inhibit_dec(rctx->pcb->Data, 1);
 }
 
 static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest, int is_bin)
