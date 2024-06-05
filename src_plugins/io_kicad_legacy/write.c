@@ -153,8 +153,8 @@ static int write_kicad_legacy_layout_arcs(FILE *FP, rnd_cardinal_t number, pcb_l
 	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
 	rnd_cardinal_t currentLayer = number;
 	rnd_coord_t radius, xStart, yStart, xEnd, yEnd;
-	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
-	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
+	rnd_coord_t copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
+	rnd_coord_t copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
