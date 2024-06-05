@@ -53,6 +53,7 @@
 #include <librnd/hid/hid_init.h>
 #include <librnd/hid/hid_attrib.h>
 #include "hid_cam.h"
+#include "endp.h"
 
 static rnd_hid_t exp_hpgl_hid;
 
@@ -68,6 +69,17 @@ typedef struct rnd_hid_gc_s {
 } rnd_hid_gc_s;
 
 static FILE *f = NULL;
+static htendp_t ht;
+static int ht_active;
+
+static void hpgl_flush_layer(void)
+{
+	if (ht_active) {
+		hpgl_endp_render(&ht);
+		hpgl_endp_uninit(&ht);
+		ht_active = 0;
+	}
+}
 
 static const rnd_export_opt_t exp_hpgl_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -118,6 +130,7 @@ static void exp_hpgl_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd_
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
 	rnd_app.expose_main(&exp_hpgl_hid, &ctx, xform);
+	hpgl_flush_layer();
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
@@ -199,14 +212,10 @@ static int exp_hpgl_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_la
 		}
 	}
 
-	{
-		gds_t tmp_ln;
-		const char *name;
-		gds_init(&tmp_ln);
-		name = pcb_layer_to_file_name(&tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
-		fprintf(f, "# Layer #%ld %x: '%s'\n", group, flags, name);
-		gds_uninit(&tmp_ln);
-	}
+	hpgl_flush_layer();
+
+	hpgl_endp_init(&ht);
+	ht_active = 1;
 
 	return 1;
 }

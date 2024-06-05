@@ -1,3 +1,6 @@
+#ifndef HPGL_HTENDP_H
+#define HPGL_HTENDP_H
+
 /* Hash: endpoint coords -> vtp0_t */
 
 #include <librnd/core/box.h>
@@ -16,3 +19,4 @@ typedef vtp0_t htendp_value_t;
 #undef HT
 
 
+#endif
