@@ -141,6 +141,7 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 	int n;
 	pcb_pstk_t *ps;
 	rnd_coord_t dummy;
+	int dummi;
 	double dummy2;
 
 	chk_layers("subc", subc->data, PCB_PARENT_SUBC, subc, 0);
@@ -150,7 +151,7 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 		rnd_message(RND_MSG_ERROR, CHK "%s subc #%ld: can not determine subc origin\n", whose, subc->ID);
 	if (pcb_subc_get_rotation(subc, &dummy2) != 0)
 		rnd_message(RND_MSG_ERROR, CHK "%s subc #%ld: can not determine subc rotation\n", whose, subc->ID);
-	if (pcb_subc_get_side(subc, &dummy) != 0)
+	if (pcb_subc_get_side(subc, &dummi) != 0)
 		rnd_message(RND_MSG_ERROR, CHK "%s subc #%ld: can not determine subc side\n", whose, subc->ID);
 
 	/* check term chaches */
