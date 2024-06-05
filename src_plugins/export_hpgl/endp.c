@@ -138,7 +138,7 @@ RND_INLINE double obj_len2(pcb_any_obj_t *o)
 			return dx*dx;
 		case PCB_OBJ_LINE:
 			dx = l->Point2.X - l->Point1.X;
-			dy = l->Point2.Y - l->Point1.Y;
+			dy = l->Point2.Y - l->Point2.Y;
 			return dx*dx + dy*dy;
 		default:
 			return 0;
