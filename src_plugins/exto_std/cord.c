@@ -331,7 +331,8 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 {
 	pcb_subc_t *subc;
 	long n, grp = 1, term = 0; /* for intconn grp needs to start from 1 */
-	rnd_coord_t ox = 0, oy = 0, has_origin = 0, has_subc = 0;
+	rnd_coord_t ox = 0, oy = 0;
+	int has_origin = 0, has_subc = 0;
 	pcb_dflgmap_t layers[] = {
 		{"edit", PCB_LYT_DOC, "extobj", 0, 0},
 		{"target", PCB_LYT_SILK | PCB_LYT_TOP, NULL, 0, 0},
