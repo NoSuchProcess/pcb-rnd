@@ -71,11 +71,71 @@ typedef struct rnd_hid_gc_s {
 static FILE *f = NULL;
 static htendp_t ht;
 static int ht_active;
+static pcb_dynf_t dflg;
+static rnd_coord_t maxy;
+
+#define TX(x)  ((long)(RND_COORD_TO_MM(x)/0.025))
+#define TY(y)  ((long)((RND_COORD_TO_MM(maxy)/0.025) - ((RND_COORD_TO_MM(y)/0.025))))
+
+static void print_header(void)
+{
+	fprintf(stderr, "IN;\n");
+}
+
+static void print_footer(void)
+{
+	fprintf(stderr, "PU;\n");
+}
+
+static void render_obj(void *uctx, pcb_any_obj_t *o, endp_state_t st)
+{
+	pcb_line_t *l = (pcb_line_t *)o;
+	pcb_arc_t *a = (pcb_arc_t *)o;
+
+	if (st & ENDP_ST_START) {
+		rnd_cheap_point_t ep;
+		switch(o->type) {
+			case PCB_OBJ_ARC:
+				pcb_arc_get_end(a, (st & ENDP_ST_REVERSE) ? 1 : 0, &ep.X, &ep.Y);
+				break;
+			case PCB_OBJ_LINE:
+				if (st & ENDP_ST_REVERSE) {
+					ep.X = l->Point2.X; ep.Y = l->Point2.Y;
+				}
+				else {
+					ep.X = l->Point1.X; ep.Y = l->Point1.Y;
+				}
+				break;
+			default:
+				abort();
+		}
+		fprintf(f, "PU;PA%ld,%ld;PD;\n", TX(ep.X), TY(ep.Y));
+	}
+
+	/* we are at the starting point already, pen is down;
+	   move to the other end of the object */
+	switch(o->type) {
+		case PCB_OBJ_ARC:
+			if (st & ENDP_ST_REVERSE)
+				fprintf(f, "AA%ld,%ld,%.2f,0.1;\n", TX(a->X), TY(a->Y), a->Delta);
+			else
+				fprintf(f, "AA%ld,%ld,%.2f,0.1;\n", TX(a->X), TY(a->Y), -a->Delta);
+			break;
+		case PCB_OBJ_LINE:
+			if (st & ENDP_ST_REVERSE)
+				fprintf(f, "PA%ld,%ld;\n", TX(l->Point1.X), TY(l->Point1.Y));
+			else
+				fprintf(f, "PA%ld,%ld;\n", TX(l->Point2.X), TY(l->Point2.Y));
+			break;
+		default:
+			break;
+	}
+}
 
 static void hpgl_flush_layer(void)
 {
 	if (ht_active) {
-		hpgl_endp_render(&ht);
+		hpgl_endp_render(&ht, render_obj, NULL, dflg);
 		hpgl_endp_uninit(&ht);
 		ht_active = 0;
 	}
@@ -165,7 +225,14 @@ static void exp_hpgl_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	if (!exp_hpgl_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
+	dflg = pcb_dynflag_alloc("export_hpgl:needs_rendering");
+	maxy = design->dwg.Y2;
+
+	print_header();
 	exp_hpgl_hid_export_to_file(design, f, options, &xform);
+	print_footer();
+
+	pcb_dynflag_free(dflg);
 
 	if (!exp_hpgl_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
