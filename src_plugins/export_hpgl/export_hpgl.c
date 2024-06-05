@@ -117,9 +117,9 @@ static void render_obj(void *uctx, pcb_any_obj_t *o, endp_state_t st)
 	switch(o->type) {
 		case PCB_OBJ_ARC:
 			if (st & ENDP_ST_REVERSE)
-				fprintf(f, "AA%ld,%ld,%.2f,0.1;\n", TX(a->X), TY(a->Y), a->Delta);
-			else
 				fprintf(f, "AA%ld,%ld,%.2f,0.1;\n", TX(a->X), TY(a->Y), -a->Delta);
+			else
+				fprintf(f, "AA%ld,%ld,%.2f,0.1;\n", TX(a->X), TY(a->Y), a->Delta);
 			break;
 		case PCB_OBJ_LINE:
 			if (st & ENDP_ST_REVERSE)
@@ -362,6 +362,14 @@ static void exp_hpgl_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 
 static void exp_hpgl_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
+	pcb_arc_t *a = calloc(sizeof(pcb_line_t), 1);
+	a->type = PCB_OBJ_ARC;
+	a->X = cx; a->Y = cy;
+	a->Width = width; a->Height = height;
+	a->StartAngle = start_angle;
+	a->Delta = delta_angle;
+	hpgl_add_arc(&ht, a, dflg);
+
 }
 
 static void exp_hpgl_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
