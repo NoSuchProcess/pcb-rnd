@@ -338,13 +338,6 @@ static void exp_hpgl_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 }
 
-static void exp_hpgl_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
-{
-}
-
-static void exp_hpgl_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
-{
-}
 
 static void exp_hpgl_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
@@ -353,6 +346,18 @@ static void exp_hpgl_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	l->Point1.X = x1; l->Point1.Y = y1;
 	l->Point2.X = x2; l->Point2.Y = y2;
 	hpgl_add_line(&ht, l, dflg);
+}
+
+static void exp_hpgl_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	exp_hpgl_draw_line(gc, x1, y1, x2, y1);
+	exp_hpgl_draw_line(gc, x2, y1, x2, y2);
+	exp_hpgl_draw_line(gc, x2, y2, x1, y2);
+	exp_hpgl_draw_line(gc, x1, y2, x1, y1);
+}
+
+static void exp_hpgl_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
 }
 
 static void exp_hpgl_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
