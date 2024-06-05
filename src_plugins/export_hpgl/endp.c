@@ -182,7 +182,7 @@ static void render_from(htendp_t *ht, rnd_cheap_point_t pt, pcb_any_obj_t *obj, 
 		first = 0;
 
 		next_pt = other_end(obj, pt, &pt_idx);
-		next_obj = longest_obj_at(ht, pt, dflg);
+		next_obj = longest_obj_at(ht, next_pt, dflg);
 
 		if (next_obj == NULL)
 			st |= ENDP_ST_END;
