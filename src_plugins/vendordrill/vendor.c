@@ -534,8 +534,8 @@ static void add_to_drills(char *sval)
 
 	/* increment the count and make sure we have memory */
 	n_vendor_drills++;
-	if ((vendor_drills = (int *) realloc(vendor_drills, n_vendor_drills * sizeof(int))) == NULL) {
-		fprintf(stderr, "realloc() failed to allocate %ld bytes\n", (unsigned long) n_vendor_drills * sizeof(int));
+	if ((vendor_drills = (rnd_coord_t *) realloc(vendor_drills, n_vendor_drills * sizeof(rnd_coord_t))) == NULL) {
+		fprintf(stderr, "realloc() failed to allocate %ld bytes\n", (unsigned long) n_vendor_drills * sizeof(rnd_coord_t));
 		return;
 	}
 
