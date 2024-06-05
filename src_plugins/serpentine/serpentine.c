@@ -48,6 +48,7 @@
 #include "serpentine_conf.h"
 #include "layer.h"
 #include "route.h"
+#include "route_draw.h"
 
 typedef struct {
 	rnd_point_t start;
