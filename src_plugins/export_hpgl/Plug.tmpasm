@@ -1,5 +1,8 @@
 put /local/rnd/mod {export_hpgl}
-put /local/rnd/mod/OBJS [@ $(PLUGDIR)/export_hpgl/export_hpgl.o @]
+put /local/rnd/mod/OBJS [@
+	$(PLUGDIR)/export_hpgl/export_hpgl.o
+	$(PLUGDIR)/export_hpgl/endp.o
+@]
 
 switch /local/module/export_hpgl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
