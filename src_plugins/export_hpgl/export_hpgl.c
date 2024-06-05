@@ -79,12 +79,12 @@ static rnd_coord_t maxy;
 
 static void print_header(void)
 {
-	fprintf(stderr, "IN;\n");
+	fprintf(f, "IN;\n");
 }
 
 static void print_footer(void)
 {
-	fprintf(stderr, "PU;\n");
+	fprintf(f, "PU;\n");
 }
 
 static void render_obj(void *uctx, pcb_any_obj_t *o, endp_state_t st)
@@ -348,7 +348,11 @@ static void exp_hpgl_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 
 static void exp_hpgl_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	fprintf(f, "Line!\n");
+	pcb_line_t *l = calloc(sizeof(pcb_line_t), 1);
+	l->type = PCB_OBJ_LINE;
+	l->Point1.X = x1; l->Point1.Y = y1;
+	l->Point2.X = x2; l->Point2.Y = y2;
+	hpgl_add_line(&ht, l, dflg);
 }
 
 static void exp_hpgl_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
