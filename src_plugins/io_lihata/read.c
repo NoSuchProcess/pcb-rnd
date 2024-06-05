@@ -1537,7 +1537,8 @@ static int parse_element(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht
 	pcb_layer_t *silk = NULL;
 	lht_node_t *lst, *n;
 	lht_dom_iterator_t it;
-	int onsld, tdir = 0, tscale = 100;
+	int onsld;
+	rnd_coord_t tdir = 0, tscale = 100;
 	rnd_coord_t ox = 0, oy = 0, tx, ty;
 	pcb_text_t *txt;
 	int err = 0;
