@@ -107,7 +107,7 @@ RND_INLINE rnd_cheap_point_t other_end(pcb_any_obj_t *obj, rnd_cheap_point_t pt,
 			break;
 		case PCB_OBJ_LINE:
 			ep0.X = l->Point1.X; ep0.Y = l->Point1.Y;
-			ep1.X = l->Point1.X; ep1.Y = l->Point1.Y;
+			ep1.X = l->Point2.X; ep1.Y = l->Point2.Y;
 			break;
 		default:
 			abort();
