@@ -360,13 +360,13 @@ static void tool_serpentine_notify_mode(rnd_design_t *hl)
 	}
 }
 
-static void tool_serpentine_adjust_attached_objects(void)
+static void tool_serpentine_adjust_attached_objects(rnd_design_t *hl)
 {
 	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
 	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
 }
 
-static void tool_serpentine_draw_attached(void)
+static void tool_serpentine_draw_attached(rnd_design_t *hl)
 {
 	switch (pcb_crosshair.AttachedObject.State) {
 		case PCB_CH_STATE_SECOND:
