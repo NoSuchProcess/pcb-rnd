@@ -3,6 +3,7 @@ $short export thin-drawing in hpgl
 $long draw one pen or one file per layer in thin-draw mode
 $fmt-native no
 $fmt-feature-w hpgl
-$state WIP
-default disable-all
+$package export
+$state works
+default buildin
 autoload 1
