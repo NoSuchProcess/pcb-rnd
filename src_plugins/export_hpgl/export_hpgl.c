@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2022 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2022,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -73,6 +73,7 @@ static htendp_t ht;
 static int ht_active;
 static pcb_dynf_t dflg;
 static rnd_coord_t maxy;
+static void *hpgl_objs = NULL;
 
 #define TX(x)  ((long)(RND_COORD_TO_MM(x)/0.025))
 #define TY(y)  ((long)((RND_COORD_TO_MM(maxy)/0.025) - ((RND_COORD_TO_MM(y)/0.025))))
@@ -87,16 +88,21 @@ static void print_footer(void)
 	fprintf(f, "PU;\n");
 }
 
-static void render_obj(void *uctx, pcb_any_obj_t *o, endp_state_t st)
+static void render_obj(void *uctx, hpgl_any_obj_t *o, endp_state_t st)
 {
-	pcb_line_t *l = (pcb_line_t *)o;
-	pcb_arc_t *a = (pcb_arc_t *)o;
+	hpgl_line_t *l = (hpgl_line_t *)o;
+	hpgl_arc_t *a = (hpgl_arc_t *)o;
 
 	if (st & ENDP_ST_START) {
 		rnd_cheap_point_t ep;
 		switch(o->type) {
 			case PCB_OBJ_ARC:
-				pcb_arc_get_end(a, (st & ENDP_ST_REVERSE) ? 1 : 0, &ep.X, &ep.Y);
+				if (st & ENDP_ST_REVERSE) {
+					ep.X = a->Point2.X; ep.Y = a->Point2.Y;
+				}
+				else {
+					ep.X = a->Point1.X; ep.Y = a->Point1.Y;
+				}
 				break;
 			case PCB_OBJ_LINE:
 				if (st & ENDP_ST_REVERSE) {
@@ -135,8 +141,17 @@ static void render_obj(void *uctx, pcb_any_obj_t *o, endp_state_t st)
 static void hpgl_flush_layer(void)
 {
 	if (ht_active) {
+		hpgl_line_t *curr, *next;
+
 		hpgl_endp_render(&ht, render_obj, NULL, dflg);
 		hpgl_endp_uninit(&ht);
+
+		for(curr = hpgl_objs; curr != NULL; curr = next) {
+			next = curr->next;
+			free(curr);
+		}
+		
+		hpgl_objs = NULL;
 		ht_active = 0;
 	}
 }
@@ -341,11 +356,14 @@ static void exp_hpgl_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 
 static void exp_hpgl_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb_line_t *l = calloc(sizeof(pcb_line_t), 1);
+	hpgl_line_t *l = calloc(sizeof(hpgl_line_t), 1);
 	l->type = PCB_OBJ_LINE;
 	l->Point1.X = x1; l->Point1.Y = y1;
 	l->Point2.X = x2; l->Point2.Y = y2;
 	hpgl_add_line(&ht, l, dflg);
+
+	l->next = hpgl_objs;
+	hpgl_objs = l;
 }
 
 static void exp_hpgl_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
@@ -362,14 +380,17 @@ static void exp_hpgl_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 
 static void exp_hpgl_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	pcb_arc_t *a = calloc(sizeof(pcb_line_t), 1);
+	hpgl_arc_t *a = calloc(sizeof(hpgl_arc_t), 1);
 	a->type = PCB_OBJ_ARC;
 	a->X = cx; a->Y = cy;
-	a->Width = width; a->Height = height;
+	a->R = width;
 	a->StartAngle = start_angle;
 	a->Delta = delta_angle;
-	hpgl_add_arc(&ht, a, dflg);
 
+	a->next = hpgl_objs;
+	hpgl_objs = a;
+
+	hpgl_add_arc(&ht, a, dflg);
 }
 
 static void exp_hpgl_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)

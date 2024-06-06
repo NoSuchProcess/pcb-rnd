@@ -49,22 +49,37 @@ RND_INLINE void hpgl_add_endp(htendp_t *ht, rnd_cheap_point_t ep, void *a)
 	vtp0_append(&e->value, a);
 }
 
-void hpgl_add_arc(htendp_t *ht, pcb_arc_t *a, pcb_dynf_t dflg)
+void hpgl_add_arc(htendp_t *ht, hpgl_arc_t *a, pcb_dynf_t dflg)
 {
 	rnd_cheap_point_t ep;
+	double d;
+	pcb_arc_t pa = {0};
 
 	PCB_DFLAG_SET(&a->Flags, dflg);
 
-	pcb_arc_get_end(a, 0, &ep.X, &ep.Y);
-	hpgl_add_endp(ht, ep, a);
+	pa.type = PCB_OBJ_ARC;
+	pa.X = a->X; pa.Y = a->Y;
+	pa.Width = pa.Height = a->R;
+	pa.StartAngle = a->StartAngle;
+	pa.Delta = a->Delta;
+	pa.Thickness = 1;
 
-	pcb_arc_get_end(a, 1, &ep.X, &ep.Y);
+	pcb_arc_get_end(&pa, 0, &ep.X, &ep.Y);
 	hpgl_add_endp(ht, ep, a);
+	a->Point1.X = ep.X; a->Point1.Y = ep.Y;
+
+	pcb_arc_get_end(&pa, 1, &ep.X, &ep.Y);
+	hpgl_add_endp(ht, ep, a);
+	a->Point2.X = ep.X; a->Point2.Y = ep.Y;
+
+	d = pcb_arc_length(&pa);
+	a->length = d*d;
 }
 
-void hpgl_add_line(htendp_t *ht, pcb_line_t *l, pcb_dynf_t dflg)
+void hpgl_add_line(htendp_t *ht, hpgl_line_t *l, pcb_dynf_t dflg)
 {
 	rnd_cheap_point_t ep;
+	double dx, dy;
 
 	PCB_DFLAG_SET(&l->Flags, dflg);
 
@@ -73,6 +88,10 @@ void hpgl_add_line(htendp_t *ht, pcb_line_t *l, pcb_dynf_t dflg)
 
 	ep.X = l->Point2.X; ep.Y = l->Point2.Y;
 	hpgl_add_endp(ht, ep, l);
+
+	dx = l->Point2.X - l->Point1.X;
+	dy = l->Point2.Y - l->Point2.Y;
+	l->length = dx*dx + dy*dy;
 }
 
 void hpgl_endp_init(htendp_t *ht)
@@ -94,16 +113,16 @@ void hpgl_endp_uninit(htendp_t *ht)
 
 /* Assume pt is one of the endpoints of obj; figure which side of obj pt is
    on and set pt_idx and return the other end */
-RND_INLINE rnd_cheap_point_t other_end(pcb_any_obj_t *obj, rnd_cheap_point_t pt, int *pt_idx)
+RND_INLINE rnd_cheap_point_t other_end(hpgl_any_obj_t *obj, rnd_cheap_point_t pt, int *pt_idx)
 {
 	rnd_cheap_point_t ep0, ep1;
-	pcb_line_t *l = (pcb_line_t *)obj;
-	pcb_arc_t *a = (pcb_arc_t *)obj;
+	hpgl_line_t *l = (hpgl_line_t *)obj;
+	hpgl_arc_t *a = (hpgl_arc_t *)obj;
 
 	switch(obj->type) {
 		case PCB_OBJ_ARC:
-			pcb_arc_get_end(a, 0, &ep0.X, &ep0.Y);
-			pcb_arc_get_end(a, 1, &ep1.X, &ep1.Y);
+			ep0.X = a->Point1.X; ep0.Y = a->Point1.Y;
+			ep1.X = a->Point2.X; ep1.Y = a->Point2.Y;
 			break;
 		case PCB_OBJ_LINE:
 			ep0.X = l->Point1.X; ep0.Y = l->Point1.Y;
@@ -126,20 +145,16 @@ RND_INLINE rnd_cheap_point_t other_end(pcb_any_obj_t *obj, rnd_cheap_point_t pt,
 	abort();
 }
 
-RND_INLINE double obj_len2(pcb_any_obj_t *o)
+RND_INLINE double obj_len2(hpgl_any_obj_t *o)
 {
-	double dx, dy;
-	pcb_line_t *l = (pcb_line_t *)o;
-	pcb_arc_t *a = (pcb_arc_t *)o;
+	hpgl_line_t *l = (hpgl_line_t *)o;
+	hpgl_arc_t *a = (hpgl_arc_t *)o;
 
 	switch(o->type) {
 		case PCB_OBJ_ARC:
-			dx = pcb_arc_length(a);
-			return dx*dx;
+			return a->length;
 		case PCB_OBJ_LINE:
-			dx = l->Point2.X - l->Point1.X;
-			dy = l->Point2.Y - l->Point2.Y;
-			return dx*dx + dy*dy;
+			return l->length;
 		default:
 			return 0;
 	}
@@ -148,15 +163,15 @@ RND_INLINE double obj_len2(pcb_any_obj_t *o)
 }
 
 /* Return the longest unrendered obj from pt or NULL */
-RND_INLINE pcb_any_obj_t *longest_obj_at(htendp_t *ht, rnd_cheap_point_t pt, pcb_dynf_t dflg)
+RND_INLINE hpgl_any_obj_t *longest_obj_at(htendp_t *ht, rnd_cheap_point_t pt, pcb_dynf_t dflg)
 {
 	htendp_entry_t *e = htendp_getentry(ht, pt);
 	long n;
 	double best_len = 0;
-	pcb_any_obj_t *best = NULL;
+	hpgl_any_obj_t *best = NULL;
 
 	for(n = 0; n < e->value.used; n++) {
-		pcb_any_obj_t *o = e->value.array[n];
+		hpgl_any_obj_t *o = e->value.array[n];
 		if (PCB_DFLAG_TEST(&o->Flags, dflg)) {
 			double len = obj_len2(o);
 			if ((best == NULL) || (len > best_len)) {
@@ -169,10 +184,10 @@ RND_INLINE pcb_any_obj_t *longest_obj_at(htendp_t *ht, rnd_cheap_point_t pt, pcb
 	return best;
 }
 
-static void render_from(htendp_t *ht, rnd_cheap_point_t pt, pcb_any_obj_t *obj, void (*cb)(void *uctx, pcb_any_obj_t *o, endp_state_t st), void *uctx, pcb_dynf_t dflg, int first)
+static void render_from(htendp_t *ht, rnd_cheap_point_t pt, hpgl_any_obj_t *obj, void (*cb)(void *uctx, hpgl_any_obj_t *o, endp_state_t st), void *uctx, pcb_dynf_t dflg, int first)
 {
 	rnd_cheap_point_t next_pt;
-	pcb_any_obj_t *next_obj;
+	hpgl_any_obj_t *next_obj;
 
 	while(obj != NULL) {
 		int pt_idx;
@@ -197,7 +212,7 @@ static void render_from(htendp_t *ht, rnd_cheap_point_t pt, pcb_any_obj_t *obj, 
 	}
 }
 
-static void render_loop(htendp_t *ht, void (*cb)(void *uctx, pcb_any_obj_t *o, endp_state_t st), void *uctx, pcb_dynf_t dflg, int when_1)
+static void render_loop(htendp_t *ht, void (*cb)(void *uctx, hpgl_any_obj_t *o, endp_state_t st), void *uctx, pcb_dynf_t dflg, int when_1)
 {
 	htendp_entry_t *e;
 
@@ -209,7 +224,7 @@ static void render_loop(htendp_t *ht, void (*cb)(void *uctx, pcb_any_obj_t *o, e
 			continue;
 
 		for(n = 0; n < v->used; n++) {
-			pcb_any_obj_t *o = v->array[n];
+			hpgl_any_obj_t *o = v->array[n];
 			if (PCB_DFLAG_TEST(&o->Flags, dflg))
 				render_from(ht, e->key, o, cb, uctx, dflg, 1);
 		}
@@ -217,7 +232,7 @@ static void render_loop(htendp_t *ht, void (*cb)(void *uctx, pcb_any_obj_t *o, e
 }
 
 
-void hpgl_endp_render(htendp_t *ht, void (*cb)(void *uctx, pcb_any_obj_t *o, endp_state_t st), void *uctx, pcb_dynf_t dflg)
+void hpgl_endp_render(htendp_t *ht, void (*cb)(void *uctx, hpgl_any_obj_t *o, endp_state_t st), void *uctx, pcb_dynf_t dflg)
 {
 	/* first start rendering from single-object endpoints to avoid rendering from
 	   the middle of a sequence of lines */
