@@ -69,11 +69,17 @@ typedef struct rnd_hid_gc_s {
 } rnd_hid_gc_s;
 
 static FILE *f = NULL;
+static gds_t fn_gds;
+static int fn_baselen = 0;
+static char *filename = NULL;
+static char *filesuff = NULL;
 static htendp_t ht;
 static int ht_active;
 static pcb_dynf_t dflg;
 static rnd_coord_t maxy;
 static void *hpgl_objs = NULL;
+static int sepfiles, pens;
+static int hpgl_ovr;
 
 #define TX(x)  ((long)(RND_COORD_TO_MM(x)/0.025))
 #define TY(y)  ((long)((RND_COORD_TO_MM(maxy)/0.025) - ((RND_COORD_TO_MM(y)/0.025))))
@@ -140,8 +146,13 @@ static void render_obj(void *uctx, hpgl_any_obj_t *o, endp_state_t st)
 
 static void hpgl_flush_layer(void)
 {
-	if (ht_active) {
+	if (ht_active && (hpgl_objs != NULL)) {
 		hpgl_line_t *curr, *next;
+
+		if (!sepfiles) {
+			fprintf(f, "SP%d;\n", pens);
+			pens++;
+		}
 
 		hpgl_endp_render(&ht, render_obj, NULL, dflg);
 		hpgl_endp_uninit(&ht);
@@ -186,6 +197,10 @@ static const rnd_export_opt_t *exp_hpgl_get_export_options(rnd_hid_t *hid, int *
 
 	if (n)
 		*n = NUM_OPTIONS;
+
+	sepfiles = exp_hpgl_values[HA_exp_hpgl_sepfiles].lng;
+	pens = 0;
+
 	return exp_hpgl_attribute_list;
 }
 
@@ -223,19 +238,38 @@ static void exp_hpgl_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 
 	pcb_cam_begin(PCB, &exp_hpgl_cam, &xform, options[HA_cam].str, exp_hpgl_attribute_list, NUM_OPTIONS, options);
 
-	if (exp_hpgl_cam.fn_template == NULL) {
+	if (!sepfiles && (exp_hpgl_cam.fn_template == NULL)) {
 		filename = options[HA_exp_hpglfile].str;
 		if (!filename)
 			filename = "board.hpgl";
+
+		if (f != NULL) {
+			print_footer();
+			fclose(f);
+			f = NULL;
+		}
 
 		f = rnd_fopen_askovr(&PCB->hidlib, exp_hpgl_cam.active ? exp_hpgl_cam.fn : filename, "wb", NULL);
 		if (!f) {
 			perror(filename);
 			return;
 		}
+		print_header();
 	}
-	else
+	else {
+		const char *fnbase = options[HA_exp_hpglfile].str;
+
 		f = NULL;
+
+		if (fnbase == NULL)
+			fnbase = "pcb-rnd-out";
+
+		gds_init(&fn_gds);
+		gds_append_str(&fn_gds, fnbase);
+		gds_append(&fn_gds, '.');
+		fn_baselen = fn_gds.used;
+		filename = fn_gds.array;
+	}
 
 	if (!exp_hpgl_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
@@ -243,18 +277,19 @@ static void exp_hpgl_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 	dflg = pcb_dynflag_alloc("export_hpgl:needs_rendering");
 	maxy = design->dwg.Y2;
 
-	print_header();
 	exp_hpgl_hid_export_to_file(design, f, options, &xform);
-	print_footer();
 
 	pcb_dynflag_free(dflg);
 
 	if (!exp_hpgl_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
 
-	if (f != NULL)
+	if (f != NULL) {
+		print_footer();
 		fclose(f);
-	f = NULL;
+		f = NULL;
+	}
+	gds_uninit(&fn_gds);
 
 	if (!exp_hpgl_cam.active) exp_hpgl_cam.okempty_content = 1; /* never warn in direct export */
 
@@ -268,6 +303,20 @@ static int exp_hpgl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts2(hid, exp_hpgl_attribute_list, sizeof(exp_hpgl_attribute_list) / sizeof(exp_hpgl_attribute_list[0]), exp_hpgl_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
+}
+
+static void append_file_suffix(gds_t *dst, rnd_layergrp_id_t gid, rnd_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
+{
+	const char *sext = ".hpgl";
+
+	fn_gds.used = fn_baselen;
+	if (merge_same != NULL) *merge_same = 0;
+
+	pcb_layer_to_file_name_append(dst, lid, flags, purpose, purpi, PCB_FNS_pcb_rnd);
+	gds_append_str(dst, sext);
+
+	filename = fn_gds.array;
+	filesuff = fn_gds.array + fn_baselen;
 }
 
 static int exp_hpgl_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
@@ -298,6 +347,22 @@ static int exp_hpgl_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_la
 
 	hpgl_endp_init(&ht);
 	ht_active = 1;
+
+	if (sepfiles) {
+		append_file_suffix(&fn_gds, group, layer, flags, purpose, purpi, 0, NULL);
+		if (f != NULL) {
+			print_footer();
+			fclose(f);
+			f = NULL;
+		}
+/*		rnd_trace("fopen sepfiles=%d %s\n", sepfiles, filename); */
+		f = rnd_fopen_askovr(&PCB->hidlib, exp_hpgl_cam.active ? exp_hpgl_cam.fn : filename, "wb", &hpgl_ovr); /* Binary needed to force CR-LF */
+		if (f == NULL) {
+			rnd_message(RND_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
+			return 1;
+		}
+		print_header();
+	}
 
 	return 1;
 }
