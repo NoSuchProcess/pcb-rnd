@@ -612,6 +612,8 @@ static void pcb_draw_info_setup(pcb_draw_info_t *info, pcb_board_t *pcb)
 	}
 	else
 		*info->noexport_name = '\0';
+
+	info->disable_plugin_draw = 0;
 }
 
 void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_box_t *screen)
