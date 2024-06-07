@@ -8,7 +8,6 @@
 - BUG: extended object "bus" bugs:
 	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
 	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
-+ BUG: propedit: place so(64), draw a poly around it, propedit on the subc, change padstack/clearance -> the update is not batched, poly clipping is done padstack by padstack, very slow [report: aron]
 - BUG: bug_files/TODO/drc1/*: {w d} false positive [report: John Wehle]
 	- the main problem is: square cap bloat-line corner:
 		- at B.rp 175;187 the bottom right corner cuts into the horizontal edge of the bottom poly
