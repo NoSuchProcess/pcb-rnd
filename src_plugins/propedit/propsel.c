@@ -1156,6 +1156,8 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	sctx->name = prop;
 
 	pcb_undo_save_serial();
+	pcb_draw_inhibit_inc();
+	pcb_data_clip_inhibit_inc(ctx->data);
 
 	for(n = 0; n < vtl0_len(&ctx->layers); n++)
 		set_layer(sctx, pcb_get_layer(ctx->data, ctx->layers.array[n]));
@@ -1185,6 +1187,8 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	if (ctx->board)
 		set_board(sctx, ctx->pcb);
 
+	pcb_data_clip_inhibit_dec(ctx->data, 1);
+	pcb_draw_inhibit_dec();
 	pcb_board_set_changed_flag(ctx->pcb, rnd_true);
 	pcb_undo_inc_serial();
 	return sctx->set_cnt;
