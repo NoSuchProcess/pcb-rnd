@@ -864,6 +864,30 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 	pcb_subc_draw_origin(pcb_crosshair.GC, sc, DX, DY);
 }
 
+/* Don't let subc with invalid bbox happen; rather make up a small artificial
+   bbox instead */
+RND_INLINE void pcb_subc_fix_bbox(rnd_box_t *bbox, pcb_subc_t *sc)
+{
+	rnd_coord_t ox, oy;
+
+	if ((bbox->X1 >= bbox->X2) || (bbox->Y1 >= bbox->Y2)) {
+		ox = 0;
+		oy = 0;
+		pcb_subc_get_origin(sc, &ox, &oy);
+	}
+
+	if (bbox->X1 >= bbox->X2) {
+		bbox->X1 = ox;
+		bbox->X2 = ox + RND_MM_TO_COORD(0.1);
+	}
+
+	if (bbox->Y1 >= bbox->Y2) {
+		bbox->Y1 = oy;
+		bbox->Y2 = oy + RND_MM_TO_COORD(0.1);
+	}
+}
+
+
 pcb_layer_t *pcb_subc_alloc_layer_like(pcb_subc_t *subc, pcb_layer_t *sl)
 {
 	pcb_layer_t *dl;
@@ -986,8 +1010,6 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 				pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_TEXT, dl, ntext);
 		}
 	}
-
-
 	if (pcb != NULL)
 		pcb_data_clip_inhibit_dec(pcb->Data, 0);
 }
@@ -1112,6 +1134,10 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t 
 
 	memcpy(&sc->Flags, &src->Flags, sizeof(sc->Flags));
 
+
+	pcb_subc_fix_bbox(&sc->BoundingBox, sc);
+	pcb_subc_fix_bbox(&sc->bbox_naked, sc);
+
 	rnd_close_box(&sc->BoundingBox);
 	rnd_close_box(&sc->bbox_naked);
 
@@ -1121,6 +1147,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t 
 		rnd_rtree_insert(dst->subc_tree, sc, (rnd_rtree_box_t *)sc);
 	}
 
+
 	return sc;
 }
 
@@ -1129,10 +1156,13 @@ pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 	return pcb_subc_dup_at(pcb, dst, src, 0, 0, rnd_false, rnd_true);
 }
 
+
 void pcb_subc_bbox(pcb_subc_t *sc)
 {
 	pcb_data_bbox(&sc->BoundingBox, sc->data, rnd_true);
+	pcb_subc_fix_bbox(&sc->BoundingBox, sc);
 	pcb_data_bbox_naked(&sc->bbox_naked, sc->data, rnd_true);
+	pcb_subc_fix_bbox(&sc->bbox_naked, sc);
 }
 
 
@@ -1254,6 +1284,10 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 			}
 		}
 	}
+
+
+	pcb_subc_fix_bbox(&sc->BoundingBox, sc);
+	pcb_subc_fix_bbox(&sc->bbox_naked, sc);
 
 	rnd_close_box(&sc->BoundingBox);
 	rnd_close_box(&sc->bbox_naked);
