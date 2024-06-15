@@ -211,8 +211,8 @@ void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t
 				rnd_box_bump_box(dst, &line.BoundingBox);
 				break;
 			case PCB_PSSH_CIRC:
-				rnd_box_bump_point(dst, ox - shape->data.circ.dia/2 - clr, oy - shape->data.circ.dia/2 - clr);
-				rnd_box_bump_point(dst, ox + shape->data.circ.dia/2 + clr, oy + shape->data.circ.dia/2 + clr);
+				rnd_box_bump_point(dst, ox - shape->data.circ.x + shape->data.circ.dia/2 - clr, oy - shape->data.circ.y + shape->data.circ.y + shape->data.circ.dia/2 - clr);
+				rnd_box_bump_point(dst, ox + shape->data.circ.x + shape->data.circ.dia/2 + clr, oy + shape->data.circ.y + shape->data.circ.dia/2 + clr);
 				break;
 			case PCB_PSSH_HSHADOW:
 				break;
