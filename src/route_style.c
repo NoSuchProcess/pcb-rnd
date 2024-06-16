@@ -141,7 +141,7 @@ int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id)
 		rnd_message(RND_MSG_ERROR, "Sorry, can't fetch the style of that object type (%x)\n", type);
 		return -1;
 	case F_SelectedPads:
-		if (size_id != 2)						/* don't mess with pad size */
+		if (size_id != 2) /* don't mess with pad size */
 			return -1;
 	case F_SelectedVias:
 	case F_SelectedPins:
