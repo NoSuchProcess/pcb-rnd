@@ -8,12 +8,9 @@
 - BUG: extended object "bus" bugs:
 	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
 	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
-- BUG: bug_files/TODO/drc1/*: {w d} false positive [report: John Wehle]
-	- the main problem is: square cap bloat-line corner:
-		- at B.rp 175;187 the bottom right corner cuts into the horizontal edge of the bottom poly
-	- replace the current code with three checks per edge:
-		- two thin-line check at edge +- offset
-		- a circle check in each corner
++ BUG: bug_files/TODO/drc1/*: {w d} false positive [report: John Wehle]
+	+ the main problem is: square cap bloat-line corner:
+		+ at B.rp 175;187 the bottom right corner cuts into the horizontal edge of the bottom poly
 + BUG: using image2footprint parametric footprint, choose 0.25mm pixel size, white silk, black soldermask, yes to dithering and yes to FR4, choose either of the vader .pngs from bug files as the image and place on layout, then change .png to other png, place on layout, and continue alternating. segfault will typically ensue after a period. backtrace included as big-subc-bt.txt [report: erich]
 - poly lib rewrite (fixed means it works with polybool):
 	- BUG: aron's private board, aron_*, self-isc inf loop with polybool [report: aron]
@@ -43,6 +40,7 @@
 	- remove suggesting geda-gnetlist from the debian package
 	- add suggesting sch-rnd and camv-rnd and route-rnd
 	- consider a ringdove metapackage?
+- librnd 4.3: search for TODO("librnd 4.3.0
 - FEATURE: svg colorspaces: bug_files/TODO/SVG.patch (requires librnd 4.2)
 - DOC: pool node on how to use pixmap for breadboading
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
