@@ -872,8 +872,13 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 		if (c->xmin - bloat <= c2->xmax && c->xmax + bloat >= c2->xmin &&
 				c->ymin - bloat <= c2->ymax && c->ymax + bloat >= c2->ymin) {
 
+			/* if c1 is fully inside c2 that means any point of c1 is inside c2 */
+			if (rnd_poly_contour_inside(c2, v->point))
+				return rnd_true;
+
 			lx = v->point[0];
 			ly = v->point[1];
+
 			for (v = v->next; v != c->head; v = v->next) {
 				x = v->point[0];
 				y = v->point[1];
