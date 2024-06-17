@@ -795,6 +795,63 @@ rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *
 	return pcb_isc_line_poly_blt(ctx, Line, Polygon, Bloat);
 }
 
+TODO("librnd 4.3.0: these should be in polybool.h by 4.3.0")
+rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy);
+rnd_bool rnd_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r);
+
+
+/* return true if a line segment with tickness intersects with the PL;
+   the line seg is specified by centerline endpoints. Thickness is specified
+   by pen radius which is half of the final thickness */
+RND_INLINE rnd_bool pcb_isc_poly_lineseg(const pcb_find_t *ctx, rnd_pline_t *PL, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t pen_radius)
+{
+	double dx, dy;
+	rnd_coord_t ox1[2], oy1[2], ox2[2], oy2[2]; /* endpoints of the two offset-lines */
+	int ispt; /* 1 if the line is really a single point */
+	rnd_pline_t *pl;
+
+	/* fill in the endpoints of the two offset-lines */
+	dx = lx2 - lx1;
+	dy = ly2 - ly1;
+	if ((dx != 0) || (dy != 0)) {
+		double nx, ny, vx, vy, ox, oy, len;
+
+		len = sqrt(dx*dx + dy*dy);
+		vx = (double)dx / len;
+		vy = (double)dy / len;
+		nx = -vy;
+		ny = vx;
+		ox = nx * (double)pen_radius; /* offset vector */
+		oy = ny * (double)pen_radius;
+		ox1[0] = lx1 + ox; oy1[0] = ly1 + oy;
+		ox2[0] = lx2 + ox; oy2[0] = ly2 + oy;
+		ox1[1] = lx1 - ox; oy1[1] = ly1 - oy;
+		ox2[1] = lx2 - ox; oy2[1] = ly2 - oy;
+		ispt = 0;
+	}
+	else
+		ispt = 1;
+
+	/* do the test on each pline in Clipped */
+	for(pl = PL; pl != NULL; pl = pl->next) {
+		/* check if any of the line endpoints' circle intersects; it's really
+		   enough to check the lx1;ly1 circle, since the lx2;ly2 circle is
+		   the same as the next line's lx1;ly1 circle that the caller will
+		   check anyway. This also handles the ispt case */
+		if (rnd_pline_isect_circ(pl, lx1, ly1, pen_radius))
+			return rnd_true;
+
+		if (!ispt) {
+			/* check the two offseted edges */
+			if (rnd_pline_isect_line(pl, ox1[0], oy1[0], ox2[0], oy2[0], NULL, NULL))
+				return rnd_true;
+			if (rnd_pline_isect_line(pl, ox1[1], oy1[1], ox2[1], oy2[1], NULL, NULL))
+				return rnd_true;
+		}
+	}
+
+	return rnd_false;
+}
 
 /* Bloated pline-pline intersection test: trace c1 using thick lines to see if
    it ever touches c2 */
@@ -810,25 +867,20 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 		return rnd_false;
 
 	for (c = c1; c; c = c->next) {
-		pcb_line_t line = {0};
+		rnd_coord_t lx, ly, x, y;
 		rnd_vnode_t *v = c->head;
 		if (c->xmin - bloat <= c2->xmax && c->xmax + bloat >= c2->xmin &&
 				c->ymin - bloat <= c2->ymax && c->ymax + bloat >= c2->ymin) {
 
-			line.Point1.X = v->point[0];
-			line.Point1.Y = v->point[1];
-			line.Thickness = bloat;
-			line.Clearance = 0;
-			line.Flags = pcb_flag_make(PCB_FLAG_SQUARE);
+			lx = v->point[0];
+			ly = v->point[1];
 			for (v = v->next; v != c->head; v = v->next) {
-				line.Point2.X = v->point[0];
-				line.Point2.Y = v->point[1];
-				pcb_line_bbox(&line);
-TODO("This is very expensive: we could use something cheaper here that checks the two offseted thin line edges and one of the end cap circles");
-				if (pcb_isc_line_poly_blt(ctx, &line, P2, bloat))
+				x = v->point[0];
+				y = v->point[1];
+				if (pcb_isc_poly_lineseg(ctx, c2, lx, ly, x, y, bloat-4)) /* -4 for compenasating for rounding errors */
 					return rnd_true;
-				line.Point1.X = line.Point2.X;
-				line.Point1.Y = line.Point2.Y;
+				lx = x;
+				ly = y;
 			}
 		}
 	}
