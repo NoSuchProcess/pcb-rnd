@@ -1171,12 +1171,26 @@ static void pcb_pstk_poly_center(const pcb_pstk_poly_t *poly, rnd_coord_t *cx, r
 	*cy = rnd_round(y);
 }
 
+/* Returns whether x;y lies on the same line as its previous and next corner */
+RND_INLINE int corner_is_coaxial(double x, double y, double px, double py, double nx, double ny)
+{
+	double dx, dy, a, b;
 
+	dy = ny - py;
+	dx = x - px;
+	a = dx * dy;
+
+	dx = nx - px;
+	dy = y - py;
+	b = dx * dy;
+
+	return fabs(a - b) < 8;
+}
 
 void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord_t val)
 {
 	rnd_coord_t cx, cy;
-	int n;
+	int n, elen;
 
 	switch(shp->shape) {
 		case PCB_PSSH_LINE:
@@ -1236,16 +1250,27 @@ void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord
 					p = p_st;
 
 				/* relative: move each point radially */
+				elen = 0; /* effective length: can be less than shp->data.poly.len because of coaxials ignored */
 				for(n = 0; n < shp->data.poly.len; n++) {
-					p[n].x = shp->data.poly.x[n];
-					p[n].y = shp->data.poly.y[n];
+					int np = n-1, nn = n+1;
+					if (np < 0)
+						np = shp->data.poly.len - 1;
+					if (nn == shp->data.poly.len)
+						nn = 0;
+					if (!corner_is_coaxial(shp->data.poly.x[n], shp->data.poly.y[n], shp->data.poly.x[np], shp->data.poly.y[np], shp->data.poly.x[nn], shp->data.poly.y[nn])) {
+						p[elen].x = shp->data.poly.x[n];
+						p[elen].y = shp->data.poly.y[n];
+						elen++;
+					}
 				}
-				rnd_polo_norms(p, shp->data.poly.len);
-				rnd_polo_offs(vl, p, shp->data.poly.len);
-				for(n = 0; n < shp->data.poly.len; n++) {
+
+				rnd_polo_norms(p, elen);
+				rnd_polo_offs(vl, p, elen);
+				for(n = 0; n < elen; n++) {
 					shp->data.poly.x[n] = p[n].x;
 					shp->data.poly.y[n] = p[n].y;
 				}
+				shp->data.poly.len = elen;
 				if (p != p_st)
 					free(p);
 			}
