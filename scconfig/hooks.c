@@ -85,6 +85,12 @@ int hook_custom_arg(const char *key, const char *value)
 		put("/local/pcb/want_static", strue);
 		return 1;
 	}
+	if (strcmp(key, "enable-polybool") == 0) {
+		put("/local/pcb/want_polybool2", sfalse);
+	}
+	if (strcmp(key, "enable-polybool2") == 0) {
+		put("/local/pcb/want_polybool", sfalse);
+	}
 	if (arg_auto_set(key, value, disable_libs) == 0) {
 		fprintf(stderr, "Error: unknown argument %s\n", key);
 		exit(1);
