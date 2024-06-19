@@ -317,6 +317,11 @@ int hook_generate()
 	if (sep != NULL)
 		*sep = '\0';
 
+	if (istrue(get("/local/pcb/want_polybool")) || istrue(get("/local/pcb/want_polybool2")))
+		put("/local/pcb/want_oldpoly", sfalse);
+	else
+		put("/local/pcb/want_oldpoly", strue);
+
 	logprintf(0, "scconfig generate version info: version='%s' rev='%s'\n", version, rev);
 	put("/local/revision", rev);
 	put("/local/version",  version);
@@ -354,6 +359,7 @@ int hook_generate()
 	print_sum_cfg_val("/local/prefix",             "installation prefix (--prefix)");
 	print_sum_cfg_val("/local/confdir",            "configuration directory (--confdir)");
 	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
+	print_sum_cfg_val("/local/pcb/want_oldpoly",   "use the original/old polygon lib (poly)");
 	print_sum_cfg_val("/local/pcb/want_polybool",  "use the first new polygon lib (polybool)");
 	print_sum_cfg_val("/local/pcb/want_polybool2", "use the second new polygon lib (polybool2)");
 
