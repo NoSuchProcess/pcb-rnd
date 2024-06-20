@@ -10,7 +10,7 @@ GLOBARGS=--gui batch -c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1 -
 
 TESTS = \
 thickness.diff overlap.diff netint.diff dwg_area.diff fullpoly.diff \
-zone_clr.diff invchar.diff
+zone_clr.diff invchar.diff poly-poly.diff
 
 test: $(TESTS)
 
@@ -57,6 +57,12 @@ invchar.diff: invchar.out
 
 invchar.out: FORCE
 	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/invchar.lht --gui batch | $(GFLT) | $(FLT) > $(TDIR)/invchar.out
+
+poly-poly.diff: poly-poly.out
+	@diff -u poly-poly.ref poly-poly.out && rm poly-poly.out
+
+poly-poly.out: FORCE
+	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/poly-poly.lht --gui batch | $(GFLT) | $(FLT) > $(TDIR)/poly-poly.out
 
 clean:
 	@echo "a" > dummy.out
