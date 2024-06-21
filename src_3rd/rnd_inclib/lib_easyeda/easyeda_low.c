@@ -17,11 +17,10 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-
 #include <stdlib.h>
 #include <string.h>
 #include "gendom_json.h"
-#include "easyeda_sphash.h"
+
 
 typedef struct str_tab_s str_tab_t;
 
