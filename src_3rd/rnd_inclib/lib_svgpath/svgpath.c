@@ -2,6 +2,7 @@
 #include "svgpath.h"
 
 /*** curve approximations ***/
+
 void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx1, double cy1, double cx2, double cy2, double ex, double ey, double apl2)
 {
 	double step = 0.1, t, lx, ly, x, y;
@@ -22,6 +23,57 @@ void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx
 			mt = 1-t; a = mt*mt*mt; b = 3*mt*mt*t; c = 3*mt*t*t; d = t*t*t;
 			x = a*sx + b*cx1 + c*cx2 + d*ex;
 			y = a*sy + b*cy1 + c*cy2 + d*ey;
+
+			/* adjust stepping */
+			dx = x - lx; dy = y - ly;
+			len2 = dx*dx + dy*dy;
+			error = len2 / apl2;
+			if (error > 1.05) {
+				t -= step;
+				step *= 0.8;
+				t += step;
+			}
+			else if (error < 0.95) {
+				t -= step;
+				step *= 1.2;
+				t += step;
+			}
+			else
+				break;
+		}
+
+
+		if ((lx != x) || (ly != y)) {
+			cfg->line(uctx, lx, ly, x, y);
+			lx = x;
+			ly = y;
+		}
+	}
+
+	if ((lx != ex) || (ly != ey))
+		cfg->line(uctx, lx, ly, ex, ey);
+}
+
+void svgpath_approx_bezier_quadratic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx, double cy, double ex, double ey, double apl2)
+{
+	double step = 0.1, t, lx, ly, x, y;
+
+	if (cfg->line == NULL)
+		return;
+
+	lx = sx; ly = sy;
+
+	for(t = step; t < 1; t += step) {
+		int retries = 0;
+
+		for(retries = 1; retries < 16; retries++) {
+			double mt, a, b, c;
+			double dx, dy, len2, error;
+
+			/* B(t) = (1-t)^2*P0 + 2*(1-t)^2*t*P1 + t^2*P2   @   0 <= t <= 1 */
+			mt = 1-t; a = mt*mt; b = 2*mt*mt*t; c = t*t*t;
+			x = a*sx + b*cx + c*ex;
+			y = a*sy + b*cy + c*ey;
 
 			/* adjust stepping */
 			dx = x - lx; dy = y - ly;
