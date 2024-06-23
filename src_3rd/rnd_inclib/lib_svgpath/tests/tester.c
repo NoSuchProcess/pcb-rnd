@@ -35,7 +35,7 @@ int main()
 	res = svgpath_render(&cfg, fout, path);
 
 	fprintf(fout, "\n<!-- res=%d -->\n", res);
-	fprintf(fout, "</svg>");
+	fprintf(fout, "</svg>\n");
 
 	return res;
 }
