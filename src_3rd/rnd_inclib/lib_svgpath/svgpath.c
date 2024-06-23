@@ -4,7 +4,32 @@
 /*** curve approximations ***/
 void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx1, double cy1, double cx2, double cy2, double ex, double ey, double apl2)
 {
-	
+	double step = 0.1, t, lx, ly, x, y;
+
+	if (cfg->line == NULL)
+		return;
+
+	lx = sx; ly = sy;
+
+	for(t = step; t < 1; t += step) {
+		double mt = 1-t;
+		double a = mt*mt*mt, b = 3*mt*mt*t, c = 3*mt*t*t, d = t*t*t;
+
+		/* B(t) = (1-t)^3*P0 + 3*(1-t)^2*t*P1 + 3*(1-t)*t^2*P2 + t^3*P3   @   0 <= t <= 1 */
+		x = a*sx + b*cx1 + c*cx2 + d*ex;
+		y = a*sy + b*cy1 + c*cy2 + d*ey;
+
+		/* TODO: adjust step */
+
+		if ((lx != x) || (ly != y)) {
+			cfg->line(uctx, lx, ly, x, y);
+			lx = x;
+			ly = y;
+		}
+	}
+
+	if ((lx != ex) || (ly != ey))
+			cfg->line(uctx, lx, ly, x, y);
 }
 
 /*** parser ***/
