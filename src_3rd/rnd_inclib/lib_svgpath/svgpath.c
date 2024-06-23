@@ -90,6 +90,47 @@ static const char *sp_line(ctx_t *ctx, const char *s, int relative)
 	return s;
 }
 
+
+static const char *sp_hvline(ctx_t *ctx, const char *s, int relative, int is_vert)
+{
+	double end, ex, ey;
+	int len, convr;
+
+	if (!ctx->cursor_valid) {
+		sp_error(ctx, s, "No valid cursor (M) before H or h or V or v");
+		return s;
+	}
+
+	convr = sscanf(s, "%lf%n", &end, &len);
+	if (convr != 1) {
+		sp_error(ctx, s, "Expected one decimal for H or h or V or v");
+		return s;
+	}
+	s += len;
+
+	ex = ctx->x;
+	ey = ctx->y;
+	if (relative) {
+		if (is_vert)
+			ey += end;
+		else
+			ex += end;
+	}
+	else {
+		if (is_vert)
+			ey = end;
+		else
+			ex =end;
+	}
+
+	sp_lin(ctx, ctx->x, ctx->y, ex, ey);
+
+	ctx->x = ex;
+	ctx->y = ey;
+
+	return s;
+}
+
 static const char *sp_close(ctx_t *ctx, const char *s)
 {
 	if (!ctx->cursor_valid) {
@@ -126,6 +167,8 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 			case '\0': return 0;
 			case 'M': case 'm': s = sp_move(&ctx, s+1, (*s == 'm')); break;
 			case 'L': case 'l': s = sp_line(&ctx, s+1, (*s == 'l')); break;
+			case 'H': case 'h': s = sp_hvline(&ctx, s+1, (*s == 'h'), 0); break;
+			case 'V': case 'v': s = sp_hvline(&ctx, s+1, (*s == 'v'), 1); break;
 			case 'Z': case 'z': s = sp_close(&ctx, s+1); break;
 			default:
 				sp_error(&ctx, s, "Invalid command");
