@@ -50,7 +50,7 @@ void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx
 	}
 
 	if ((lx != ex) || (ly != ey))
-			cfg->line(uctx, lx, ly, x, y);
+		cfg->line(uctx, lx, ly, ex, ey);
 }
 
 /*** instruction parser ***/
