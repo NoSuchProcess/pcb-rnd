@@ -12,14 +12,35 @@ void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx
 	lx = sx; ly = sy;
 
 	for(t = step; t < 1; t += step) {
-		double mt = 1-t;
-		double a = mt*mt*mt, b = 3*mt*mt*t, c = 3*mt*t*t, d = t*t*t;
+		int retries = 0;
 
-		/* B(t) = (1-t)^3*P0 + 3*(1-t)^2*t*P1 + 3*(1-t)*t^2*P2 + t^3*P3   @   0 <= t <= 1 */
-		x = a*sx + b*cx1 + c*cx2 + d*ex;
-		y = a*sy + b*cy1 + c*cy2 + d*ey;
+		for(retries = 1; retries < 16; retries++) {
+			double mt, a, b, c, d;
+			double dx, dy, len2, error;
 
-		/* TODO: adjust step */
+			/* B(t) = (1-t)^3*P0 + 3*(1-t)^2*t*P1 + 3*(1-t)*t^2*P2 + t^3*P3   @   0 <= t <= 1 */
+			mt = 1-t; a = mt*mt*mt; b = 3*mt*mt*t; c = 3*mt*t*t; d = t*t*t;
+			x = a*sx + b*cx1 + c*cx2 + d*ex;
+			y = a*sy + b*cy1 + c*cy2 + d*ey;
+
+			/* adjust stepping */
+			dx = x - lx; dy = y - ly;
+			len2 = dx*dx + dy*dy;
+			error = len2 / apl2;
+			if (error > 1.05) {
+				t -= step;
+				step *= 0.8;
+				t += step;
+			}
+			else if (error < 0.95) {
+				t -= step;
+				step *= 1.2;
+				t += step;
+			}
+			else
+				break;
+		}
+
 
 		if ((lx != x) || (ly != y)) {
 			cfg->line(uctx, lx, ly, x, y);
