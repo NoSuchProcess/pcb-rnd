@@ -294,6 +294,40 @@ static const char *sp_bezier_cubic_cont(ctx_t *ctx, const char *s, int relative)
 	return s;
 }
 
+/* internal instruction dispatch; s points to the args; my_last_cmd is updated
+   if there's an explicit instruction */
+static const char *svgpath_render_instruction(ctx_t *ctx, char inst, const char *s, const char *errmsg, char *my_last_cmd)
+{
+	if (my_last_cmd != NULL)
+		*my_last_cmd = inst;
+
+	switch(inst) {
+		case 'M': case 'm': return sp_move(ctx, s, (inst == 'm'));
+		case 'L': case 'l': return sp_line(ctx, s, (inst == 'l'));
+		case 'H': case 'h': return sp_hvline(ctx, s, (inst == 'h'), 0);
+		case 'V': case 'v': return sp_hvline(ctx, s, (inst == 'v'), 1);
+		case 'Z': case 'z': return sp_close(ctx, s);
+		case 'C': case 'c': return sp_bezier_cubic(ctx, s, (inst == 'c'));
+		case 'S': case 's': return sp_bezier_cubic_cont(ctx, s, (inst == 's'));
+
+		/* special case: most commands can be continued by simply
+		   going on listing numerics */
+		case '-': case '+':
+		case '0': case '1': case '2': case '3': case '4':
+		case '5': case '6': case '7': case '8': case '9':
+			if (my_last_cmd != NULL) {
+				*my_last_cmd = ctx->last_cmd;
+				return svgpath_render_instruction(ctx, ctx->last_cmd, s-1, "Invalid multiple args for this command", NULL);
+			}
+			else
+				sp_error(ctx, s, "internal error: double-continuation");
+			break;
+
+		default: sp_error(ctx, s, errmsg);
+	}
+	return s;
+}
+
 /*** path parser ***/
 
 int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
@@ -312,20 +346,12 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 		char last_cmd;
 
 		while(isspace(*s)) s++;
-		last_cmd = *s;
 
-		switch(*s) {
-			case '\0': return 0;
-			case 'M': case 'm': s = sp_move(&ctx, s+1, (*s == 'm')); break;
-			case 'L': case 'l': s = sp_line(&ctx, s+1, (*s == 'l')); break;
-			case 'H': case 'h': s = sp_hvline(&ctx, s+1, (*s == 'h'), 0); break;
-			case 'V': case 'v': s = sp_hvline(&ctx, s+1, (*s == 'v'), 1); break;
-			case 'Z': case 'z': s = sp_close(&ctx, s+1); break;
-			case 'C': case 'c': s = sp_bezier_cubic(&ctx, s+1, (*s == 'c')); break;
-			case 'S': case 's': s = sp_bezier_cubic_cont(&ctx, s+1, (*s == 's')); break;
-			default:
-				sp_error(&ctx, s, "Invalid command");
-		}
+		/* reached end of path after the last fully processed instruction */
+		if (*s == '\0')
+			return 0;
+
+		s = svgpath_render_instruction(&ctx, *s, s+1, "Invalid command", &last_cmd);
 
 		if (ctx.error)
 			return -1;
