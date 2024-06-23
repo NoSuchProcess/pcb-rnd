@@ -1,11 +1,19 @@
 #include <ctype.h>
 #include "svgpath.h"
 
+/*** curve approximations ***/
+void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx1, double cy1, double cx2, double cy2, double ex, double ey, double apl2)
+{
+	
+}
+
+/*** parser ***/
+
 typedef struct ctx_s {
 	const svgpath_cfg_t *cfg;
 	void *uctx;
 	const char *path;
-	double approx_len;
+	double approx_len, approx_len2;
 
 	double startx, starty;
 	double x, y; /* cursor */
@@ -149,6 +157,46 @@ static const char *sp_close(ctx_t *ctx, const char *s)
 	return s;
 }
 
+static const char *sp_bezier_cubic(ctx_t *ctx, const char *s, int relative)
+{
+	double cx1, cy1, cx2, cy2, ex, ey;
+	int len, convr;
+
+	if (!ctx->cursor_valid) {
+		sp_error(ctx, s, "No valid cursor (M) before C or c");
+		return s;
+	}
+
+	convr = sscanf(s, "%lf %lf, %lf %lf, %lf %lf%n", &cx1, &cy1, &cx2, &cy2, &ex, &ey, &len);
+	if (convr != 6) {
+		sp_error(ctx, s, "Expected six decimals for C or c");
+		return s;
+	}
+	s += len;
+
+	if (relative) {
+		cx1 += ctx->x;
+		cy1 += ctx->y;
+		cx2 += ctx->x;
+		cy2 += ctx->y;
+		ex += ctx->x;
+		ey += ctx->y;
+	}
+
+	if (ctx->cfg->bezier_cubic == NULL) {
+		if (ctx->approx_len2 == 0)
+			ctx->approx_len2 = ctx->approx_len * ctx->approx_len;
+		svgpath_approx_bezier_cubic(ctx->cfg, ctx->uctx, ctx->x, ctx->y, cx1, cy1, cx2, cy2, ex, ey, ctx->approx_len2);
+	}
+	else
+		ctx->cfg->bezier_cubic(ctx->uctx, ctx->x, ctx->y, cx1, cy1, cx2, cy2, ex, ey);
+
+	ctx->x = ex;
+	ctx->y = ey;
+
+	return s;
+}
+
 
 int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 {
@@ -156,6 +204,7 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 	ctx_t ctx;
 
 	ctx.approx_len = (cfg->curve_approx_seglen > 0) ? cfg->curve_approx_seglen : 1.0;
+	ctx.approx_len2 = 0;
 	ctx.uctx = uctx;
 	ctx.path = path;
 	ctx.cfg = cfg;
@@ -170,6 +219,7 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 			case 'H': case 'h': s = sp_hvline(&ctx, s+1, (*s == 'h'), 0); break;
 			case 'V': case 'v': s = sp_hvline(&ctx, s+1, (*s == 'v'), 1); break;
 			case 'Z': case 'z': s = sp_close(&ctx, s+1); break;
+			case 'C': case 'c': s = sp_bezier_cubic(&ctx, s+1, (*s == 'c')); break;
 			default:
 				sp_error(&ctx, s, "Invalid command");
 		}
