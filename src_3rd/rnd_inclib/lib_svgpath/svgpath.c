@@ -63,9 +63,12 @@ typedef struct ctx_s {
 
 	double startx, starty;
 	double x, y; /* cursor */
+
+	char last_cmd; /* command byte of the previous command - for _cont() functions to figure if they are continuing the right curve */
 	double last_ccx2, last_ccy2; /* last control point2 for cubic Bezier continuation; relative to the endpoint */
-	unsigned cursor_valid:1;
-	unsigned error:1;
+
+	unsigned cursor_valid:1; /* if x;y is set */
+	unsigned error:1;        /* path has a fatal error, quit */
 } ctx_t;
 
 static void sp_error(ctx_t *ctx, const char *s, const char *errmsg)
@@ -274,8 +277,18 @@ static const char *sp_bezier_cubic_cont(ctx_t *ctx, const char *s, int relative)
 		ey += ctx->y;
 	}
 
-	cx1 = ctx->x + ctx->last_ccx2;
-	cy1 = ctx->y + ctx->last_ccy2;
+	/* take control point 1 from the previous */
+	switch(ctx->last_cmd) {
+		case 'C': case 'c':
+		case 'S': case 's':
+			cx1 = ctx->x + ctx->last_ccx2;
+			cy1 = ctx->y + ctx->last_ccy2;
+			break;
+		default:
+			/* the spec says if the previous command was not a curve command, use the starting point for control point 1 */
+			cx1 = ctx->x;
+			cy1 = ctx->y;
+	}
 	sp_bezier_cubic_common(ctx, cx1, cy1, cx2, cy2, ex, ey);
 
 	return s;
@@ -296,7 +309,11 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 	ctx.cursor_valid = 0;
 
 	for(s = path;;) {
+		char last_cmd;
+
 		while(isspace(*s)) s++;
+		last_cmd = *s;
+
 		switch(*s) {
 			case '\0': return 0;
 			case 'M': case 'm': s = sp_move(&ctx, s+1, (*s == 'm')); break;
@@ -309,8 +326,11 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 			default:
 				sp_error(&ctx, s, "Invalid command");
 		}
+
 		if (ctx.error)
 			return -1;
+
+		ctx.last_cmd = last_cmd;
 	}
 
 	return 0;
