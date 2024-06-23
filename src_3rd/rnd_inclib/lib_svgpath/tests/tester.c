@@ -27,6 +27,7 @@ int main()
 
 	cfg.line = svg_print_line;
 	cfg.error = svg_print_error;
+	cfg.curve_approx_seglen = 5;
 	fout = stdout;
 
 	fprintf(fout, "<?xml version=\"1.0\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"1000\" height=\"1000\" viewBox=\"0 0 1000 1000\">\n");
