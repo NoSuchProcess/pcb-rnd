@@ -70,8 +70,8 @@ void svgpath_approx_bezier_quadratic(const svgpath_cfg_t *cfg, void *uctx, doubl
 			double mt, a, b, c;
 			double dx, dy, len2, error;
 
-			/* B(t) = (1-t)^2*P0 + 2*(1-t)^2*t*P1 + t^2*P2   @   0 <= t <= 1 */
-			mt = 1-t; a = mt*mt; b = 2*mt*mt*t; c = t*t*t;
+			/* B(t) = (1-t)^2*P0 + 2*(1-t)*t*P1 + t^2*P2   @   0 <= t <= 1 */
+			mt = 1-t; a = mt*mt; b = 2*mt*t; c = t*t;
 			x = a*sx + b*cx + c*ex;
 			y = a*sy + b*cy + c*ey;
 
@@ -346,6 +346,89 @@ static const char *sp_bezier_cubic_cont(ctx_t *ctx, const char *s, int relative)
 	return s;
 }
 
+static void sp_bezier_quadratic_common(ctx_t *ctx, double cx, double cy, double ex, double ey)
+{
+	if (ctx->cfg->bezier_quadratic == NULL) {
+		if (ctx->approx_len2 == 0)
+			ctx->approx_len2 = ctx->approx_len * ctx->approx_len;
+		svgpath_approx_bezier_quadratic(ctx->cfg, ctx->uctx, ctx->x, ctx->y, cx, cy, ex, ey, ctx->approx_len2);
+	}
+	else
+		ctx->cfg->bezier_quadratic(ctx->uctx, ctx->x, ctx->y, cx, cy, ex, ey);
+
+	ctx->last_ccx2 = ex - cx;
+	ctx->last_ccy2 = ey - cy;
+	ctx->x = ex;
+	ctx->y = ey;
+}
+
+static const char *sp_bezier_quadratic(ctx_t *ctx, const char *s, int relative)
+{
+	double cx, cy, ex, ey;
+	int len, convr;
+
+	if (!ctx->cursor_valid) {
+		sp_error(ctx, s, "No valid cursor (M) before Q or q");
+		return s;
+	}
+
+	convr = sscanf(s, "%lf %lf %lf %lf%n", &cx, &cy, &ex, &ey, &len);
+	if (convr != 4) {
+		sp_error(ctx, s, "Expected four decimals for Q or q");
+		return s;
+	}
+	s += len;
+
+	if (relative) {
+		cx += ctx->x;
+		cy += ctx->y;
+		ex += ctx->x;
+		ey += ctx->y;
+	}
+
+	sp_bezier_quadratic_common(ctx, cx, cy, ex, ey);
+	return s;
+}
+
+static const char *sp_bezier_quadratic_cont(ctx_t *ctx, const char *s, int relative)
+{
+	double cx, cy, ex, ey;
+	int len, convr;
+
+	if (!ctx->cursor_valid) {
+		sp_error(ctx, s, "No valid cursor (M) before T or t");
+		return s;
+	}
+
+	convr = sscanf(s, "%lf %lf%n", &ex, &ey, &len);
+	if (convr != 2) {
+		sp_error(ctx, s, "Expected six decimals for T or t");
+		return s;
+	}
+	s += len;
+
+	if (relative) {
+		ex += ctx->x;
+		ey += ctx->y;
+	}
+
+	/* take control point 1 from the previous */
+	switch(ctx->last_cmd) {
+		case 'Q': case 'q':
+		case 'T': case 't':
+			cx = ctx->x + ctx->last_ccx2;
+			cy = ctx->y + ctx->last_ccy2;
+			break;
+		default:
+			/* the spec says if the previous command was not a curve command, use the starting point for control point 1 */
+			cx = ctx->x;
+			cy = ctx->y;
+	}
+	sp_bezier_quadratic_common(ctx, cx, cy, ex, ey);
+
+	return s;
+}
+
 /* internal instruction dispatch; s points to the args; my_last_cmd is updated
    if there's an explicit instruction */
 static const char *svgpath_render_instruction(ctx_t *ctx, char inst, const char *s, const char *errmsg, char *my_last_cmd)
@@ -361,6 +444,8 @@ static const char *svgpath_render_instruction(ctx_t *ctx, char inst, const char 
 		case 'Z': case 'z': return sp_close(ctx, s);
 		case 'C': case 'c': return sp_bezier_cubic(ctx, s, (inst == 'c'));
 		case 'S': case 's': return sp_bezier_cubic_cont(ctx, s, (inst == 's'));
+		case 'Q': case 'q': return sp_bezier_quadratic(ctx, s, (inst == 'c'));
+		case 'T': case 't': return sp_bezier_quadratic_cont(ctx, s, (inst == 's'));
 
 		/* special case: most commands can be continued by simply
 		   going on listing numerics */
