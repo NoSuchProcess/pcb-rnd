@@ -24,4 +24,7 @@ then
 	echo ""
 	echo "QC PASS"
 	echo ""
+	exit 0
+else
+	exit 1
 fi
