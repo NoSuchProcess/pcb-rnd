@@ -53,7 +53,7 @@ void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx
 			cfg->line(uctx, lx, ly, x, y);
 }
 
-/*** parser ***/
+/*** instruction parser ***/
 
 typedef struct ctx_s {
 	const svgpath_cfg_t *cfg;
@@ -63,6 +63,7 @@ typedef struct ctx_s {
 
 	double startx, starty;
 	double x, y; /* cursor */
+	double last_ccx2, last_ccy2; /* last control point2 for cubic Bezier continuation; relative to the endpoint */
 	unsigned cursor_valid:1;
 	unsigned error:1;
 } ctx_t;
@@ -203,6 +204,22 @@ static const char *sp_close(ctx_t *ctx, const char *s)
 	return s;
 }
 
+static void sp_bezier_cubic_common(ctx_t *ctx, double cx1, double cy1, double cx2, double cy2, double ex, double ey)
+{
+	if (ctx->cfg->bezier_cubic == NULL) {
+		if (ctx->approx_len2 == 0)
+			ctx->approx_len2 = ctx->approx_len * ctx->approx_len;
+		svgpath_approx_bezier_cubic(ctx->cfg, ctx->uctx, ctx->x, ctx->y, cx1, cy1, cx2, cy2, ex, ey, ctx->approx_len2);
+	}
+	else
+		ctx->cfg->bezier_cubic(ctx->uctx, ctx->x, ctx->y, cx1, cy1, cx2, cy2, ex, ey);
+
+	ctx->last_ccx2 = ex - cx2;
+	ctx->last_ccy2 = ey - cy2;
+	ctx->x = ex;
+	ctx->y = ey;
+}
+
 static const char *sp_bezier_cubic(ctx_t *ctx, const char *s, int relative)
 {
 	double cx1, cy1, cx2, cy2, ex, ey;
@@ -229,20 +246,42 @@ static const char *sp_bezier_cubic(ctx_t *ctx, const char *s, int relative)
 		ey += ctx->y;
 	}
 
-	if (ctx->cfg->bezier_cubic == NULL) {
-		if (ctx->approx_len2 == 0)
-			ctx->approx_len2 = ctx->approx_len * ctx->approx_len;
-		svgpath_approx_bezier_cubic(ctx->cfg, ctx->uctx, ctx->x, ctx->y, cx1, cy1, cx2, cy2, ex, ey, ctx->approx_len2);
-	}
-	else
-		ctx->cfg->bezier_cubic(ctx->uctx, ctx->x, ctx->y, cx1, cy1, cx2, cy2, ex, ey);
+	sp_bezier_cubic_common(ctx, cx1, cy1, cx2, cy2, ex, ey);
+	return s;
+}
 
-	ctx->x = ex;
-	ctx->y = ey;
+static const char *sp_bezier_cubic_cont(ctx_t *ctx, const char *s, int relative)
+{
+	double cx1, cy1, cx2, cy2, ex, ey;
+	int len, convr;
+
+	if (!ctx->cursor_valid) {
+		sp_error(ctx, s, "No valid cursor (M) before C or c");
+		return s;
+	}
+
+	convr = sscanf(s, "%lf %lf, %lf %lf%n", &cx2, &cy2, &ex, &ey, &len);
+	if (convr != 4) {
+		sp_error(ctx, s, "Expected six decimals for C or c");
+		return s;
+	}
+	s += len;
+
+	if (relative) {
+		cx2 += ctx->x;
+		cy2 += ctx->y;
+		ex += ctx->x;
+		ey += ctx->y;
+	}
+
+	cx1 = ctx->x + ctx->last_ccx2;
+	cy1 = ctx->y + ctx->last_ccy2;
+	sp_bezier_cubic_common(ctx, cx1, cy1, cx2, cy2, ex, ey);
 
 	return s;
 }
 
+/*** path parser ***/
 
 int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 {
@@ -266,6 +305,7 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 			case 'V': case 'v': s = sp_hvline(&ctx, s+1, (*s == 'v'), 1); break;
 			case 'Z': case 'z': s = sp_close(&ctx, s+1); break;
 			case 'C': case 'c': s = sp_bezier_cubic(&ctx, s+1, (*s == 'c')); break;
+			case 'S': case 's': s = sp_bezier_cubic_cont(&ctx, s+1, (*s == 's')); break;
 			default:
 				sp_error(&ctx, s, "Invalid command");
 		}
