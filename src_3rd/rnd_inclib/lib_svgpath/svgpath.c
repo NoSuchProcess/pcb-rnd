@@ -25,6 +25,8 @@
 #include <math.h>
 #include "svgpath.h"
 
+#define SVG_PI 3.14159265358979323846
+
 /*** curve approximations ***/
 
 void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx1, double cy1, double cx2, double cy2, double ex, double ey, double apl2)
@@ -549,7 +551,7 @@ static const char *sp_earc(ctx_t *ctx, const char *s, int relative)
 
 	sx = ctx->x;
 	sy = ctx->y;
-	rot = rotdeg * M_PI / 180.0;
+	rot = rotdeg * SVG_PI / 180.0;
 	rotsin = sin(rot);
 	rotcos = cos(rot);
 
@@ -629,9 +631,9 @@ static const char *sp_earc(ctx_t *ctx, const char *s, int relative)
 		da = -da;
 
 	if (sweep && da < 0)
-		da += M_PI * 2;
+		da += SVG_PI * 2;
 	else if (!sweep && da > 0)
-		da -= M_PI * 2;
+		da -= SVG_PI * 2;
 
 	/* render carc or earc or line approx */
 	if ((rx == ry) && (ctx->cfg->carc != NULL)) {
