@@ -530,8 +530,9 @@ static const char *sp_earc(ctx_t *ctx, const char *s, int relative)
 	rotsin = sin(rot);
 	rotcos = cos(rot);
 
-	/* Conversion to centerpoint representation is based on the SVG implementation
-	   notes at https://www.w3.org/TR/SVG/implnote.html */
+	/* Conversion to centerpoint representation is based on the SVG
+	   implementation notes at https://www.w3.org/TR/SVG/implnote.html
+	   plus reading an old version of the rsvg implementation */
 
 	/* degenerate cases as per B.2.5. */
 	if (rx < 0) rx = -rx;
