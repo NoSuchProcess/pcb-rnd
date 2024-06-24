@@ -133,7 +133,7 @@ void svgpath_approx_bezier_quadratic(const svgpath_cfg_t *cfg, void *uctx, doubl
 
 void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx, double cy, double rx, double ry, double sa, double da, double rot, double ex, double ey, double apl2)
 {
-	double step, a, ea, lx, ly, x, y, rotcos, rotsin, ada, len;
+	double step, a, ea, lx, ly, x, y, rotcos, rotsin, ada, len, apl, nsteps, minsteps;
 
 	if (cfg->line == NULL)
 		return;
@@ -147,9 +147,17 @@ void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double sx, double
 	}
 
 	/* initial estimation on step based on length of curve */
+	apl = sqrt(apl2);
 	ada = fabs(da);
 	len = (rx+ry)/2 * ada;
-	step = ada / (len / sqrt(apl2));
+	nsteps = (len / apl);
+	minsteps = ada+3;
+	if (nsteps < minsteps) {
+		nsteps = minsteps;
+		apl = len / nsteps;
+		apl2 = apl*apl;
+	}
+	step = ada / nsteps;
 
 	a = sa;
 	a += ((da >= 0) ? step : -step);
