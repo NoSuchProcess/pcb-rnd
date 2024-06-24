@@ -106,9 +106,74 @@ void svgpath_approx_bezier_quadratic(const svgpath_cfg_t *cfg, void *uctx, doubl
 		cfg->line(uctx, lx, ly, ex, ey);
 }
 
-void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double cx, double cy, double sa, double da, double rot, double ex, double ey, double apl2)
+void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx, double cy, double rx, double ry, double sa, double da, double rot, double ex, double ey, double apl2)
 {
+	double step, a, ea, lx, ly, x, y, rotcos, rotsin, ada, len;
 
+	if (cfg->line == NULL)
+		return;
+
+	lx = sx; ly = sy;
+	ea = sa + da;
+	if (rot != 0) {
+		rotcos = cos(rot);
+		rotsin = sin(rot);
+	}
+
+	/* initial estimation on step based on length of curve */
+	ada = fabs(da);
+	len = (rx+ry)/2 * ada;
+	step = ada / (len / sqrt(apl2));
+
+	a = sa;
+	a += ((da >= 0) ? step : -step);
+
+	for(; ((da >= 0) ? a < ea : a > ea); a += ((da >= 0) ? step : -step)) {
+		int retries = 0;
+
+		for(retries = 1; retries < 16; retries++) {
+			double dx, dy, len2, error;
+
+			/* update x;y */
+			dx = cos(a) * rx;
+			dy = sin(a) * ry;
+			if (rot == 0) {
+				x = cx + dx;
+				y = cy + dy;
+			}
+			else{
+				x = cx + dx * rotcos + dy * rotsin;
+				y = cy + dy * rotcos - dx * rotsin;
+			}
+
+			/* adjust stepping */
+			dx = x - lx; dy = y - ly;
+			len2 = dx*dx + dy*dy;
+			error = len2 / apl2;
+			if (error > 1.05) {
+				a -= ((da >= 0) ? step : -step);
+				step *= 0.8;
+				a += ((da >= 0) ? step : -step);
+			}
+			else if (error < 0.95) {
+				a -= ((da >= 0) ? step : -step);
+				step *= 1.2;
+				a += ((da >= 0) ? step : -step);
+			}
+			else
+				break;
+		}
+
+
+		if ((lx != x) || (ly != y)) {
+			cfg->line(uctx, lx, ly, x, y);
+			lx = x;
+			ly = y;
+		}
+	}
+
+	if ((lx != ex) || (ly != ey))
+		cfg->line(uctx, lx, ly, ex, ey);
 }
 
 /*** instruction parser ***/
@@ -553,7 +618,7 @@ static const char *sp_earc(ctx_t *ctx, const char *s, int relative)
 	else {
 		if (ctx->approx_len2 == 0)
 			ctx->approx_len2 = ctx->approx_len * ctx->approx_len;
-		svgpath_approx_earc(ctx->cfg, ctx->uctx, cx, cy, sa, da, rot, ex, ey, ctx->approx_len2);
+		svgpath_approx_earc(ctx->cfg, ctx->uctx, ctx->x, ctx->y, cx, cy, rx, ry, sa, da, rot, ex, ey, ctx->approx_len2);
 	}
 
 	fin:;

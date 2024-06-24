@@ -48,6 +48,6 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path);
 /* Curve approximation with lines; apl2 is curve_approx_seglen^2 */
 void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx1, double cy1, double cx2, double cy2, double ex, double ey, double apl2);
 void svgpath_approx_bezier_quadratic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx, double cy, double ex, double ey, double apl2);
-void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double cx, double cy, double sa, double da, double rot, double ex, double ey, double apl2);
+void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx, double cy, double rx, double ry, double sa, double da, double rot, double ex, double ey, double apl2);
 
 #endif
