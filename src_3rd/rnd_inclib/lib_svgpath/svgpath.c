@@ -116,6 +116,7 @@ void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double sx, double
 	lx = sx; ly = sy;
 	ea = sa + da;
 	if (rot != 0) {
+		rot = -rot;
 		rotcos = cos(rot);
 		rotsin = sin(rot);
 	}
