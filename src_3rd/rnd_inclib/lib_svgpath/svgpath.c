@@ -20,9 +20,9 @@
 */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <ctype.h>
 #include <math.h>
+#include <stdarg.h>
 #include "svgpath.h"
 
 #define SVG_PI 3.14159265358979323846
@@ -202,6 +202,66 @@ void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double sx, double
 		cfg->line(uctx, lx, ly, ex, ey);
 }
 
+/*** low level string->num converter ***/
+
+/* Read numbers from s into vararg ptrs as scripted by fmt chars:
+   - d: read a double
+   - i: read an int
+   - l: read a long
+   Return the number of elements read or negative on error
+*/
+static int load_nums(const char **str, const char *fmt, ...)
+{
+	int res = 0, *i;
+	char *end;
+	const char *s = *str;
+	double *d;
+	long *l;
+	va_list ap;
+
+	va_start(ap, fmt);
+
+#define is_sep(c) (isspace(c) || ((c) == ','))
+
+	for(;;) {
+		res++;
+		while(is_sep(*s)) s++;
+		switch(*fmt) {
+			case 'd':
+				d = va_arg(ap, double *);
+				*d = strtod(s, &end);
+				break;
+			case 'i':
+				i = va_arg(ap, int *);
+				*i = strtol(s, &end, 10);
+				break;
+			case 'l':
+				l = va_arg(ap, long *);
+				*l = strtol(s, &end, 10);
+				break;
+			default:
+				abort(); /* interal error, called with invalid fmt */
+		}
+
+		s = end;
+		fmt++;
+		if (*fmt == '\0')
+			goto fin;
+
+		if (!is_sep(*end)) {
+			res = -res;
+			goto fin;
+		}
+	}
+
+#undef issep
+
+	fin:;
+	*str = s;
+	va_end(ap);
+	return res;
+}
+
 /*** instruction parser ***/
 
 typedef struct ctx_s {
@@ -241,14 +301,11 @@ static void sp_lin(ctx_t *ctx, double x1, double y1, double x2, double y2)
 static const char *sp_move(ctx_t *ctx, const char *s, int relative)
 {
 	double x, y;
-	int len, convr;
 
-	convr = sscanf(s, "%lf %lf%n", &x, &y, &len);
-	if (convr != 2) {
+	if (load_nums(&s, "dd", &x, &y) != 2) {
 		sp_error(ctx, s, "Expected two decimals for M or m");
 		return s;
 	}
-	s += len;
 
 	if (!ctx->cursor_valid || !relative) {
 		ctx->x = x;
@@ -270,19 +327,16 @@ static const char *sp_move(ctx_t *ctx, const char *s, int relative)
 static const char *sp_line(ctx_t *ctx, const char *s, int relative)
 {
 	double ex, ey;
-	int len, convr;
 
 	if (!ctx->cursor_valid) {
 		sp_error(ctx, s, "No valid cursor (M) before L or l");
 		return s;
 	}
 
-	convr = sscanf(s, "%lf %lf%n", &ex, &ey, &len);
-	if (convr != 2) {
+	if (load_nums(&s, "dd", &ex, &ey) != 2) {
 		sp_error(ctx, s, "Expected two decimals for L or l");
 		return s;
 	}
-	s += len;
 
 	if (relative) {
 		ex += ctx->x;
@@ -301,19 +355,16 @@ static const char *sp_line(ctx_t *ctx, const char *s, int relative)
 static const char *sp_hvline(ctx_t *ctx, const char *s, int relative, int is_vert)
 {
 	double end, ex, ey;
-	int len, convr;
 
 	if (!ctx->cursor_valid) {
 		sp_error(ctx, s, "No valid cursor (M) before H or h or V or v");
 		return s;
 	}
 
-	convr = sscanf(s, "%lf%n", &end, &len);
-	if (convr != 1) {
+	if (load_nums(&s, "d", &end) != 1) {
 		sp_error(ctx, s, "Expected one decimal for H or h or V or v");
 		return s;
 	}
-	s += len;
 
 	ex = ctx->x;
 	ey = ctx->y;
@@ -375,19 +426,16 @@ static void sp_bezier_cubic_common(ctx_t *ctx, double cx1, double cy1, double cx
 static const char *sp_bezier_cubic(ctx_t *ctx, const char *s, int relative)
 {
 	double cx1, cy1, cx2, cy2, ex, ey;
-	int len, convr;
 
 	if (!ctx->cursor_valid) {
 		sp_error(ctx, s, "No valid cursor (M) before C or c");
 		return s;
 	}
 
-	convr = sscanf(s, "%lf %lf, %lf %lf, %lf %lf%n", &cx1, &cy1, &cx2, &cy2, &ex, &ey, &len);
-	if (convr != 6) {
+	if (load_nums(&s, "dddddd", &cx1, &cy1, &cx2, &cy2, &ex, &ey) != 6) {
 		sp_error(ctx, s, "Expected six decimals for C or c");
 		return s;
 	}
-	s += len;
 
 	if (relative) {
 		cx1 += ctx->x;
@@ -405,19 +453,16 @@ static const char *sp_bezier_cubic(ctx_t *ctx, const char *s, int relative)
 static const char *sp_bezier_cubic_cont(ctx_t *ctx, const char *s, int relative)
 {
 	double cx1, cy1, cx2, cy2, ex, ey;
-	int len, convr;
 
 	if (!ctx->cursor_valid) {
 		sp_error(ctx, s, "No valid cursor (M) before C or c");
 		return s;
 	}
 
-	convr = sscanf(s, "%lf %lf, %lf %lf%n", &cx2, &cy2, &ex, &ey, &len);
-	if (convr != 4) {
+	if (load_nums(&s, "dddd", &cx2, &cy2, &ex, &ey) != 4) {
 		sp_error(ctx, s, "Expected six decimals for C or c");
 		return s;
 	}
-	s += len;
 
 	if (relative) {
 		cx2 += ctx->x;
@@ -462,19 +507,16 @@ static void sp_bezier_quadratic_common(ctx_t *ctx, double cx, double cy, double 
 static const char *sp_bezier_quadratic(ctx_t *ctx, const char *s, int relative)
 {
 	double cx, cy, ex, ey;
-	int len, convr;
 
 	if (!ctx->cursor_valid) {
 		sp_error(ctx, s, "No valid cursor (M) before Q or q");
 		return s;
 	}
 
-	convr = sscanf(s, "%lf %lf %lf %lf%n", &cx, &cy, &ex, &ey, &len);
-	if (convr != 4) {
+	if (load_nums(&s, "dddd", &cx, &cy, &ex, &ey) != 4) {
 		sp_error(ctx, s, "Expected four decimals for Q or q");
 		return s;
 	}
-	s += len;
 
 	if (relative) {
 		cx += ctx->x;
@@ -490,19 +532,16 @@ static const char *sp_bezier_quadratic(ctx_t *ctx, const char *s, int relative)
 static const char *sp_bezier_quadratic_cont(ctx_t *ctx, const char *s, int relative)
 {
 	double cx, cy, ex, ey;
-	int len, convr;
 
 	if (!ctx->cursor_valid) {
 		sp_error(ctx, s, "No valid cursor (M) before T or t");
 		return s;
 	}
 
-	convr = sscanf(s, "%lf %lf%n", &ex, &ey, &len);
-	if (convr != 2) {
+	if (load_nums(&s, "dd", &ex, &ey) != 2) {
 		sp_error(ctx, s, "Expected six decimals for T or t");
 		return s;
 	}
-	s += len;
 
 	if (relative) {
 		ex += ctx->x;
@@ -530,19 +569,17 @@ static const char *sp_earc(ctx_t *ctx, const char *s, int relative)
 {
 	double rx, ry, rotdeg, sx, sy, ex, ey, cx, cy, sa, da, rot;
 	double rotsin, rotcos, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, x1_, y1_, cx_, cy_, gamma;
-	int large, sweep, len, convr;
+	int large, sweep;
 
 	if (!ctx->cursor_valid) {
 		sp_error(ctx, s, "No valid cursor (M) before A or a");
 		return s;
 	}
 
-	convr = sscanf(s, "%lf %lf %lf %d %d %lf %lf%n", &rx, &ry, &rotdeg, &large, &sweep, &ex, &ey, &len);
-	if (convr != 7) {
+	if (load_nums(&s, "dddiidd", &rx, &ry, &rotdeg, &large, &sweep, &ex, &ey) != 7) {
 		sp_error(ctx, s, "Expected seven decimals for A or a");
 		return s;
 	}
-	s += len;
 
 	if (relative) {
 		ex += ctx->x;
