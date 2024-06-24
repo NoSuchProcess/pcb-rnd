@@ -1,4 +1,5 @@
 CFLAGS = -Wall -g
+LDLIBS = -lm
 
 all: tester
 

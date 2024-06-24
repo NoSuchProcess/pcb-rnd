@@ -25,10 +25,15 @@ typedef struct svgpath_cfg_s {
 	/* draw a quadratic bezier between sx;sy and ex;ey using control point cx;cy */
 	void (*bezier_quadratic)(void *uctx, double sx, double sy, double cx, double cy, double ex, double ey);
 
+	/* draw a circular arc; center is cx;cy with radius rx;ry, from
+	   start angle sa (in radian) to delta angle da (in radian). If NULL,
+	   earc is used instead. */
+	void (*carc)(void *uctx, double cx, double cy, double r, double sa, double da);
+
 	/* draw a rotated elliptical arc; center is cx;cy with radius rx;ry, from
 	   start angle sa (in radian) to delta angle da (in radian). Radii and angles
 	   are interpreted in an ellipse-local coord system that is then rotated
-	   by rot radians */
+	   by rot radians. If NULL, line approximated. */
 	void (*earc)(void *uctx, double cx, double cy, double rx, double ry, double sa, double da, double rot);
 
 	/*** optional - silently skipped when NULL ***/
@@ -43,5 +48,6 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path);
 /* Curve approximation with lines; apl2 is curve_approx_seglen^2 */
 void svgpath_approx_bezier_cubic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx1, double cy1, double cx2, double cy2, double ex, double ey, double apl2);
 void svgpath_approx_bezier_quadratic(const svgpath_cfg_t *cfg, void *uctx, double sx, double sy, double cx, double cy, double ex, double ey, double apl2);
+void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double cx, double cy, double sa, double da, double rot, double ex, double ey, double apl2);
 
 #endif

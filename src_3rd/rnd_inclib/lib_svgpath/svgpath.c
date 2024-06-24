@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <math.h>
 #include "svgpath.h"
 
 /*** curve approximations ***/
@@ -103,6 +104,11 @@ void svgpath_approx_bezier_quadratic(const svgpath_cfg_t *cfg, void *uctx, doubl
 
 	if ((lx != ex) || (ly != ey))
 		cfg->line(uctx, lx, ly, ex, ey);
+}
+
+void svgpath_approx_earc(const svgpath_cfg_t *cfg, void *uctx, double cx, double cy, double sa, double da, double rot, double ex, double ey, double apl2)
+{
+
 }
 
 /*** instruction parser ***/
@@ -429,6 +435,135 @@ static const char *sp_bezier_quadratic_cont(ctx_t *ctx, const char *s, int relat
 	return s;
 }
 
+static const char *sp_earc(ctx_t *ctx, const char *s, int relative)
+{
+	double rx, ry, rotdeg, sx, sy, ex, ey, cx, cy, sa, da, rot;
+	double rotsin, rotcos, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, x1_, y1_, cx_, cy_, gamma;
+	int large, sweep, len, convr;
+
+	if (!ctx->cursor_valid) {
+		sp_error(ctx, s, "No valid cursor (M) before A or a");
+		return s;
+	}
+
+	convr = sscanf(s, "%lf %lf %lf %d %d %lf %lf%n", &rx, &ry, &rotdeg, &large, &sweep, &ex, &ey, &len);
+	if (convr != 7) {
+		sp_error(ctx, s, "Expected seven decimals for A or a");
+		return s;
+	}
+	s += len;
+
+	if (relative) {
+		ex += ctx->x;
+		ey += ctx->y;
+	}
+
+	sx = ctx->x;
+	sy = ctx->y;
+	rot = rotdeg * M_PI / 180.0;
+	rotsin = sin(rot);
+	rotcos = cos(rot);
+
+	/* Conversion to centerpoint representation is based on the SVG implementation
+	   notes at https://www.w3.org/TR/SVG/implnote.html */
+
+	/* degenerate cases as per B.2.5. */
+	if (rx < 0) rx = -rx;
+	if (ry < 0) ry = -ry;
+
+	if ((rx < 1e-7) || (ry < 1e-7)) {
+		sp_lin(ctx, ctx->x, ctx->y, ex, ry);
+		goto fin;
+	}
+
+	/* step 3 */
+	tmp1 = (sx - ex) / 2;
+	tmp2 = (sy - ey) / 2;
+	x1_ = rotcos * tmp1 + rotsin * tmp2;
+	y1_ = -rotsin * tmp1 + rotcos * tmp2;
+
+	gamma = (x1_ * x1_) / (rx * rx) + (y1_ * y1_) / (ry * ry);
+	if (gamma > 1) {
+		double sg = sqrt(gamma);
+		rx *= sg;
+		ry *= sg;
+	}
+
+
+	/* figure center point and end angles as per B.2.4. */
+	/* center */
+	tmp1 = rx * rx * y1_ * y1_ + ry * ry * x1_ * x1_;
+	if (tmp1 == 0)
+		goto fin;
+
+	tmp1 = sqrt(fabs((rx * rx * ry * ry) / tmp1 - 1));
+	if (sweep == large)
+		tmp1 = -tmp1;
+
+	cx_ = tmp1 * rx * y1_ / ry;
+	cy_ = -tmp1 * ry * x1_ / rx;
+
+	cx = rotcos * cx_ - rotsin * cy_ + (sx + ex) / 2;
+	cy = rotsin * cx_ + rotcos * cy_ + (sy + ey) / 2;
+
+	/* start angle */
+	tmp1 = (x1_ - cx_) / rx;
+	tmp2 = (y1_ - cy_) / ry;
+	tmp3 = (-x1_ - cx_) / rx;
+	tmp4 = (-y1_ - cy_) / ry;
+
+	tmp6 = tmp1 * tmp1 + tmp2 * tmp2;
+	tmp5 = sqrt(fabs(tmp6));
+	if (tmp5 == 0)
+		goto fin;
+
+	tmp5 = tmp1 / tmp5;
+	if (tmp5 < -1) tmp5 = -1;
+	else if (tmp5 > +1) tmp5 = +1;
+
+	sa = acos(tmp5);
+	if (tmp2 < 0)
+		sa = -sa;
+
+	/* delta angle */
+	tmp5 = sqrt(fabs(tmp6 * (tmp3 * tmp3 + tmp4 * tmp4)));
+	if (tmp5 == 0)
+		goto fin;
+
+	tmp5 = (tmp1 * tmp3 + tmp2 * tmp4) / tmp5;
+	if (tmp5 < -1) tmp5 = -1;
+	else if (tmp5 > +1) tmp5 = +1;
+
+	da = acos(tmp5);
+	if (tmp1 * tmp4 - tmp3 * tmp2 < 0)
+		da = -da;
+
+	if (sweep && da < 0)
+		da += M_PI * 2;
+	else if (!sweep && da > 0)
+		da -= M_PI * 2;
+
+	/* render carc or earc or line approx */
+	if ((rx == ry) && (ctx->cfg->carc != NULL)) {
+		ctx->cfg->carc(ctx->uctx, cx, cy, rx, sa, da);
+	}
+	else if (ctx->cfg->earc != NULL) {
+		ctx->cfg->earc(ctx->uctx, cx, cy, rx, ry, sa, da, rot);
+	}
+	else {
+		if (ctx->approx_len2 == 0)
+			ctx->approx_len2 = ctx->approx_len * ctx->approx_len;
+		svgpath_approx_earc(ctx->cfg, ctx->uctx, cx, cy, sa, da, rot, ex, ey, ctx->approx_len2);
+	}
+
+	fin:;
+	ctx->x = ex;
+	ctx->y = ey;
+
+	return s;
+}
+
+
 /* internal instruction dispatch; s points to the args; my_last_cmd is updated
    if there's an explicit instruction */
 static const char *svgpath_render_instruction(ctx_t *ctx, char inst, const char *s, const char *errmsg, char *my_last_cmd)
@@ -446,6 +581,7 @@ static const char *svgpath_render_instruction(ctx_t *ctx, char inst, const char 
 		case 'S': case 's': return sp_bezier_cubic_cont(ctx, s, (inst == 's'));
 		case 'Q': case 'q': return sp_bezier_quadratic(ctx, s, (inst == 'c'));
 		case 'T': case 't': return sp_bezier_quadratic_cont(ctx, s, (inst == 's'));
+		case 'A': case 'a': return sp_earc(ctx, s, (inst == 'a'));
 
 		/* special case: most commands can be continued by simply
 		   going on listing numerics */
