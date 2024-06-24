@@ -657,6 +657,7 @@ static const char *svgpath_render_instruction(ctx_t *ctx, char inst, const char 
 		case '5': case '6': case '7': case '8': case '9':
 			if (my_last_cmd != NULL) {
 
+				/* the spec says if M/m has multiple set of coords, draw a polyline */
 				switch(ctx->last_cmd) {
 					case 'M': ctx->last_cmd = 'L'; break;
 					case 'm': ctx->last_cmd = 'l'; break;
