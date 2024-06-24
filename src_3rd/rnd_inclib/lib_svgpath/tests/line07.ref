@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1000" height="1000" viewBox="0 0 1000 1000">
+<path d="m 100 100 10 0 0 10 3 7
+
+
+
+
+" style="stroke:green;stroke-width:3;fill:none;" />
+
+
+<line x1="100.000" y1="100.000" x2="110.000" y2="100.000" stroke="black" />
+<line x1="110.000" y1="100.000" x2="110.000" y2="110.000" stroke="black" />
+<line x1="110.000" y1="110.000" x2="113.000" y2="117.000" stroke="black" />
+
+<!-- res=0 -->
+</svg>

@@ -656,6 +656,12 @@ static const char *svgpath_render_instruction(ctx_t *ctx, char inst, const char 
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
 			if (my_last_cmd != NULL) {
+
+				switch(ctx->last_cmd) {
+					case 'M': ctx->last_cmd = 'L'; break;
+					case 'm': ctx->last_cmd = 'l'; break;
+				}
+
 				*my_last_cmd = ctx->last_cmd;
 				return svgpath_render_instruction(ctx, ctx->last_cmd, s-1, "Invalid multiple args for this command", NULL);
 			}
