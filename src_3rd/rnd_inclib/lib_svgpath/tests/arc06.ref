@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1000" height="1000" viewBox="0 0 1000 1000">
+<path d="M 100 100
+A 50 120   33 0 0   150 150" style="stroke:green;stroke-width:3;fill:none;" />
+
+
+<line x1="100.000" y1="100.000" x2="98.964" y2="104.821" stroke="black" />
+<line x1="98.964" y1="104.821" x2="98.087" y2="109.789" stroke="black" />
+<line x1="98.087" y1="109.789" x2="97.434" y2="114.680" stroke="black" />
+<line x1="97.434" y1="114.680" x2="97.008" y2="119.664" stroke="black" />
+<line x1="97.008" y1="119.664" x2="96.859" y2="124.700" stroke="black" />
+<line x1="96.859" y1="124.700" x2="97.043" y2="129.737" stroke="black" />
+<line x1="97.043" y1="129.737" x2="97.623" y2="134.711" stroke="black" />
+<line x1="97.623" y1="134.711" x2="98.669" y2="139.543" stroke="black" />
+<line x1="98.669" y1="139.543" x2="100.336" y2="144.314" stroke="black" />
+<line x1="100.336" y1="144.314" x2="102.677" y2="148.687" stroke="black" />
+<line x1="102.677" y1="148.687" x2="105.787" y2="152.510" stroke="black" />
+<line x1="105.787" y1="152.510" x2="109.762" y2="155.608" stroke="black" />
+<line x1="109.762" y1="155.608" x2="114.392" y2="157.686" stroke="black" />
+<line x1="114.392" y1="157.686" x2="119.407" y2="158.702" stroke="black" />
+<line x1="119.407" y1="158.702" x2="124.485" y2="158.780" stroke="black" />
+<line x1="124.485" y1="158.780" x2="129.516" y2="158.122" stroke="black" />
+<line x1="129.516" y1="158.122" x2="134.421" y2="156.900" stroke="black" />
+<line x1="134.421" y1="156.900" x2="139.145" y2="155.257" stroke="black" />
+<line x1="139.145" y1="155.257" x2="143.841" y2="153.220" stroke="black" />
+<line x1="143.841" y1="153.220" x2="148.290" y2="150.953" stroke="black" />
+<line x1="148.290" y1="150.953" x2="150.000" y2="150.000" stroke="black" />
+
+<!-- res=0 -->
+</svg>
