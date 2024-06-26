@@ -65,7 +65,9 @@ static int parse_str_by_tab(char *str, gdom_node_t *parent, const str_tab_t *tab
 /* replace dst with src, gdom_free() old dst */
 static void replace_node(gdom_node_t *dst, gdom_node_t *src)
 {
-	gdom_node_t save;
+	gdom_node_t save, *orig_parent = dst->parent;
+	long lineno = src->lineno > 0 ? src->lineno : dst->lineno;
+	long col = src->col > 0 ? src->lineno : dst->col; /* prefer src's if available, fall back to dst's */
 
 	/* can't replace with a differently named node within a hash */
 	if (dst->parent->type == GDOM_HASH) {
@@ -77,5 +79,10 @@ static void replace_node(gdom_node_t *dst, gdom_node_t *src)
 	memcpy(dst, src, sizeof(gdom_node_t));
 	memcpy(src, &save, sizeof(gdom_node_t));
 	gdom_free(src);
+
+	/* replacing in-place means we need to preserve the original parent node link */
+	dst->parent = orig_parent;
+	dst->lineno = lineno;
+	dst->col = col;
 }
 
