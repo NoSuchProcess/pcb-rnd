@@ -46,6 +46,9 @@ gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 		switch(ev) {
 			case NJSON_EV_OBJECT_BEGIN:
 				nd = gdom_alloc(name, GDOM_HASH);
+				nd->lineno = ctx.lineno+1;
+				nd->col = ctx.col+1;
+
 				if (root == NULL) {
 					root = nd;
 				}
@@ -59,6 +62,9 @@ gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 
 			case NJSON_EV_ARRAY_BEGIN:
 				nd = gdom_alloc(name, GDOM_ARRAY);
+				nd->lineno = ctx.lineno+1;
+				nd->col = ctx.col+1;
+
 				if (root == NULL) {
 					root = nd;
 				}
@@ -82,6 +88,9 @@ gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 
 			case NJSON_EV_STRING:
 				nd = gdom_alloc(name, GDOM_STRING);
+				nd->lineno = ctx.lineno+1;
+				nd->col = ctx.col+1;
+
 				if (curr == NULL) { fprintf(stderr, "error 'root isnot an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
 					fprintf(stderr, "Failed to append gdom node\n");
@@ -93,6 +102,9 @@ gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 
 			case NJSON_EV_NUMBER:
 				nd = gdom_alloc(name, GDOM_DOUBLE);
+				nd->lineno = ctx.lineno+1;
+				nd->col = ctx.col+1;
+
 				if (curr == NULL) { fprintf(stderr, "error 'root isnot an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
 					fprintf(stderr, "Failed to append gdom node\n");
@@ -112,6 +124,9 @@ gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 				kw = -1;
 				append_kw:;
 				nd = gdom_alloc(name, GDOM_DOUBLE);
+				nd->lineno = ctx.lineno+1;
+				nd->col = ctx.col+1;
+
 				if (curr == NULL) { fprintf(stderr, "error 'root isnot an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
 					fprintf(stderr, "Failed to append gdom node\n");

@@ -30,6 +30,7 @@ struct gdom_node_s {
 		double dbl;
 		long lng;
 	} value;
+	long lineno, col;          /* location, counting from 1; 0 means unknown location */
 };
 
 gdom_node_t *gdom_alloc(long name, gdom_node_type_t type);
