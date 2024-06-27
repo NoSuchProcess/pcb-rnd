@@ -68,6 +68,8 @@ static void replace_node(gdom_node_t *dst, gdom_node_t *src)
 	gdom_node_t save, *orig_parent = dst->parent;
 	long lineno = src->lineno > 0 ? src->lineno : dst->lineno;
 	long col = src->col > 0 ? src->lineno : dst->col; /* prefer src's if available, fall back to dst's */
+	long n;
+	htip_entry_t *e;
 
 	/* can't replace with a differently named node within a hash */
 	if (dst->parent->type == GDOM_HASH) {
@@ -79,6 +81,28 @@ static void replace_node(gdom_node_t *dst, gdom_node_t *src)
 	memcpy(dst, src, sizeof(gdom_node_t));
 	memcpy(src, &save, sizeof(gdom_node_t));
 	gdom_free(src);
+
+	/* update parents of all children of new dst to point to dst */
+	switch(dst->type) {
+		case GDOM_ARRAY:
+			for(n = 0; n < dst->value.array.used; n++)
+				dst->value.array.child[n]->parent = dst;
+			break;
+
+		case GDOM_HASH:
+			for(e = htip_first(&dst->value.hash); e != NULL; e = htip_next(&dst->value.hash, e)) {
+				gdom_node_t *nd = e->value;
+				nd->parent = dst;
+			}
+			break;
+
+		case GDOM_STRING:
+		case GDOM_DOUBLE:
+		case GDOM_LONG:
+			break;
+	}
+
+
 
 	/* replacing in-place means we need to preserve the original parent node link */
 	dst->parent = orig_parent;
