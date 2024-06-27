@@ -758,6 +758,7 @@ int svgpath_render(const svgpath_cfg_t *cfg, void *uctx, const char *path)
 	ctx.path = path;
 	ctx.cfg = cfg;
 	ctx.cursor_valid = 0;
+	ctx.error = 0;
 
 	for(s = path;;) {
 		char last_cmd;
