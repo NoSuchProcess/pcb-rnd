@@ -150,6 +150,6 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 
 gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 {
-	return gdom_json_parse_any(f, fgetc, str2name);
+	return gdom_json_parse_any(f, (int (*)(void *))fgetc, str2name);
 }
 
