@@ -21,7 +21,7 @@
 #include <libnanojson/nanojson.h>
 
 
-gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
+gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*str2name)(const char *str))
 {
 	njson_ctx_t ctx = {0};
 	long line = 1, col = 1;
@@ -32,7 +32,7 @@ gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 	for(;;) {
 		njson_ev_t ev;
 
-		chr = fgetc(f);
+		chr = getchr(uctx);
 
 		/* count location */
 		if (chr == '\n') {
@@ -147,3 +147,9 @@ gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 	gdom_free(root);
 	return NULL;
 }
+
+gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
+{
+	return gdom_json_parse_any(f, fgetc, str2name);
+}
+
