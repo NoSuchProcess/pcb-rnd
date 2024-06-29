@@ -144,7 +144,8 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 
 	error:;
 	njson_uninit(&ctx);
-	gdom_free(root);
+	if (root != NULL)
+		gdom_free(root);
 	return NULL;
 }
 
