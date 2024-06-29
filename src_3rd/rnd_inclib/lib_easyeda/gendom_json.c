@@ -53,7 +53,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 					root = nd;
 				}
 				else if (gdom_append(curr, nd) != 0) {
-					fprintf(stderr, "Failed to append gdom node\n");
+					fprintf(stderr, "Failed to append gdom node (1)\n");
 					goto error;
 				}
 				curr = nd;
@@ -69,7 +69,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 					root = nd;
 				}
 				else if (gdom_append(curr, nd) != 0) {
-					fprintf(stderr, "Failed to append gdom node\n");
+					fprintf(stderr, "Failed to append gdom node (2)\n");
 					goto error;
 				}
 				curr = nd;
@@ -91,9 +91,9 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 				nd->lineno = ctx.lineno+1;
 				nd->col = ctx.col+1;
 
-				if (curr == NULL) { fprintf(stderr, "error 'root isnot an object or array' at %ld:%ld\n", line, col); goto error; }
+				if (curr == NULL) { fprintf(stderr, "error 'root is not an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
-					fprintf(stderr, "Failed to append gdom node\n");
+					fprintf(stderr, "Failed to append gdom node (3)\n");
 					goto error;
 				}
 				name = -1;
@@ -105,9 +105,9 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 				nd->lineno = ctx.lineno+1;
 				nd->col = ctx.col+1;
 
-				if (curr == NULL) { fprintf(stderr, "error 'root isnot an object or array' at %ld:%ld\n", line, col); goto error; }
+				if (curr == NULL) { fprintf(stderr, "error 'root is not an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
-					fprintf(stderr, "Failed to append gdom node\n");
+					fprintf(stderr, "Failed to append gdom node (4)\n");
 					goto error;
 				}
 				name = -1;
@@ -127,9 +127,9 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 				nd->lineno = ctx.lineno+1;
 				nd->col = ctx.col+1;
 
-				if (curr == NULL) { fprintf(stderr, "error 'root isnot an object or array' at %ld:%ld\n", line, col); goto error; }
+				if (curr == NULL) { fprintf(stderr, "error 'root is not an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
-					fprintf(stderr, "Failed to append gdom node\n");
+					fprintf(stderr, "Failed to append gdom node (5)\n");
 					goto error;
 				}
 				name = -1;
