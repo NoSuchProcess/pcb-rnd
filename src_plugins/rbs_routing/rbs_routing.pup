@@ -2,7 +2,7 @@ $class feature
 $short Rubber Band Stretch Routing
 $long Assisted routing by stretching traces as if they were rubber bands
 $state WIP
-$package core
+#$package auto
 default disable-all
 dep lib_netmap
 autoload 1
