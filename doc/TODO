@@ -1,8 +1,10 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- RELEASE: disable polybool by default before the release
 + BUG: using image2footprint parametric footprint, choose 0.25mm pixel size, white silk, black soldermask, yes to dithering and yes to FR4, choose either of the vader .pngs from bug files as the image and place on layout, then change .png to other png, place on layout, and continue alternating. segfault will typically ensue after a period. backtrace included as big-subc-bt.txt [report: erich]
+
+2. For later releases ===============================================================================
+- RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - poly lib rewrite (fixed means it works with polybool):
 	- BUG: aron's private board, aron_*, self-isc inf loop with polybool [report: aron]
 	+ BUG: Bdale's disappearing poly bugreport, hosted in librnd/work/poly_broken
@@ -25,8 +27,6 @@
 		-> the upper edge is now cut in half by the line's clearance; the whole poly is cut in half
 		-> so removing the smaller half of the poly is the proper thing to do
 	- at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
-
-2. For later releases ===============================================================================
 - FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
 	- search for '-' and centralize parsing refdes-term id
 - BUG: extended object "bus" bugs:
