@@ -1,3 +1,111 @@
+pcb-rnd 3.1.5 (r39029)
+~~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Bump: required librnd version is >=4.2.0 for testing polybool
+		-Add: scconfig summary contains a line for which polygon lib is chosen
+
+	[cam]
+		-Add: default pnp doc export jobs to ps and gerber
+
+	[core]
+		-Fix: round termal generation: in extreme cases (large clearance) the round thermal's 4 cutout arcs may instersect; originally the code simply linked them together which causes invalid poly; the new code links the opposite side arcs together in two pairs then calls the poly lib to combine them so that any potential intersection is handled correctly
+		-Fix: subc: avoid creating subcircuits with invalid bbox (e.g. when a subcircuit cosists only of aux and floater objects), rather have a small, artifical bbox
+		-Fix: read of uninitialized memory in draw code around plugin_draw
+		-Fix: padsatck bbox calculation: do not ignore center coords of circle shape (bbox was broken for circles not centered at padstack origin)
+		-Fix: more accurate DRC check on poly-poly: in the per edge test loop, instead of square cap pcb lines, use thin circles and thin offset lines
+		-Fix: padstack poly offseting bug on coaxial corners: port the cocept from polybool2, librnd r37294
+		-Cleanup: wireframe inline draw helpers: separate API from implementation
+		-Cleanup: avoid librnd font2 GVT redeclarations
+		-Add: ElementList(): when new footprint is not found in the lib, print an extra error message with the refdes included so it's easier to find which symbol is wrong on the sch side
+		-Add: implement polygon point reduction in render preparation for polybool clipping (speeds up rendering of crowded areas like arc approximations, when zoomed out a lot - sort of a level-of-detail system)
+		-Add: plugin-drawn layers: optional layer draw function callback (intended for UI layers mostly), similar to osm-rnd's
+		-Add: plugin draw data ptr in layers so that custom draw functions can remember their data
+		-Add: low level wireframe inline draw: option for drawing arc and line without any end-cap
+		-Add: standard undoable modify() API for the arc object (geo modifications)
+		-Add: RefdesText() action for refdes manipulation shorthands
+		-Add: new event: PCB_EVENT_LAYER_PLUGIN_DRAW_CHANGE (for portable plugin-drawn doc layers)
+		-Add: plugin_draw mechanism for overriding the layer_is_empty() decision from a plugin so layer full of side effects is not considered empty
+
+	[diag]
+		-Fix: subc get side call needs an int *, not coord * for its output (even tho sizeof(int) <= sizeof(coord) some new versions of gcc may throw an error)
+
+	[dialogs]
+		-Cleanup: const correctness
+
+	[doc]
+		-Add: windows installation: how to create a desktop icon
+
+	[draw_pnp]
+		-Add: new plugin for auto-generated pick-and-place helper doc layer
+
+	[export_hpgl]
+		-Add: export centerline drawing in the HP-GL (plotter) format
+
+	[exto_std]
+		-Fix: int * != coord * (modern compielrs may panic)
+
+	[fontmode]
+		-Cleanup: const correctness
+
+	[io_altium]
+		-Fix: inhibit poly clipping during thermal postprocess - saves a lot of CPU cycles by batching clipping ops
+
+	[io_kicad_legacy]
+		-Fix: int * != coord *; some modern compilers threw error
+
+	[io_lihata]
+		-Fix: int * != coord *; some modern compilers threw error
+
+	[lib_hid_pcbui]
+		-Fix: route style dialog: don't crash on attribute edit if no key or val is specified
+		-Fix: missing DAD widget tree closing in the route style dialog causing invalid memory reads
+
+	[lib_netmap]
+		-Fix: reset osegs on uninit so reusing a context won't trigger invalid memory access
+		-Add: remember one junction (globally) so that the caller can decide if the map is junction-free
+
+	[map_2nets]
+		-Fix: 2net mapping init() shall return 0 on success
+
+	[menu]
+		-Add: RefdesText() calls in the menu
+
+	[order]
+		-Cleanup: const correctness
+
+	[poly]
+		-Fix: clearance accumulation: don't rely on the polygon lib to accept NULL on bool ops (initial step of creating the accumulator; should be a plain assignment)
+
+	[polybool2]
+		-Fix: much cheaper and memleak-free insertion of the first polyarea in clearance construct
+		-Add: option to link against polybool2
+		-Add: instead of the slow boolean ops, construct padstack clearance cutout using the new poly offset code
+		-Add: scconfig doesn't let both polybool and polybool2 enabled - need to pick one because they offer the same API
+		-Add: scconfig: also print whether the old/original poly lib is used so there is always exactly 1 'true' in the summary for the poly libs
+		-Optimize: poly clearance calculation: don't subtract in 2 steps, that's slower with polybool2 than doing it in a single step
+		-Optimize: all-poly clipper turns off polybool2 pline edge rtree generation and generates all missing rtrees only once, at the end so intermediate rtrees are not computed and discarded
+
+	[propedit]
+		-Fix: pcb_propsel_sel(): inhibit poly clipping and draw while executing batched change of properties - speeds up the operation when dealing with a large number of objects
+
+	[query]
+		-Fix: net seg map: don't mistake two random padstacks as adjacent only because the second endpoint is set to RND_COORD_MAX in both
+
+	[rtt]
+		-Add: cope with different test ref flavors for handling the case when e.g. using the polybool lib produces valid, but sligtly differently ordered output for some of the files
+
+	[serpentine]
+		-Fix: don't pass string as rnd_color_t, they are not compatible
+		-Fix: missing #include for drawing routes--This line, and those below, will be ignored--
+		-Fix: tool callbacks all need to get the design to operate on
+
+	[tests]
+		-Import: John's poly-poly (concave) drc bug sample to autotest
+
+	[vendordrill]
+		-Fix: allocate for rnd_coord_t size for drill dia coords
+
+
 pcb-rnd 3.1.4 (r38675)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[asm]

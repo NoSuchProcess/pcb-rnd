@@ -1,19 +1,14 @@
-pcb-rnd 3.1.4
+pcb-rnd 3.1.5
 ~~~~~~~~~~~~~
 
-This minor release adds a few new smallish features and fixes a bunch
-of bugs. Change highlights:
+This minor release adds minor features and fixes a bunch of bugs.
+Change highlights:
 
-1. pcb-rnd now depends on librnd >= 4.1.0 (because of the new font engine)
+1. CAM export: default pnp (pick-and-place) doc export jobs to ps and gerber
 
-2. always use librnd's new font engine
+2. RefdesText() action and menu, shorthand for creating refdes floater text
+   object for subcircuits
 
-3. make lihata board v9 the default native file format
+3. optional auto-generated pick-and-place helper layer
 
-4. view dialog: 'cycle' button to cycle through zooming onto
-   different highlight objects; esecially useful when looking at
-   DRC errors showing a small and a large object
-
-5. export_bom: make list separator string configurable
-
-
+4. centerline draw export in the HP-GL (plotter) format
