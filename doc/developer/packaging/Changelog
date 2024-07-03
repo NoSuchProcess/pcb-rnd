@@ -1,6 +1,6 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.1.4
+  ver=3.1.5
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
@@ -8,7 +8,20 @@ How to get a release candidate tarball in /tmp:
 Packaging changes between 3.1.5 and 3.1.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO: new plugin in old package: export_hpgl
+A. changes that probably don't need action
+
+(none)
+
+B. changes that probably DO need action
+
+1. Bump dependency version: pcb-rnd now depends on librnd >= 4.2.0
+
+2. new plugin export_hpgl in existing package pcb-rnd-export
+
+3. new config file: $C/draw_pnp.conf
+
+4. new ./configure line
+
 
 Packaging changes between 3.1.4 and 3.1.3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

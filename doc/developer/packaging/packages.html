@@ -2,13 +2,13 @@
 <html>
 <body>
 
-<h3> Librnd minimum version: 4.1.0</h3>
+<h3> Librnd minimum version: 4.2.0</h3>
 <h3> Package summary and dependencies </h3>
 <p>
 <table border=1>
 <tr><th> package <th> depends on (packages) <th> consists of (plugins)
 <tr><th>pcb-rnd-debug<td> pcb-rnd-core<td> diag
-<tr><th>pcb-rnd-export<td> pcb-rnd-core librnd4 librnd4-pixmap<td> cam export_bom export_dxf export_excellon export_gcode export_gerber export_openscad export_png export_ps export_stat export_svg export_xy millpath
+<tr><th>pcb-rnd-export<td> pcb-rnd-core librnd4 librnd4-pixmap<td> cam export_bom export_dxf export_excellon export_gcode export_gerber export_hpgl export_openscad export_png export_ps export_stat export_svg export_xy millpath
 <tr><th>pcb-rnd-doc<td><td>&nbsp;
 <tr><th>pcb-rnd-export-sim<td> pcb-rnd-core<td> export_openems
 <tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_ttf
@@ -18,7 +18,7 @@
 <tr><th>pcb-rnd-lib-io<td> pcb-rnd-core<td> lib_netmap
 <tr><th>pcb-rnd-io-standard<td> pcb-rnd-core pcb-rnd-lib-io<td> io_pcb io_tedax
 <tr><th>pcb-rnd-lib-gui<td> pcb-rnd-core librnd4-lib-gui<td> dialogs draw_fontsel lib_hid_pcbui
-<tr><th>pcb-rnd-core<td> librnd4<td>(builtin:  act_draw act_read autocrop ch_editpoint ch_onpoint ddraft draw_csect draw_fab drc_query extedit exto_std fp_board fp_fs io_lihata lib_compat_help lib_formula lib_polyhelp mincut propedit query report rubberband_orig shape show_netnames tool_std)
+<tr><th>pcb-rnd-core<td> librnd4<td>(builtin:  act_draw act_read autocrop ch_editpoint ch_onpoint ddraft draw_csect draw_fab draw_pnp drc_query extedit exto_std fp_board fp_fs io_lihata lib_compat_help lib_formula lib_polyhelp mincut propedit query report rubberband_orig shape show_netnames tool_std)
 <tr><th>pcb-rnd-io-alien<td> pcb-rnd-core pcb-rnd-lib-io pcb-rnd-extra librnd4<td> io_autotrax io_bxl io_dsn io_eagle io_hyp io_kicad io_kicad_legacy io_pads
 <tr><th>pcb-rnd-cloud<td> pcb-rnd-core librnd4-cloud pcb-rnd-export<td> fp_wget order order_pcbway
 <tr><th>pcb-rnd-export-extra<td> pcb-rnd-core pcb-rnd-export<td> export_fidocadj export_ipcd356 export_lpr export_oldconn export_stl
@@ -28,7 +28,7 @@
 <table border=1>
 <tr><th> package <th> files <th> short <th> long
 <tr><th>pcb-rnd-debug<td> $P/diag.pup $P/diag.so <i></i><td>	Debug and diagnostics.<td> 	Extra action commands to help in debugging and diagnosing problems and bugs.  
-<tr><th>pcb-rnd-export<td> $P/cam.pup $P/cam.so $P/export_bom.pup $P/export_bom.so $P/export_dxf.pup $P/export_dxf.so $P/export_excellon.pup $P/export_excellon.so $P/export_gcode.pup $P/export_gcode.so $P/export_gerber.pup $P/export_gerber.so $P/export_openscad.pup $P/export_openscad.so $P/export_png.pup $P/export_png.so $P/export_ps.pup $P/export_ps.so $P/export_stat.pup $P/export_stat.so $P/export_svg.pup $P/export_svg.so $P/export_xy.pup $P/export_xy.so $P/millpath.pup $P/millpath.so $PREFIX/bin/pcb-rnd-svg $PREFIX/share/man/man1/pcb-rnd-svg.1 <i>$C/cam.conf $C/export_bom.conf $C/export_xy.conf</i><td>	Common export plugins.<td> 	Export the board in vector graphics (svg, ps, eps), raster graphics 	(png, jpeg, etc.), gerber, 3d model in openscad, xy for pick and place, 	BoM, etc.  
+<tr><th>pcb-rnd-export<td> $P/cam.pup $P/cam.so $P/export_bom.pup $P/export_bom.so $P/export_dxf.pup $P/export_dxf.so $P/export_excellon.pup $P/export_excellon.so $P/export_gcode.pup $P/export_gcode.so $P/export_gerber.pup $P/export_gerber.so $P/export_hpgl.pup $P/export_hpgl.so $P/export_openscad.pup $P/export_openscad.so $P/export_png.pup $P/export_png.so $P/export_ps.pup $P/export_ps.so $P/export_stat.pup $P/export_stat.so $P/export_svg.pup $P/export_svg.so $P/export_xy.pup $P/export_xy.so $P/millpath.pup $P/millpath.so $PREFIX/bin/pcb-rnd-svg $PREFIX/share/man/man1/pcb-rnd-svg.1 <i>$C/cam.conf $C/export_bom.conf $C/export_xy.conf</i><td>	Common export plugins.<td> 	Export the board in vector graphics (svg, ps, eps), raster graphics 	(png, jpeg, etc.), gerber, 3d model in openscad, xy for pick and place, 	BoM, etc.  
 <tr><th>pcb-rnd-doc<td>/usr/share/doc/* <i></i><td>	Documentation for pcb-rnd<td>	 	User manual (html) and manual pages.  
 <tr><th>pcb-rnd-export-sim<td> $P/export_openems.pup $P/export_openems.so <i></i><td>	Export plugins to simulators<td> 	Export the board in formats that can be used for simulation: openems.  
 <tr><th>pcb-rnd-import-geo<td> $P/import_hpgl.pup $P/import_hpgl.so $P/import_ttf.pup $P/import_ttf.so <i></i><td>	Geometry import.<td> 	Plugins for importing pixmaps, fonts and vector graphics.  
@@ -38,7 +38,7 @@
 <tr><th>pcb-rnd-lib-io<td> $P/lib_netmap.pup $P/lib_netmap.so <i></i><td>	Support library for alien file formats.<td> 	Provides generic, low level parsers (such as s-expression 	parser) for I/O plugins that need to deal with alien file formats.  
 <tr><th>pcb-rnd-io-standard<td> $P/io_pcb.pup $P/io_pcb.so $P/io_tedax.pup $P/io_tedax.so <i></i><td>	Commonly used non-native board and footprint file formats<td> 	Plugins for tEDAx footprint format and the gEDA/PCB file formats 	(footprint and board).  
 <tr><th>pcb-rnd-lib-gui<td> $P/dialogs.pup $P/dialogs.so $P/draw_fontsel.pup $P/draw_fontsel.so $P/lib_hid_pcbui.pup $P/lib_hid_pcbui.so <i>$C/adialogs.conf</i><td>	Support library for building the GUI.<td> 	Provides pcb-rnd specific dialog boxes (e.g. fontsel) and top 	window GUI elements.  
-<tr><th>pcb-rnd-core<td> $PREFIX/bin/pcb-rnd $PREFIX/share/man/man1/pcb-rnd.1 $C/conf_core.lht $C/menu-default.lht $PREFIX/share/pcb-rnd/default2.lht $PREFIX/share/pcb-rnd/default4.lht $PREFIX/share/pcb-rnd/default_font $PREFIX/bin/fp2preview $PREFIX/bin/fp2subc $PREFIX/bin/pcb-prj2lht $PREFIX/share/man/man1/fp2preview.1 $PREFIX/share/man/man1/fp2subc.1 $PREFIX/share/man/man1/pcb-prj2lht.1 $PREFIX/share/pcb-rnd/footprint/* <i>$C/ch_editpoint.conf $C/drc_query.conf $C/fp_fs.conf $C/show_netnames.conf</i><td>	pcb-rnd executable with the core functionality<td> 	Includes the data model, the most common action commands, the native file 	format. Can be used in headless mode or batch/scripted mode for automated 	processing or with GUI (if pcb-rnd-lib-gui and librnd GUI HIDs are installed).  
+<tr><th>pcb-rnd-core<td> $PREFIX/bin/pcb-rnd $PREFIX/share/man/man1/pcb-rnd.1 $C/conf_core.lht $C/menu-default.lht $PREFIX/share/pcb-rnd/default2.lht $PREFIX/share/pcb-rnd/default4.lht $PREFIX/share/pcb-rnd/default_font $PREFIX/bin/fp2preview $PREFIX/bin/fp2subc $PREFIX/bin/pcb-prj2lht $PREFIX/share/man/man1/fp2preview.1 $PREFIX/share/man/man1/fp2subc.1 $PREFIX/share/man/man1/pcb-prj2lht.1 $PREFIX/share/pcb-rnd/footprint/* <i>$C/ch_editpoint.conf $C/draw_pnp.conf $C/drc_query.conf $C/fp_fs.conf $C/show_netnames.conf</i><td>	pcb-rnd executable with the core functionality<td> 	Includes the data model, the most common action commands, the native file 	format. Can be used in headless mode or batch/scripted mode for automated 	processing or with GUI (if pcb-rnd-lib-gui and librnd GUI HIDs are installed).  
 <tr><th>pcb-rnd-io-alien<td> $P/io_autotrax.pup $P/io_autotrax.so $P/io_bxl.pup $P/io_bxl.so $P/io_dsn.pup $P/io_dsn.so $P/io_eagle.pup $P/io_eagle.so $P/io_hyp.pup $P/io_hyp.so $P/io_kicad.pup $P/io_kicad.so $P/io_kicad_legacy.pup $P/io_kicad_legacy.so $P/io_pads.pup $P/io_pads.so $PREFIX/share/man/man1/txt2bxl.1 $PREFIX/share/man/man1/bxl2txt.1 $PREFIX/bin/txt2bxl $PREFIX/bin/bxl2txt <i>$C/io_pads.conf</i><td>	File format compatibility with other PCB layout designers.<td> 	Load and/or save boards in file formats supported by other 	EDA tools, such as KiCAD, Eagle, protel/autotrax, etc.  
 <tr><th>pcb-rnd-cloud<td> $P/fp_wget.pup $P/fp_wget.so $P/order.pup $P/order.so $P/order_pcbway.pup $P/order_pcbway.so <i>$C/fp_wget.conf $C/order.conf $C/order_pcbway.conf</i><td>	Networking plugins.<td> 	'Cloud' footprint access plugin that integrates edakrill and gedasymbols.org.  
 <tr><th>pcb-rnd-export-extra<td> $P/export_fidocadj.pup $P/export_fidocadj.so $P/export_ipcd356.pup $P/export_ipcd356.so $P/export_lpr.pup $P/export_lpr.so $P/export_oldconn.pup $P/export_oldconn.so $P/export_stl.pup $P/export_stl.so <i></i><td>	Export formats: special/extra<td> 	Less commonly used export formats: fidocadj, ipc-356-d, stl, 	old geda connection list format, direct printing with lpr.  
@@ -99,6 +99,7 @@
 --buildin-shape
 --buildin-lib_formula
 --buildin-extedit
+--buildin-draw_pnp
 --plugin-export_excellon
 --plugin-export_fidocadj
 --plugin-export_lpr
@@ -144,6 +145,7 @@
 --plugin-export_svg
 --plugin-import_net_cmd
 --plugin-fp_wget
+--plugin-export_hpgl
 --plugin-fontmode
 --plugin-import_netlist
 --plugin-polystitch

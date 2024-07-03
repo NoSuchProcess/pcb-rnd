@@ -106,6 +106,7 @@ File formats and compatibility:
     * fidocad .fcd (partial export)
     * export gcode (for milling)
     * gerber for PCB fabbing
+    * hpgl
     * IPC-D-356 Netlist (for automated testing)
     * printer (using ps)
     * list of terminal connections (old, custom format)
