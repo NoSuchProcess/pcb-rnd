@@ -171,3 +171,17 @@ Milestone B:
 		- string
 		- thickness (for centerline font)
 	- {e t} for text edit
+
++ C2 drawing on any layer [3]
+	- turning layers on-off
+	- drawing on any layer: silk, mask, paste, assembly
+	- turning all layers on-off
+	- explain layer compositing:
+		- layers of different color
+		- positive and negative layers on silk
+		- explain how the mask layer works
+	- moving objects between layers
+		- right click menu: single
+		- {s l}
+		- subc
+	- one object is always on one layer, except for subcircuits and padstacks
