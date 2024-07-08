@@ -74,6 +74,9 @@
 	- FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
 
 3. Long term ===============================================================================
+- FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
+	- need to use find.c to get "nets" of mask objects (including padstacks)
+	- then use the normal bloat-intersect code to see if two of them are closer than the required value
 - multi: merge sch-rnd r4718 for proper multiboard support later
 - FEATURE: copy sch-rnd's RtreeList action in act_read
 - CLEANUP: footprint lib rework
