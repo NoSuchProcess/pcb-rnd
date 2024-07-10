@@ -202,6 +202,37 @@ static int parse_shape_hole(char *str, gdom_node_t **shape)
 	return 0;
 }
 
+static int parse_shape_text(char *str, gdom_node_t **shape)
+{
+	gdom_node_t *text;
+	static const str_tab_t fields[] = {
+		{easy_type, GDOM_STRING},
+		{easy_x, GDOM_DOUBLE},
+		{easy_y, GDOM_DOUBLE},
+		{easy_stroke_width, GDOM_DOUBLE},
+		{easy_rot, GDOM_DOUBLE},
+		{easy_mirror, GDOM_STRING},
+		{easy_layer, GDOM_LONG},
+		{easy_net, GDOM_STRING},
+		{easy_height, GDOM_DOUBLE},
+		{easy_string, GDOM_STRING},
+		{easy_path, GDOM_STRING},
+		{easy_display, GDOM_STRING},
+		{easy_id, GDOM_STRING},
+		{easy_locked, GDOM_LONG},
+		{-1}
+	};
+
+	text = gdom_alloc(easy_text, GDOM_HASH);
+	parse_str_by_tab(str, text, fields, '~');
+
+	fixup_poly_coords(text, easy_points);
+
+	replace_node(*shape, text);
+
+	return 0;
+}
+
 
 static int parse_pcb_shape_any(gdom_node_t **shape)
 {
@@ -222,6 +253,7 @@ static int parse_pcb_shape_any(gdom_node_t **shape)
 		if (strncmp(str, "VIA~", 4) == 0) return parse_shape_via(str+4, shape);
 		if (strncmp(str, "HOLE~", 5) == 0) return parse_shape_hole(str+5, shape);
 		if (strncmp(str, "PAD~", 4) == 0) return parse_shape_pad(str+4, shape);
+		if (strncmp(str, "TEXT~", 5) == 0) return parse_shape_text(str+5, shape);
 	}
 
 	return -1;
