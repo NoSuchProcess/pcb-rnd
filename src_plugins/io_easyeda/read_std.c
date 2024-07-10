@@ -31,8 +31,13 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <librnd/core/safe_fs.h>
+
+#include "board.h"
+#include "data.h"
 #include "plug_io.h"
 
+#include "io_easyeda_conf.h"
 #include "read_std_low.c"
 #include "read_std_hi.c"
 
@@ -111,6 +116,5 @@ int io_easyeda_std_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const cha
 
 int io_easyeda_std_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
-	rnd_trace("easyeda_std_parse_pcb\n");
-	return -1;
+	return easyeda_std_parse_board(Ptr, Filename, settings_dest);
 }

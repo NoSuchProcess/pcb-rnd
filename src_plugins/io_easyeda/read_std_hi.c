@@ -26,3 +26,24 @@
  *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
+
+static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_role_t settings_dest)
+{
+	FILE *f;
+	gdom_node_t *root;
+
+	f = rnd_fopen(&dst->hidlib, fn, "r");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "filed to open %s for read\n", fn);
+		return -1;
+	}
+
+	root = easystd_low_parse(f, 0);
+
+	fclose(f);
+
+	rnd_trace("easyeda_std_parse_pcb: %p\n", root);
+	return -1;
+}
+
+

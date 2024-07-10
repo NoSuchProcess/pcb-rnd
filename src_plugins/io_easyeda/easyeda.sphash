@@ -1,3 +1,4 @@
+BBox
 head
 docType
 editorVersion
@@ -9,4 +10,20 @@ hasIdFlag
 canvas
 shape
 layers
-
+objects
+width
+height
+preference
+hideFootprints
+hideNets
+DRCRULE
+Default
+trackWidth
+clearance
+viaHoleDiameter
+viaHoleD
+isDrcOnRoutingOrPlaceVia
+isRealtime
+checkObjectToCopperarea
+showDRCRangeLine
+netColors
