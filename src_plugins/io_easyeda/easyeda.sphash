@@ -79,3 +79,8 @@ helper_dots
 arc
 r
 circle
+copperarea
+keep_island
+zone
+thermal
+fill

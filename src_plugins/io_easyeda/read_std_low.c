@@ -282,6 +282,34 @@ static int parse_shape_circle(char *str, gdom_node_t **shape)
 	return 0;
 }
 
+static int parse_shape_copperarea(char *str, gdom_node_t **shape)
+{
+	gdom_node_t *copperarea;
+	static const str_tab_t fields[] = {
+		{easy_stroke_width, GDOM_DOUBLE},
+		{easy_layer, GDOM_LONG},
+		{easy_net, GDOM_STRING},
+		{easy_points, GDOM_STRING},
+		{easy_clearance, GDOM_DOUBLE},
+		{easy_fill, GDOM_STRING},
+		{easy_id, GDOM_STRING},
+		{easy_thermal, GDOM_STRING},
+		{easy_keep_island, GDOM_STRING},
+		{easy_zone, GDOM_STRING},
+		{easy_locked, GDOM_LONG},
+		{-1}
+	};
+
+	copperarea = gdom_alloc(easy_copperarea, GDOM_HASH);
+	parse_str_by_tab(str, copperarea, fields, '~');
+
+	fixup_poly_coords(copperarea, easy_points);
+
+	replace_node(*shape, copperarea);
+
+	return 0;
+}
+
 
 
 static int parse_pcb_shape_any(gdom_node_t **shape)
@@ -306,6 +334,7 @@ static int parse_pcb_shape_any(gdom_node_t **shape)
 		if (strncmp(str, "TEXT~", 5) == 0) return parse_shape_text(str+5, shape);
 		if (strncmp(str, "ARC~", 4) == 0) return parse_shape_arc(str+4, shape);
 		if (strncmp(str, "CIRCLE~", 7) == 0) return parse_shape_circle(str+7, shape);
+		if (strncmp(str, "COPPERAREA~", 11) == 0) return parse_shape_copperarea(str+11, shape);
 	}
 
 	return -1;
