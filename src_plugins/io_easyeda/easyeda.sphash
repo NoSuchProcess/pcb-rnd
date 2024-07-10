@@ -59,3 +59,7 @@ active
 config
 importFlag
 transformList
+dia
+hole_radius
+via
+hole
