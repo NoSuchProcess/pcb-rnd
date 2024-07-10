@@ -47,8 +47,27 @@ long easyeda_str2name(const char *str)
 	return res;
 }
 
-/* CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~0.5~mm~1~45~~0.5~4020~3400.5~0~yes */
+/*** helpers ***/
+static void fixup_poly_coords(gdom_node_t *parent, long subtree_name)
+{
+	gdom_node_t *coords, *old_coords;
+	static const str_tab_t ctab[] = {
+		{easy_crd, GDOM_DOUBLE},
+		{-1}
+	};
 
+	/* parse coords */
+	old_coords = gdom_hash_get(parent, subtree_name);
+	if (old_coords != NULL) {
+		coords = gdom_alloc(subtree_name, GDOM_ARRAY);
+		parse_str_by_tab(old_coords->value.str, coords, ctab, ' ');
+		replace_node(old_coords, coords);
+	}
+}
+
+/*** shapes ***/
+
+/* CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~0.5~mm~1~45~~0.5~4020~3400.5~0~yes */
 static int parse_canvas(gdom_node_t **canvas_orig)
 {
 	gdom_node_t *canvas;
@@ -81,15 +100,78 @@ static int parse_canvas(gdom_node_t **canvas_orig)
 	return 0;
 }
 
-
-static void parse_pcb_any_obj(gdom_node_t *obj)
+static int parse_shape_track(char *str, gdom_node_t **shape)
 {
+	gdom_node_t *track;
+	static const str_tab_t fields[] = {
+		{easy_stroke_width, GDOM_DOUBLE},
+		{easy_layer, GDOM_LONG},
+		{easy_net, GDOM_STRING},
+		{easy_points, GDOM_STRING},
+		{easy_id, GDOM_STRING},
+		{easy_locked, GDOM_LONG},
+		{-1}
+	};
 
+	track = gdom_alloc(easy_track, GDOM_HASH);
+	parse_str_by_tab(str, track, fields, '~');
+
+	fixup_poly_coords(track, easy_points);
+
+	replace_node(*shape, track);
+
+	return 0;
 }
+
+static int parse_pcb_shape_any(gdom_node_t **shape)
+{
+	char *str;
+
+	if ((*shape)->type != GDOM_STRING)
+		return -1;
+
+	str = (*shape)->value.str;
+	if (str[0] == '\0')
+		return -1;
+
+	if (str[1] == '~') {
+/*		if (str[0] == 'C') return parse_shape_circle(str+2, shape);*/
+	}
+	else {
+		if (strncmp(str, "TRACK~", 6) == 0) return parse_shape_track(str+6, shape);
+	}
+
+	return -1;
+}
+
+/* 7~TopSolderMaskLayer~#800080~true~false~true~0.3 */
+static int parse_pcb_layer(gdom_node_t **shape)
+{
+	gdom_node_t *layer;
+	static const str_tab_t fields[] = {
+		{easy_id, GDOM_LONG},
+		{easy_name, GDOM_STRING},
+		{easy_color, GDOM_STRING},
+		{easy_visible, GDOM_STRING},
+		{easy_active, GDOM_STRING},
+		{easy_config, GDOM_STRING},
+		{-1}
+	};
+
+	layer = gdom_alloc(easy_layer, GDOM_HASH);
+	parse_str_by_tab((*shape)->value.str, layer, fields, '~');
+
+	fixup_poly_coords(layer, easy_points);
+
+	replace_node(*shape, layer);
+
+	return 0;
+}
+
 
 gdom_node_t *easystd_low_pcb_parse(FILE *f, int is_fp)
 {
-	gdom_node_t *root, *objs, *canvas;
+	gdom_node_t *root, *shapes, *canvas, *layers;
 
 	/* low level json parse -> initial dom */
 	root = gdom_json_parse(f, easyeda_str2name);
@@ -101,11 +183,18 @@ gdom_node_t *easystd_low_pcb_parse(FILE *f, int is_fp)
 	if ((canvas != NULL) && (canvas->type == GDOM_STRING))
 		parse_canvas(&canvas);
 
-	objs = gdom_hash_get(root, easy_objects);
-	if ((objs != NULL) && (objs->type == GDOM_ARRAY)) {
+	shapes = gdom_hash_get(root, easy_shape);
+	if ((shapes != NULL) && (shapes->type == GDOM_ARRAY)) {
 		long n;
-		for(n = 0; n < objs->value.array.used; n++)
-			parse_pcb_any_obj(objs->value.array.child[n]);
+		for(n = 0; n < shapes->value.array.used; n++)
+			parse_pcb_shape_any(&shapes->value.array.child[n]);
+	}
+
+	layers = gdom_hash_get(root, easy_layers);
+	if ((layers != NULL) && (layers->type == GDOM_ARRAY)) {
+		long n;
+		for(n = 0; n < layers->value.array.used; n++)
+			parse_pcb_layer(&layers->value.array.child[n]);
 	}
 
 	return root;

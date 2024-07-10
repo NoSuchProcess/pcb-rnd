@@ -44,4 +44,17 @@ origin_y
 routing_width
 routing_angle
 copper_area_visible
+crd
+stroke_width
+layer
+net
+points
+id
+locked
+track
+name
+color
+visible
+active
+config
 
