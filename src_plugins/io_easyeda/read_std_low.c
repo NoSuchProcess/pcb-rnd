@@ -140,8 +140,6 @@ static int parse_shape_via(char *str, gdom_node_t **shape)
 	via = gdom_alloc(easy_via, GDOM_HASH);
 	parse_str_by_tab(str, via, fields, '~');
 
-	fixup_poly_coords(via, easy_points);
-
 	replace_node(*shape, via);
 
 	return 0;
@@ -173,7 +171,7 @@ static int parse_shape_pad(char *str, gdom_node_t **shape)
 	pad = gdom_alloc(easy_pad, GDOM_HASH);
 	parse_str_by_tab(str, pad, fields, '~');
 
-	fixup_poly_coords(pad, easy_points);
+	fixup_poly_coords(pad, easy_slot_points);
 
 	replace_node(*shape, pad);
 
@@ -194,8 +192,6 @@ static int parse_shape_hole(char *str, gdom_node_t **shape)
 
 	hole = gdom_alloc(easy_hole, GDOM_HASH);
 	parse_str_by_tab(str, hole, fields, '~');
-
-	fixup_poly_coords(hole, easy_points);
 
 	replace_node(*shape, hole);
 
@@ -226,8 +222,6 @@ static int parse_shape_text(char *str, gdom_node_t **shape)
 	text = gdom_alloc(easy_text, GDOM_HASH);
 	parse_str_by_tab(str, text, fields, '~');
 
-	fixup_poly_coords(text, easy_points);
-
 	replace_node(*shape, text);
 
 	return 0;
@@ -251,8 +245,6 @@ static int parse_shape_arc(char *str, gdom_node_t **shape)
 	arc = gdom_alloc(easy_arc, GDOM_HASH);
 	parse_str_by_tab(str, arc, fields, '~');
 
-	fixup_poly_coords(arc, easy_points);
-
 	replace_node(*shape, arc);
 
 	return 0;
@@ -274,8 +266,6 @@ static int parse_shape_circle(char *str, gdom_node_t **shape)
 
 	circle = gdom_alloc(easy_circle, GDOM_HASH);
 	parse_str_by_tab(str, circle, fields, '~');
-
-	fixup_poly_coords(circle, easy_points);
 
 	replace_node(*shape, circle);
 
