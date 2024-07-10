@@ -1407,6 +1407,8 @@
 ../src_plugins/io_eagle/trparse_xml.o: \
  ../src_plugins/io_eagle/trparse_xml.c ../config.h \
  ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h
+../src_plugins/io_easyeda/easyeda_sphash.o: \
+ ../src_plugins/io_easyeda/easyeda_sphash.c
 ../src_plugins/io_easyeda/io_easyeda.o: \
  ../src_plugins/io_easyeda/io_easyeda.c ../config.h plug_io.h \
  global_typedefs.h plug_footprint.h data.h globalconst.h layer.h attrib.h \
@@ -1420,15 +1422,17 @@
  ../src_plugins/io_easyeda/conf_internal.c \
  ../src_plugins/io_easyeda/read_std.h \
  ../src_plugins/io_easyeda/io_easyeda_conf_fields.h
-../src_plugins/io_easyeda/read_std.o: ../src_plugins/io_easyeda/read_std.c \
- ../config.h plug_io.h global_typedefs.h plug_footprint.h data.h \
- globalconst.h layer.h attrib.h obj_common.h flag.h data_parent.h \
- obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h \
- obj_poly.h obj_text_list.h obj_text.h font.h obj_gfx_list.h obj_gfx.h \
- crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h layer_grp.h \
- idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
- ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h
+../src_plugins/io_easyeda/read_std.o: \
+ ../src_plugins/io_easyeda/read_std.c ../config.h plug_io.h \
+ global_typedefs.h plug_footprint.h data.h globalconst.h layer.h attrib.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h crosshair.h route.h buffer.h \
+ obj_rat_list.h obj_rat.h layer_grp.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
+ ../src_plugins/io_easyeda/read_std_low.c \
+ ../src_plugins/io_easyeda/read_std_hi.c
 ../src_plugins/io_hyp/hyp_l.o: ../src_plugins/io_hyp/hyp_l.c \
  ../src_plugins/io_hyp/hyp_y.h ../src_plugins/io_hyp/parser.h board.h \
  ../config.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
