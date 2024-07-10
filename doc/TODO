@@ -2,13 +2,24 @@
 + BUG: using image2footprint parametric footprint, choose 0.25mm pixel size, white silk, black soldermask, yes to dithering and yes to FR4, choose either of the vader .pngs from bug files as the image and place on layout, then change .png to other png, place on layout, and continue alternating. segfault will typically ensue after a period. backtrace included as big-subc-bt.txt [report: erich]
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
-- BUG: bug_files/tc-mult-attr.pcb: load, save, load: wrror messages on duplicate element attr [report: John Wehle ml:6363]
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
+- FEATURE: io_easyeda
+- FEATURE: emsim-rnd (dcpower)
+- revise release/packaging:
+	- remove suggesting geda-gnetlist from the debian package
+	- add suggesting sch-rnd and camv-rnd and route-rnd
+	- consider a ringdove metapackage?
+	(check for the packager's mailing list there was probably a mail on this)
+- FEATURE: svg colorspaces: bug_files/TODO/SVG.patch (requires librnd 4.2)
+- BUG: bug_files/tc-mult-attr.pcb: load, save, load: wrror messages on duplicate element attr [report: John Wehle ml:6363]
 - FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
 	- need to use find.c to get "nets" of mask objects (including padstacks)
 	- then use the normal bloat-intersect code to see if two of them are closer than the required value
+- FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
+	- search for '-' and centralize parsing refdes-term id
+- BUG: extended object "bus" bugs:
+	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
+	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
 - poly lib rewrite (fixed means it works with polybool):
 	- BUG: aron's private board, aron_*, self-isc inf loop with polybool [report: aron]
 	+ BUG: Bdale's disappearing poly bugreport, hosted in librnd/work/poly_broken
@@ -31,17 +42,9 @@
 		-> the upper edge is now cut in half by the line's clearance; the whole poly is cut in half
 		-> so removing the smaller half of the poly is the proper thing to do
 	- at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
-- FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
-	- search for '-' and centralize parsing refdes-term id
-- BUG: extended object "bus" bugs:
-	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
-	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
-- revise release/packaging:
-	- remove suggesting geda-gnetlist from the debian package
-	- add suggesting sch-rnd and camv-rnd and route-rnd
-	- consider a ringdove metapackage?
+
+2. For later releases ===============================================================================
 - librnd 4.3: search for TODO("librnd 4.3.0
-- FEATURE: svg colorspaces: bug_files/TODO/SVG.patch (requires librnd 4.2)
 - DOC: pool node on how to use pixmap for breadboading
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
