@@ -101,6 +101,7 @@ typedef struct std_read_ctx_s {
 	rnd_conf_role_t settings_dest;
 } std_read_ctx_t;
 
+
 /* EasyEDA std has a static layer assignment, layers identified by their
    integer ID, not by their name and there's no layer type saved. */
 static const pcb_layer_type_t std_layer_id2type[] = {
@@ -154,7 +155,15 @@ static const pcb_layer_type_t std_layer_id2type[] = {
 /*52~Inner32*/               PCB_LYT_INTERN | PCB_LYT_COPPER
 };
 
-static int std_parse_layer(std_read_ctx_t *ctx, gdom_node_t *src, long idx)
+/* load layers in a specific order so the pcb-rnd layer stack looks normal;
+   these numbers are base-1 to match the layer ID in comments above */
+#define LAYERTAB_INNER -1
+static const int layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 13, 14, 15, 0};
+static const int layertab_in_first = 21;
+static const int layertab_in_last = 52;
+
+
+static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx)
 {
 	pcb_layer_t *dst;
 	const char *config, *name;
@@ -179,11 +188,11 @@ static int std_parse_layer(std_read_ctx_t *ctx, gdom_node_t *src, long idx)
 
 	HASH_GET_STRING(name, src, easy_name, return -1);
 
-rnd_trace("Layer create %s idx %ld config='%s'\n", name, idx,config);
+rnd_trace("Layer create %s idx %ld config='%s' type=%d\n", name, idx,config, std_layer_id2type[idx]);
 
 	grp = pcb_get_grp_new_raw(ctx->pcb, 0);
 	grp->name = rnd_strdup(name);
-	grp->type = std_layer_id2type[idx];
+	grp->ltype = std_layer_id2type[idx];
 
 	lid = pcb_layer_create(ctx->pcb, grp - ctx->pcb->LayerGroups.grp, name, 0);
 	dst = pcb_get_layer(ctx->pcb->Data, lid);
@@ -193,11 +202,29 @@ rnd_trace("Layer create %s idx %ld config='%s'\n", name, idx,config);
 	return 0;
 }
 
+
+static int std_parse_layer(std_read_ctx_t *ctx, gdom_node_t *layers, long idx, long want_layer_id)
+{
+	int srci;
+
+	for(srci = 0; srci < layers->value.array.used; srci++) {
+		gdom_node_t *src = layers->value.array.child[srci];
+		long id;
+		HASH_GET_LONG(id, src, easy_id, return -1);
+		if (id == want_layer_id)
+			return std_parse_layer_(ctx, src, idx);
+	}
+
+	return 0; /* ignore layers not specified in input */
+}
+
+
+
 static int std_parse_layers(std_read_ctx_t *ctx)
 {
 	gdom_node_t *layers;
-	long n;
 	int res = 0;
+	const int *lt;
 
 	layers = gdom_hash_get(ctx->root, easy_layers);
 	if ((layers == NULL) || (layers->type != GDOM_ARRAY)) {
@@ -205,12 +232,15 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 		return -1;
 	}
 
-	for(n = 0; n < layers->value.array.used; n++) {
-
-		res |= std_parse_layer(ctx, layers->value.array.child[n], n);
+	for(lt = layertab; *lt != 0; lt++) {
+		if (*lt == LAYERTAB_INNER) {
+			long n;
+			for(n = layertab_in_first; n <= layertab_in_last; n++)
+				res |= std_parse_layer(ctx, layers, n - 1, n);
+		}
+		else
+			res |= std_parse_layer(ctx, layers, *lt - 1, *lt);
 	}
-
-
 
 	return res;
 }
