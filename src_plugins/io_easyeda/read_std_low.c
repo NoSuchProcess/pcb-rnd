@@ -300,6 +300,29 @@ static int parse_shape_copperarea(char *str, gdom_node_t **shape)
 	return 0;
 }
 
+static int parse_shape_solidregion(char *str, gdom_node_t **shape)
+{
+	gdom_node_t *solidregion;
+	static const str_tab_t fields[] = {
+		{easy_layer, GDOM_LONG},
+		{easy_net, GDOM_STRING},
+		{easy_points, GDOM_STRING},
+		{easy_type, GDOM_STRING},
+		{easy_id, GDOM_STRING},
+		{easy_locked, GDOM_LONG},
+		{-1}
+	};
+
+	solidregion = gdom_alloc(easy_solidregion, GDOM_HASH);
+	parse_str_by_tab(str, solidregion, fields, '~');
+
+	fixup_poly_coords(solidregion, easy_points);
+
+	replace_node(*shape, solidregion);
+
+	return 0;
+}
+
 
 
 static int parse_pcb_shape_any(gdom_node_t **shape)
@@ -325,6 +348,7 @@ static int parse_pcb_shape_any(gdom_node_t **shape)
 		if (strncmp(str, "ARC~", 4) == 0) return parse_shape_arc(str+4, shape);
 		if (strncmp(str, "CIRCLE~", 7) == 0) return parse_shape_circle(str+7, shape);
 		if (strncmp(str, "COPPERAREA~", 11) == 0) return parse_shape_copperarea(str+11, shape);
+		if (strncmp(str, "SOLIDREGION~", 12) == 0) return parse_shape_solidregion(str+12, shape);
 	}
 
 	return -1;
