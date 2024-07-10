@@ -1,7 +1,7 @@
 pcb-rnd 3.1.5
 ~~~~~~~~~~~~~
 
-This minor release adds minor features and fixes a bunch of bugs.
+This release adds minor features and fixes a bunch of bugs.
 Change highlights:
 
 1. CAM export: default pnp (pick-and-place) doc export jobs to ps and gerber
