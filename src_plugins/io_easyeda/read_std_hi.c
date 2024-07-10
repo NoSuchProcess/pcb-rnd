@@ -27,23 +27,82 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_role_t settings_dest)
-{
+typedef struct std_read_ctx_s {
 	FILE *f;
 	gdom_node_t *root;
+	pcb_board_t *pcb;
+	pcb_data_t *data;
+	const char *fn;
+	rnd_conf_role_t settings_dest;
+} std_read_ctx_t;
 
-	f = rnd_fopen(&dst->hidlib, fn, "r");
-	if (f == NULL) {
+static int std_parse_layer(std_read_ctx_t *ctx, pcb_layer_t *dst, gdom_node_t *src)
+{
+	return 0;
+}
+
+static int std_parse_layers(std_read_ctx_t *ctx)
+{
+	gdom_node_t *layers;
+	long n;
+	int res = 0;
+
+	layers = gdom_hash_get(ctx->root, easy_layers);
+	if ((layers == NULL) || (layers->type != GDOM_ARRAY)) {
+		rnd_message(RND_MSG_ERROR, "EasyEDA std: missing or wrong typed layers tree\n");
+		return -1;
+	}
+
+	for(n = 0; n < layers->value.array.used; n++) {
+		if (n >= PCB_MAX_LAYER) {
+			rnd_message(RND_MSG_ERROR, "Board has more layers than supported by this compilation of pcb-rnd (%d)\nIf this is a valid board, please increase PCB_MAX_LAYER and recompile.\n", PCB_MAX_LAYER);
+			res = -1;
+			break;
+		}
+
+		res |= std_parse_layer(ctx, &ctx->data->Layer[n], layers->value.array.child[n]);
+	}
+
+
+
+	return res;
+}
+
+static int std_parse_canvas(std_read_ctx_t *ctx)
+{
+	gdom_node_t *canvas;
+
+	canvas = gdom_hash_get(ctx->root, easy_canvas);
+	if ((canvas == NULL) || (canvas->type != GDOM_HASH)) {
+		rnd_message(RND_MSG_ERROR, "EasyEDA std: missing or wrong typed canvas tree\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_role_t settings_dest)
+{
+	std_read_ctx_t ctx;
+	int res = 0;
+
+	ctx.pcb = dst;
+	ctx.data = dst->Data;
+	ctx.fn = fn;
+	ctx.f = rnd_fopen(&dst->hidlib, fn, "r");
+	ctx.settings_dest = settings_dest;
+	if (ctx.f == NULL) {
 		rnd_message(RND_MSG_ERROR, "filed to open %s for read\n", fn);
 		return -1;
 	}
 
-	root = easystd_low_parse(f, 0);
+	ctx.root = easystd_low_parse(ctx.f, 0);
+	fclose(ctx.f);
 
-	fclose(f);
+	if (res == 0) res |= std_parse_layers(&ctx);
+	if (res == 0) res |= std_parse_canvas(&ctx);
 
-	rnd_trace("easyeda_std_parse_pcb: %p\n", root);
-	return -1;
+	return res;
 }
 
 
