@@ -341,6 +341,25 @@ static int parse_shape_rect(char *str, gdom_node_t **shape)
 	return 0;
 }
 
+static int parse_shape_dimension(char *str, gdom_node_t **shape)
+{
+	gdom_node_t *dimension;
+	static const str_tab_t fields[] = {
+		{easy_layer, GDOM_LONG},
+		{easy_path, GDOM_STRING},
+		{easy_id, GDOM_STRING},
+		{easy_locked, GDOM_LONG},
+		{-1}
+	};
+
+	dimension = gdom_alloc(easy_dimension, GDOM_HASH);
+	parse_str_by_tab(str, dimension, fields, '~');
+
+	replace_node(*shape, dimension);
+
+	return 0;
+}
+
 
 
 static int parse_pcb_shape_any(gdom_node_t **shape)
@@ -368,6 +387,7 @@ static int parse_pcb_shape_any(gdom_node_t **shape)
 		if (strncmp(str, "COPPERAREA~", 11) == 0) return parse_shape_copperarea(str+11, shape);
 		if (strncmp(str, "SOLIDREGION~", 12) == 0) return parse_shape_solidregion(str+12, shape);
 		if (strncmp(str, "RECT~", 5) == 0) return parse_shape_rect(str+5, shape);
+		if (strncmp(str, "DIMENSION~", 10) == 0) return parse_shape_dimension(str+10, shape);
 	}
 
 	return -1;
