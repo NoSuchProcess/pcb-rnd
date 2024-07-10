@@ -260,7 +260,7 @@ static int parse_shape_arc(char *str, gdom_node_t **shape)
 
 static int parse_shape_circle(char *str, gdom_node_t **shape)
 {
-	gdom_node_t *arc;
+	gdom_node_t *circle;
 	static const str_tab_t fields[] = {
 		{easy_x, GDOM_DOUBLE},
 		{easy_y, GDOM_DOUBLE},
@@ -272,12 +272,12 @@ static int parse_shape_circle(char *str, gdom_node_t **shape)
 		{-1}
 	};
 
-	arc = gdom_alloc(easy_arc, GDOM_HASH);
-	parse_str_by_tab(str, arc, fields, '~');
+	circle = gdom_alloc(easy_circle, GDOM_HASH);
+	parse_str_by_tab(str, circle, fields, '~');
 
-	fixup_poly_coords(arc, easy_points);
+	fixup_poly_coords(circle, easy_points);
 
-	replace_node(*shape, arc);
+	replace_node(*shape, circle);
 
 	return 0;
 }
