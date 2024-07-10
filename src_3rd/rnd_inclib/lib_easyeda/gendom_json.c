@@ -154,3 +154,21 @@ gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
 	return gdom_json_parse_any(f, (int (*)(void *))fgetc, str2name);
 }
 
+static int gdom_str_getc(void *uctx)
+{
+	const char **str = uctx;
+	int res = **str;
+
+	if (res != 0)
+		(*str)++;
+	else
+		res = EOF;
+
+	return res;
+}
+
+gdom_node_t *gdom_json_parse_str(const char *str, long (*str2name)(const char *str))
+{
+	return gdom_json_parse_any(&str, gdom_str_getc, str2name);
+}
+
