@@ -1418,9 +1418,9 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_easyeda/io_easyeda_conf.h \
  ../src_plugins/io_easyeda/conf_internal.c \
- ../src_plugins/io_easyeda/read.h \
+ ../src_plugins/io_easyeda/read_std.h \
  ../src_plugins/io_easyeda/io_easyeda_conf_fields.h
-../src_plugins/io_easyeda/read.o: ../src_plugins/io_easyeda/read.c \
+../src_plugins/io_easyeda/read_std.o: ../src_plugins/io_easyeda/read_std.c \
  ../config.h plug_io.h global_typedefs.h plug_footprint.h data.h \
  globalconst.h layer.h attrib.h obj_common.h flag.h data_parent.h \
  obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h \

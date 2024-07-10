@@ -6,7 +6,7 @@ put /local/rnd/mod/CONFVAR {io_easyeda_conf_internal}
 
 put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/io_easyeda/io_easyeda.o
-	$(PLUGDIR)/io_easyeda/read.o
+	$(PLUGDIR)/io_easyeda/read_std.o
 @]
 
 #	$(PLUGDIR)/io_easyeda/write.o

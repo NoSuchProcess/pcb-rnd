@@ -75,6 +75,7 @@ include {../src_plugins/io_autotrax/Plug.tmpasm}
 include {../src_plugins/io_bxl/Plug.tmpasm}
 include {../src_plugins/io_dsn/Plug.tmpasm}
 include {../src_plugins/io_eagle/Plug.tmpasm}
+include {../src_plugins/io_easyeda/Plug.tmpasm}
 include {../src_plugins/io_hyp/Plug.tmpasm}
 include {../src_plugins/io_kicad/Plug.tmpasm}
 include {../src_plugins/io_kicad_legacy/Plug.tmpasm}

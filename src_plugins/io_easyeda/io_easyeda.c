@@ -41,9 +41,9 @@
 
 conf_io_easyeda_t conf_io_easyeda;
 
-#include "read.h"
+#include "read_std.h"
 
-static pcb_plug_io_t io_easyeda;
+static pcb_plug_io_t io_easyeda_std;
 static const char *easyeda_cookie = "EasyEDA IO";
 
 
@@ -65,7 +65,7 @@ int pplg_check_ver_io_easyeda(int ver_needed) { return 0; }
 
 void pplg_uninit_io_easyeda(void)
 {
-	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_easyeda);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_easyeda_std);
 	rnd_conf_plug_unreg("plugins/io_easyeda/", io_easyeda_conf_internal, easyeda_cookie);
 }
 
@@ -73,24 +73,24 @@ int pplg_init_io_easyeda(void)
 {
 	RND_API_CHK_VER;
 
-	io_easyeda.plugin_data = NULL;
-	io_easyeda.fmt_support_prio = io_easyeda_fmt;
-	io_easyeda.test_parse = io_easyeda_test_parse;
-	io_easyeda.parse_pcb = io_easyeda_parse_pcb;
-/*	io_easyeda.parse_footprint = io_easyeda_parse_footprint;
-	io_easyeda.map_footprint = io_easyeda_map_footprint;*/
-	io_easyeda.parse_font = NULL;
-	io_easyeda.write_buffer = NULL;
-	io_easyeda.write_pcb = NULL;
-	io_easyeda.default_fmt = "easyeda";
-	io_easyeda.description = "EasyEDA board";
-	io_easyeda.save_preference_prio = 61;
-	io_easyeda.default_extension = ".asc"; TODO("revise these");
-	io_easyeda.fp_extension = ".asc";
-	io_easyeda.mime_type = "application/x-easyeda";
-	io_easyeda.multi_footprint = 1;
+	io_easyeda_std.plugin_data = NULL;
+	io_easyeda_std.fmt_support_prio = io_easyeda_fmt;
+	io_easyeda_std.test_parse = io_easyeda_std_test_parse;
+	io_easyeda_std.parse_pcb = io_easyeda_std_parse_pcb;
+/*	io_easyeda_std.parse_footprint = io_easyeda_parse_footprint;
+	io_easyeda_std.map_footprint = io_easyeda_map_footprint;*/
+	io_easyeda_std.parse_font = NULL;
+	io_easyeda_std.write_buffer = NULL;
+	io_easyeda_std.write_pcb = NULL;
+	io_easyeda_std.default_fmt = "easyeda std";
+	io_easyeda_std.description = "EasyEDA std board";
+	io_easyeda_std.save_preference_prio = 61;
+	io_easyeda_std.default_extension = ".json";
+	io_easyeda_std.fp_extension = ".asc"; TODO("revise these");
+	io_easyeda_std.mime_type = "application/x-easyeda";
+	io_easyeda_std.multi_footprint = 1;
 
-	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_easyeda);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_easyeda_std);
 
 rnd_conf_plug_reg(conf_io_easyeda, io_easyeda_conf_internal, easyeda_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
