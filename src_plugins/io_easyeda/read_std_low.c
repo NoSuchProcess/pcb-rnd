@@ -47,6 +47,40 @@ long easyeda_str2name(const char *str)
 	return res;
 }
 
+/* CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~0.5~mm~1~45~~0.5~4020~3400.5~0~yes */
+
+static int parse_canvas(gdom_node_t **canvas_orig)
+{
+	gdom_node_t *canvas;
+	static const str_tab_t fields[] = {
+		{easy_viewbox_width, GDOM_DOUBLE},
+		{easy_viewbox_height, GDOM_DOUBLE},
+		{easy_bg_color, GDOM_STRING},
+		{easy_grid_visible, GDOM_STRING},
+		{easy_grid_color, GDOM_STRING},
+		{easy_grid_size, GDOM_DOUBLE},
+		{easy_canvas_width, GDOM_DOUBLE},
+		{easy_canvas_height, GDOM_DOUBLE},
+		{easy_grid_style, GDOM_STRING},
+		{easy_snap_size, GDOM_DOUBLE},
+		{easy_grid_unit, GDOM_STRING},
+		{easy_routing_width, GDOM_DOUBLE},
+		{easy_routing_angle, GDOM_STRING},
+		{easy_copper_area_visible, GDOM_STRING},
+		{easy_snap_size_alt, GDOM_DOUBLE},
+		{easy_origin_x, GDOM_DOUBLE},
+		{easy_origin_y, GDOM_DOUBLE},
+		{-1}
+	};
+
+	canvas = gdom_alloc(easy_canvas, GDOM_HASH);
+	parse_str_by_tab((*canvas_orig)->value.str+3, canvas, fields, '~');
+
+	replace_node(*canvas_orig, canvas);
+
+	return 0;
+}
+
 
 static void parse_pcb_any_obj(gdom_node_t *obj)
 {
@@ -55,7 +89,7 @@ static void parse_pcb_any_obj(gdom_node_t *obj)
 
 gdom_node_t *easystd_low_pcb_parse(FILE *f, int is_fp)
 {
-	gdom_node_t *root, *objs;
+	gdom_node_t *root, *objs, *canvas;
 
 	/* low level json parse -> initial dom */
 	root = gdom_json_parse(f, easyeda_str2name);
@@ -63,6 +97,10 @@ gdom_node_t *easystd_low_pcb_parse(FILE *f, int is_fp)
 		return NULL;
 
 	/* parse strings into dom subtrees */
+	canvas = gdom_hash_get(root, easy_canvas);
+	if ((canvas != NULL) && (canvas->type == GDOM_STRING))
+		parse_canvas(&canvas);
+
 	objs = gdom_hash_get(root, easy_objects);
 	if ((objs != NULL) && (objs->type == GDOM_ARRAY)) {
 		long n;
