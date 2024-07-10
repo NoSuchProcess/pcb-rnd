@@ -279,7 +279,7 @@ static int parse_shape_copperarea(char *str, gdom_node_t **shape)
 		{easy_stroke_width, GDOM_DOUBLE},
 		{easy_layer, GDOM_LONG},
 		{easy_net, GDOM_STRING},
-		{easy_points, GDOM_STRING},
+		{easy_path, GDOM_STRING},
 		{easy_clearance, GDOM_DOUBLE},
 		{easy_fill, GDOM_STRING},
 		{easy_id, GDOM_STRING},
@@ -293,8 +293,6 @@ static int parse_shape_copperarea(char *str, gdom_node_t **shape)
 	copperarea = gdom_alloc(easy_copperarea, GDOM_HASH);
 	parse_str_by_tab(str, copperarea, fields, '~');
 
-	fixup_poly_coords(copperarea, easy_points);
-
 	replace_node(*shape, copperarea);
 
 	return 0;
@@ -306,7 +304,7 @@ static int parse_shape_solidregion(char *str, gdom_node_t **shape)
 	static const str_tab_t fields[] = {
 		{easy_layer, GDOM_LONG},
 		{easy_net, GDOM_STRING},
-		{easy_points, GDOM_STRING},
+		{easy_path, GDOM_STRING},
 		{easy_type, GDOM_STRING},
 		{easy_id, GDOM_STRING},
 		{easy_locked, GDOM_LONG},
@@ -315,8 +313,6 @@ static int parse_shape_solidregion(char *str, gdom_node_t **shape)
 
 	solidregion = gdom_alloc(easy_solidregion, GDOM_HASH);
 	parse_str_by_tab(str, solidregion, fields, '~');
-
-	fixup_poly_coords(solidregion, easy_points);
 
 	replace_node(*shape, solidregion);
 
