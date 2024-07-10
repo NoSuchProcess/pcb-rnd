@@ -63,3 +63,9 @@ dia
 hole_radius
 via
 hole
+number
+rot
+slot_length
+slot_points
+plated
+pad
