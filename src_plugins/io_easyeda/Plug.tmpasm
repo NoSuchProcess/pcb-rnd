@@ -3,9 +3,12 @@ put /local/rnd/mod/CONF {$(PLUGDIR)/io_easyeda/io_easyeda_conf.h}
 put /local/rnd/mod/CONFFILE {io_easyeda.conf}
 put /local/rnd/mod/CONFVAR {io_easyeda_conf_internal}
 
+put /local/rnd/mod/SPHASH  {$(PLUGDIR)/io_easyeda/easyeda.sphash}
+put /local/rnd/mod/SPHASH_ARGS {--prefix easy}
 
 put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/io_easyeda/io_easyeda.o
+	$(PLUGDIR)/io_easyeda/easyeda_sphash.o
 	$(PLUGDIR)/io_easyeda/read_std.o
 @]
 

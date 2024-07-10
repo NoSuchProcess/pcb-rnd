@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  EasyEDA IO plugin - plugin coordination
+ *  EasyEDA IO plugin - dispatch std format read
  *  pcb-rnd Copyright (C) 2024 Tibor 'Igor2' Palinkas
  *  (Supported by NLnet NGI0 Entrust Fund in 2024)
  *
@@ -32,6 +32,10 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "plug_io.h"
+
+#include "read_std_low.c"
+#include "read_std_hi.c"
+
 
 /* doctype is an integer that identifies what the json is about */
 static int easystd_get_doctype(char *stray, FILE *f, char *buf, long buf_len)
