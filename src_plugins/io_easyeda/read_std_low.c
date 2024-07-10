@@ -258,6 +258,30 @@ static int parse_shape_arc(char *str, gdom_node_t **shape)
 	return 0;
 }
 
+static int parse_shape_circle(char *str, gdom_node_t **shape)
+{
+	gdom_node_t *arc;
+	static const str_tab_t fields[] = {
+		{easy_x, GDOM_DOUBLE},
+		{easy_y, GDOM_DOUBLE},
+		{easy_r, GDOM_DOUBLE},
+		{easy_stroke_width, GDOM_DOUBLE},
+		{easy_layer, GDOM_LONG},
+		{easy_id, GDOM_STRING},
+		{easy_locked, GDOM_LONG},
+		{-1}
+	};
+
+	arc = gdom_alloc(easy_arc, GDOM_HASH);
+	parse_str_by_tab(str, arc, fields, '~');
+
+	fixup_poly_coords(arc, easy_points);
+
+	replace_node(*shape, arc);
+
+	return 0;
+}
+
 
 
 static int parse_pcb_shape_any(gdom_node_t **shape)
@@ -281,6 +305,7 @@ static int parse_pcb_shape_any(gdom_node_t **shape)
 		if (strncmp(str, "PAD~", 4) == 0) return parse_shape_pad(str+4, shape);
 		if (strncmp(str, "TEXT~", 5) == 0) return parse_shape_text(str+5, shape);
 		if (strncmp(str, "ARC~", 4) == 0) return parse_shape_arc(str+4, shape);
+		if (strncmp(str, "CIRCLE~", 7) == 0) return parse_shape_circle(str+7, shape);
 	}
 
 	return -1;
