@@ -362,6 +362,40 @@ static int parse_shape_dimension(char *str, gdom_node_t **shape)
 	return 0;
 }
 
+static int parse_shape_svgnode(char *str, gdom_node_t **shape)
+{
+	gdom_node_t *svgnode, *subtree;
+	long len = strlen(str);
+	char *tmp, *so;
+	const char *si;
+
+	svgnode = gdom_alloc(easy_svgnode, GDOM_HASH);
+
+	/* unquote the string */
+	tmp = malloc(len+1);
+	for(si = str, so = tmp; *si != '\0'; si++,so++) {
+		if (*si == '\\') si++;
+		*so = *si;
+	}
+	*so = '\0';
+
+	subtree = gdom_json_parse_str(tmp, easyeda_str2name);
+	if (subtree == NULL) {
+		rnd_trace("Unquoted: '%s'\n", tmp);
+		rnd_trace("Subtree: %p\n", subtree);
+	}
+	else
+		gdom_hash_put(svgnode, subtree);
+
+	replace_node(*shape, svgnode);
+
+	free(tmp);
+
+	return 0;
+}
+
+/*** lib (subcircuit) ***/
+
 static int parse_shape_lib_hdr(char *str, gdom_node_t *sym)
 {
 	static const str_tab_t fields[] = {
@@ -417,11 +451,10 @@ static int parse_shape_lib(char *str, gdom_node_t **lib)
 	replace_node(*lib, fp);
 
 	return res;
-
 }
 
 
-
+/*** common ***/
 static int parse_pcb_shape_any(gdom_node_t **shape)
 {
 	char *str;
@@ -449,6 +482,7 @@ static int parse_pcb_shape_any(gdom_node_t **shape)
 		if (strncmp(str, "RECT~", 5) == 0) return parse_shape_rect(str+5, shape);
 		if (strncmp(str, "DIMENSION~", 10) == 0) return parse_shape_dimension(str+10, shape);
 		if (strncmp(str, "LIB~", 4) == 0) return parse_shape_lib(str+4, shape);
+		if (strncmp(str, "SVGNODE~", 8) == 0) return parse_shape_svgnode(str+8, shape);
 	}
 
 	return -1;
