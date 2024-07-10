@@ -49,16 +49,16 @@ static const char *easyeda_cookie = "EasyEDA IO";
 
 int io_easyeda_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
-	if ((strcmp(ctx->description, fmt) != 0) && (rnd_strcasecmp(fmt, "easyeda") != 0)) /* format name mismatch */
-		return 0;
-
-	if (((typ & (~(PCB_IOT_FOOTPRINT))) != 0) && ((typ & (~(PCB_IOT_PCB))) != 0)) /* support only footprints */
+	if ((strcmp(ctx->description, fmt) != 0) && (strcmp(ctx->default_fmt, fmt) != 0) && (rnd_strcasecmp(fmt, "easyeda") != 0)) /* format name mismatch */
 		return 0;
 
 	if (wr)
 		return 0;
 
-	return 100;
+	if ((typ & (PCB_IOT_FOOTPRINT | PCB_IOT_PCB)) != 0) /* support only footprints and boards */
+		return 100;
+
+	return 0;
 }
 
 int pplg_check_ver_io_easyeda(int ver_needed) { return 0; }
