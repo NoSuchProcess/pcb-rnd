@@ -604,6 +604,11 @@
  funchash_core_list.h ../src_plugins/export_gerber/gerber_conf.h \
  conf_core.h ../src_plugins/export_excellon/aperture.h \
  ../src_plugins/export_gerber/gerber_conf_fields.h
+../src_plugins/export_hpgl/endp.o: ../src_plugins/export_hpgl/endp.c \
+ ../config.h ../src_plugins/export_hpgl/ht_endp.h \
+ ../src_plugins/export_hpgl/ht_endp.c ../src_plugins/export_hpgl/endp.h \
+ obj_arc.h obj_common.h flag.h globalconst.h attrib.h global_typedefs.h \
+ data_parent.h obj_line.h
 ../src_plugins/export_hpgl/export_hpgl.o: \
  ../src_plugins/export_hpgl/export_hpgl.c ../config.h conf_core.h \
  globalconst.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
@@ -614,7 +619,8 @@
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
  polygon.h vtpadstack_t.h draw.h layer.h layer_vis.h funchash_core.h \
- funchash_core_list.h hid_cam.h
+ funchash_core_list.h hid_cam.h ../src_plugins/export_hpgl/endp.h \
+ obj_arc.h obj_line.h ../src_plugins/export_hpgl/ht_endp.h
 ../src_plugins/export_ipcd356/ipcd356.o: \
  ../src_plugins/export_ipcd356/ipcd356.c ../config.h board.h \
  vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
@@ -1401,6 +1407,28 @@
 ../src_plugins/io_eagle/trparse_xml.o: \
  ../src_plugins/io_eagle/trparse_xml.c ../config.h \
  ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h
+../src_plugins/io_easyeda/io_easyeda.o: \
+ ../src_plugins/io_easyeda/io_easyeda.c ../config.h plug_io.h \
+ global_typedefs.h plug_footprint.h data.h globalconst.h layer.h attrib.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h crosshair.h route.h buffer.h \
+ obj_rat_list.h obj_rat.h layer_grp.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
+ ../src_plugins/io_easyeda/io_easyeda_conf.h \
+ ../src_plugins/io_easyeda/conf_internal.c \
+ ../src_plugins/io_easyeda/read.h \
+ ../src_plugins/io_easyeda/io_easyeda_conf_fields.h
+../src_plugins/io_easyeda/read.o: ../src_plugins/io_easyeda/read.c \
+ ../config.h plug_io.h global_typedefs.h plug_footprint.h data.h \
+ globalconst.h layer.h attrib.h obj_common.h flag.h data_parent.h \
+ obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h \
+ obj_poly.h obj_text_list.h obj_text.h font.h obj_gfx_list.h obj_gfx.h \
+ crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h layer_grp.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h
 ../src_plugins/io_hyp/hyp_l.o: ../src_plugins/io_hyp/hyp_l.c \
  ../src_plugins/io_hyp/hyp_y.h ../src_plugins/io_hyp/parser.h board.h \
  ../config.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
@@ -2500,7 +2528,8 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
  search.h flag_str.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h find.h \
  draw.h draw_wireframe.h ../src_plugins/serpentine/serpentine_conf.h \
- layer.h route.h ../src_plugins/serpentine/serpentine_conf_fields.h
+ layer.h route.h route_draw.h \
+ ../src_plugins/serpentine/serpentine_conf_fields.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
