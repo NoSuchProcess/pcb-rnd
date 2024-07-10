@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_misc.h>
 
 #include "board.h"
 #include "data.h"

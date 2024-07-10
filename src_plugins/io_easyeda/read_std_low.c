@@ -47,6 +47,8 @@ long easyeda_str2name(const char *str)
 	return res;
 }
 
+static int parse_pcb_shape_any(gdom_node_t **shape);
+
 /*** helpers ***/
 static void fixup_poly_coords(gdom_node_t *parent, long subtree_name)
 {
@@ -360,6 +362,64 @@ static int parse_shape_dimension(char *str, gdom_node_t **shape)
 	return 0;
 }
 
+static int parse_shape_lib_hdr(char *str, gdom_node_t *sym)
+{
+	static const str_tab_t fields[] = {
+		{easy_x, GDOM_DOUBLE},
+		{easy_y, GDOM_DOUBLE},
+		{easy_attributes, GDOM_STRING},
+		{easy_rot, GDOM_LONG},
+		{easy_import, GDOM_LONG},
+		{easy_id, GDOM_STRING},
+		{easy_locked, GDOM_LONG},
+		{-1}
+	};
+
+	return parse_str_by_tab(str, sym, fields, '~');
+}
+
+static int parse_shape_lib_shape(char *str, gdom_node_t *shapes)
+{
+	gdom_node_t *tmp = gdom_alloc(easy_shape, GDOM_STRING);
+	tmp->value.str = rnd_strdup(str);
+	if (gdom_array_append(shapes, tmp) != 0)
+		return -1;
+
+	return parse_pcb_shape_any(&tmp);
+}
+
+static int parse_shape_lib(char *str, gdom_node_t **lib)
+{
+	gdom_node_t *fp = NULL, *shapes = NULL;
+	char *s, *next;
+	int n, res = 0;
+
+	for(n = 0, s = str; s != NULL; n++, s = next) {
+		next = strstr(s, SEP3);
+		if (next != NULL) {
+			*next = '\0';
+			next += 3;
+		}
+		if (n == 0) {
+			fp = gdom_alloc(easy_subc, GDOM_HASH);
+			shapes = gdom_alloc(easy_shape, GDOM_ARRAY);
+			if (gdom_hash_put(fp, shapes) != 0)
+				res = -1;
+			parse_shape_lib_hdr(s, fp);
+		}
+		else
+			res |= parse_shape_lib_shape(s, shapes);
+	}
+
+	if (fp == NULL)
+		return res;
+
+	replace_node(*lib, fp);
+
+	return res;
+
+}
+
 
 
 static int parse_pcb_shape_any(gdom_node_t **shape)
@@ -388,6 +448,7 @@ static int parse_pcb_shape_any(gdom_node_t **shape)
 		if (strncmp(str, "SOLIDREGION~", 12) == 0) return parse_shape_solidregion(str+12, shape);
 		if (strncmp(str, "RECT~", 5) == 0) return parse_shape_rect(str+5, shape);
 		if (strncmp(str, "DIMENSION~", 10) == 0) return parse_shape_dimension(str+10, shape);
+		if (strncmp(str, "LIB~", 4) == 0) return parse_shape_lib(str+4, shape);
 	}
 
 	return -1;

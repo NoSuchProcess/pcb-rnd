@@ -87,3 +87,6 @@ fill
 solidregion
 rect
 dimension
+subc
+attributes
+import
