@@ -1,0 +1,18 @@
+put /local/rnd/mod {io_easyeda}
+put /local/rnd/mod/CONF {$(PLUGDIR)/io_easyeda/io_easyeda_conf.h}
+put /local/rnd/mod/CONFFILE {io_easyeda.conf}
+put /local/rnd/mod/CONFVAR {io_easyeda_conf_internal}
+
+
+put /local/rnd/mod/OBJS [@
+	$(PLUGDIR)/io_easyeda/io_easyeda.o
+	$(PLUGDIR)/io_easyeda/read.o
+@]
+
+#	$(PLUGDIR)/io_easyeda/write.o
+
+switch /local/module/io_easyeda/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

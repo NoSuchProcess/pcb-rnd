@@ -1,0 +1,11 @@
+$class io
+$short EasyEDA board & footprint
+$long load boards and footprints in the EasyEDA
+$state WIP
+$fmt-native no
+$fmt-feature-r EasyEDA board
+$fmt-feature-r EasyEDA footprint
+$package io-alien
+dep lib_compat_help
+default disable-all
+autoload 1
