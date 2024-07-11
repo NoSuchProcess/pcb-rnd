@@ -186,10 +186,7 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx)
 		return -1;
 	}
 
-
 	HASH_GET_STRING(name, src, easy_name, return -1);
-
-rnd_trace("Layer create %s idx %ld config='%s' type=%d\n", name, idx,config, std_layer_id2type[idx]);
 
 	grp = pcb_get_grp_new_raw(ctx->pcb, 0);
 	grp->name = rnd_strdup(name);
