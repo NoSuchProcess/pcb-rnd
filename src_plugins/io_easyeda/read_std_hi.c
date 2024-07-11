@@ -564,7 +564,7 @@ static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
 
 static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 {
-	gdom_node_t *slot_points;
+	gdom_node_t *slot_points, *points;
 	double cx, cy, holer, w, h;
 	long number;
 	int is_any, is_plated, n;
@@ -572,7 +572,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	pcb_pstk_t *pstk;
 	const char *sshape, *splated;
 	pcb_pstk_shape_t shapes[8] = {0};
-
+	pcb_layer_type_t side;
 
 	HASH_GET_LAYER_GLOBAL(layer, is_any, pad, easy_layer, return -1);
 	HASH_GET_DOUBLE(cx, pad, easy_x, return -1);
@@ -591,6 +591,59 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	else
 		holer = 0;
 
+	/* create the main shape in shape[0] */
+	if (strcmp(sshape, "ELLIPSE") == 0) {
+		shapes[0].shape = PCB_PSSH_CIRC;
+		shapes[0].data.circ.dia = TRR(w);
+	}
+	else if (strcmp(sshape, "RECT") == 0) {
+		rnd_coord_t w2 = TRR(w/2.0), h2 = TRR(h/2.0);
+		shapes[0].shape = PCB_PSSH_POLY;
+		pcb_pstk_shape_alloc_poly(&shapes[0].data.poly, 4);
+		shapes[0].data.poly.x[0] = -w2; shapes[0].data.poly.y[0] = -h2;
+		shapes[0].data.poly.x[1] = +w2; shapes[0].data.poly.y[1] = -h2;
+		shapes[0].data.poly.x[2] = +w2; shapes[0].data.poly.y[2] = +h2;
+		shapes[0].data.poly.x[3] = -w2; shapes[0].data.poly.y[3] = +h2;
+		shapes[0].data.poly.len = 4;
+	}
+	else if (strcmp(sshape, "OVAL") == 0) {
+		shapes[0].shape = PCB_PSSH_LINE;
+		shapes[0].data.line.x1 = 0;
+		shapes[0].data.line.y1 = -TRR(h/2.0)+TRR(w/2.0);
+		shapes[0].data.line.x2 = 0;
+		shapes[0].data.line.y2 = +TRR(h/2.0)-TRR(w/2.0);
+		shapes[0].data.line.thickness = TRR(w);
+	}
+	else if (strcmp(sshape, "POLYGON") == 0) {
+		long n, i;
+
+		HASH_GET_SUBTREE(points, pad, easy_points, GDOM_ARRAY, return -1);
+
+		if ((points->value.array.used < 6) || ((points->value.array.used % 2) != 0)) {
+			error_at(ctx, points, ("Invalid number of pad polygon points (must be even and at least 6)\n"));
+			return -1;
+		}
+
+		shapes[0].shape = PCB_PSSH_POLY;
+		pcb_pstk_shape_alloc_poly(&shapes[0].data.poly, points->value.array.used/2);
+
+		for(n = i = 0; n < points->value.array.used; n += 2, i++) {
+			double dx = easyeda_get_double(ctx, points->value.array.child[n]);
+			double dy = easyeda_get_double(ctx, points->value.array.child[n+1]);
+
+			shapes[0].data.poly.x[i] = TRR(dx - cx);
+			shapes[0].data.poly.y[i] = TRR(dy - cy);
+		}
+		shapes[0].data.poly.len = points->value.array.used/2;
+	}
+	if (!is_any) {
+		side = pcb_layer_flags_(layer) & PCB_LYT_ANYWHERE;
+		shapes[0].layer_mask = side | PCB_LYT_COPPER;
+	}
+	else
+		shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+
+/*
 	for(n = 0; n < 3; n++) {
 		shapes[n].shape = PCB_PSSH_CIRC;
 		shapes[n].data.circ.dia = TRR(w);
@@ -598,6 +651,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
 	shapes[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
 	shapes[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+*/
 
 	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(cx), TRY(cy), TRR(holer)*2, 1, 0, shapes);
 	if (pstk == NULL) {

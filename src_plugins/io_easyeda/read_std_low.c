@@ -173,6 +173,7 @@ static int parse_shape_pad(char *str, gdom_node_t **shape)
 	pad = gdom_alloc(easy_pad, GDOM_HASH);
 	parse_str_by_tab(str, pad, fields, '~');
 
+	fixup_poly_coords(pad, easy_points);
 	fixup_poly_coords(pad, easy_slot_points);
 
 	replace_node(*shape, pad);
