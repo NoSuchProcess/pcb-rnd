@@ -166,9 +166,10 @@ static const int layertab_in_last = 52;
 static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx)
 {
 	pcb_layer_t *dst;
-	const char *config, *name;
+	const char *config, *name, *clr;
 	pcb_layergrp_t *grp;
 	rnd_layer_id_t lid;
+	int load_clr;
 
 	if (idx > sizeof(std_layer_id2type) / sizeof(std_layer_id2type[0]))
 		return 0; /* ignore layers not in the table */
@@ -198,7 +199,12 @@ rnd_trace("Layer create %s idx %ld config='%s' type=%d\n", name, idx,config, std
 	dst = pcb_get_layer(ctx->pcb->Data, lid);
 	dst->name = rnd_strdup(name);
 
-
+	load_clr = (grp->ltype & PCB_LYT_COPPER) ? conf_io_easyeda.plugins.io_easyeda.load_color_copper : conf_io_easyeda.plugins.io_easyeda.load_color_noncopper;
+	if (load_clr) {
+		HASH_GET_STRING(clr, src, easy_color, goto skip_clr);
+		rnd_color_load_str(&dst->meta.real.color, clr);
+		skip_clr:;
+	}
 	return 0;
 }
 
