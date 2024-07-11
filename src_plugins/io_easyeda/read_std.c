@@ -41,7 +41,7 @@
 #include "data.h"
 #include "plug_io.h"
 
-TODO("pro: move this to somewhere more central");
+TODO("pro: move this to somewhere more central")
 #include "rnd_inclib/lib_svgpath/svgpath.c"
 
 #include "io_easyeda_conf.h"
