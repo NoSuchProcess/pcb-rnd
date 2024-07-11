@@ -549,6 +549,19 @@ static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
 }
 
 
+static int std_parse_dimension(std_read_ctx_t *ctx, gdom_node_t *dimension)
+{
+	const char *path;
+	double swd;
+	pcb_layer_t *layer;
+
+	HASH_GET_STRING(path, dimension, easy_path, return -1);
+	HASH_GET_LAYER(layer, dimension, easy_layer, return -1);
+
+	return std_parse_path(ctx, path, dimension, layer, RND_MIL_TO_COORD(5), 0);
+}
+
+
 static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 {
 	switch(shape->name) {
@@ -557,6 +570,7 @@ static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 		case easy_circle: return std_parse_circle(ctx, shape);
 		case easy_via: return std_parse_via(ctx, shape);
 		case easy_hole: return std_parse_hole(ctx, shape);
+		case easy_dimension: return std_parse_dimension(ctx, shape);
 	}
 
 	error_at(ctx, shape, ("Unknown shape '%s'\n", easy_keyname(shape->name)));
