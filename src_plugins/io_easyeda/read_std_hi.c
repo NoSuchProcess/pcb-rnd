@@ -378,10 +378,6 @@ static void easyeda_mkpath_carc(void *uctx, double cx, double cy, double r, doub
 	arc->StartAngle = -sa * RND_RAD_TO_DEG + 180.0;
 	arc->Delta = -da * RND_RAD_TO_DEG;
 
-
-rnd_trace("Start: %f delta: %f\n", arc->StartAngle, arc->Delta);
-
-
 	pcb_add_arc_on_layer(pctx->layer, arc);
 }
 
