@@ -513,12 +513,51 @@ static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *circ)
 	return 0;
 }
 
+static int std_parse_via(std_read_ctx_t *ctx, gdom_node_t *via)
+{
+	double cx, cy, dia, holer;
+	pcb_pstk_t *pstk;
+
+	HASH_GET_DOUBLE(cx, via, easy_x, return -1);
+	HASH_GET_DOUBLE(cy, via, easy_y, return -1);
+	HASH_GET_DOUBLE(dia, via, easy_dia, return -1);
+	HASH_GET_DOUBLE(holer, via, easy_hole_radius, return -1);
+
+	pstk = pcb_pstk_new_compat_via(ctx->data, -1, TRX(cx), TRY(cy), TRR(holer)*2, TRR(dia), 0, 0, PCB_PSTK_COMPAT_ROUND, 1);
+	if (pstk == NULL) {
+		error_at(ctx, via, ("Failed to create padstack for via\n"));
+		return -1;
+	}
+
+	return 0;
+}
+
+static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
+{
+	double cx, cy, dia;
+	pcb_pstk_t *pstk;
+
+	HASH_GET_DOUBLE(cx, hole, easy_x, return -1);
+	HASH_GET_DOUBLE(cy, hole, easy_y, return -1);
+	HASH_GET_DOUBLE(dia, hole, easy_dia, return -1);
+
+	pstk = pcb_pstk_new_hole(ctx->data, TRX(cx), TRY(cy), TRR(dia), 0);
+	if (pstk == NULL) {
+		error_at(ctx, hole, ("Failed to create padstack for hole\n"));
+		return -1;
+	}
+	return 0;
+}
+
+
 static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 {
 	switch(shape->name) {
 		case easy_track: return std_parse_track(ctx, shape);
 		case easy_arc: return std_parse_arc(ctx, shape);
 		case easy_circle: return std_parse_circle(ctx, shape);
+		case easy_via: return std_parse_via(ctx, shape);
+		case easy_hole: return std_parse_hole(ctx, shape);
 	}
 
 	error_at(ctx, shape, ("Unknown shape '%s'\n", easy_keyname(shape->name)));

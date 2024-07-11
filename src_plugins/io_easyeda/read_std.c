@@ -33,6 +33,8 @@
 #include <ctype.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
+#include "../lib_compat_help/pstk_compat.h"
+#include "../lib_compat_help/pstk_help.h"
 #include "rnd_inclib/lib_svgpath/svgpath.h"
 
 #include "board.h"
