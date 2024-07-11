@@ -38,8 +38,23 @@ static gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 	return node;
 }
 
+#define EASY_MAX_LAYERS 64
+
 /* raw coord transform (e.g. for radius, diameter, width) */
-#define TRR(c)   RND_MIL_TO_COORD(c / 10.0)
+#define TRR(c)   RND_MIL_TO_COORD((c) * 10.0)
+#define TRX(c)   TRR((c) - ctx->ox)
+#define TRY(c)   TRR((c) - ctx->oy)
+
+typedef struct std_read_ctx_s {
+	FILE *f;
+	gdom_node_t *root;
+	pcb_board_t *pcb;
+	pcb_data_t *data;
+	const char *fn;
+	rnd_conf_role_t settings_dest;
+	pcb_layer_t *layers[EASY_MAX_LAYERS];
+	double ox, oy;
+} std_read_ctx_t;
 
 #define error_at(ctx, node, args) \
 	do { \
@@ -54,6 +69,19 @@ static gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 		rnd_message(RND_MSG_WARNING, "easyeda parse warning at %s:%ld.%ld\n", ctx->fn, __loc__->lineno, __loc__->col); \
 		rnd_msg_error args; \
 	} while(0)
+
+static double easyeda_get_double(std_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	if (nd == NULL) {
+		rnd_message(RND_MSG_ERROR, "Missing data (double)\n");
+		return 0;
+	}
+	if (nd->type != GDOM_DOUBLE) {
+		error_at(ctx, nd, ("Expected data type: double\n"));
+		return 0;
+	}
+	return nd->value.dbl;
+}
 
 /* Look up (long) lname within (gdom_nod_t *)nd and load the result in dst.
    Require dst->type to be typ. Invoke err_stmt when anything fails and
@@ -95,14 +123,21 @@ do { \
 	dst = tmp->value.str; \
 } while(0)
 
-typedef struct std_read_ctx_s {
-	FILE *f;
-	gdom_node_t *root;
-	pcb_board_t *pcb;
-	pcb_data_t *data;
-	const char *fn;
-	rnd_conf_role_t settings_dest;
-} std_read_ctx_t;
+#define HASH_GET_LAYER(dst, nd, lname, err_stmt) \
+do { \
+	gdom_node_t *tmp; \
+	HASH_GET_SUBTREE(tmp, nd, lname, GDOM_LONG, err_stmt); \
+	if ((tmp->value.lng < 0) || (tmp->value.lng >= EASY_MAX_LAYERS)) { \
+		error_at(ctx, nd, ("layer ID %ld is out of range [0..%d]\n", tmp->value.lng, EASY_MAX_LAYERS-1)); \
+		err_stmt; \
+	} \
+	dst = ctx->layers[tmp->value.lng]; \
+	if (dst == NULL) { \
+		error_at(ctx, nd, ("layer ID %ld does not exist\n", tmp->value.lng)); \
+		err_stmt; \
+	} \
+} while(0)
+
 
 
 /* EasyEDA std has a static layer assignment, layers identified by their
@@ -167,7 +202,7 @@ static const int layertab_in_last = 52;
 
 /*** board meta ***/
 
-static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx)
+static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int easyeda_id)
 {
 	pcb_layer_t *dst;
 	const char *config, *name, *clr;
@@ -200,6 +235,9 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx)
 	dst = pcb_get_layer(ctx->pcb->Data, lid);
 	dst->name = rnd_strdup(name);
 
+	if ((easyeda_id >= 0) && (easyeda_id < EASY_MAX_LAYERS))
+		ctx->layers[easyeda_id] = dst;
+
 	load_clr = (grp->ltype & PCB_LYT_COPPER) ? conf_io_easyeda.plugins.io_easyeda.load_color_copper : conf_io_easyeda.plugins.io_easyeda.load_color_noncopper;
 	if (load_clr) {
 		HASH_GET_STRING(clr, src, easy_color, goto skip_clr);
@@ -219,7 +257,7 @@ static int std_parse_layer(std_read_ctx_t *ctx, gdom_node_t *layers, long idx, l
 		long id;
 		HASH_GET_LONG(id, src, easy_id, return -1);
 		if (id == want_layer_id)
-			return std_parse_layer_(ctx, src, idx);
+			return std_parse_layer_(ctx, src, idx, id);
 	}
 
 	return 0; /* ignore layers not specified in input */
@@ -256,7 +294,6 @@ static int std_parse_canvas(std_read_ctx_t *ctx)
 {
 	gdom_node_t *canvas;
 	double ox, oy, w, h;
-	char tmp[128];
 
 	canvas = gdom_hash_get(ctx->root, easy_canvas);
 	if ((canvas == NULL) || (canvas->type != GDOM_HASH)) {
@@ -269,10 +306,12 @@ static int std_parse_canvas(std_read_ctx_t *ctx)
 	HASH_GET_DOUBLE(w, canvas, easy_canvas_width, return -1);
 	HASH_GET_DOUBLE(h, canvas, easy_canvas_height, return -1);
 
-	ctx->pcb->hidlib.dwg.X1 = TRR(ox);
-	ctx->pcb->hidlib.dwg.X2 = TRR(ox + w);
-	ctx->pcb->hidlib.dwg.Y1 = TRR(oy);
-	ctx->pcb->hidlib.dwg.Y2 = TRR(oy + h);
+	ctx->ox = ox;
+	ctx->oy = oy - h;
+	ctx->pcb->hidlib.dwg.X1 = TRR(0);
+	ctx->pcb->hidlib.dwg.Y1 = TRR(0);
+	ctx->pcb->hidlib.dwg.X2 = TRR(w);
+	ctx->pcb->hidlib.dwg.Y2 = TRR(h);
 
 #if 0
 	HASH_GET_DOUBLE(w, canvas, easy_routing_width, return -1);
@@ -285,6 +324,78 @@ static int std_parse_canvas(std_read_ctx_t *ctx)
 
 
 /*** drawing object parsers ***/
+static int std_parse_track(std_read_ctx_t *ctx, gdom_node_t *track)
+{
+	gdom_node_t *points;
+	long n;
+	double swd;
+	rnd_coord_t x, y, lx, ly, th;
+	pcb_layer_t *layer;
+
+	HASH_GET_SUBTREE(points, track, easy_points, GDOM_ARRAY, return -1);
+	HASH_GET_LAYER(layer, track, easy_layer, return -1);
+	HASH_GET_DOUBLE(swd, track, easy_stroke_width, return -1);
+
+	th = TRR(swd);
+
+	if ((points->value.array.used % 2) != 0) {
+		error_at(ctx, points, (" odd number of points (should be coord pairs)\n"));
+		return -1;
+	}
+
+	for(n = 0; n < points->value.array.used; n += 2) {
+		double dx = easyeda_get_double(ctx, points->value.array.child[n]);
+		double dy = easyeda_get_double(ctx, points->value.array.child[n+1]);
+		x = TRX(dx);
+		y = TRY(dy);
+
+		if (n > 0) {
+			pcb_line_t *line = pcb_line_alloc(layer);
+
+			line->Point1.X = lx;
+			line->Point1.Y = ly;
+			line->Point2.X = x;
+			line->Point2.Y = y;
+			line->Thickness = th;
+			line->Clearance = 0;
+	
+			pcb_add_line_on_layer(layer, line);
+		}
+
+		lx = x;
+		ly = y;
+	}
+
+	return 0;
+}
+
+static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
+{
+	switch(shape->name) {
+		case easy_track: return std_parse_track(ctx, shape);
+	}
+
+	error_at(ctx, shape, ("Unknown shape '%s'\n", easy_keyname(shape->name)));
+	if (shape->type == GDOM_STRING)
+		error_at(ctx, shape, (" shape string is '%s'\n", shape->value.str));
+	return -1;
+}
+
+static int std_parse_shapes_array(std_read_ctx_t *ctx, gdom_node_t *shapes)
+{
+	long n;
+
+	if ((shapes == NULL) || (shapes->type != GDOM_ARRAY)) {
+		rnd_message(RND_MSG_ERROR, "No or invalid shape array\n");
+		return -1;
+	}
+
+	for(n = 0; n < shapes->value.array.used; n++)
+		if (std_parse_any_shapes(ctx, shapes->value.array.child[n]) != 0)
+			return -1;
+
+	return 0;
+}
 
 /*** main tree parser entries ***/
 
@@ -308,6 +419,7 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 
 	if (res == 0) res |= std_parse_layers(&ctx);
 	if (res == 0) res |= std_parse_canvas(&ctx);
+	if (res == 0) res |= std_parse_shapes_array(&ctx, gdom_hash_get(ctx.root, easy_shape));
 
 	return res;
 }
