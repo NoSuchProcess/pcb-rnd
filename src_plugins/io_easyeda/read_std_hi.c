@@ -640,18 +640,29 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		side = pcb_layer_flags_(layer) & PCB_LYT_ANYWHERE;
 		shapes[0].layer_mask = side | PCB_LYT_COPPER;
 	}
-	else
+	else {
 		shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
+		shapes[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+		pcb_pstk_shape_copy(&shapes[2], &shapes[0]);
+		shapes[2].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
 
-/*
-	for(n = 0; n < 3; n++) {
-		shapes[n].shape = PCB_PSSH_CIRC;
-		shapes[n].data.circ.dia = TRR(w);
+		pcb_pstk_shape_copy(&shapes[3], &shapes[0]);
+		shapes[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+		pcb_pstk_shape_grow_(&shapes[3], 1, RND_MIL_TO_COORD(4));
+
+		pcb_pstk_shape_copy(&shapes[4], &shapes[0]);
+		shapes[4].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+		pcb_pstk_shape_grow_(&shapes[4], 1, -RND_MIL_TO_COORD(4));
+
+		pcb_pstk_shape_copy(&shapes[5], &shapes[0]);
+		shapes[5].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
+		pcb_pstk_shape_grow_(&shapes[5], 1, RND_MIL_TO_COORD(4));
+
+		pcb_pstk_shape_copy(&shapes[6], &shapes[0]);
+		shapes[6].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
+		pcb_pstk_shape_grow_(&shapes[6], 1, -RND_MIL_TO_COORD(4));
 	}
-	shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
-	shapes[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
-	shapes[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
-*/
 
 	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(cx), TRY(cy), TRR(holer)*2, 1, 0, shapes);
 	if (pstk == NULL) {
