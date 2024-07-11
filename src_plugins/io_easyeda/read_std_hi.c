@@ -245,9 +245,8 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 	grp->name = rnd_strdup(name);
 	grp->ltype = std_layer_id2type[idx];
 
-	lid = pcb_layer_create(ctx->pcb, grp - ctx->pcb->LayerGroups.grp, name, 0);
+	lid = pcb_layer_create(ctx->pcb, grp - ctx->pcb->LayerGroups.grp, rnd_strdup(name), 0);
 	dst = pcb_get_layer(ctx->pcb->Data, lid);
-	dst->name = rnd_strdup(name);
 	if (grp->ltype & (PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE))
 		dst->comb |= PCB_LYC_AUTO;
 	if (grp->ltype & PCB_LYT_MASK)
@@ -281,7 +280,31 @@ static int std_parse_layer(std_read_ctx_t *ctx, gdom_node_t *layers, long idx, l
 	return 0; /* ignore layers not specified in input */
 }
 
+static int std_create_misc_layers(std_read_ctx_t *ctx)
+{
+	pcb_layer_t *ly[8];
+	pcb_layergrp_t *grp[8];
+	rnd_layer_id_t lid;
+	const char **name, *names[] = {"slot-plated", "slot-unplated", NULL};
+	int n;
 
+	for(n = 0, name = names; *name != NULL; n++, name++) {
+		grp[n] = pcb_get_grp_new_raw(ctx->pcb, 0);
+		grp[n]->name = rnd_strdup(*name);
+
+		lid = pcb_layer_create(ctx->pcb, grp[n] - ctx->pcb->LayerGroups.grp, rnd_strdup(*name), 0);
+		ly[n] = pcb_get_layer(ctx->pcb->Data, lid);
+	}
+
+	grp[0]->ltype = PCB_LYT_MECH;
+	ly[0]->comb |= PCB_LYC_AUTO;
+	pcb_layergrp_set_purpose__(grp[0], rnd_strdup("proute"), 0);
+	grp[1]->ltype = PCB_LYT_MECH;
+	ly[1]->comb |= PCB_LYC_AUTO;
+	pcb_layergrp_set_purpose__(grp[1], rnd_strdup("uroute"), 0);
+
+	return 0;
+}
 
 static int std_parse_layers(std_read_ctx_t *ctx)
 {
@@ -304,6 +327,8 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 		else
 			res |= std_parse_layer(ctx, layers, *lt - 1, *lt);
 	}
+
+	res |= std_create_misc_layers(ctx);
 
 	return res;
 }
@@ -571,7 +596,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	gdom_node_t *slot_points, *points;
 	double cx, cy, holer, w, h;
 	long number;
-	int is_any, is_plated, nopaste = 0, n;
+	int is_any, is_plated, nopaste = 0, n, sloti;
 	pcb_layer_t *layer;
 	pcb_pstk_t *pstk;
 	const char *sshape, *splated;
@@ -590,10 +615,13 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	HASH_GET_SUBTREE(slot_points, pad, easy_slot_points, GDOM_ARRAY, return -1);
 
 	is_plated = (*splated == 'Y');
-	if (slot_points->value.array.used <= 1)
+	if (slot_points->value.array.used <= 1) {
 		slot_points = NULL;
-	else
-		holer = 0;
+	}
+	else if (slot_points->value.array.used != 4) {
+		error_at(ctx, points, ("Invalid number of pad slot_points (must be 4)\n"));
+		return -1;
+	}
 
 	if ((slot_points != NULL) || (holer > 0))
 		nopaste = 1;
@@ -656,6 +684,8 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		shapes[2].layer_mask = side | PCB_LYT_PASTE;
 		shapes[2].comb = PCB_LYC_AUTO;
 		pcb_pstk_shape_grow_(&shapes[2], 0, -RND_MIL_TO_COORD(4));
+
+		sloti = 3;
 	}
 	else {
 		shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
@@ -685,7 +715,29 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 			shapes[6].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
 			shapes[6].comb = PCB_LYC_AUTO;
 			pcb_pstk_shape_grow_(&shapes[6], 0, -RND_MIL_TO_COORD(4));
+
+			sloti = 7;
 		}
+		else
+			sloti = 5;
+	}
+
+	if (slot_points != NULL) {
+		double x1 = easyeda_get_double(ctx, slot_points->value.array.child[0]);
+		double y1 = easyeda_get_double(ctx, slot_points->value.array.child[1]);
+		double x2 = easyeda_get_double(ctx, slot_points->value.array.child[2]);
+		double y2 = easyeda_get_double(ctx, slot_points->value.array.child[3]);
+
+		shapes[sloti].shape = PCB_PSSH_LINE;
+		shapes[sloti].data.line.x1 = TRR(x1-cx);
+		shapes[sloti].data.line.y1 = TRR(y1-cy);
+		shapes[sloti].data.line.x2 = TRR(x2-cx);
+		shapes[sloti].data.line.y2 = TRR(y2-cy);
+		shapes[sloti].data.line.thickness = TRR(holer);
+		shapes[sloti].layer_mask = PCB_LYT_MECH;
+		shapes[sloti].comb = PCB_LYC_AUTO;
+
+		holer = 0;
 	}
 
 	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(cx), TRY(cy), TRR(holer)*2, 1, 0, shapes);
