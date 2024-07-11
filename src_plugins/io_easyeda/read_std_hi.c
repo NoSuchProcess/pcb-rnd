@@ -162,6 +162,7 @@ static const int layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 1
 static const int layertab_in_first = 21;
 static const int layertab_in_last = 52;
 
+/*** board meta ***/
 
 static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx)
 {
@@ -260,6 +261,11 @@ static int std_parse_canvas(std_read_ctx_t *ctx)
 
 	return 0;
 }
+
+
+/*** drawing object parsers ***/
+
+/*** main tree parser entries ***/
 
 static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_role_t settings_dest)
 {
