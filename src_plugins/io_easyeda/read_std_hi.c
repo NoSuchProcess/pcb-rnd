@@ -360,6 +360,31 @@ TODO("this will be needed in poly");
 	}
 }
 
+static void easyeda_mkpath_carc(void *uctx, double cx, double cy, double r, double sa, double da)
+{
+	path_ctx_t *pctx = uctx;
+	std_read_ctx_t *ctx = pctx->ctx;
+	pcb_arc_t *arc;
+
+	/* this is not called for polygons, we have line approximation there */
+
+	arc = pcb_arc_alloc(pctx->layer);
+
+	arc->X = TRX(cx);
+	arc->Y = TRY(cy);
+	arc->Width = arc->Height = TRR(r);
+	arc->Thickness = pctx->thickness;
+	arc->Clearance = 0;
+	arc->StartAngle = -sa * RND_RAD_TO_DEG + 180.0;
+	arc->Delta = -da * RND_RAD_TO_DEG;
+
+
+rnd_trace("Start: %f delta: %f\n", arc->StartAngle, arc->Delta);
+
+
+	pcb_add_arc_on_layer(pctx->layer, arc);
+}
+
 static void easyeda_mkpath_error(void *uctx, const char *errmsg, long offs)
 {
 	path_ctx_t *pctx = uctx;
@@ -389,11 +414,16 @@ static int std_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t 
 
 TODO("poly");
 #if 0
-	if (filled)
+	if (filled) {
 		pctx.in_poly = csch_alien_mkpoly(&ctx->alien, parent, penname, penname);
+		pathcfg.line = NULL;
+	}
 	else
 #endif
+	{
 		pctx.in_poly = NULL;
+		pathcfg.carc = easyeda_mkpath_carc;
+	}
 
 	return svgpath_render(&pathcfg, &pctx, pathstr);
 }
