@@ -784,6 +784,40 @@ static int std_parse_dimension(std_read_ctx_t *ctx, gdom_node_t *dimension)
 	return std_parse_path(ctx, path, dimension, layer, RND_MIL_TO_COORD(5), 0);
 }
 
+static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
+{
+	double x, y, rot, height, strokew;
+	const char *str, *mirr, *type;
+	pcb_layer_t *layer;
+	pcb_text_t *t;
+
+	HASH_GET_LAYER(layer, text, easy_layer, return -1);
+	HASH_GET_DOUBLE(x, text, easy_x, return -1);
+	HASH_GET_DOUBLE(y, text, easy_y, return -1);
+	HASH_GET_DOUBLE(rot, text, easy_rot, return -1);
+	HASH_GET_DOUBLE(height, text, easy_height, return -1);
+	HASH_GET_DOUBLE(strokew, text, easy_stroke_width, return -1);
+	HASH_GET_STRING(str, text, easy_string, return -1);
+	HASH_GET_STRING(mirr, text, easy_mirror, return -1);
+	HASH_GET_STRING(type, text, easy_type, return -1);
+
+	t = pcb_text_alloc_id(layer, -1);
+	if (t == NULL) {
+		error_at(ctx, text, ("Failed to allocate text object\n"));
+		return -1;
+	}
+
+	t->X = TRX(x);
+	t->Y = TRY(y - height);
+	t->rot = rot;
+	t->TextString = rnd_strdup(str);
+	t->Scale = 100;
+
+	pcb_add_text_on_layer(layer, t, pcb_font(PCB, 0, 1));
+
+	return 0;
+}
+
 
 static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 {
@@ -795,6 +829,7 @@ static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 		case easy_hole: return std_parse_hole(ctx, shape);
 		case easy_pad: return std_parse_pad(ctx, shape);
 		case easy_dimension: return std_parse_dimension(ctx, shape);
+		case easy_text: return std_parse_text(ctx, shape);
 	}
 
 	error_at(ctx, shape, ("Unknown shape '%s'\n", easy_keyname(shape->name)));
