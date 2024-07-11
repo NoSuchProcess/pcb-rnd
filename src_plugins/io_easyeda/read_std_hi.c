@@ -38,6 +38,9 @@ static gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 	return node;
 }
 
+/* raw coord transform (e.g. for radius, diameter, width) */
+#define TRR(c)   RND_MIL_TO_COORD(c / 10.0)
+
 #define error_at(ctx, node, args) \
 	do { \
 		gdom_node_t *__loc__ = node_parent_with_loc(node); \
@@ -252,12 +255,30 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 static int std_parse_canvas(std_read_ctx_t *ctx)
 {
 	gdom_node_t *canvas;
+	double ox, oy, w, h;
+	char tmp[128];
 
 	canvas = gdom_hash_get(ctx->root, easy_canvas);
 	if ((canvas == NULL) || (canvas->type != GDOM_HASH)) {
 		rnd_message(RND_MSG_ERROR, "EasyEDA std: missing or wrong typed canvas tree\n");
 		return -1;
 	}
+
+	HASH_GET_DOUBLE(ox, canvas, easy_origin_x, return -1);
+	HASH_GET_DOUBLE(oy, canvas, easy_origin_y, return -1);
+	HASH_GET_DOUBLE(w, canvas, easy_canvas_width, return -1);
+	HASH_GET_DOUBLE(h, canvas, easy_canvas_height, return -1);
+
+	ctx->pcb->hidlib.dwg.X1 = TRR(ox);
+	ctx->pcb->hidlib.dwg.X2 = TRR(ox + w);
+	ctx->pcb->hidlib.dwg.Y1 = TRR(oy);
+	ctx->pcb->hidlib.dwg.Y2 = TRR(oy + h);
+
+#if 0
+	HASH_GET_DOUBLE(w, canvas, easy_routing_width, return -1);
+	rnd_snprintf(tmp, sizeof(tmp), "%$mS", TRR(w));
+	rnd_conf_set(ctx->settings_dest, "design/line_thickness", -1, tmp, RND_POL_OVERWRITE);
+#endif
 
 	return 0;
 }
