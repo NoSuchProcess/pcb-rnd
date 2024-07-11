@@ -1,5 +1,4 @@
 0. old, still waiting for ack
-+ BUG: using image2footprint parametric footprint, choose 0.25mm pixel size, white silk, black soldermask, yes to dithering and yes to FR4, choose either of the vader .pngs from bug files as the image and place on layout, then change .png to other png, place on layout, and continue alternating. segfault will typically ensue after a period. backtrace included as big-subc-bt.txt [report: erich]
 
 1. For the upcoming release ===============================================================================
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
