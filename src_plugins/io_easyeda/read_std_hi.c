@@ -383,7 +383,7 @@ static void easyeda_mkpath_carc(void *uctx, double cx, double cy, double r, doub
 
 static void easyeda_mkpath_error(void *uctx, const char *errmsg, long offs)
 {
-	path_ctx_t *pctx = uctx;
+/*	path_ctx_t *pctx = uctx;*/
 	rnd_message(RND_MSG_ERROR, "easyeda svg-path: '%s' at offset %ld\n", errmsg, offs);
 }
 
@@ -475,7 +475,6 @@ static int std_parse_track(std_read_ctx_t *ctx, gdom_node_t *track)
 static int std_parse_arc(std_read_ctx_t *ctx, gdom_node_t *arc)
 {
 	const char *path;
-	long n;
 	double swd;
 	pcb_layer_t *layer;
 
