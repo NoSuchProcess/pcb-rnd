@@ -602,6 +602,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	const char *sshape, *splated;
 	pcb_pstk_shape_t shapes[8] = {0};
 	pcb_layer_type_t side;
+	char termid[64];
 
 	HASH_GET_LAYER_GLOBAL(layer, is_any, pad, easy_layer, return -1);
 	HASH_GET_DOUBLE(cx, pad, easy_x, return -1);
@@ -763,6 +764,9 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		double rad = rot / RND_RAD_TO_DEG;
 		pcb_pstk_rotate(pstk, TRX(cx), TRY(cy), cos(rad), sin(rad), rot);
 	}
+
+	rnd_snprintf(termid, sizeof(termid), "%ld", number);
+	pcb_attribute_put(&pstk->Attributes, "term", termid);
 
 	return 0;
 }
