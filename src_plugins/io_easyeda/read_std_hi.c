@@ -248,6 +248,10 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 	lid = pcb_layer_create(ctx->pcb, grp - ctx->pcb->LayerGroups.grp, name, 0);
 	dst = pcb_get_layer(ctx->pcb->Data, lid);
 	dst->name = rnd_strdup(name);
+	if (grp->ltype & (PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE))
+		dst->comb |= PCB_LYC_AUTO;
+	if (grp->ltype & PCB_LYT_MASK)
+		dst->comb |= PCB_LYC_SUB;
 
 	if ((easyeda_id >= 0) && (easyeda_id < EASY_MAX_LAYERS))
 		ctx->layers[easyeda_id] = dst;
