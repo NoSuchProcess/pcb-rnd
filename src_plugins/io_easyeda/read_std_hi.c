@@ -594,7 +594,7 @@ static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
 static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 {
 	gdom_node_t *slot_points, *points;
-	double cx, cy, holer, w, h;
+	double cx, cy, holer, w, h, rot;
 	long number;
 	int is_any, is_plated, nopaste = 0, n, sloti;
 	pcb_layer_t *layer;
@@ -612,6 +612,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	HASH_GET_STRING(splated, pad, easy_plated, return -1);
 	HASH_GET_LONG(number, pad, easy_number, return -1);
 	HASH_GET_DOUBLE(holer, pad, easy_hole_radius, return -1);
+	HASH_GET_DOUBLE(rot, pad, easy_rot, return -1);
 	HASH_GET_SUBTREE(slot_points, pad, easy_slot_points, GDOM_ARRAY, return -1);
 
 	is_plated = (*splated == 'Y');
@@ -723,16 +724,28 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	}
 
 	if (slot_points != NULL) {
-		double x1 = easyeda_get_double(ctx, slot_points->value.array.child[0]);
-		double y1 = easyeda_get_double(ctx, slot_points->value.array.child[1]);
-		double x2 = easyeda_get_double(ctx, slot_points->value.array.child[2]);
-		double y2 = easyeda_get_double(ctx, slot_points->value.array.child[3]);
+		double dx1 = easyeda_get_double(ctx, slot_points->value.array.child[0]) - cx;
+		double dy1 = easyeda_get_double(ctx, slot_points->value.array.child[1]) - cy;
+		double dx2 = easyeda_get_double(ctx, slot_points->value.array.child[2]) - cx;
+		double dy2 = easyeda_get_double(ctx, slot_points->value.array.child[3]) - cy;
+		rnd_coord_t x1 = TRR(dx1), y1 = TRR(dy1);
+		rnd_coord_t x2 = TRR(dx2), y2 = TRR(dy2);
+
+		if (rot != 0) {
+			double rad = -rot / RND_RAD_TO_DEG;
+			double cosa = cos(rad), sina = sin(rad);
+			/* EasyEDA stores slot in rotated form while shapes are stored unrotated;
+			   the whole padstakc will be rotated so rotate the slot back to
+			   compensate */
+			rnd_rotate(&x1, &y1, 0, 0, cosa, sina);
+			rnd_rotate(&x2, &y2, 0, 0, cosa, sina);
+		}
 
 		shapes[sloti].shape = PCB_PSSH_LINE;
-		shapes[sloti].data.line.x1 = TRR(x1-cx);
-		shapes[sloti].data.line.y1 = TRR(y1-cy);
-		shapes[sloti].data.line.x2 = TRR(x2-cx);
-		shapes[sloti].data.line.y2 = TRR(y2-cy);
+		shapes[sloti].data.line.x1 = x1;
+		shapes[sloti].data.line.y1 = y1;
+		shapes[sloti].data.line.x2 = x2;
+		shapes[sloti].data.line.y2 = y2;
 		shapes[sloti].data.line.thickness = TRR(holer);
 		shapes[sloti].layer_mask = PCB_LYT_MECH;
 		shapes[sloti].comb = PCB_LYC_AUTO;
@@ -740,10 +753,15 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		holer = 0;
 	}
 
-	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(cx), TRY(cy), TRR(holer)*2, 1, 0, shapes);
+	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(cx), TRY(cy), TRR(holer)*2, is_plated, 0, shapes);
 	if (pstk == NULL) {
 		error_at(ctx, pad, ("Failed to create padstack for pad\n"));
 		return -1;
+	}
+
+	if (rot != 0) {
+		double rad = rot / RND_RAD_TO_DEG;
+		pcb_pstk_rotate(pstk, TRX(cx), TRY(cy), cos(rad), sin(rad), rot);
 	}
 
 	return 0;
