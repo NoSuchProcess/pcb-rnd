@@ -10,6 +10,7 @@ typedef struct {
 			RND_CFT_STRING zip_extract_cmd;        /* shell command that extracts a zip file in current working directory; %s is replaced by path to the file */
 			RND_CFT_BOOLEAN load_color_copper;     /* load color of copper layers; when disabled pick random colors */
 			RND_CFT_BOOLEAN load_color_noncopper;  /* load color of non-copper layers; when disabled use pcb-rnd standard layer colors */
+			RND_CFT_REAL line_approx_seg_len;      /* path approximation line length in EasyEDA units (which is 10mil, so a value of 3 here means 30mil) */
 			const struct {
 				RND_CFT_BOOLEAN dump_dom;            /* print the DOM after expanding strings */
 			} debug;

@@ -322,6 +322,82 @@ static int std_parse_canvas(std_read_ctx_t *ctx)
 	return 0;
 }
 
+/*** drawing object helper: svgpath ***/
+TODO("pro: move this to somewhere more central")
+
+static svgpath_cfg_t pathcfg;
+typedef struct {
+	std_read_ctx_t *ctx;
+	pcb_layer_t *layer;
+	rnd_coord_t thickness;
+	void *in_poly;
+	gdom_node_t *nd;
+
+} path_ctx_t;
+
+static void easyeda_mkpath_line(void *uctx, double x1, double y1, double x2, double y2)
+{
+	path_ctx_t *pctx = uctx;
+	std_read_ctx_t *ctx = pctx->ctx;
+
+TODO("this will be needed in poly");
+#if 0
+	if (pctx->in_poly)
+		csch_alien_append_poly_line(&pctx->ctx->alien, pctx->in_poly, x1, y1, x2, y2);
+	else
+#endif
+	{
+		pcb_line_t *line = pcb_line_alloc(pctx->layer);
+
+		line->Point1.X = TRX(x1);
+		line->Point1.Y = TRY(y1);
+		line->Point2.X = TRX(x2);
+		line->Point2.Y = TRY(y2);
+		line->Thickness = pctx->thickness;
+		line->Clearance = 0;
+	
+		pcb_add_line_on_layer(pctx->layer, line);
+	}
+}
+
+static void easyeda_mkpath_error(void *uctx, const char *errmsg, long offs)
+{
+	path_ctx_t *pctx = uctx;
+	rnd_message(RND_MSG_ERROR, "easyeda svg-path: '%s' at offset %ld\n", errmsg, offs);
+}
+
+static void easyeda_svgpath_setup(void)
+{
+	if (pathcfg.line == NULL) {
+		pathcfg.line = easyeda_mkpath_line;
+		pathcfg.error = easyeda_mkpath_error;
+		pathcfg.curve_approx_seglen = conf_io_easyeda.plugins.io_easyeda.line_approx_seg_len;
+	}
+}
+
+/* Create an (svg)path as a line approximation within parent */
+static int std_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, int filled)
+{
+	path_ctx_t pctx;
+
+	easyeda_svgpath_setup();
+
+	pctx.ctx = ctx;
+	pctx.layer = layer;
+	pctx.thickness = thickness;
+	pctx.nd = nd;
+
+TODO("poly");
+#if 0
+	if (filled)
+		pctx.in_poly = csch_alien_mkpoly(&ctx->alien, parent, penname, penname);
+	else
+#endif
+		pctx.in_poly = NULL;
+
+	return svgpath_render(&pathcfg, &pctx, pathstr);
+}
+
 
 /*** drawing object parsers ***/
 static int std_parse_track(std_read_ctx_t *ctx, gdom_node_t *track)
@@ -369,10 +445,32 @@ static int std_parse_track(std_read_ctx_t *ctx, gdom_node_t *track)
 	return 0;
 }
 
+
+static int std_parse_arc(std_read_ctx_t *ctx, gdom_node_t *track)
+{
+	const char *path;
+	long n;
+	double swd;
+	pcb_layer_t *layer;
+
+	HASH_GET_STRING(path, track, easy_path, return -1);
+	HASH_GET_LAYER(layer, track, easy_layer, return -1);
+	HASH_GET_DOUBLE(swd, track, easy_stroke_width, return -1);
+
+	return std_parse_path(ctx, path, track, layer, TRR(swd), 0);
+}
+
+static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *track)
+{
+	return 0;
+}
+
 static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 {
 	switch(shape->name) {
 		case easy_track: return std_parse_track(ctx, shape);
+		case easy_arc: return std_parse_arc(ctx, shape);
+		case easy_circle: return std_parse_circle(ctx, shape);
 	}
 
 	error_at(ctx, shape, ("Unknown shape '%s'\n", easy_keyname(shape->name)));

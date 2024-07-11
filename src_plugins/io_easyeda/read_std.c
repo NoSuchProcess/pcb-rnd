@@ -33,10 +33,14 @@
 #include <ctype.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
+#include "rnd_inclib/lib_svgpath/svgpath.h"
 
 #include "board.h"
 #include "data.h"
 #include "plug_io.h"
+
+TODO("pro: move this to somewhere more central");
+#include "rnd_inclib/lib_svgpath/svgpath.c"
 
 #include "io_easyeda_conf.h"
 #include "read_std_low.c"
