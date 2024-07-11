@@ -4,7 +4,7 @@
 #include "obj_pstk.h"
 #include <genvector/vtp0.h>
 
-/* create a new adstack that contains only a hole, but no shapes */
+/* create a new padstack that contains only a hole, but no shapes */
 pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_bool plated);
 
 /* Convert an array of shapes, terminated by a shape with layer_mask=0, into
