@@ -39,6 +39,7 @@ static gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 }
 
 #define EASY_MAX_LAYERS 64
+#define EASY_MULTI_LAYER 11
 
 /* raw coord transform (e.g. for radius, diameter, width) */
 #define TRR(c)   RND_MIL_TO_COORD((c) * 10.0)
@@ -123,7 +124,7 @@ do { \
 	dst = tmp->value.str; \
 } while(0)
 
-#define HASH_GET_LAYER(dst, nd, lname, err_stmt) \
+#define HASH_GET_LAYER_GLOBAL(dst, is_any, nd, lname, err_stmt) \
 do { \
 	gdom_node_t *tmp; \
 	HASH_GET_SUBTREE(tmp, nd, lname, GDOM_LONG, err_stmt); \
@@ -131,13 +132,26 @@ do { \
 		error_at(ctx, nd, ("layer ID %ld is out of range [0..%d]\n", tmp->value.lng, EASY_MAX_LAYERS-1)); \
 		err_stmt; \
 	} \
-	dst = ctx->layers[tmp->value.lng]; \
-	if (dst == NULL) { \
-		error_at(ctx, nd, ("layer ID %ld does not exist\n", tmp->value.lng)); \
-		err_stmt; \
+	if (tmp->value.lng != EASY_MULTI_LAYER) { \
+		is_any = 0; \
+		dst = ctx->layers[tmp->value.lng]; \
+		if (dst == NULL) { \
+			error_at(ctx, nd, ("layer ID %ld does not exist\n", tmp->value.lng)); \
+			err_stmt; \
+		} \
+	} \
+	else { \
+		is_any = 1; \
+		dst = NULL; \
 	} \
 } while(0)
 
+#define HASH_GET_LAYER(dst, nd, lname, err_stmt) \
+do { \
+	int tmp_is_any; \
+	HASH_GET_LAYER_GLOBAL(dst, tmp_is_any, nd, lname, err_stmt); \
+	(void)tmp_is_any; \
+} while(0)
 
 
 /* EasyEDA std has a static layer assignment, layers identified by their
@@ -548,6 +562,52 @@ static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
 	return 0;
 }
 
+static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
+{
+	gdom_node_t *slot_points;
+	double cx, cy, holer, w, h;
+	long number;
+	int is_any, is_plated, n;
+	pcb_layer_t *layer;
+	pcb_pstk_t *pstk;
+	const char *sshape, *splated;
+	pcb_pstk_shape_t shapes[8] = {0};
+
+
+	HASH_GET_LAYER_GLOBAL(layer, is_any, pad, easy_layer, return -1);
+	HASH_GET_DOUBLE(cx, pad, easy_x, return -1);
+	HASH_GET_DOUBLE(cy, pad, easy_y, return -1);
+	HASH_GET_DOUBLE(w, pad, easy_width, return -1);
+	HASH_GET_DOUBLE(h, pad, easy_height, return -1);
+	HASH_GET_STRING(sshape, pad, easy_shape, return -1);
+	HASH_GET_STRING(splated, pad, easy_plated, return -1);
+	HASH_GET_LONG(number, pad, easy_number, return -1);
+	HASH_GET_DOUBLE(holer, pad, easy_hole_radius, return -1);
+	HASH_GET_SUBTREE(slot_points, pad, easy_slot_points, GDOM_ARRAY, return -1);
+
+	is_plated = (*splated == 'Y');
+	if (slot_points->value.array.used <= 1)
+		slot_points = NULL;
+	else
+		holer = 0;
+
+	for(n = 0; n < 3; n++) {
+		shapes[n].shape = PCB_PSSH_CIRC;
+		shapes[n].data.circ.dia = TRR(w);
+	}
+	shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+	shapes[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
+	shapes[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+
+	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(cx), TRY(cy), TRR(holer)*2, 1, 0, shapes);
+	if (pstk == NULL) {
+		error_at(ctx, pad, ("Failed to create padstack for pad\n"));
+		return -1;
+	}
+
+	return 0;
+}
+
 
 static int std_parse_dimension(std_read_ctx_t *ctx, gdom_node_t *dimension)
 {
@@ -570,6 +630,7 @@ static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 		case easy_circle: return std_parse_circle(ctx, shape);
 		case easy_via: return std_parse_via(ctx, shape);
 		case easy_hole: return std_parse_hole(ctx, shape);
+		case easy_pad: return std_parse_pad(ctx, shape);
 		case easy_dimension: return std_parse_dimension(ctx, shape);
 	}
 
