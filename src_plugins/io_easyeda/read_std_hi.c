@@ -571,7 +571,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	gdom_node_t *slot_points, *points;
 	double cx, cy, holer, w, h;
 	long number;
-	int is_any, is_plated, n;
+	int is_any, is_plated, nopaste = 0, n;
 	pcb_layer_t *layer;
 	pcb_pstk_t *pstk;
 	const char *sshape, *splated;
@@ -594,6 +594,9 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		slot_points = NULL;
 	else
 		holer = 0;
+
+	if ((slot_points != NULL) || (holer > 0))
+		nopaste = 1;
 
 	/* create the main shape in shape[0] */
 	if (strcmp(sshape, "ELLIPSE") == 0) {
@@ -643,6 +646,16 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	if (!is_any) {
 		side = pcb_layer_flags_(layer) & PCB_LYT_ANYWHERE;
 		shapes[0].layer_mask = side | PCB_LYT_COPPER;
+
+		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
+		shapes[1].layer_mask = side | PCB_LYT_MASK;
+		shapes[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+		pcb_pstk_shape_grow_(&shapes[1], 0, RND_MIL_TO_COORD(4));
+
+		pcb_pstk_shape_copy(&shapes[2], &shapes[0]);
+		shapes[2].layer_mask = side | PCB_LYT_PASTE;
+		shapes[2].comb = PCB_LYC_AUTO;
+		pcb_pstk_shape_grow_(&shapes[2], 0, -RND_MIL_TO_COORD(4));
 	}
 	else {
 		shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
@@ -656,20 +669,23 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		shapes[3].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
 		pcb_pstk_shape_grow_(&shapes[3], 0, RND_MIL_TO_COORD(4));
 
+
 		pcb_pstk_shape_copy(&shapes[4], &shapes[0]);
-		shapes[4].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
-		shapes[4].comb = PCB_LYC_AUTO;
-		pcb_pstk_shape_grow_(&shapes[4], 0, -RND_MIL_TO_COORD(4));
+		shapes[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
+		shapes[4].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+		pcb_pstk_shape_grow_(&shapes[4], 0, RND_MIL_TO_COORD(4));
 
-		pcb_pstk_shape_copy(&shapes[5], &shapes[0]);
-		shapes[5].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
-		shapes[5].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-		pcb_pstk_shape_grow_(&shapes[5], 0, RND_MIL_TO_COORD(4));
+		if (!nopaste) {
+			pcb_pstk_shape_copy(&shapes[5], &shapes[0]);
+			shapes[5].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+			shapes[5].comb = PCB_LYC_AUTO;
+			pcb_pstk_shape_grow_(&shapes[5], 0, -RND_MIL_TO_COORD(4));
 
-		pcb_pstk_shape_copy(&shapes[6], &shapes[0]);
-		shapes[6].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
-		shapes[6].comb = PCB_LYC_AUTO;
-		pcb_pstk_shape_grow_(&shapes[6], 0, -RND_MIL_TO_COORD(4));
+			pcb_pstk_shape_copy(&shapes[6], &shapes[0]);
+			shapes[6].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
+			shapes[6].comb = PCB_LYC_AUTO;
+			pcb_pstk_shape_grow_(&shapes[6], 0, -RND_MIL_TO_COORD(4));
+		}
 	}
 
 	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(cx), TRY(cy), TRR(holer)*2, 1, 0, shapes);
