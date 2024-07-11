@@ -472,18 +472,18 @@ static int std_parse_track(std_read_ctx_t *ctx, gdom_node_t *track)
 }
 
 
-static int std_parse_arc(std_read_ctx_t *ctx, gdom_node_t *track)
+static int std_parse_arc(std_read_ctx_t *ctx, gdom_node_t *arc)
 {
 	const char *path;
 	long n;
 	double swd;
 	pcb_layer_t *layer;
 
-	HASH_GET_STRING(path, track, easy_path, return -1);
-	HASH_GET_LAYER(layer, track, easy_layer, return -1);
-	HASH_GET_DOUBLE(swd, track, easy_stroke_width, return -1);
+	HASH_GET_STRING(path, arc, easy_path, return -1);
+	HASH_GET_LAYER(layer, arc, easy_layer, return -1);
+	HASH_GET_DOUBLE(swd, arc, easy_stroke_width, return -1);
 
-	return std_parse_path(ctx, path, track, layer, TRR(swd), 0);
+	return std_parse_path(ctx, path, arc, layer, TRR(swd), 0);
 }
 
 static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *circ)
