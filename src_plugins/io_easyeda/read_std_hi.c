@@ -460,8 +460,30 @@ static int std_parse_arc(std_read_ctx_t *ctx, gdom_node_t *track)
 	return std_parse_path(ctx, path, track, layer, TRR(swd), 0);
 }
 
-static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *track)
+static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *circ)
 {
+	double cx, cy, r, swd;
+	pcb_layer_t *layer;
+	pcb_arc_t *arc;
+
+	HASH_GET_LAYER(layer, circ, easy_layer, return -1);
+	HASH_GET_DOUBLE(cx, circ, easy_x, return -1);
+	HASH_GET_DOUBLE(cy, circ, easy_y, return -1);
+	HASH_GET_DOUBLE(r, circ, easy_r, return -1);
+	HASH_GET_DOUBLE(swd, circ, easy_stroke_width, return -1);
+
+	arc = pcb_arc_alloc(layer);
+
+	arc->X = TRX(cx);
+	arc->Y = TRY(cy);
+	arc->Width = arc->Height = TRR(r);
+	arc->Thickness = TRR(swd);
+	arc->Clearance = 0;
+	arc->StartAngle = 0;
+	arc->Delta = 360;
+
+	pcb_add_arc_on_layer(layer, arc);
+
 	return 0;
 }
 
