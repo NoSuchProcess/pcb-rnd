@@ -848,8 +848,13 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	t->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
 	if (is_refdes) {
+		pcb_subc_t *subc = pcb_lobj_parent_subc(t->parent_type, &t->parent);
+
 		t->Flags = pcb_flag_add(t->Flags, PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER);
 		ctx->last_refdes = t;
+
+		if (subc != NULL)
+			pcb_attribute_put(&subc->Attributes, "refdes", str);
 	}
 
 	pcb_add_text_on_layer(layer, t, pcb_font(PCB, 0, 1));

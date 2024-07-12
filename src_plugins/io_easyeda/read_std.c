@@ -40,6 +40,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "obj_subc_parent.h"
 #include "plug_io.h"
 
 TODO("pro: move this to somewhere more central")
