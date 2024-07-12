@@ -825,6 +825,7 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	t->mirror_x = xmir;
 	t->TextString = rnd_strdup(str);
 	t->Scale = height/8.0 * 150.0;
+	t->thickness = TRR(strokew);
 
 	pcb_add_text_on_layer(layer, t, pcb_font(PCB, 0, 1));
 
