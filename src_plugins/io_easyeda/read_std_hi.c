@@ -396,8 +396,9 @@ static void easyeda_mkpath_line(void *uctx, double x1, double y1, double x2, dou
 		line->Point2.X = TRX(x2);
 		line->Point2.Y = TRY(y2);
 		line->Thickness = pctx->thickness;
-		line->Clearance = 0;
-	
+		line->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+		line->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
 		pcb_add_line_on_layer(pctx->layer, line);
 	}
 }
@@ -416,9 +417,10 @@ static void easyeda_mkpath_carc(void *uctx, double cx, double cy, double r, doub
 	arc->Y = TRY(cy);
 	arc->Width = arc->Height = TRR(r);
 	arc->Thickness = pctx->thickness;
-	arc->Clearance = 0;
+	arc->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
 	arc->StartAngle = -sa * RND_RAD_TO_DEG + 180.0;
 	arc->Delta = -da * RND_RAD_TO_DEG;
+	arc->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
 	pcb_add_arc_on_layer(pctx->layer, arc);
 }
@@ -495,8 +497,9 @@ static int std_parse_track(std_read_ctx_t *ctx, gdom_node_t *track)
 			line->Point2.X = x;
 			line->Point2.Y = y;
 			line->Thickness = th;
-			line->Clearance = 0;
-	
+			line->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+			line->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
 			pcb_add_line_on_layer(layer, line);
 		}
 
@@ -539,9 +542,10 @@ static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *circ)
 	arc->Y = TRY(cy);
 	arc->Width = arc->Height = TRR(r);
 	arc->Thickness = TRR(swd);
-	arc->Clearance = 0;
+	arc->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
 	arc->StartAngle = 0;
 	arc->Delta = 360;
+	arc->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
 	pcb_add_arc_on_layer(layer, arc);
 
@@ -563,6 +567,8 @@ static int std_parse_via(std_read_ctx_t *ctx, gdom_node_t *via)
 		error_at(ctx, via, ("Failed to create padstack for via\n"));
 		return -1;
 	}
+	pstk->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+	pstk->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
 	return 0;
 }
@@ -581,6 +587,9 @@ static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
 		error_at(ctx, hole, ("Failed to create padstack for hole\n"));
 		return -1;
 	}
+	pstk->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+	pstk->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
 	return 0;
 }
 
@@ -752,6 +761,8 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		error_at(ctx, pad, ("Failed to create padstack for pad\n"));
 		return -1;
 	}
+	pstk->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+	pstk->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
 	if (rot != 0) {
 		double rad = rot / RND_RAD_TO_DEG;
@@ -819,9 +830,10 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	t->TextString = rnd_strdup(is_refdes ? "%a.parent.refdes%" : str);
 	t->Scale = height/8.0 * 150.0;
 	t->thickness = TRR(strokew);
+	t->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
 	if (is_refdes)
-		pcb_flag_add(t->Flags, PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER);
+		t->Flags = pcb_flag_add(t->Flags, PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER);
 
 	pcb_add_text_on_layer(layer, t, pcb_font(PCB, 0, 1));
 
@@ -852,15 +864,18 @@ static int std_parse_copperarea(std_read_ctx_t *ctx, gdom_node_t *nd)
 	pcb_layer_t *layer;
 	const char *path;
 	pcb_poly_t *poly;
-	double sw;
+	double sw, clearance;
 
 	HASH_GET_LAYER(layer, nd, easy_layer, return -1);
 	HASH_GET_STRING(path, nd, easy_path, return -1);
 	HASH_GET_DOUBLE(sw, nd, easy_stroke_width, return -1);
+	HASH_GET_DOUBLE(clearance, nd, easy_clearance, return -1);
 
 	poly = pcb_poly_alloc(layer);
 
 	std_parse_path(ctx, path, nd, layer, 0, poly);
+	poly->enforce_clearance = TRR(clearance);
+	poly->Flags = pcb_flag_add(poly->Flags, PCB_FLAG_CLEARPOLY);
 
 	pcb_add_poly_on_layer(layer, poly);
 	pcb_poly_init_clip(layer->parent.data, layer, poly);
