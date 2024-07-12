@@ -38,7 +38,7 @@ static gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 	return node;
 }
 
-#define EASY_MAX_LAYERS 64
+#define EASY_MAX_LAYERS 128
 #define EASY_MULTI_LAYER 11
 
 /* raw coord transform (e.g. for radius, diameter, width) */
@@ -156,7 +156,7 @@ do { \
 
 /* EasyEDA std has a static layer assignment, layers identified by their
    integer ID, not by their name and there's no layer type saved. */
-static const pcb_layer_type_t std_layer_id2type[] = {
+static pcb_layer_type_t std_layer_id2type[200] = {
 /*1~TopLayer*/               PCB_LYT_TOP | PCB_LYT_COPPER,
 /*2~BottomLayer*/            PCB_LYT_BOTTOM | PCB_LYT_COPPER,
 /*3~TopSilkLayer*/           PCB_LYT_TOP | PCB_LYT_SILK,
@@ -204,13 +204,14 @@ static const pcb_layer_type_t std_layer_id2type[] = {
 /*49~Inner29*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
 /*50~Inner30*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
 /*51~Inner31*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*52~Inner32*/               PCB_LYT_INTERN | PCB_LYT_COPPER
+/*52~Inner32*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
+0
 };
 
 /* load layers in a specific order so the pcb-rnd layer stack looks normal;
    these numbers are base-1 to match the layer ID in comments above */
 #define LAYERTAB_INNER -1
-static const int layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 13, 14, 15, 0};
+static const int layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 13, 14, 15, 99, 100, 101   , 0};
 static const int layertab_in_first = 21;
 static const int layertab_in_last = 52;
 
@@ -234,7 +235,7 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 		return 0; /* table dictated skip */
 
 	HASH_GET_STRING(config, src, easy_config, return -1);
-	if (*config != 't')
+	if ((easyeda_id < 99) && (*config != 't'))
 		return 0; /* not configured -> do not create */
 
 	if (ctx->data->LayerN >= PCB_MAX_LAYER) {
@@ -314,6 +315,10 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 	gdom_node_t *layers;
 	int res = 0;
 	const int *lt;
+
+	std_layer_id2type[99-1] = PCB_LYT_DOC;
+	std_layer_id2type[100-1] = PCB_LYT_DOC;
+	std_layer_id2type[101-1] = PCB_LYT_DOC;
 
 	layers = gdom_hash_get(ctx->root, easy_layers);
 	if ((layers == NULL) || (layers->type != GDOM_ARRAY)) {
