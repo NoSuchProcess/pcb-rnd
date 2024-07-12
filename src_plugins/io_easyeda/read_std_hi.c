@@ -55,6 +55,7 @@ typedef struct std_read_ctx_s {
 	rnd_conf_role_t settings_dest;
 	pcb_layer_t *layers[EASY_MAX_LAYERS];
 	double ox, oy;
+	unsigned is_footprint:1;
 
 	pcb_text_t *last_refdes; /* last text object created as a refdes dyntext+floater */
 } std_read_ctx_t;
@@ -345,6 +346,32 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 	res |= std_create_misc_layers(ctx);
 
 	return res;
+}
+
+static int std_parse_head(std_read_ctx_t *ctx)
+{
+	gdom_node_t *head;
+	const char *doctype;
+
+	head = gdom_hash_get(ctx->root, easy_head);
+	if ((head == NULL) || (head->type != GDOM_HASH)) {
+		rnd_message(RND_MSG_ERROR, "EasyEDA std: missing or wrong typed head tree\n");
+		return -1;
+	}
+
+	HASH_GET_STRING(doctype, head, easy_docType, return -1);
+	if (doctype[1] != '\0')
+		goto badtype;
+
+	switch(doctype[0]) {
+		case '3': break;
+		case '4': ctx->is_footprint = 1; break;
+		default: badtype:;
+			rnd_message(RND_MSG_ERROR, "EasyEDA std: wrong doc type '%s'\n", doctype);
+			return -1;
+	}
+
+	return 0;
 }
 
 static int std_parse_canvas(std_read_ctx_t *ctx)
@@ -1059,6 +1086,7 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 	ctx.root = easystd_low_parse(ctx.f, 0);
 	fclose(ctx.f);
 
+	if (res == 0) res |= std_parse_head(&ctx);
 	if (res == 0) res |= std_parse_layers(&ctx);
 	if (res == 0) res |= std_parse_canvas(&ctx);
 	if (res == 0) res |= std_parse_shapes_array(&ctx, gdom_hash_get(ctx.root, easy_shape));

@@ -108,9 +108,10 @@ int io_easyeda_std_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const cha
 		if (strncmp(line, "docType\"", 8) == 0) {
 			found |= 2;        /* generic easyeda */
 			doctype = easystd_get_doctype(line + 8, f, line, sizeof(line));
-			if ((doctype == 3) && ((type == PCB_IOT_PCB) || (type == PCB_IOT_FOOTPRINT))) {
-				found |= 4;
-			}
+			if ((doctype == 3) && (type == PCB_IOT_PCB))
+				found |= 4; /* load board as board */
+			if ((doctype == 4) && ((type == PCB_IOT_PCB) || (type == PCB_IOT_FOOTPRINT)))
+				found |= 4; /* load footprint as board or footprint */
 
 			if (*line != '\0')
 				goto got_line;
