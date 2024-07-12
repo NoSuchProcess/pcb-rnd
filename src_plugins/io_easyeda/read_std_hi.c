@@ -373,7 +373,7 @@ typedef struct {
 	std_read_ctx_t *ctx;
 	pcb_layer_t *layer;
 	rnd_coord_t thickness;
-	void *in_poly;
+	pcb_poly_t *in_poly;
 	gdom_node_t *nd;
 
 } path_ctx_t;
@@ -383,13 +383,12 @@ static void easyeda_mkpath_line(void *uctx, double x1, double y1, double x2, dou
 	path_ctx_t *pctx = uctx;
 	std_read_ctx_t *ctx = pctx->ctx;
 
-TODO("this will be needed in poly");
-#if 0
-	if (pctx->in_poly)
-		csch_alien_append_poly_line(&pctx->ctx->alien, pctx->in_poly, x1, y1, x2, y2);
-	else
-#endif
-	{
+	if (pctx->in_poly != NULL) {
+		rnd_point_t *pt = pcb_poly_point_alloc(pctx->in_poly);
+		pt->X = TRX(x2);
+		pt->Y = TRY(y2);
+	}
+	else {
 		pcb_line_t *line = pcb_line_alloc(pctx->layer);
 
 		line->Point1.X = TRX(x1);
@@ -440,7 +439,7 @@ static void easyeda_svgpath_setup(void)
 }
 
 /* Create an (svg)path as a line approximation within parent */
-static int std_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, int filled)
+static int std_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, pcb_poly_t *in_poly)
 {
 	path_ctx_t pctx;
 
@@ -450,19 +449,13 @@ static int std_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t 
 	pctx.layer = layer;
 	pctx.thickness = thickness;
 	pctx.nd = nd;
+	pctx.in_poly = in_poly;
 
-TODO("poly");
-#if 0
-	if (filled) {
-		pctx.in_poly = csch_alien_mkpoly(&ctx->alien, parent, penname, penname);
-		pathcfg.line = NULL;
-	}
+	/* turn off arcs in polygon, polygons have lines only for now */
+	if (in_poly != NULL)
+		pathcfg.carc = NULL;
 	else
-#endif
-	{
-		pctx.in_poly = NULL;
 		pathcfg.carc = easyeda_mkpath_carc;
-	}
 
 	return svgpath_render(&pathcfg, &pctx, pathstr);
 }
@@ -837,6 +830,20 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 
 static int std_parse_solidregion(std_read_ctx_t *ctx, gdom_node_t *nd)
 {
+	pcb_layer_t *layer;
+	const char *path;
+	pcb_poly_t *poly;
+
+	HASH_GET_LAYER(layer, nd, easy_layer, return -1);
+	HASH_GET_STRING(path, nd, easy_path, return -1);
+
+	poly = pcb_poly_alloc(layer);
+
+	std_parse_path(ctx, path, nd, layer, 0, poly);
+
+	pcb_add_poly_on_layer(layer, poly);
+	pcb_poly_init_clip(layer->parent.data, layer, poly);
+
 	return 0;
 }
 
