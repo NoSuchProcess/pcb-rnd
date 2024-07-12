@@ -214,6 +214,9 @@ static const int layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 1
 static const int layertab_in_first = 21;
 static const int layertab_in_last = 52;
 
+static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape);
+
+
 /*** board meta ***/
 
 static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int easyeda_id)
@@ -910,6 +913,32 @@ static int std_parse_rect(std_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
+static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double x, y, rot;
+	pcb_poly_t *poly;
+	pcb_layer_t *layer;
+	gdom_node_t *shapes;
+	pcb_subc_t *subc;
+	pcb_data_t *save;
+	int res;
+
+	HASH_GET_DOUBLE(x, nd, easy_x, return -1);
+	HASH_GET_DOUBLE(y, nd, easy_y, return -1);
+	HASH_GET_DOUBLE(rot, nd, easy_width, return -1);
+	HASH_GET_SUBTREE(shapes, nd, easy_shape, GDOM_ARRAY, return -1);
+
+	subc = pcb_subc_alloc();
+
+	save = ctx->data;
+	res = std_parse_any_shapes(ctx, shapes);
+	ctx->data = save;
+
+	pcb_subc_reg(ctx->data, subc);
+
+	return res;
+}
+
 static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 {
 	switch(shape->name) {
@@ -924,6 +953,7 @@ static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 		case easy_solidregion: return std_parse_solidregion(ctx, shape);
 		case easy_copperarea: return std_parse_copperarea(ctx, shape);
 		case easy_rect: return std_parse_rect(ctx, shape);
+		case easy_subc: return std_parse_subc(ctx, shape);
 	}
 
 	error_at(ctx, shape, ("Unknown shape '%s'\n", easy_keyname(shape->name)));
