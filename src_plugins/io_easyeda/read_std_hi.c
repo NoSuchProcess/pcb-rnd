@@ -1086,6 +1086,7 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 	ctx.root = easystd_low_parse(ctx.f, 0);
 	fclose(ctx.f);
 
+	if (ctx.root == NULL) res = -1;
 	if (res == 0) res |= std_parse_head(&ctx);
 	if (res == 0) res |= std_parse_layers(&ctx);
 	if (res == 0) res |= std_parse_canvas(&ctx);
