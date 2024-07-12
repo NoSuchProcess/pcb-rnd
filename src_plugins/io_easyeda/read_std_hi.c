@@ -216,7 +216,7 @@ static const int layertab_in_first = 21;
 static const int layertab_in_last = 52;
 
 static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape);
-
+static int std_parse_shapes_array(std_read_ctx_t *ctx, gdom_node_t *shapes);
 
 /*** board meta ***/
 
@@ -936,7 +936,7 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	subc = pcb_subc_alloc();
 
 	save = ctx->data;
-	res = std_parse_any_shapes(ctx, shapes);
+	res = std_parse_shapes_array(ctx, shapes);
 	ctx->data = save;
 
 	pcb_subc_reg(ctx->data, subc);
