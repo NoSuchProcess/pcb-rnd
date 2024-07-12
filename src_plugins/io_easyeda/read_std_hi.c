@@ -801,7 +801,7 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	HASH_GET_STRING(mirr, text, easy_mirror, return -1);
 	HASH_GET_STRING(type, text, easy_type, return -1);
 
-	t = pcb_text_alloc_id(layer, -1);
+	t = pcb_text_alloc(layer);
 	if (t == NULL) {
 		error_at(ctx, text, ("Failed to allocate text object\n"));
 		return -1;
