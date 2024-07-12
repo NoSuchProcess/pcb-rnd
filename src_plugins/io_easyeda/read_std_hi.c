@@ -966,7 +966,6 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 			on_bottom = 1;
 	}
 
-	TODO("on_bottom is not set");
 	pcb_subc_create_aux(subc, TRX(x), TRY(y), -rot, on_bottom);
 
 	pcb_data_bbox(&subc->BoundingBox, subc->data, rnd_true);
