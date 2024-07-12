@@ -827,6 +827,9 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	t->Scale = height/8.0 * 150.0;
 	t->thickness = TRR(strokew);
 
+	if (is_refdes)
+		pcb_flag_add(t->Flags, PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER);
+
 	pcb_add_text_on_layer(layer, t, pcb_font(PCB, 0, 1));
 
 	return 0;
