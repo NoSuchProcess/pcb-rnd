@@ -959,6 +959,7 @@ static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 		case easy_copperarea: return std_parse_copperarea(ctx, shape);
 		case easy_rect: return std_parse_rect(ctx, shape);
 		case easy_subc: return std_parse_subc(ctx, shape);
+		case easy_svgnode: return 0; /* ignore this for now */
 	}
 
 	error_at(ctx, shape, ("Unknown shape '%s'\n", easy_keyname(shape->name)));
