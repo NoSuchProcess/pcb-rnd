@@ -55,6 +55,8 @@ typedef struct std_read_ctx_s {
 	rnd_conf_role_t settings_dest;
 	pcb_layer_t *layers[EASY_MAX_LAYERS];
 	double ox, oy;
+
+	pcb_text_t *last_refdes; /* last text object created as a refdes dyntext+floater */
 } std_read_ctx_t;
 
 #define error_at(ctx, node, args) \
@@ -845,8 +847,10 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	t->thickness = TRR(strokew);
 	t->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
-	if (is_refdes)
+	if (is_refdes) {
 		t->Flags = pcb_flag_add(t->Flags, PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER);
+		ctx->last_refdes = t;
+	}
 
 	pcb_add_text_on_layer(layer, t, pcb_font(PCB, 0, 1));
 
@@ -945,17 +949,25 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 		pcb_subc_alloc_layer_like(subc, &ctx->pcb->Data->Layer[n]);
 
 
-	TODO("on_bottom is not set");
-	pcb_subc_create_aux(subc, TRX(x), TRY(y), -rot, on_bottom);
 
 	pcb_subc_rebind(ctx->pcb, subc);
 	pcb_subc_bind_globals(ctx->pcb, subc);
 
 	save = ctx->data;
 	ctx->data = subc->data;
+	ctx->last_refdes = NULL;
 	res = std_parse_shapes_array(ctx, shapes);
 	ctx->data = save;
 
+	if (ctx->last_refdes != NULL) {
+		pcb_layer_t *rl = pcb_layer_get_real(ctx->last_refdes->parent.layer);
+		int side = pcb_layer_flags_(rl) & PCB_LYT_ANYWHERE;
+		if (side & PCB_LYT_BOTTOM)
+			on_bottom = 1;
+	}
+
+	TODO("on_bottom is not set");
+	pcb_subc_create_aux(subc, TRX(x), TRY(y), -rot, on_bottom);
 
 	pcb_data_bbox(&subc->BoundingBox, subc->data, rnd_true);
 	pcb_data_bbox_naked(&subc->bbox_naked, subc->data, rnd_true);
