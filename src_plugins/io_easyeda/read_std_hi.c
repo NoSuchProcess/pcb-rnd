@@ -835,6 +835,42 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	return 0;
 }
 
+static int std_parse_solidregion(std_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	return 0;
+}
+
+static int std_parse_copperarea(std_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	return 0;
+}
+
+static int std_parse_rect(std_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double x, y, w, h;
+	pcb_poly_t *poly;
+	pcb_layer_t *layer;
+
+	HASH_GET_LAYER(layer, nd, easy_layer, return -1);
+	HASH_GET_DOUBLE(x, nd, easy_x, return -1);
+	HASH_GET_DOUBLE(y, nd, easy_y, return -1);
+	HASH_GET_DOUBLE(w, nd, easy_width, return -1);
+	HASH_GET_DOUBLE(h, nd, easy_height, return -1);
+
+	poly = pcb_poly_alloc(layer);
+
+	pcb_poly_point_prealloc(poly, 4);
+	poly->PointN = 4;
+	poly->Points[0].X = TRX(x);   poly->Points[0].Y = TRY(y);
+	poly->Points[1].X = TRX(x+w); poly->Points[1].Y = TRY(y);
+	poly->Points[2].X = TRX(x+w); poly->Points[2].Y = TRY(y+h);
+	poly->Points[3].X = TRX(x);   poly->Points[3].Y = TRY(y+h);
+
+	pcb_add_poly_on_layer(layer, poly);
+	pcb_poly_init_clip(layer->parent.data, layer, poly);
+
+	return 0;
+}
 
 static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 {
@@ -847,6 +883,9 @@ static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 		case easy_pad: return std_parse_pad(ctx, shape);
 		case easy_dimension: return std_parse_dimension(ctx, shape);
 		case easy_text: return std_parse_text(ctx, shape);
+		case easy_solidregion: return std_parse_solidregion(ctx, shape);
+		case easy_copperarea: return std_parse_copperarea(ctx, shape);
+		case easy_rect: return std_parse_rect(ctx, shape);
 	}
 
 	error_at(ctx, shape, ("Unknown shape '%s'\n", easy_keyname(shape->name)));
