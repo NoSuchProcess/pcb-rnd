@@ -89,8 +89,6 @@ int io_easyeda_std_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const cha
 	int n, doctype;
 	unsigned found = 0;
 
-	rnd_trace("easyeda_std_test_parse\n");
-
 	/* ensure all vital header fields are present in the first 32 lines */
 	for(n = 0; n < 32; n++) {
 		line = fgets(buf, sizeof(buf), f);
@@ -122,10 +120,24 @@ int io_easyeda_std_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const cha
 	}
 
 	return 0;
-
 }
 
 int io_easyeda_std_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	return easyeda_std_parse_board(Ptr, Filename, settings_dest);
+}
+
+int io_easyeda_std_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
+{
+	return easyeda_std_parse_fp(data, filename);
+}
+
+pcb_plug_fp_map_t *io_easyeda_std_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	if (io_easyeda_std_test_parse(ctx, PCB_IOT_FOOTPRINT, fn, f) != 1)
+		return NULL;
+
+	head->type = PCB_FP_FILE;
+	head->name = rnd_strdup("first");
+	return head;
 }

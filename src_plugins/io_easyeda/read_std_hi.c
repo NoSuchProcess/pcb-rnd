@@ -1129,3 +1129,47 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 }
 
 
+static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
+{
+	pcb_board_t *pcb = data->parent.board;
+	std_read_ctx_t ctx;
+	int res = 0;
+	pcb_subc_t *subc;
+	pcb_data_t *save;
+
+	rnd_trace("-------------------------fpload!\n");
+
+	ctx.pcb = pcb;
+	ctx.data = data;
+	ctx.fn = fn;
+	ctx.f = rnd_fopen(&pcb->hidlib, fn, "r");
+	ctx.settings_dest = -1;
+	if (ctx.f == NULL) {
+		rnd_message(RND_MSG_ERROR, "filed to open %s for read\n", fn);
+		return -1;
+	}
+
+	ctx.root = easystd_low_parse(ctx.f, 0);
+	fclose(ctx.f);
+
+	if (ctx.root == NULL) res = -1;
+	if (res == 0) res |= std_parse_head(&ctx);
+	if (!ctx.is_footprint) {
+		rnd_message(RND_MSG_ERROR, "EasyEDA internal error: trying to load %s as footprint while it is not a footprint\n", fn);
+		return -1;
+	}
+
+	if (res == 0) res |= std_parse_layers(&ctx);
+	if (res == 0) res |= std_parse_canvas(&ctx);
+
+	save = ctx.data;
+	subc = std_subc_create(&ctx);
+	ctx.data = subc->data;
+
+	if (res == 0) res |= std_parse_shapes_array(&ctx, gdom_hash_get(ctx.root, easy_shape));
+
+	ctx.data = save;
+	std_subc_finalize(&ctx, subc, 0, 0, 0);
+
+	return res;
+}

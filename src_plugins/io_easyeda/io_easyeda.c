@@ -77,8 +77,8 @@ int pplg_init_io_easyeda(void)
 	io_easyeda_std.fmt_support_prio = io_easyeda_fmt;
 	io_easyeda_std.test_parse = io_easyeda_std_test_parse;
 	io_easyeda_std.parse_pcb = io_easyeda_std_parse_pcb;
-/*	io_easyeda_std.parse_footprint = io_easyeda_parse_footprint;
-	io_easyeda_std.map_footprint = io_easyeda_map_footprint;*/
+	io_easyeda_std.parse_footprint = io_easyeda_std_parse_footprint;
+	io_easyeda_std.map_footprint = io_easyeda_std_map_footprint;
 	io_easyeda_std.parse_font = NULL;
 	io_easyeda_std.write_buffer = NULL;
 	io_easyeda_std.write_pcb = NULL;
@@ -86,7 +86,7 @@ int pplg_init_io_easyeda(void)
 	io_easyeda_std.description = "EasyEDA std board";
 	io_easyeda_std.save_preference_prio = 61;
 	io_easyeda_std.default_extension = ".json";
-	io_easyeda_std.fp_extension = ".asc"; TODO("revise these");
+	io_easyeda_std.fp_extension = ".json";
 	io_easyeda_std.mime_type = "application/x-easyeda";
 	io_easyeda_std.multi_footprint = 1;
 
