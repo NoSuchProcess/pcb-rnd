@@ -787,7 +787,9 @@ static int std_parse_dimension(std_read_ctx_t *ctx, gdom_node_t *dimension)
 static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 {
 	double x, y, rot, height, strokew;
+	rnd_coord_t tx, ty;
 	const char *str, *mirr, *type;
+	int xmir;
 	pcb_layer_t *layer;
 	pcb_text_t *t;
 
@@ -801,15 +803,26 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	HASH_GET_STRING(mirr, text, easy_mirror, return -1);
 	HASH_GET_STRING(type, text, easy_type, return -1);
 
+
+	tx = TRX(x);
+	ty = TRY(y - height);
+	xmir = (*mirr == '1');
+	if (xmir) {
+		double rad = rot / RND_RAD_TO_DEG;
+		rnd_rotate(&tx, &ty, TRX(x), TRY(y), cos(rad), sin(rad));
+		rot = -rot;
+	}
+
 	t = pcb_text_alloc(layer);
 	if (t == NULL) {
 		error_at(ctx, text, ("Failed to allocate text object\n"));
 		return -1;
 	}
 
-	t->X = TRX(x);
-	t->Y = TRY(y - height);
+	t->X = tx;
+	t->Y = ty;
 	t->rot = rot;
+	t->mirror_x = xmir;
 	t->TextString = rnd_strdup(str);
 	t->Scale = height/8.0 * 150.0;
 
