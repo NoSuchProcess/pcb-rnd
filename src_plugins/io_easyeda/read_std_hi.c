@@ -975,37 +975,27 @@ static int std_parse_rect(std_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
-static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
+static pcb_subc_t *std_subc_create(std_read_ctx_t *ctx)
 {
-	double x, y, rot;
-	pcb_poly_t *poly;
-	pcb_layer_t *layer;
-	gdom_node_t *shapes;
-	pcb_subc_t *subc;
-	pcb_data_t *save;
-	int res, n, on_bottom = 0;
+	pcb_subc_t *subc = pcb_subc_alloc();
+	long n;
 
-	HASH_GET_DOUBLE(x, nd, easy_x, return -1);
-	HASH_GET_DOUBLE(y, nd, easy_y, return -1);
-	HASH_GET_DOUBLE(rot, nd, easy_rot, return -1);
-	HASH_GET_SUBTREE(shapes, nd, easy_shape, GDOM_ARRAY, return -1);
-
-	subc = pcb_subc_alloc();
 	pcb_subc_reg(ctx->data, subc);
 	pcb_obj_id_reg(ctx->data, subc);
 	for(n = 0; n < ctx->pcb->Data->LayerN; n++)
 		pcb_subc_alloc_layer_like(subc, &ctx->pcb->Data->Layer[n]);
 
-
-
 	pcb_subc_rebind(ctx->pcb, subc);
 	pcb_subc_bind_globals(ctx->pcb, subc);
 
-	save = ctx->data;
-	ctx->data = subc->data;
 	ctx->last_refdes = NULL;
-	res = std_parse_shapes_array(ctx, shapes);
-	ctx->data = save;
+
+	return subc;
+}
+
+static void std_subc_finalize(std_read_ctx_t *ctx, pcb_subc_t *subc, double x, double y, double rot)
+{
+	int on_bottom = 0;
 
 	if (ctx->last_refdes != NULL) {
 		pcb_layer_t *rl = pcb_layer_get_real(ctx->last_refdes->parent.layer);
@@ -1022,6 +1012,32 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	if (ctx->data->subc_tree == NULL)
 		rnd_rtree_init(ctx->data->subc_tree = malloc(sizeof(rnd_rtree_t)));
 	rnd_rtree_insert(ctx->data->subc_tree, subc, (rnd_rtree_box_t *)subc);
+}
+
+static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double x, y, rot;
+	pcb_poly_t *poly;
+	pcb_layer_t *layer;
+	gdom_node_t *shapes;
+	pcb_subc_t *subc;
+	pcb_data_t *save;
+	int res, n, on_bottom = 0;
+
+	HASH_GET_DOUBLE(x, nd, easy_x, return -1);
+	HASH_GET_DOUBLE(y, nd, easy_y, return -1);
+	HASH_GET_DOUBLE(rot, nd, easy_rot, return -1);
+	HASH_GET_SUBTREE(shapes, nd, easy_shape, GDOM_ARRAY, return -1);
+
+
+	subc = std_subc_create(ctx);
+
+	save = ctx->data;
+	ctx->data = subc->data;
+	res = std_parse_shapes_array(ctx, shapes);
+	ctx->data = save;
+
+	std_subc_finalize(ctx, subc, x, y, rot);
 
 	return res;
 }
@@ -1066,12 +1082,15 @@ static int std_parse_shapes_array(std_read_ctx_t *ctx, gdom_node_t *shapes)
 	return 0;
 }
 
+
 /*** main tree parser entries ***/
 
 static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_role_t settings_dest)
 {
 	std_read_ctx_t ctx;
 	int res = 0;
+	pcb_subc_t *subc_as_board;
+	pcb_data_t *save;
 
 	ctx.pcb = dst;
 	ctx.data = dst->Data;
@@ -1090,7 +1109,21 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 	if (res == 0) res |= std_parse_head(&ctx);
 	if (res == 0) res |= std_parse_layers(&ctx);
 	if (res == 0) res |= std_parse_canvas(&ctx);
+
+	if (ctx.is_footprint) {
+		dst->is_footprint = 1;
+		save = ctx.data;
+		subc_as_board = std_subc_create(&ctx);
+		ctx.data = subc_as_board->data;
+	}
+
 	if (res == 0) res |= std_parse_shapes_array(&ctx, gdom_hash_get(ctx.root, easy_shape));
+
+	if (ctx.is_footprint) {
+		ctx.data = save;
+		std_subc_finalize(&ctx, subc_as_board, 0, 0, 0);
+	}
+
 
 	return res;
 }
