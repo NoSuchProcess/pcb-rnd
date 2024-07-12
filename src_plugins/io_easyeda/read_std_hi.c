@@ -931,7 +931,7 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	gdom_node_t *shapes;
 	pcb_subc_t *subc;
 	pcb_data_t *save;
-	int res, n;
+	int res, n, on_bottom = 0;
 
 	HASH_GET_DOUBLE(x, nd, easy_x, return -1);
 	HASH_GET_DOUBLE(y, nd, easy_y, return -1);
@@ -943,6 +943,10 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	pcb_obj_id_reg(ctx->data, subc);
 	for(n = 0; n < ctx->pcb->Data->LayerN; n++)
 		pcb_subc_alloc_layer_like(subc, &ctx->pcb->Data->Layer[n]);
+
+
+	TODO("on_bottom is not set");
+	pcb_subc_create_aux(subc, TRX(x), TRY(y), -rot, on_bottom);
 
 	pcb_subc_rebind(ctx->pcb, subc);
 	pcb_subc_bind_globals(ctx->pcb, subc);
@@ -956,6 +960,9 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	pcb_data_bbox(&subc->BoundingBox, subc->data, rnd_true);
 	pcb_data_bbox_naked(&subc->bbox_naked, subc->data, rnd_true);
 
+	if (ctx->data->subc_tree == NULL)
+		rnd_rtree_init(ctx->data->subc_tree = malloc(sizeof(rnd_rtree_t)));
+	rnd_rtree_insert(ctx->data->subc_tree, subc, (rnd_rtree_box_t *)subc);
 
 	return res;
 }
