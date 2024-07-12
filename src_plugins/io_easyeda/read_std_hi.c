@@ -849,6 +849,22 @@ static int std_parse_solidregion(std_read_ctx_t *ctx, gdom_node_t *nd)
 
 static int std_parse_copperarea(std_read_ctx_t *ctx, gdom_node_t *nd)
 {
+	pcb_layer_t *layer;
+	const char *path;
+	pcb_poly_t *poly;
+	double sw;
+
+	HASH_GET_LAYER(layer, nd, easy_layer, return -1);
+	HASH_GET_STRING(path, nd, easy_path, return -1);
+	HASH_GET_DOUBLE(sw, nd, easy_stroke_width, return -1);
+
+	poly = pcb_poly_alloc(layer);
+
+	std_parse_path(ctx, path, nd, layer, 0, poly);
+
+	pcb_add_poly_on_layer(layer, poly);
+	pcb_poly_init_clip(layer->parent.data, layer, poly);
+
 	return 0;
 }
 
