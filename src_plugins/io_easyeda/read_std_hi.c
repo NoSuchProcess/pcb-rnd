@@ -139,6 +139,10 @@ do { \
 			error_at(ctx, nd, ("layer ID %ld does not exist\n", tmp->value.lng)); \
 			err_stmt; \
 		} \
+		if (ctx->data != ctx->pcb->Data) { \
+			long lid = dst - ctx->pcb->Data->Layer; \
+			dst = ctx->data->Layer + lid; \
+		} \
 	} \
 	else { \
 		is_any = 1; \
@@ -684,7 +688,8 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		shapes[0].data.poly.len = points->value.array.used/2;
 	}
 	if (!is_any) {
-		side = pcb_layer_flags_(layer) & PCB_LYT_ANYWHERE;
+		pcb_layer_t *rl = pcb_layer_get_real(layer);
+		side = pcb_layer_flags_(rl) & PCB_LYT_ANYWHERE;
 		shapes[0].layer_mask = side | PCB_LYT_COPPER;
 
 		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
@@ -926,7 +931,7 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	gdom_node_t *shapes;
 	pcb_subc_t *subc;
 	pcb_data_t *save;
-	int res;
+	int res, n;
 
 	HASH_GET_DOUBLE(x, nd, easy_x, return -1);
 	HASH_GET_DOUBLE(y, nd, easy_y, return -1);
@@ -934,12 +939,23 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	HASH_GET_SUBTREE(shapes, nd, easy_shape, GDOM_ARRAY, return -1);
 
 	subc = pcb_subc_alloc();
+	pcb_subc_reg(ctx->data, subc);
+	pcb_obj_id_reg(ctx->data, subc);
+	for(n = 0; n < ctx->pcb->Data->LayerN; n++)
+		pcb_subc_alloc_layer_like(subc, &ctx->pcb->Data->Layer[n]);
+
+	pcb_subc_rebind(ctx->pcb, subc);
+	pcb_subc_bind_globals(ctx->pcb, subc);
 
 	save = ctx->data;
+	ctx->data = subc->data;
 	res = std_parse_shapes_array(ctx, shapes);
 	ctx->data = save;
 
-	pcb_subc_reg(ctx->data, subc);
+
+	pcb_data_bbox(&subc->BoundingBox, subc->data, rnd_true);
+	pcb_data_bbox_naked(&subc->bbox_naked, subc->data, rnd_true);
+
 
 	return res;
 }
