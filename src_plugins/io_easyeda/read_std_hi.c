@@ -615,7 +615,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	int is_any, is_plated, nopaste = 0, n, sloti;
 	pcb_layer_t *layer;
 	pcb_pstk_t *pstk;
-	const char *sshape, *splated;
+	const char *sshape, *splated, *netname;
 	pcb_pstk_shape_t shapes[8] = {0};
 	pcb_layer_type_t side;
 	char termid[64];
@@ -631,6 +631,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	HASH_GET_DOUBLE(holer, pad, easy_hole_radius, return -1);
 	HASH_GET_DOUBLE(rot, pad, easy_rot, return -1);
 	HASH_GET_SUBTREE(slot_points, pad, easy_slot_points, GDOM_ARRAY, return -1);
+	HASH_GET_STRING(netname, pad, easy_net, return -1);
 
 	is_plated = (*splated == 'Y');
 	if (slot_points->value.array.used <= 1) {
@@ -786,6 +787,21 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 
 	rnd_snprintf(termid, sizeof(termid), "%ld", number);
 	pcb_attribute_put(&pstk->Attributes, "term", termid);
+
+	/* add term conn to the netlist if therminal has a net field */
+	if ((netname != NULL) && (*netname != '\0')) {
+		pcb_subc_t *subc = pcb_gobj_parent_subc(pstk->parent_type, &pstk->parent);
+		if (subc != NULL) {
+			const char *refdes = pcb_attribute_get(&subc->Attributes, "refdes");
+			if (refdes != NULL) {
+				pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
+				pcb_net_term_get(net, refdes, termid, 1);
+/*				rnd_trace("NETLIST TERM: %s-%s to %s\n", refdes, termid, netname);*/
+			}
+			else
+				rnd_message(RND_MSG_ERROR, "EasyEDA pad before refdes text - please report this but to pcb-rnd developers\n");
+		}
+	}
 
 	return 0;
 }
