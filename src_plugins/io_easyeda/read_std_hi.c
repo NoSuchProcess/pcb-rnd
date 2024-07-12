@@ -930,7 +930,7 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 
 	HASH_GET_DOUBLE(x, nd, easy_x, return -1);
 	HASH_GET_DOUBLE(y, nd, easy_y, return -1);
-	HASH_GET_DOUBLE(rot, nd, easy_width, return -1);
+	HASH_GET_DOUBLE(rot, nd, easy_rot, return -1);
 	HASH_GET_SUBTREE(shapes, nd, easy_shape, GDOM_ARRAY, return -1);
 
 	subc = pcb_subc_alloc();

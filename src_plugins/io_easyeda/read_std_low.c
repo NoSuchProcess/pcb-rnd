@@ -403,7 +403,7 @@ static int parse_shape_lib_hdr(char *str, gdom_node_t *sym)
 		{easy_x, GDOM_DOUBLE},
 		{easy_y, GDOM_DOUBLE},
 		{easy_attributes, GDOM_STRING},
-		{easy_rot, GDOM_LONG},
+		{easy_rot, GDOM_DOUBLE},
 		{easy_import, GDOM_LONG},
 		{easy_id, GDOM_STRING},
 		{easy_locked, GDOM_LONG},
