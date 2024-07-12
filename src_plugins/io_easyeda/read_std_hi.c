@@ -789,7 +789,7 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	double x, y, rot, height, strokew;
 	rnd_coord_t tx, ty;
 	const char *str, *mirr, *type;
-	int xmir;
+	int xmir, is_refdes;
 	pcb_layer_t *layer;
 	pcb_text_t *t;
 
@@ -803,7 +803,7 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	HASH_GET_STRING(mirr, text, easy_mirror, return -1);
 	HASH_GET_STRING(type, text, easy_type, return -1);
 
-
+	is_refdes = (*type == 'P');
 	tx = TRX(x);
 	ty = TRY(y - height);
 	xmir = (*mirr == '1');
@@ -823,7 +823,7 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	t->Y = ty;
 	t->rot = rot;
 	t->mirror_x = xmir;
-	t->TextString = rnd_strdup(str);
+	t->TextString = rnd_strdup(is_refdes ? "%a.parent.refdes%" : str);
 	t->Scale = height/8.0 * 150.0;
 	t->thickness = TRR(strokew);
 
