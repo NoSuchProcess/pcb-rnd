@@ -3,6 +3,8 @@
 1. For the upcoming release ===============================================================================
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - FEATURE: io_easyeda
+	- doc:
+		- clearance rules differ (no net based clearance)
 - FEATURE: emsim-rnd (dcpower)
 - revise release/packaging:
 	- remove suggesting geda-gnetlist from the debian package
