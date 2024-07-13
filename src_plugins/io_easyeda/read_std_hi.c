@@ -1168,8 +1168,6 @@ static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 	pcb_subc_t *subc;
 	pcb_data_t *save;
 
-	rnd_trace("-------------------------fpload!\n");
-
 	ctx.pcb = pcb;
 	ctx.data = data;
 	ctx.fn = fn;
