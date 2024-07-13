@@ -1165,7 +1165,7 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 
 static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 {
-	pcb_board_t *pcb = data->parent.board;
+	pcb_board_t *pcb = NULL;
 	std_read_ctx_t ctx;
 	long n;
 	int res = 0;
@@ -1174,11 +1174,18 @@ static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 
 	/* reset buffer layers that are set up to board layers by default;
 	   new layers are loaded from the file */
-	for(n = 0; n < data->LayerN; n++)
+	for(n = 0; n < data->LayerN; n++) {
+		pcb_layer_t *rl = data->Layer[n].meta.bound.real;
+
+		if ((pcb == NULL) && (rl != NULL)) { /* resolve target pcb from a real layer */
+			pcb_data_t *rd = rl->parent.data;
+			pcb = rd->parent.board;
+		}
 		pcb_layer_free_fields(&data->Layer[n], 0);
+	}
 	data->LayerN = 0;
 
-	ctx.pcb = pcb;
+	ctx.pcb = NULL; /* indicate we are not loading a board but a footprint to buffer */
 	ctx.data = data;
 	ctx.fn = fn;
 	ctx.f = rnd_fopen(&pcb->hidlib, fn, "r");
@@ -1200,6 +1207,8 @@ static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 
 	if (res == 0) res |= std_parse_layers(&ctx);
 	if (res == 0) res |= std_parse_canvas(&ctx);
+
+	pcb_data_binding_update(pcb, data);
 
 	save = ctx.data;
 	subc = std_subc_create(&ctx);
