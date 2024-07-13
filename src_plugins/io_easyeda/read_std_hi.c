@@ -142,7 +142,7 @@ do { \
 			error_at(ctx, nd, ("layer ID %ld does not exist\n", tmp->value.lng)); \
 			err_stmt; \
 		} \
-		if (ctx->data != ctx->pcb->Data) { \
+		if ((ctx->pcb != NULL) && (ctx->data != ctx->pcb->Data)) { \
 			long lid = dst - ctx->pcb->Data->Layer; \
 			dst = ctx->data->Layer + lid; \
 		} \
@@ -234,6 +234,7 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 	pcb_layergrp_t *grp;
 	rnd_layer_id_t lid;
 	int load_clr;
+	unsigned ltype;
 
 	if (idx > sizeof(std_layer_id2type) / sizeof(std_layer_id2type[0]))
 		return 0; /* ignore layers not in the table */
@@ -252,22 +253,43 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 
 	HASH_GET_STRING(name, src, easy_name, return -1);
 
-	grp = pcb_get_grp_new_raw(ctx->pcb, 0);
-	grp->name = rnd_strdup(name);
-	grp->ltype = std_layer_id2type[idx];
+	ltype = std_layer_id2type[idx];
 
-	lid = pcb_layer_create(ctx->pcb, grp - ctx->pcb->LayerGroups.grp, rnd_strdup(name), 0);
-	dst = pcb_get_layer(ctx->pcb->Data, lid);
-	if (grp->ltype & (PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE))
+	if (ctx->pcb != NULL) {
+		/* create real board layer */
+		grp = pcb_get_grp_new_raw(ctx->pcb, 0);
+		grp->name = rnd_strdup(name);
+		grp->ltype = ltype;
+		lid = pcb_layer_create(ctx->pcb, grp - ctx->pcb->LayerGroups.grp, rnd_strdup(name), 0);
+
+		dst = pcb_get_layer(ctx->pcb->Data, lid);
+	}
+	else {
+		/* create pure bound layer */
+		lid = ctx->data->LayerN;
+		ctx->data->LayerN++;
+		dst = &ctx->data->Layer[lid];
+		memset(dst, 0, sizeof(pcb_layer_t));
+		dst->name = rnd_strdup(name);
+		dst->is_bound = 1;
+		dst->meta.bound.type = ltype;
+		dst->parent_type = PCB_PARENT_DATA;
+		dst->parent.data = ctx->data;
+		if (ltype & PCB_LYT_INTERN)
+			dst->meta.bound.stack_offs = easyeda_id - layertab_in_first + 1;
+	}
+
+	if (ltype & (PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE))
 		dst->comb |= PCB_LYC_AUTO;
-	if (grp->ltype & PCB_LYT_MASK)
+	if (ltype & PCB_LYT_MASK)
 		dst->comb |= PCB_LYC_SUB;
+
 
 	if ((easyeda_id >= 0) && (easyeda_id < EASY_MAX_LAYERS))
 		ctx->layers[easyeda_id] = dst;
 
-	load_clr = (grp->ltype & PCB_LYT_COPPER) ? conf_io_easyeda.plugins.io_easyeda.load_color_copper : conf_io_easyeda.plugins.io_easyeda.load_color_noncopper;
-	if (load_clr) {
+	load_clr = (ltype & PCB_LYT_COPPER) ? conf_io_easyeda.plugins.io_easyeda.load_color_copper : conf_io_easyeda.plugins.io_easyeda.load_color_noncopper;
+	if ((ctx->pcb != NULL) && load_clr) {
 		HASH_GET_STRING(clr, src, easy_color, goto skip_clr);
 		rnd_color_load_str(&dst->meta.real.color, clr);
 		skip_clr:;
@@ -298,6 +320,9 @@ static int std_create_misc_layers(std_read_ctx_t *ctx)
 	rnd_layer_id_t lid;
 	const char **name, *names[] = {"slot-plated", "slot-unplated", NULL};
 	int n;
+
+	if (ctx->pcb == NULL)
+		return 0;
 
 	for(n = 0, name = names; *name != NULL; n++, name++) {
 		grp[n] = pcb_get_grp_new_raw(ctx->pcb, 0);
@@ -392,10 +417,12 @@ static int std_parse_canvas(std_read_ctx_t *ctx)
 
 	ctx->ox = ox;
 	ctx->oy = oy - h;
-	ctx->pcb->hidlib.dwg.X1 = TRR(0);
-	ctx->pcb->hidlib.dwg.Y1 = TRR(0);
-	ctx->pcb->hidlib.dwg.X2 = TRR(w);
-	ctx->pcb->hidlib.dwg.Y2 = TRR(h);
+	if (ctx->pcb != NULL) {
+		ctx->pcb->hidlib.dwg.X1 = TRR(0);
+		ctx->pcb->hidlib.dwg.Y1 = TRR(0);
+		ctx->pcb->hidlib.dwg.X2 = TRR(w);
+		ctx->pcb->hidlib.dwg.Y2 = TRR(h);
+	}
 
 #if 0
 	HASH_GET_DOUBLE(w, canvas, easy_routing_width, return -1);
@@ -718,8 +745,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		shapes[0].data.poly.len = points->value.array.used/2;
 	}
 	if (!is_any) {
-		pcb_layer_t *rl = pcb_layer_get_real(layer);
-		side = pcb_layer_flags_(rl) & PCB_LYT_ANYWHERE;
+		side = pcb_layer_flags_(layer) & PCB_LYT_ANYWHERE;
 		shapes[0].layer_mask = side | PCB_LYT_COPPER;
 
 		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
@@ -919,7 +945,8 @@ static int std_parse_solidregion(std_read_ctx_t *ctx, gdom_node_t *nd)
 	std_parse_path(ctx, path, nd, layer, 0, poly);
 
 	pcb_add_poly_on_layer(layer, poly);
-	pcb_poly_init_clip(layer->parent.data, layer, poly);
+	if (ctx->pcb != NULL)
+		pcb_poly_init_clip(layer->parent.data, layer, poly);
 
 	return 0;
 }
@@ -982,11 +1009,16 @@ static pcb_subc_t *std_subc_create(std_read_ctx_t *ctx)
 
 	pcb_subc_reg(ctx->data, subc);
 	pcb_obj_id_reg(ctx->data, subc);
-	for(n = 0; n < ctx->pcb->Data->LayerN; n++)
-		pcb_subc_alloc_layer_like(subc, &ctx->pcb->Data->Layer[n]);
+	for(n = 0; n < ctx->data->LayerN; n++) {
+		pcb_layer_t *ly = pcb_subc_alloc_layer_like(subc, &ctx->data->Layer[n]);
+		if (ctx->pcb == NULL)
+			ly->meta.bound.real = &ctx->data->Layer[n];
+	}
 
-	pcb_subc_rebind(ctx->pcb, subc);
-	pcb_subc_bind_globals(ctx->pcb, subc);
+	if (ctx->pcb != NULL) {
+		pcb_subc_rebind(ctx->pcb, subc);
+		pcb_subc_bind_globals(ctx->pcb, subc);
+	}
 
 	ctx->last_refdes = NULL;
 
@@ -998,8 +1030,7 @@ static void std_subc_finalize(std_read_ctx_t *ctx, pcb_subc_t *subc, double x, d
 	int on_bottom = 0;
 
 	if (ctx->last_refdes != NULL) {
-		pcb_layer_t *rl = pcb_layer_get_real(ctx->last_refdes->parent.layer);
-		int side = pcb_layer_flags_(rl) & PCB_LYT_ANYWHERE;
+		int side = pcb_layer_flags_(ctx->last_refdes->parent.layer) & PCB_LYT_ANYWHERE;
 		if (side & PCB_LYT_BOTTOM)
 			on_bottom = 1;
 	}
