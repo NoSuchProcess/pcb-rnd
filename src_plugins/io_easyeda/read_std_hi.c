@@ -416,13 +416,16 @@ static int std_parse_canvas(std_read_ctx_t *ctx)
 	HASH_GET_DOUBLE(h, canvas, easy_canvas_height, return -1);
 
 	ctx->ox = ox;
-	ctx->oy = oy - h;
+
 	if (ctx->pcb != NULL) {
+		ctx->oy = oy - h;
 		ctx->pcb->hidlib.dwg.X1 = TRR(0);
 		ctx->pcb->hidlib.dwg.Y1 = TRR(0);
 		ctx->pcb->hidlib.dwg.X2 = TRR(w);
 		ctx->pcb->hidlib.dwg.Y2 = TRR(h);
 	}
+	else
+		ctx->oy = oy;
 
 #if 0
 	HASH_GET_DOUBLE(w, canvas, easy_routing_width, return -1);
