@@ -1166,7 +1166,7 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 {
 	pcb_board_t *pcb = NULL;
-	std_read_ctx_t ctx;
+	std_read_ctx_t ctx = {0};
 	long n;
 	int res = 0;
 	pcb_subc_t *subc;
@@ -1213,6 +1213,20 @@ static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 	save = ctx.data;
 	subc = std_subc_create(&ctx);
 	ctx.data = subc->data;
+
+	/* rewire ctx.layers so they point to the corresponding subc layer so that
+	   objects are created within the subc, not in parent data */
+	for(n = 0; n < subc->data->LayerN; n++) {
+		int i, idx = 0;
+		for(i = 0; i < subc->data->LayerN; i++) {
+			pcb_layer_t *cl =ctx.layers[n];
+			if ((cl != NULL) && (cl->meta.bound.type == subc->data->Layer[i].meta.bound.type)) {
+				idx = i;
+				break;
+			}
+		}
+		ctx.layers[n] = &subc->data->Layer[idx];
+	}
 
 	if (res == 0) res |= std_parse_shapes_array(&ctx, gdom_hash_get(ctx.root, easy_shape));
 
