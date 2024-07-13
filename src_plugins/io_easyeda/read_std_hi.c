@@ -1167,9 +1167,16 @@ static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 {
 	pcb_board_t *pcb = data->parent.board;
 	std_read_ctx_t ctx;
+	long n;
 	int res = 0;
 	pcb_subc_t *subc;
 	pcb_data_t *save;
+
+	/* reset buffer layers that are set up to board layers by default;
+	   new layers are loaded from the file */
+	for(n = 0; n < data->LayerN; n++)
+		pcb_layer_free_fields(&data->Layer[n], 0);
+	data->LayerN = 0;
 
 	ctx.pcb = pcb;
 	ctx.data = data;
