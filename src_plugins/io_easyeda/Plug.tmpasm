@@ -10,6 +10,8 @@ put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/io_easyeda/io_easyeda.o
 	$(PLUGDIR)/io_easyeda/easyeda_sphash.o
 	$(PLUGDIR)/io_easyeda/read_std.o
+	$(PLUGDIR)/io_easyeda/read_pro.o
+	$(PLUGDIR)/io_easyeda/svgpath.o
 @]
 
 #	$(PLUGDIR)/io_easyeda/write.o

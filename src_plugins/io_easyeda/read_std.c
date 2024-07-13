@@ -44,9 +44,6 @@
 #include "obj_subc_parent.h"
 #include "plug_io.h"
 
-TODO("pro: move this to somewhere more central")
-#include "rnd_inclib/lib_svgpath/svgpath.c"
-
 #include "io_easyeda_conf.h"
 #include "read_std_low.c"
 #include "read_std_hi.c"

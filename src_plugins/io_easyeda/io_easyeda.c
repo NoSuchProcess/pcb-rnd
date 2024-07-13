@@ -42,8 +42,9 @@
 conf_io_easyeda_t conf_io_easyeda;
 
 #include "read_std.h"
+#include "read_pro.h"
 
-static pcb_plug_io_t io_easyeda_std;
+static pcb_plug_io_t io_easyeda_std, io_easyeda_pro;
 static const char *easyeda_cookie = "EasyEDA IO";
 
 
@@ -66,6 +67,7 @@ int pplg_check_ver_io_easyeda(int ver_needed) { return 0; }
 void pplg_uninit_io_easyeda(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_easyeda_std);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_easyeda_pro);
 	rnd_conf_plug_unreg("plugins/io_easyeda/", io_easyeda_conf_internal, easyeda_cookie);
 }
 
@@ -90,7 +92,25 @@ int pplg_init_io_easyeda(void)
 	io_easyeda_std.mime_type = "application/x-easyeda";
 	io_easyeda_std.multi_footprint = 1;
 
+	io_easyeda_pro.plugin_data = NULL;
+	io_easyeda_pro.fmt_support_prio = io_easyeda_fmt;
+	io_easyeda_pro.test_parse = io_easyeda_pro_test_parse;
+	io_easyeda_pro.parse_pcb = io_easyeda_pro_parse_pcb;
+	io_easyeda_pro.parse_footprint = io_easyeda_pro_parse_footprint;
+	io_easyeda_pro.map_footprint = io_easyeda_pro_map_footprint;
+	io_easyeda_pro.parse_font = NULL;
+	io_easyeda_pro.write_buffer = NULL;
+	io_easyeda_pro.write_pcb = NULL;
+	io_easyeda_pro.default_fmt = "easyeda pro";
+	io_easyeda_pro.description = "EasyEDA pro board";
+	io_easyeda_pro.save_preference_prio = 61;
+	io_easyeda_pro.default_extension = ".json"; TODO("revise this");
+	io_easyeda_pro.fp_extension = ".json"; TODO("revise this");
+	io_easyeda_pro.mime_type = "application/x-easyeda";
+	io_easyeda_pro.multi_footprint = 1;
+
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_easyeda_std);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_easyeda_pro);
 
 rnd_conf_plug_reg(conf_io_easyeda, io_easyeda_conf_internal, easyeda_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
