@@ -1028,7 +1028,7 @@ static pcb_subc_t *std_subc_create(std_read_ctx_t *ctx)
 	return subc;
 }
 
-static void std_subc_finalize(std_read_ctx_t *ctx, pcb_subc_t *subc, double x, double y, double rot)
+static void std_subc_finalize(std_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, double rot)
 {
 	int on_bottom = 0;
 
@@ -1038,7 +1038,7 @@ static void std_subc_finalize(std_read_ctx_t *ctx, pcb_subc_t *subc, double x, d
 			on_bottom = 1;
 	}
 
-	pcb_subc_create_aux(subc, TRX(x), TRY(y), -rot, on_bottom);
+	pcb_subc_create_aux(subc, x, y, -rot, on_bottom);
 
 	pcb_data_bbox(&subc->BoundingBox, subc->data, rnd_true);
 	pcb_data_bbox_naked(&subc->bbox_naked, subc->data, rnd_true);
@@ -1071,7 +1071,7 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	res = std_parse_shapes_array(ctx, shapes);
 	ctx->data = save;
 
-	std_subc_finalize(ctx, subc, x, y, rot);
+	std_subc_finalize(ctx, subc, TRX(x), TRY(y), rot);
 
 	return res;
 }
