@@ -77,5 +77,5 @@ pcb_plug_fp_map_t *io_easyeda_pro_map_footprint(pcb_plug_io_t *ctx, FILE *f, con
 	head->type = PCB_FP_FILE;
 	head->name = rnd_strdup("first");
 	return head;*/
-	return -1;
+	return NULL;
 }
