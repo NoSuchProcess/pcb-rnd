@@ -1066,7 +1066,7 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	dx = w / 2; \
 	dy = h / 2; \
 	if (flip_x ^ flip_y) { \
-		if (vert) \
+		if (vert && !flip_y) \
 			dx = -dx; \
 		else \
 			dy = -dy; \
