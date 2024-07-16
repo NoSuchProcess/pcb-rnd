@@ -31,6 +31,7 @@
 #include <librnd/hid/hid_menu.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/core/conf_multi.h>
+#include <librnd/core/rnd_conf.h>
 #include <genht/htpp.h>
 #include <genht/hash.h>
 
@@ -166,6 +167,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	shn_net_t *shn = NULL;
 	htshn_entry_t *e;
 	pcb_net_t *net = NULL;
+	pcb_text_mirror_t tmi = 0;
 
 	if (obj->type != PCB_OBJ_LINE)
 		return NULL;
@@ -216,12 +218,32 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 				vx = l->Point2.X - l->Point1.X; vy = l->Point2.Y - l->Point1.Y;
 				len = vx*vx + vy*vy;
 
+				/* compensate for board flips that'd mirror this text object */
+				if (rnd_conf.editor.view.flip_x ^ rnd_conf.editor.view.flip_y) {
+					if (rnd_conf.editor.view.flip_y) {
+						tmi = PCB_TXT_MIRROR_Y;
+						rot = -rot;
+						dy = -dy;
+					}
+					else {
+						tmi = PCB_TXT_MIRROR_X;
+						rot = -rot;
+						dx = -dx;
+					}
+				}
+				else if (rnd_conf.editor.view.flip_x && rnd_conf.editor.view.flip_y) {
+					tmi = PCB_TXT_MIRROR_X | PCB_TXT_MIRROR_Y;
+					dy = -dy;
+					dx = -dx;
+				}
+
 				/* make text readable from bottom and right */
 				if ((rot <= -60) || (rot >= 120)) {
 					rot += 180;
 					dy = -dy;
 					dx = -dx;
 				}
+
 
 				if (len != 0) {
 					len = sqrt(len);
@@ -240,7 +262,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 					}
 				}
 
-				pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, rot, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE, 0);
+				pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, rot, tmi, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE, 0);
 			}
 			break;
 		default:
@@ -249,7 +271,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 				scx = (double)(obj->bbox_naked.X2 - obj->bbox_naked.X1) / (double)shn->w * 0.8;
 				scy = (double)(obj->bbox_naked.Y2 - obj->bbox_naked.Y1) / (double)shn->h * 0.8;
 				lscale = RND_MIN(scx, scy);
-				pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, 0.0, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE, 0);
+				pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, 0.0, tmi, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE, 0);
 			}
 	}
 	return NULL;
