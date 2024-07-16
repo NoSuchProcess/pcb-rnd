@@ -216,6 +216,13 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 				vx = l->Point2.X - l->Point1.X; vy = l->Point2.Y - l->Point1.Y;
 				len = vx*vx + vy*vy;
 
+				/* make text readable from bottom and right */
+				if ((rot <= -60) || (rot >= 120)) {
+					rot += 180;
+					dy = -dy;
+					dx = -dx;
+				}
+
 				if (len != 0) {
 					len = sqrt(len);
 
