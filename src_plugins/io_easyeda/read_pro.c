@@ -45,6 +45,7 @@
 #include "plug_io.h"
 
 #include "io_easyeda_conf.h"
+#include "easyeda_sphash.h"
 #include "read_common.h"
 
 #include <rnd_inclib/lib_easyeda/easyeda_low.c>
