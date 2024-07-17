@@ -198,22 +198,232 @@ static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 	return 0;
 }
 
-/* pad shape OVAL:  OVAL, width, height
-   (line in the direction of the bigger size) */
+
+
 
 /* pad shape ELLIPSE:  ELLIPSE, xdia, ydia
    (fill circle, xdia == ydia always) */
+static int pro_parse_pad_shape_ellipse(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom_node_t *nd)
+{
+	double dx, dy;
+	REQ_ARGC_GTE(nd, 3, "PAD shape ellipse", return -1);
+	GET_ARG_DBL(dx, nd, 1, "PAD shape ellipse x diameter", return -1);
+	GET_ARG_DBL(dy, nd, 2, "PAD shape ellipse y diameter", return -1);
+	if (dx != dy)
+		error_at(ctx, nd, ("real ellipse pad shape not yet supported;\nplease report this bug to pcb-rnd sending the file!\nfalling back to circle\n\n"));
+
+	dst->shape = PCB_PSSH_CIRC;
+	dst->data.circ.dia = TRR(dx);
+	return 0;
+}
+
+
+
+/* pad shape OVAL:  OVAL, width, height
+   (line in the direction of the bigger size) */
+static int pro_parse_pad_shape_oval(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom_node_t *nd)
+{
+	double w, h;
+
+	REQ_ARGC_GTE(nd, 3, "PAD shape oval", return -1);
+	GET_ARG_DBL(w, nd, 1, "PAD shape oval width", return -1);
+	GET_ARG_DBL(h, nd, 2, "PAD shape oval height", return -1);
+
+	if (w == h) {
+		dst->shape = PCB_PSSH_CIRC;
+		dst->data.circ.dia = TRR(w);
+		return 0;
+	}
+
+	dst->shape = PCB_PSSH_LINE;
+	if (h > w) {
+		dst->data.line.x1 = 0;
+		dst->data.line.y1 = -TRR(h/2.0)+TRR(w/2.0);
+		dst->data.line.x2 = 0;
+		dst->data.line.y2 = +TRR(h/2.0)-TRR(w/2.0);
+		dst->data.line.thickness = TRR(w);
+	}
+	else {
+		dst->data.line.x1 = -TRR(w/2.0)+TRR(h/2.0);
+		dst->data.line.y1 = 0;
+		dst->data.line.x2 = +TRR(w/2.0)-TRR(h/2.0);
+		dst->data.line.y2 = 0;
+		dst->data.line.thickness = TRR(h);
+	}
+	return 0;
+}
+
 
 /* pad shape RECT:  RECT, width, height, r%
    r% is corner radius in percent of the smaller side/2, 100% turning it into a line */
+static int pro_parse_pad_shape_rect(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom_node_t *nd)
+{
+	rnd_coord_t w, w2, h, h2, r;
 
+	REQ_ARGC_GTE(nd, 4, "PAD shape rect", return -1);
+	GET_ARG_DBL(w, nd, 1, "PAD shape rect width", return -1);
+	GET_ARG_DBL(h, nd, 2, "PAD shape rect height", return -1);
+	GET_ARG_DBL(r, nd, 3, "PAD shape rect rounding radius", return -1);
+
+	TODO("this ignores the rounding radius");
+
+	w2 = TRR(w/2.0);
+	h2 = TRR(h/2.0);
+	dst->shape = PCB_PSSH_POLY;
+	pcb_pstk_shape_alloc_poly(&dst->data.poly, 4);
+	dst->data.poly.x[0] = -w2; dst->data.poly.y[0] = -h2;
+	dst->data.poly.x[1] = +w2; dst->data.poly.y[1] = -h2;
+	dst->data.poly.x[2] = +w2; dst->data.poly.y[2] = +h2;
+	dst->data.poly.x[3] = -w2; dst->data.poly.y[3] = +h2;
+	dst->data.poly.len = 4;
+
+	return 0;
+}
+
+static int pro_parse_pad_shape(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom_node_t *nd)
+{
+	const char *shname;
+	REQ_ARGC_GTE(nd, 1, "PAD shape", return -1);
+	GET_ARG_STR(shname, nd, 0, "PAD shape name", return -1);
+
+	if (strcmp(shname, "ELLIPSE") == 0) return pro_parse_pad_shape_ellipse(ctx, dst, nd);
+	if (strcmp(shname, "RECT") == 0) return pro_parse_pad_shape_rect(ctx, dst, nd);
+	if (strcmp(shname, "OVAL") == 0) return pro_parse_pad_shape_oval(ctx, dst, nd);
+
+	error_at(ctx, nd, ("Invalid pad shape name: '%s'\n", shname));
+	return -1;
+}
 
 /* "PAD","e6",0,"", 1, "5",75.003,107.867,0,  null,["OVAL",23.622,59.843],[],0,0,null,1,0,   2,   2,  0,0,   0,   null,null,null,null,[]
           id        ly num  x      y      rot      [ shape ]                                mask      paste  lock  
    ly==12 means all layers (EASY_MULTI_LAYER+1) */
 static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
-	
+	const char *termid;
+	long lid;
+	double x, y, rot, mask, paste;
+	gdom_node_t *shape_nd, *slot_nd;
+	int is_plated, is_any, nopaste, sloti;
+	pcb_pstk_shape_t shapes[9] = {0};
+	pcb_layer_type_t side;
+	pcb_pstk_t *pstk;
+	rnd_coord_t holer;
+	const char *netname;
+
+	REQ_ARGC_GTE(nd, 23, "PAD", return -1);
+	GET_ARG_DBL(lid, nd, 4, "PAD layer", return -1);
+	GET_ARG_STR(termid, nd, 5, "PAD number", return -1);
+	GET_ARG_DBL(x, nd, 6, "PAD x", return -1);
+	GET_ARG_DBL(y, nd, 7, "PAD y", return -1);
+	GET_ARG_DBL(rot, nd, 8, "PAD rotation", return -1);
+	GET_ARG_ARRAY(shape_nd, nd, 10, "PAD shape", return -1);
+	GET_ARG_DBL(mask, nd, 17, "PAD mask", return -1);
+	GET_ARG_DBL(paste, nd, 19, "PAD paste", return -1);
+
+	if ((lid < 0) || (lid >= EASY_MAX_LAYERS)) {
+		error_at(ctx, nd, ("PAD: invalid layer number %ld\n", lid));
+		return -1;
+	}
+
+
+	is_any = (lid == (EASY_MULTI_LAYER+1));
+	TODO("figure hole geo"); holer=0;
+	TODO("figure is_plated and slot_nd"); is_plated = 0; slot_nd = NULL;
+	TODO("figure nopaste"); nopaste = 0;
+	TODO("figure netname"); netname = NULL;
+
+	/* create the main shape in shape[0] */
+	if (pro_parse_pad_shape(ctx, &shapes[0], shape_nd) != 0)
+		return -1;
+
+	TODO("use local vars mask and shape here");
+	if (!is_any) {
+		pcb_layer_t *layer = ctx->layers[lid];
+
+		side = pcb_layer_flags_(layer) & PCB_LYT_ANYWHERE;
+		shapes[0].layer_mask = side | PCB_LYT_COPPER;
+
+		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
+		shapes[1].layer_mask = side | PCB_LYT_MASK;
+		shapes[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+		pcb_pstk_shape_grow_(&shapes[1], 0, RND_MIL_TO_COORD(4));
+
+		pcb_pstk_shape_copy(&shapes[2], &shapes[0]);
+		shapes[2].layer_mask = side | PCB_LYT_PASTE;
+		shapes[2].comb = PCB_LYC_AUTO;
+		pcb_pstk_shape_grow_(&shapes[2], 0, -RND_MIL_TO_COORD(4));
+
+		sloti = 3;
+	}
+	else {
+		shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
+		shapes[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+		pcb_pstk_shape_copy(&shapes[2], &shapes[0]);
+		shapes[2].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
+
+		pcb_pstk_shape_copy(&shapes[3], &shapes[0]);
+		shapes[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+		shapes[3].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+		pcb_pstk_shape_grow_(&shapes[3], 0, RND_MIL_TO_COORD(4));
+
+
+		pcb_pstk_shape_copy(&shapes[4], &shapes[0]);
+		shapes[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
+		shapes[4].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+		pcb_pstk_shape_grow_(&shapes[4], 0, RND_MIL_TO_COORD(4));
+
+		if (!nopaste) {
+			pcb_pstk_shape_copy(&shapes[5], &shapes[0]);
+			shapes[5].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+			shapes[5].comb = PCB_LYC_AUTO;
+			pcb_pstk_shape_grow_(&shapes[5], 0, -RND_MIL_TO_COORD(4));
+
+			pcb_pstk_shape_copy(&shapes[6], &shapes[0]);
+			shapes[6].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
+			shapes[6].comb = PCB_LYC_AUTO;
+			pcb_pstk_shape_grow_(&shapes[6], 0, -RND_MIL_TO_COORD(4));
+
+			sloti = 7;
+		}
+		else
+			sloti = 5;
+	}
+
+	TODO("figure slot");
+
+	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(x), TRY(y), TRR(holer)*2, is_plated, 0, shapes);
+	if (pstk == NULL) {
+		error_at(ctx, nd, ("Failed to create padstack for pad\n"));
+		return -1;
+	}
+	pstk->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+	pstk->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
+	if (rot != 0) {
+		double rad = rot / RND_RAD_TO_DEG;
+		pcb_pstk_rotate(pstk, TRX(x), TRY(y), cos(rad), sin(rad), rot);
+	}
+
+	pcb_attribute_put(&pstk->Attributes, "term", termid);
+
+	TODO("this could be common with std");
+	/* add term conn to the netlist if therminal has a net field */
+	if ((netname != NULL) && (*netname != '\0')) {
+		pcb_subc_t *subc = pcb_gobj_parent_subc(pstk->parent_type, &pstk->parent);
+		if (subc != NULL) {
+			const char *refdes = pcb_attribute_get(&subc->Attributes, "refdes");
+			if (refdes != NULL) {
+				pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
+				pcb_net_term_get(net, refdes, termid, 1);
+/*				rnd_trace("NETLIST TERM: %s-%s to %s\n", refdes, termid, netname);*/
+			}
+			else
+				rnd_message(RND_MSG_ERROR, "EasyEDA pad before refdes text - please report this but to pcb-rnd developers\n");
+		}
+	}
+
+	return 0;
 }
 
 
