@@ -77,7 +77,16 @@ static int pro_parse_layer(easy_read_ctx_t *ctx, gdom_node_t *nd, pcb_layer_type
 		return -1;
 	}
 
-	return easyeda_layer_create(ctx, lyt, nd->value.array.child[3], easyeda_id, nd->value.array.child[5]);
+	if (nd->value.array.child[3]->type != GDOM_STRING) {
+		error_at(ctx, nd->value.array.child[3], ("LAYER name must be a string\n"));
+		return -1;
+	}
+	if (nd->value.array.child[5]->type != GDOM_STRING) {
+		error_at(ctx, nd->value.array.child[5], ("LAYER color must be a string\n"));
+		return -1;
+	}
+
+	return easyeda_layer_create(ctx, lyt, nd->value.array.child[3]->value.str, easyeda_id, nd->value.array.child[5]->value.str);
 
 	(void)visible; (void)locked; /* supress compiler warnings on currently unused vars */
 }
