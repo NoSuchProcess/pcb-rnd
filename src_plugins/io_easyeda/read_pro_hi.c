@@ -491,6 +491,7 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 	int res = 0;
 	pcb_subc_t *subc_as_board;
 
+	ctx.is_pro = 1;
 	ctx.pcb = pcb;
 	ctx.fn = fn;
 	ctx.data = pcb->Data;

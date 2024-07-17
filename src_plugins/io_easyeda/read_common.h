@@ -52,8 +52,11 @@ RND_INLINE gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 #define EASY_MAX_LAYERS 128
 #define EASY_MULTI_LAYER 11
 
+#define TRR_STD(c)   RND_MIL_TO_COORD((c) * 10.0)
+#define TRR_PRO(c)   RND_MIL_TO_COORD((c))
+
 /* raw coord transform (e.g. for radius, diameter, width) */
-#define TRR(c)   RND_MIL_TO_COORD((c) * 10.0)
+#define TRR(c)   (ctx->is_pro ? TRR_PRO(c) : TRR_STD(c))
 #define TRX(c)   TRR((c) - ctx->ox)
 #define TRY(c)   TRR((c) - ctx->oy)
 
@@ -67,6 +70,7 @@ typedef struct easy_read_ctx_s {
 	pcb_layer_t *layers[EASY_MAX_LAYERS];
 	double ox, oy;
 	unsigned is_footprint:1;
+	unsigned is_pro:1;
 
 	pcb_text_t *last_refdes; /* last text object created as a refdes dyntext+floater */
 } easy_read_ctx_t;
