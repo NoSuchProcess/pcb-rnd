@@ -34,6 +34,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/rotate.h>
+
 #include "../lib_compat_help/pstk_compat.h"
 #include "../lib_compat_help/pstk_help.h"
 #include "rnd_inclib/lib_svgpath/svgpath.h"
@@ -45,6 +46,9 @@
 #include "plug_io.h"
 
 #include "io_easyeda_conf.h"
+#include "read_common.h"
+
+#include <rnd_inclib/lib_easyeda/easyeda_low.c>
 #include "read_std_low.c"
 #include "read_std_hi.c"
 

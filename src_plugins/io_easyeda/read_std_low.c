@@ -27,14 +27,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-
-#include <libnanojson/nanojson.c>
-#include <libnanojson/semantic.c>
-
-#include <rnd_inclib/lib_easyeda/gendom.c>
-#include <rnd_inclib/lib_easyeda/gendom_json.c>
-#include <rnd_inclib/lib_easyeda/easyeda_low.c>
-
 #include "easyeda_sphash.h"
 
 #define SEP3 "#@$"

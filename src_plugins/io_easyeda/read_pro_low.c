@@ -35,12 +35,6 @@
 #include <assert.h>
 #include <librnd/core/compat_misc.h>
 
-#include <libnanojson/nanojson.h>
-
-#include <rnd_inclib/lib_easyeda/gendom.h>
-#include <rnd_inclib/lib_easyeda/gendom_json.h>
-#include <rnd_inclib/lib_easyeda/easyeda_low.c>
-
 #include "io_easyeda_conf.h"
 extern conf_io_easyeda_t io_easyeda_conf;
 extern void easyeda_dump_tree(FILE *f, gdom_node_t *tree); /* in the std */
