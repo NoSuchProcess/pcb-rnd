@@ -27,6 +27,77 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#define REQ_ARGC_(nd, op, num, errstr, errstmt) \
+do { \
+	if (nd->type != GDOM_ARRAY) { \
+		error_at(ctx, nd, ("%s: object node is not an array\n", errstr)); \
+		errstmt; \
+	} \
+	if (nd->value.array.used op num) { \
+		error_at(ctx, nd, ("%s: not enough fields: need at least %ld, got %ld\n", errstr, (long)num, nd->value.array.used)); \
+		errstmt; \
+	} \
+} while(0)
+
+#define REQ_ARGC_GTE(nd, num, errstr, errstmt) REQ_ARGC_((nd), <, (num), (errstr), errstmt)
+#define REQ_ARGC_EQ(nd, num, errstr, errstmt)  REQ_ARGC_((nd), !=, (num), (errstr), errstmt)
+
+/* call these only after a REQ_ARGC_* as it won't do bound check */
+#define GET_ARG_STR(dst, nd, num, errstr, errstmt) \
+do { \
+	gdom_node_t *__tmp__ = nd->value.array.child[num]; \
+	if ((__tmp__->type == GDOM_DOUBLE) && (__tmp__->value.dbl == -1)) {\
+		dst = NULL; \
+	} \
+	else { \
+		if (__tmp__->type != GDOM_STRING) { \
+			error_at(ctx, nd, ("%s: wrong argument type for arg #%ld (expected string)\n", errstr, (long)num)); \
+			errstmt; \
+		} \
+		dst = __tmp__->value.str; \
+	} \
+} while(0)
+
+#define GET_ARG_DBL(dst, nd, num, errstr, errstmt) \
+do { \
+	gdom_node_t *__tmp__ = nd->value.array.child[num]; \
+	if (__tmp__->type != GDOM_DOUBLE) { \
+		error_at(ctx, nd, ("%s: wrong argument type for arg #%ld (expected double)\n", errstr, (long)num)); \
+		errstmt; \
+	} \
+	dst = __tmp__->value.dbl; \
+} while(0)
+
+#define GET_ARG_HASH(dst, nd, num, errstr, errstmt) \
+do { \
+	gdom_node_t *__tmp__ = nd->value.array.child[num]; \
+	if (__tmp__->type != GDOM_HASH) { \
+		error_at(ctx, nd, ("%s: wrong argument type for arg #%ld; expected a hash\n", errstr, (long)num)); \
+		errstmt; \
+	} \
+	dst = __tmp__; \
+} while(0)
+
+#define GET_ARG_ARRAY(dst, nd, num, errstr, errstmt) \
+do { \
+	gdom_node_t *__tmp__ = nd->value.array.child[num]; \
+	if (__tmp__->type != GDOM_ARRAY) { \
+		error_at(ctx, nd, ("%s: wrong argument type for arg #%ld; expected an array\n", errstr, (long)num)); \
+		errstmt; \
+	} \
+	dst = __tmp__; \
+} while(0)
+
+#define CHK_ARG_KW(nd, num, kwval, errstr, errstmt) \
+do { \
+	const char *__str__;\
+	GET_ARG_STR(__str__, nd, num, errstr, errstmt); \
+	if (strcmp(__str__, kwval) != 0) { \
+		error_at(ctx, nd, ("%s: arg #%ld must be '%s' but is '%s'\n", errstr, (long)num, kwval, __str__)); \
+		errstmt; \
+	}\
+} while(0)
+
 /*** parse objects ***/
 
 static int easyeda_pro_parse_canvas(easy_read_ctx_t *ctx)
