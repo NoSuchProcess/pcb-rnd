@@ -50,9 +50,40 @@
 /*#include "read_pro_hi.c"*/
 
 
+/* assume plain text, search for ["DOCTYPE","FOOTPRINT" in the first few lines */
+int io_easyeda_pro_test_parse_efoo(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const char *Filename, FILE *f)
+{
+	int lineno;
+
+	for(lineno = 0; lineno < 8; lineno++) {
+		char buff[1024], *line;
+		unsigned char *ul;
+
+		if ((line = fgets(buff, sizeof(buff), f)) == NULL)
+			return 0; /* refuse */
+
+		/* skip utf-8 bom */
+		if (lineno == 0) {
+			ul = (unsigned char *)line;
+			if ((ul[0] == 0xef) && (ul[1] == 0xbb) && (ul[2] == 0xbf))
+				line += 3;
+		}
+
+		while(isspace(*line)) line++;
+		if (strncmp(line, "[\"DOCTYPE\",\"FOOTPRINT\"", 22) == 0)
+			return 1; /* accept */
+	}
+
+	return 0;
+}
+
 
 int io_easyeda_pro_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const char *Filename, FILE *f)
 {
+	if (((type == PCB_IOT_FOOTPRINT) || (type == PCB_IOT_PCB)) && (io_easyeda_pro_test_parse_efoo(ctx, type, Filename, f) == 1))
+		return 1;
+	else
+		rewind(f);
 
 	/* return 1 for accept */
 	return 0;
