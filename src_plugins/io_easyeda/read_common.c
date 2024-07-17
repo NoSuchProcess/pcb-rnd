@@ -47,7 +47,7 @@
 
 /* EasyEDA std has a static layer assignment, layers identified by their
    integer ID, not by their name and there's no layer type saved. */
-pcb_layer_type_t std_layer_id2type[200] = {
+pcb_layer_type_t easyeda_layer_id2type[200] = {
 /*1~TopLayer*/               PCB_LYT_TOP | PCB_LYT_COPPER,
 /*2~BottomLayer*/            PCB_LYT_BOTTOM | PCB_LYT_COPPER,
 /*3~TopSilkLayer*/           PCB_LYT_TOP | PCB_LYT_SILK,
@@ -99,15 +99,15 @@ pcb_layer_type_t std_layer_id2type[200] = {
 0
 };
 
-int std_layer_id2type_size = sizeof(std_layer_id2type) / sizeof(std_layer_id2type[0]);
+int easyeda_layer_id2type_size = sizeof(easyeda_layer_id2type) / sizeof(easyeda_layer_id2type[0]);
 
 /* load layers in a specific order so the pcb-rnd layer stack looks normal;
    these numbers are base-1 to match the layer ID in comments above */
-const int layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 13, 14, 15, 99, 100, 101   , 0};
-const int layertab_in_first = 21;
-const int layertab_in_last = 52;
+const int easyeda_layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 13, 14, 15, 99, 100, 101   , 0};
+const int easyeda_layertab_in_first = 21;
+const int easyeda_layertab_in_last = 52;
 
-int std_create_misc_layers(std_read_ctx_t *ctx)
+int easyeda_create_misc_layers(std_read_ctx_t *ctx)
 {
 	pcb_layer_t *ly[8];
 	pcb_layergrp_t *grp[8];
@@ -211,7 +211,7 @@ static void easyeda_svgpath_setup(void)
 }
 
 /* Create an (svg)path as a line approximation within parent */
-int std_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, pcb_poly_t *in_poly)
+int easyeda_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, pcb_poly_t *in_poly)
 {
 	path_ctx_t pctx;
 

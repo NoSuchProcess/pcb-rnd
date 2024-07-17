@@ -160,14 +160,14 @@ do { \
 
 double easyeda_get_double(std_read_ctx_t *ctx, gdom_node_t *nd);
 
-extern pcb_layer_type_t std_layer_id2type[];
-extern int std_layer_id2type_size;
+extern pcb_layer_type_t easyeda_layer_id2type[];
+extern int easyeda_layer_id2type_size;
 
 #define LAYERTAB_INNER -1
-extern const int layertab[];
-extern const int layertab_in_first;
-extern const int layertab_in_last;
+extern const int easyeda_layertab[];
+extern const int easyeda_layertab_in_first;
+extern const int easyeda_layertab_in_last;
 
-int std_create_misc_layers(std_read_ctx_t *ctx);
+int easyeda_create_misc_layers(std_read_ctx_t *ctx);
 int std_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, pcb_poly_t *in_poly);
 

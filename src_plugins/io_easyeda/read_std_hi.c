@@ -41,10 +41,10 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 	int load_clr;
 	unsigned ltype;
 
-	if (idx > std_layer_id2type_size)
+	if (idx > easyeda_layer_id2type_size)
 		return 0; /* ignore layers not in the table */
 
-	if (std_layer_id2type[idx] == 0)
+	if (easyeda_layer_id2type[idx] == 0)
 		return 0; /* table dictated skip */
 
 	HASH_GET_STRING(config, src, easy_config, return -1);
@@ -58,7 +58,7 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 
 	HASH_GET_STRING(name, src, easy_name, return -1);
 
-	ltype = std_layer_id2type[idx];
+	ltype = easyeda_layer_id2type[idx];
 
 	if (ctx->pcb != NULL) {
 		/* create real board layer */
@@ -81,7 +81,7 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 		dst->parent_type = PCB_PARENT_DATA;
 		dst->parent.data = ctx->data;
 		if (ltype & PCB_LYT_INTERN)
-			dst->meta.bound.stack_offs = easyeda_id - layertab_in_first + 1;
+			dst->meta.bound.stack_offs = easyeda_id - easyeda_layertab_in_first + 1;
 	}
 
 	if (ltype & (PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE))
@@ -124,9 +124,9 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 	int res = 0;
 	const int *lt;
 
-	std_layer_id2type[99-1] = PCB_LYT_DOC;
-	std_layer_id2type[100-1] = PCB_LYT_DOC;
-	std_layer_id2type[101-1] = PCB_LYT_DOC;
+	easyeda_layer_id2type[99-1] = PCB_LYT_DOC;
+	easyeda_layer_id2type[100-1] = PCB_LYT_DOC;
+	easyeda_layer_id2type[101-1] = PCB_LYT_DOC;
 
 	layers = gdom_hash_get(ctx->root, easy_layers);
 	if ((layers == NULL) || (layers->type != GDOM_ARRAY)) {
@@ -134,17 +134,17 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 		return -1;
 	}
 
-	for(lt = layertab; *lt != 0; lt++) {
+	for(lt = easyeda_layertab; *lt != 0; lt++) {
 		if (*lt == LAYERTAB_INNER) {
 			long n;
-			for(n = layertab_in_first; n <= layertab_in_last; n++)
+			for(n = easyeda_layertab_in_first; n <= easyeda_layertab_in_last; n++)
 				res |= std_parse_layer(ctx, layers, n - 1, n);
 		}
 		else
 			res |= std_parse_layer(ctx, layers, *lt - 1, *lt);
 	}
 
-	res |= std_create_misc_layers(ctx);
+	res |= easyeda_create_misc_layers(ctx);
 
 	return res;
 }
@@ -270,7 +270,7 @@ static int std_parse_arc(std_read_ctx_t *ctx, gdom_node_t *arc)
 	HASH_GET_LAYER(layer, arc, easy_layer, return -1);
 	HASH_GET_DOUBLE(swd, arc, easy_stroke_width, return -1);
 
-	return std_parse_path(ctx, path, arc, layer, TRR(swd), 0);
+	return easyeda_parse_path(ctx, path, arc, layer, TRR(swd), 0);
 }
 
 static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *circ)
@@ -551,7 +551,7 @@ static int std_parse_dimension(std_read_ctx_t *ctx, gdom_node_t *dimension)
 	HASH_GET_STRING(path, dimension, easy_path, return -1);
 	HASH_GET_LAYER(layer, dimension, easy_layer, return -1);
 
-	return std_parse_path(ctx, path, dimension, layer, RND_MIL_TO_COORD(5), 0);
+	return easyeda_parse_path(ctx, path, dimension, layer, RND_MIL_TO_COORD(5), 0);
 }
 
 static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
@@ -624,7 +624,7 @@ static int std_parse_solidregion(std_read_ctx_t *ctx, gdom_node_t *nd)
 
 	poly = pcb_poly_alloc(layer);
 
-	std_parse_path(ctx, path, nd, layer, 0, poly);
+	easyeda_parse_path(ctx, path, nd, layer, 0, poly);
 
 	pcb_add_poly_on_layer(layer, poly);
 	if (ctx->pcb != NULL)
@@ -647,7 +647,7 @@ static int std_parse_copperarea(std_read_ctx_t *ctx, gdom_node_t *nd)
 
 	poly = pcb_poly_alloc(layer);
 
-	std_parse_path(ctx, path, nd, layer, 0, poly);
+	easyeda_parse_path(ctx, path, nd, layer, 0, poly);
 	poly->enforce_clearance = TRR(clearance);
 	poly->Flags = pcb_flag_add(poly->Flags, PCB_FLAG_CLEARPOLY);
 
