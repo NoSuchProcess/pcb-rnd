@@ -46,8 +46,8 @@
 
 #include "io_easyeda_conf.h"
 
-/*#include "read_pro_low.c"*/
-/*#include "read_pro_hi.c"*/
+#include "read_pro_low.c"
+#include "read_pro_hi.c"
 
 
 /* assume plain text, search for ["DOCTYPE","FOOTPRINT" in the first few lines */
@@ -89,9 +89,28 @@ int io_easyeda_pro_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const cha
 	return 0;
 }
 
-int io_easyeda_pro_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
+int io_easyeda_pro_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, rnd_conf_role_t settings_dest)
 {
-	return /*easyeda_pro_parse_board(Ptr, Filename, settings_dest);*/ -1;
+	FILE *f;
+	int is_fp;
+
+	f = rnd_fopen(&pcb->hidlib, Filename, "r");
+	if (f == NULL)
+		return -1;
+
+	is_fp = (io_easyeda_pro_test_parse_efoo(ctx, PCB_IOT_PCB, Filename, f) == 1);
+	if (is_fp) {
+		int res;
+		rewind(f);
+		res = easyeda_pro_parse_fp_as_board(pcb, Filename, f, settings_dest);
+		fclose(f);
+		return res;
+	}
+	else
+		fclose(f);
+
+
+	return /*easyeda_pro_parse_board(pcb, Filename, settings_dest);*/ -1;
 }
 
 int io_easyeda_pro_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
