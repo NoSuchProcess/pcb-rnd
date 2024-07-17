@@ -431,6 +431,32 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	switch(nd->name) {
 		case easy_PAD: return easyeda_pro_parse_pad(ctx, nd);
+
+		TODO("handle these");
+		case easy_ATTR:
+		case easy_FILL:
+		case easy_POLY:
+		case easy_LAYER_PHYS:
+		case easy_NET:
+		case easy_PRIMITIVE:
+		case easy_SILK_OPTS:
+		case easy_CONNECT:
+		case easy_PREFERENCE:
+
+		/* ignored (no support) */
+		case easy_ACTIVE_LAYER:
+		case easy_RULE_TEMPLATE:
+		case easy_RULE:
+		case easy_RULE_SELECTOR:
+		case easy_PANELIZE:
+		case easy_PANELIZE_STAMP:
+		case easy_PANELIZE_SIDE:
+
+		/* already handled elsewhere (not drawing objects) */
+		case easy_DOCTYPE:
+		case easy_CANVAS:
+		case easy_LAYER:
+			return 0;
 	}
 	if ((nd->type == GDOM_ARRAY) && (nd->value.array.used > 0) && (nd->value.array.child[0]->type == GDOM_STRING))
 		error_at(ctx, nd, ("unknown object '%s' - ignoring\n", nd->value.array.child[0]->value.str));
