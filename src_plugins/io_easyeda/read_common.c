@@ -31,6 +31,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
 #include "board.h"
+#include "data.h"
 #include "layer.h"
 #include "layer_grp.h"
 
@@ -245,6 +246,95 @@ double easyeda_get_double(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return nd->value.dbl;
 }
 
+int easyeda_layer_create(easy_read_ctx_t *ctx, unsigned ltype, const char *name, int easyeda_id, const char *clr)
+{
+	pcb_layer_t *dst;
+	pcb_layergrp_t *grp;
+	rnd_layer_id_t lid;
+	int load_clr;
+
+	if (ctx->pcb != NULL) {
+		/* create real board layer */
+		grp = pcb_get_grp_new_raw(ctx->pcb, 0);
+		grp->name = rnd_strdup(name);
+		grp->ltype = ltype;
+		lid = pcb_layer_create(ctx->pcb, grp - ctx->pcb->LayerGroups.grp, rnd_strdup(name), 0);
+
+		dst = pcb_get_layer(ctx->pcb->Data, lid);
+	}
+	else {
+		/* create pure bound layer */
+		lid = ctx->data->LayerN;
+		ctx->data->LayerN++;
+		dst = &ctx->data->Layer[lid];
+		memset(dst, 0, sizeof(pcb_layer_t));
+		dst->name = rnd_strdup(name);
+		dst->is_bound = 1;
+		dst->meta.bound.type = ltype;
+		dst->parent_type = PCB_PARENT_DATA;
+		dst->parent.data = ctx->data;
+		if (ltype & PCB_LYT_INTERN)
+			dst->meta.bound.stack_offs = easyeda_id - easyeda_layertab_in_first + 1;
+	}
+
+	if (ltype & (PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE))
+		dst->comb |= PCB_LYC_AUTO;
+	if (ltype & PCB_LYT_MASK)
+		dst->comb |= PCB_LYC_SUB;
+
+
+	if ((easyeda_id >= 0) && (easyeda_id < EASY_MAX_LAYERS))
+		ctx->layers[easyeda_id] = dst;
+
+	load_clr = (ltype & PCB_LYT_COPPER) ? conf_io_easyeda.plugins.io_easyeda.load_color_copper : conf_io_easyeda.plugins.io_easyeda.load_color_noncopper;
+	if ((ctx->pcb != NULL) && load_clr && (clr != NULL))
+		rnd_color_load_str(&dst->meta.real.color, clr);
+
+	return 0;
+}
+
+pcb_subc_t *easyeda_subc_create(easy_read_ctx_t *ctx)
+{
+	pcb_subc_t *subc = pcb_subc_alloc();
+	long n;
+
+	pcb_subc_reg(ctx->data, subc);
+	pcb_obj_id_reg(ctx->data, subc);
+	for(n = 0; n < ctx->data->LayerN; n++) {
+		pcb_layer_t *ly = pcb_subc_alloc_layer_like(subc, &ctx->data->Layer[n]);
+		if (ctx->pcb == NULL)
+			ly->meta.bound.real = &ctx->data->Layer[n];
+	}
+
+	if (ctx->pcb != NULL) {
+		pcb_subc_rebind(ctx->pcb, subc);
+		pcb_subc_bind_globals(ctx->pcb, subc);
+	}
+
+	ctx->last_refdes = NULL;
+
+	return subc;
+}
+
+void easyeda_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, double rot)
+{
+	int on_bottom = 0;
+
+	if (ctx->last_refdes != NULL) {
+		int side = pcb_layer_flags_(ctx->last_refdes->parent.layer) & PCB_LYT_ANYWHERE;
+		if (side & PCB_LYT_BOTTOM)
+			on_bottom = 1;
+	}
+
+	pcb_subc_create_aux(subc, x, y, -rot, on_bottom);
+
+	pcb_data_bbox(&subc->BoundingBox, subc->data, rnd_true);
+	pcb_data_bbox_naked(&subc->bbox_naked, subc->data, rnd_true);
+
+	if (ctx->data->subc_tree == NULL)
+		rnd_rtree_init(ctx->data->subc_tree = malloc(sizeof(rnd_rtree_t)));
+	rnd_rtree_insert(ctx->data->subc_tree, subc, (rnd_rtree_box_t *)subc);
+}
 
 
 
