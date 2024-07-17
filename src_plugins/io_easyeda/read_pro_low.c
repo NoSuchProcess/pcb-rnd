@@ -45,14 +45,7 @@ static void parse_pro_obj(gdom_node_t *obj)
 {
 	if ((obj->type == GDOM_ARRAY) && (obj->value.array.used > 0)) { /* resolve first argument of top level arrays */
 		gdom_node_t *cmd = obj->value.array.child[0];
-		long kw = easyeda_str2name(cmd->value.str);
-
-		rnd_trace("array 1 '%s': %ld\n", cmd->value.str, kw);
-		obj->name = kw;
-
-/*		kwn = gdom_alloc(kw, gdom_node_type_t type);*/
-/*	replace_node(*canvas_orig, canvas);*/
-		
+		obj->name = easyeda_str2name(cmd->value.str);
 	}
 }
 
