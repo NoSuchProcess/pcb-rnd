@@ -427,6 +427,35 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 }
 
 
+static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	switch(nd->name) {
+		case easy_PAD: return easyeda_pro_parse_pad(ctx, nd);
+	}
+	if ((nd->type == GDOM_ARRAY) && (nd->value.array.used > 0) && (nd->value.array.child[0]->type == GDOM_STRING))
+		error_at(ctx, nd, ("unknown object '%s' - ignoring\n", nd->value.array.child[0]->value.str));
+	return 0; /* ignore unknowns for now */
+}
+
+
+static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	long lineno;
+
+	assert(nd->type == GDOM_ARRAY);
+
+	for(lineno = 0; lineno < nd->value.array.used; lineno++) {
+		gdom_node_t *line = ctx->root->value.array.child[lineno];
+		long lid;
+
+		if (line->type != GDOM_ARRAY) continue;
+		if (easyeda_pro_parse_drawing_obj(ctx, line) != 0)
+			return -1;
+	}
+
+	return 0;
+}
+
 
 /*** glue ***/
 static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE *f, rnd_conf_role_t settings_dest)
@@ -464,12 +493,14 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
 	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
 
-	subc_as_board = easyeda_subc_create(&ctx);
-	ctx.data = subc_as_board->data;
+	if (res == 0) {
+		subc_as_board = easyeda_subc_create(&ctx);
+		ctx.data = subc_as_board->data;
 
-	TODO("load shapes");
+		res = easyeda_pro_parse_drawing_objs(&ctx, ctx.root);
 
-	easyeda_subc_finalize(&ctx, subc_as_board, 0, 0, 0);
+		easyeda_subc_finalize(&ctx, subc_as_board, 0, 0, 0);
+	}
 
 	return res;
 }
