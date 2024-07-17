@@ -124,10 +124,6 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 	int res = 0;
 	const int *lt;
 
-	easyeda_layer_id2type[99-1] = PCB_LYT_DOC;
-	easyeda_layer_id2type[100-1] = PCB_LYT_DOC;
-	easyeda_layer_id2type[101-1] = PCB_LYT_DOC;
-
 	layers = gdom_hash_get(ctx->root, easy_layers);
 	if ((layers == NULL) || (layers->type != GDOM_ARRAY)) {
 		rnd_message(RND_MSG_ERROR, "EasyEDA std: missing or wrong typed layers tree\n");

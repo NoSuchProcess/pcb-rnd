@@ -245,3 +245,12 @@ double easyeda_get_double(std_read_ctx_t *ctx, gdom_node_t *nd)
 	return nd->value.dbl;
 }
 
+
+
+
+void easyeda_read_common_init(void)
+{
+	easyeda_layer_id2type[99-1] = PCB_LYT_DOC;
+	easyeda_layer_id2type[100-1] = PCB_LYT_DOC;
+	easyeda_layer_id2type[101-1] = PCB_LYT_DOC;
+}

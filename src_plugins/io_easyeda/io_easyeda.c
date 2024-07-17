@@ -47,6 +47,7 @@ conf_io_easyeda_t conf_io_easyeda;
 static pcb_plug_io_t io_easyeda_std, io_easyeda_pro;
 static const char *easyeda_cookie = "EasyEDA IO";
 
+void easyeda_read_common_init(void);
 
 int io_easyeda_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
@@ -116,6 +117,8 @@ rnd_conf_plug_reg(conf_io_easyeda, io_easyeda_conf_internal, easyeda_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_io_easyeda, field,isarray,type_name,cpath,cname,desc,flags);
 #include "io_easyeda_conf_fields.h"
+
+	easyeda_read_common_init();
 
 	return 0;
 }
