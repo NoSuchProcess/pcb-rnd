@@ -344,7 +344,7 @@ static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
 
 static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 {
-	gdom_node_t *slot_points, *points;
+	gdom_node_t *slot_points;
 	double cx, cy, holer, w, h, rot;
 	long number;
 	int is_any, is_plated, nopaste = 0, n, sloti;
@@ -373,7 +373,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 		slot_points = NULL;
 	}
 	else if (slot_points->value.array.used != 4) {
-		error_at(ctx, points, ("Invalid number of pad slot_points (must be 4)\n"));
+		error_at(ctx, slot_points, ("Invalid number of pad slot_points (must be 4)\n"));
 		return -1;
 	}
 
@@ -405,6 +405,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 	}
 	else if (strcmp(sshape, "POLYGON") == 0) {
 		long n, i;
+		gdom_node_t *points;
 
 		HASH_GET_SUBTREE(points, pad, easy_points, GDOM_ARRAY, return -1);
 
