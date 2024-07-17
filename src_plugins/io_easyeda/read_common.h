@@ -172,7 +172,7 @@ int easyeda_create_misc_layers(easy_read_ctx_t *ctx);
 int std_parse_path(easy_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, pcb_poly_t *in_poly);
 
 int easyeda_layer_create(easy_read_ctx_t *ctx, unsigned ltype, const char *name, int easyeda_id, const char *clr);
-void easyeda_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, double rot);
 
 pcb_subc_t *easyeda_subc_create(easy_read_ctx_t *ctx);
+void easyeda_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, double rot);
 
