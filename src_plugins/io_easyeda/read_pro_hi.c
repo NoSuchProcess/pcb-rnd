@@ -127,6 +127,24 @@ static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 	return 0;
 }
 
+/* pad shape OVAL:  OVAL, width, height
+   (line in the direction of the bigger size) */
+
+/* pad shape ELLIPSE:  ELLIPSE, xdia, ydia
+   (fill circle, xdia == ydia always) */
+
+/* pad shape RECT:  RECT, width, height, r%
+   r% is corner radius in percent of the smaller side/2, 100% turning it into a line */
+
+
+/* "PAD","e6",0,"", 1, "5",75.003,107.867,0,  null,["OVAL",23.622,59.843],[],0,0,null,1,0,   2,   2,  0,0,   0,   null,null,null,null,[]
+          id        ly num  x      y      rot      [ shape ]                                mask      paste  lock  
+   ly==12 means all layers (EASY_MULTI_LAYER+1) */
+static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	
+}
+
 
 
 /*** glue ***/
