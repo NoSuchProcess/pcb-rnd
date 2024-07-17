@@ -54,6 +54,70 @@ static int easyeda_pro_parse_canvas(easy_read_ctx_t *ctx)
 	return 0;
 }
 
+static int pro_parse_layer(easy_read_ctx_t *ctx, gdom_node_t *nd, pcb_layer_type_t lyt, int easyeda_id)
+{
+	unsigned flags;
+	int locked, visible, confd;
+
+	if (nd == NULL)
+		return 0;   /* not in the input */
+	if (lyt == 0)
+		return 0; /* not a valid entry in our layertab */
+
+	flags = easyeda_get_double(ctx, nd->value.array.child[4]);
+	confd   = flags & 1;
+	locked  = flags & 2;
+	visible = flags & 4;
+
+	if (!confd)
+		return 0; /* input did not want this layer */
+
+	if (nd->value.array.used < 6) {
+		error_at(ctx, nd, ("not enough LAYER arguments\n"));
+		return -1;
+	}
+
+	return easyeda_layer_create(ctx, lyt, nd->value.array.child[3], easyeda_id, nd->value.array.child[5]);
+
+	(void)visible; (void)locked; /* supress compiler warnings on currently unused vars */
+}
+
+static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
+{
+	long lineno, lid;
+	gdom_node_t *lyline[EASY_MAX_LAYERS] = {0};
+	int res = 0;
+	const int *lt;
+
+	/* cache each layer line per ID from input */
+	for(lineno = 0; lineno < ctx->root->value.array.used; lineno++) {
+		gdom_node_t *line = ctx->root->value.array.child[lineno];
+		long lid;
+
+		if ((line->type != GDOM_ARRAY) || (line->name != easy_LAYER)) continue;
+
+		lid = easyeda_get_double(ctx, line->value.array.child[1]);
+		if ((lid >= 0) && (lid < EASY_MAX_LAYERS))
+			lyline[lid] = line;
+	}
+
+
+	/* create layers in ctx->data */
+	for(lt = easyeda_layertab, lid = 1; *lt != 0; lt++,lid++) {
+		if (*lt == LAYERTAB_INNER) {
+			long n;
+			for(n = easyeda_layertab_in_first; n <= easyeda_layertab_in_last; n++)
+				res |= pro_parse_layer(ctx, lyline[n], easyeda_layertab[n-1], n);
+		}
+		else
+			res |= pro_parse_layer(ctx, lyline[lid], *lt, lid);
+	}
+
+	res |= easyeda_create_misc_layers(ctx);
+
+	return 0;
+}
+
 
 
 /*** glue ***/
@@ -62,10 +126,12 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 	easy_read_ctx_t ctx;
 	unsigned char ul[3];
 	int res = 0;
+	pcb_subc_t *subc_as_board;
 
 	ctx.pcb = pcb;
 	ctx.fn = fn;
-	ctx.data = NULL; /* TODO */
+	ctx.data = pcb->Data;
+
 	ctx.settings_dest = settings_dest;
 
 
@@ -88,6 +154,14 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 
 	assert(ctx.root->type == GDOM_ARRAY);
 	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
+	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
+
+	subc_as_board = easyeda_subc_create(&ctx);
+	ctx.data = subc_as_board->data;
+
+	TODO("load shapes");
+
+	easyeda_subc_finalize(&ctx, subc_as_board, 0, 0, 0);
 
 	return res;
 }
