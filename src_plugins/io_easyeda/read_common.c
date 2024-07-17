@@ -107,7 +107,7 @@ const int easyeda_layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 
 const int easyeda_layertab_in_first = 21;
 const int easyeda_layertab_in_last = 52;
 
-int easyeda_create_misc_layers(std_read_ctx_t *ctx)
+int easyeda_create_misc_layers(easy_read_ctx_t *ctx)
 {
 	pcb_layer_t *ly[8];
 	pcb_layergrp_t *grp[8];
@@ -140,7 +140,7 @@ int easyeda_create_misc_layers(std_read_ctx_t *ctx)
 
 static svgpath_cfg_t pathcfg;
 typedef struct {
-	std_read_ctx_t *ctx;
+	easy_read_ctx_t *ctx;
 	pcb_layer_t *layer;
 	rnd_coord_t thickness;
 	pcb_poly_t *in_poly;
@@ -151,7 +151,7 @@ typedef struct {
 static void easyeda_mkpath_line(void *uctx, double x1, double y1, double x2, double y2)
 {
 	path_ctx_t *pctx = uctx;
-	std_read_ctx_t *ctx = pctx->ctx;
+	easy_read_ctx_t *ctx = pctx->ctx;
 
 	if (pctx->in_poly != NULL) {
 		rnd_point_t *pt = pcb_poly_point_alloc(pctx->in_poly);
@@ -176,7 +176,7 @@ static void easyeda_mkpath_line(void *uctx, double x1, double y1, double x2, dou
 static void easyeda_mkpath_carc(void *uctx, double cx, double cy, double r, double sa, double da)
 {
 	path_ctx_t *pctx = uctx;
-	std_read_ctx_t *ctx = pctx->ctx;
+	easy_read_ctx_t *ctx = pctx->ctx;
 	pcb_arc_t *arc;
 
 	/* this is not called for polygons, we have line approximation there */
@@ -211,7 +211,7 @@ static void easyeda_svgpath_setup(void)
 }
 
 /* Create an (svg)path as a line approximation within parent */
-int easyeda_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, pcb_poly_t *in_poly)
+int easyeda_parse_path(easy_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd, pcb_layer_t *layer, rnd_coord_t thickness, pcb_poly_t *in_poly)
 {
 	path_ctx_t pctx;
 
@@ -232,7 +232,7 @@ int easyeda_parse_path(std_read_ctx_t *ctx, const char *pathstr, gdom_node_t *nd
 	return svgpath_render(&pathcfg, &pctx, pathstr);
 }
 
-double easyeda_get_double(std_read_ctx_t *ctx, gdom_node_t *nd)
+double easyeda_get_double(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	if (nd == NULL) {
 		rnd_message(RND_MSG_ERROR, "Missing data (double)\n");

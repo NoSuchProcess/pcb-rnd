@@ -27,12 +27,12 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape);
-static int std_parse_shapes_array(std_read_ctx_t *ctx, gdom_node_t *shapes);
+static int std_parse_any_shapes(easy_read_ctx_t *ctx, gdom_node_t *shape);
+static int std_parse_shapes_array(easy_read_ctx_t *ctx, gdom_node_t *shapes);
 
 /*** board meta ***/
 
-static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int easyeda_id)
+static int std_parse_layer_(easy_read_ctx_t *ctx, gdom_node_t *src, long idx, int easyeda_id)
 {
 	pcb_layer_t *dst;
 	const char *config, *name, *clr;
@@ -103,7 +103,7 @@ static int std_parse_layer_(std_read_ctx_t *ctx, gdom_node_t *src, long idx, int
 }
 
 
-static int std_parse_layer(std_read_ctx_t *ctx, gdom_node_t *layers, long idx, long want_layer_id)
+static int std_parse_layer(easy_read_ctx_t *ctx, gdom_node_t *layers, long idx, long want_layer_id)
 {
 	int srci;
 
@@ -118,7 +118,7 @@ static int std_parse_layer(std_read_ctx_t *ctx, gdom_node_t *layers, long idx, l
 	return 0; /* ignore layers not specified in input */
 }
 
-static int std_parse_layers(std_read_ctx_t *ctx)
+static int std_parse_layers(easy_read_ctx_t *ctx)
 {
 	gdom_node_t *layers;
 	int res = 0;
@@ -145,7 +145,7 @@ static int std_parse_layers(std_read_ctx_t *ctx)
 	return res;
 }
 
-static int std_parse_head(std_read_ctx_t *ctx)
+static int std_parse_head(easy_read_ctx_t *ctx)
 {
 	gdom_node_t *head;
 	const char *doctype;
@@ -171,7 +171,7 @@ static int std_parse_head(std_read_ctx_t *ctx)
 	return 0;
 }
 
-static int std_parse_canvas(std_read_ctx_t *ctx)
+static int std_parse_canvas(easy_read_ctx_t *ctx)
 {
 	gdom_node_t *canvas;
 	double ox, oy, w, h;
@@ -209,7 +209,7 @@ static int std_parse_canvas(std_read_ctx_t *ctx)
 }
 
 /*** drawing object parsers ***/
-static int std_parse_track(std_read_ctx_t *ctx, gdom_node_t *track)
+static int std_parse_track(easy_read_ctx_t *ctx, gdom_node_t *track)
 {
 	gdom_node_t *points;
 	long n;
@@ -256,7 +256,7 @@ static int std_parse_track(std_read_ctx_t *ctx, gdom_node_t *track)
 }
 
 
-static int std_parse_arc(std_read_ctx_t *ctx, gdom_node_t *arc)
+static int std_parse_arc(easy_read_ctx_t *ctx, gdom_node_t *arc)
 {
 	const char *path;
 	double swd;
@@ -269,7 +269,7 @@ static int std_parse_arc(std_read_ctx_t *ctx, gdom_node_t *arc)
 	return easyeda_parse_path(ctx, path, arc, layer, TRR(swd), 0);
 }
 
-static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *circ)
+static int std_parse_circle(easy_read_ctx_t *ctx, gdom_node_t *circ)
 {
 	double cx, cy, r, swd;
 	pcb_layer_t *layer;
@@ -297,7 +297,7 @@ static int std_parse_circle(std_read_ctx_t *ctx, gdom_node_t *circ)
 	return 0;
 }
 
-static int std_parse_via(std_read_ctx_t *ctx, gdom_node_t *via)
+static int std_parse_via(easy_read_ctx_t *ctx, gdom_node_t *via)
 {
 	double cx, cy, dia, holer;
 	pcb_pstk_t *pstk;
@@ -318,7 +318,7 @@ static int std_parse_via(std_read_ctx_t *ctx, gdom_node_t *via)
 	return 0;
 }
 
-static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
+static int std_parse_hole(easy_read_ctx_t *ctx, gdom_node_t *hole)
 {
 	double cx, cy, dia;
 	pcb_pstk_t *pstk;
@@ -338,7 +338,7 @@ static int std_parse_hole(std_read_ctx_t *ctx, gdom_node_t *hole)
 	return 0;
 }
 
-static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
+static int std_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *pad)
 {
 	gdom_node_t *slot_points;
 	double cx, cy, holer, w, h, rot;
@@ -538,7 +538,7 @@ static int std_parse_pad(std_read_ctx_t *ctx, gdom_node_t *pad)
 }
 
 
-static int std_parse_dimension(std_read_ctx_t *ctx, gdom_node_t *dimension)
+static int std_parse_dimension(easy_read_ctx_t *ctx, gdom_node_t *dimension)
 {
 	const char *path;
 	double swd;
@@ -550,7 +550,7 @@ static int std_parse_dimension(std_read_ctx_t *ctx, gdom_node_t *dimension)
 	return easyeda_parse_path(ctx, path, dimension, layer, RND_MIL_TO_COORD(5), 0);
 }
 
-static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
+static int std_parse_text(easy_read_ctx_t *ctx, gdom_node_t *text)
 {
 	double x, y, rot, height, strokew;
 	rnd_coord_t tx, ty;
@@ -609,7 +609,7 @@ static int std_parse_text(std_read_ctx_t *ctx, gdom_node_t *text)
 	return 0;
 }
 
-static int std_parse_solidregion(std_read_ctx_t *ctx, gdom_node_t *nd)
+static int std_parse_solidregion(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	pcb_layer_t *layer;
 	const char *path;
@@ -629,7 +629,7 @@ static int std_parse_solidregion(std_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
-static int std_parse_copperarea(std_read_ctx_t *ctx, gdom_node_t *nd)
+static int std_parse_copperarea(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	pcb_layer_t *layer;
 	const char *path;
@@ -653,7 +653,7 @@ static int std_parse_copperarea(std_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
-static int std_parse_rect(std_read_ctx_t *ctx, gdom_node_t *nd)
+static int std_parse_rect(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	double x, y, w, h;
 	pcb_poly_t *poly;
@@ -680,7 +680,7 @@ static int std_parse_rect(std_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
-static pcb_subc_t *std_subc_create(std_read_ctx_t *ctx)
+static pcb_subc_t *std_subc_create(easy_read_ctx_t *ctx)
 {
 	pcb_subc_t *subc = pcb_subc_alloc();
 	long n;
@@ -703,7 +703,7 @@ static pcb_subc_t *std_subc_create(std_read_ctx_t *ctx)
 	return subc;
 }
 
-static void std_subc_finalize(std_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, double rot)
+static void std_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, double rot)
 {
 	int on_bottom = 0;
 
@@ -723,7 +723,7 @@ static void std_subc_finalize(std_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t
 	rnd_rtree_insert(ctx->data->subc_tree, subc, (rnd_rtree_box_t *)subc);
 }
 
-static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
+static int std_parse_subc(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	double x, y, rot;
 	pcb_poly_t *poly;
@@ -751,7 +751,7 @@ static int std_parse_subc(std_read_ctx_t *ctx, gdom_node_t *nd)
 	return res;
 }
 
-static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
+static int std_parse_any_shapes(easy_read_ctx_t *ctx, gdom_node_t *shape)
 {
 	switch(shape->name) {
 		case easy_track: return std_parse_track(ctx, shape);
@@ -775,7 +775,7 @@ static int std_parse_any_shapes(std_read_ctx_t *ctx, gdom_node_t *shape)
 	return -1;
 }
 
-static int std_parse_shapes_array(std_read_ctx_t *ctx, gdom_node_t *shapes)
+static int std_parse_shapes_array(easy_read_ctx_t *ctx, gdom_node_t *shapes)
 {
 	long n;
 
@@ -796,7 +796,7 @@ static int std_parse_shapes_array(std_read_ctx_t *ctx, gdom_node_t *shapes)
 
 static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_role_t settings_dest)
 {
-	std_read_ctx_t ctx;
+	easy_read_ctx_t ctx;
 	int res = 0;
 	pcb_subc_t *subc_as_board;
 	pcb_data_t *save;
@@ -841,7 +841,7 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 {
 	pcb_board_t *pcb = NULL;
-	std_read_ctx_t ctx = {0};
+	easy_read_ctx_t ctx = {0};
 	long n;
 	int res = 0;
 	pcb_subc_t *subc;
