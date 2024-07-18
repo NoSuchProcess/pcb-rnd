@@ -712,7 +712,7 @@ static int std_parse_shapes_array(easy_read_ctx_t *ctx, gdom_node_t *shapes)
 
 static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_role_t settings_dest)
 {
-	easy_read_ctx_t ctx;
+	easy_read_ctx_t ctx = {0};
 	int res = 0;
 	pcb_subc_t *subc_as_board;
 	pcb_data_t *save;
