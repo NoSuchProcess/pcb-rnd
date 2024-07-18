@@ -45,7 +45,7 @@ do { \
 /* call these only after a REQ_ARGC_* as it won't do bound check */
 #define GET_ARG_STR(dst, nd, num, errstr, errstmt) \
 do { \
-	gdom_node_t *__tmp__ = nd->value.array.child[num]; \
+	gdom_node_t *__tmp__ = (nd)->value.array.child[num]; \
 	if ((__tmp__->type == GDOM_DOUBLE) && (__tmp__->value.dbl == -1)) {\
 		dst = NULL; \
 	} \
@@ -60,7 +60,7 @@ do { \
 
 #define GET_ARG_DBL(dst, nd, num, errstr, errstmt) \
 do { \
-	gdom_node_t *__tmp__ = nd->value.array.child[num]; \
+	gdom_node_t *__tmp__ = (nd)->value.array.child[num]; \
 	if (__tmp__->type != GDOM_DOUBLE) { \
 		error_at(ctx, nd, ("%s: wrong argument type for arg #%ld (expected double)\n", errstr, (long)num)); \
 		errstmt; \
@@ -70,7 +70,7 @@ do { \
 
 #define GET_ARG_HASH(dst, nd, num, errstr, errstmt) \
 do { \
-	gdom_node_t *__tmp__ = nd->value.array.child[num]; \
+	gdom_node_t *__tmp__ = (nd)->value.array.child[num]; \
 	if (__tmp__->type != GDOM_HASH) { \
 		error_at(ctx, nd, ("%s: wrong argument type for arg #%ld; expected a hash\n", errstr, (long)num)); \
 		errstmt; \
@@ -80,7 +80,7 @@ do { \
 
 #define GET_ARG_ARRAY(dst, nd, num, errstr, errstmt) \
 do { \
-	gdom_node_t *__tmp__ = nd->value.array.child[num]; \
+	gdom_node_t *__tmp__ = (nd)->value.array.child[num]; \
 	if (__tmp__->type != GDOM_ARRAY) { \
 		error_at(ctx, nd, ("%s: wrong argument type for arg #%ld; expected an array\n", errstr, (long)num)); \
 		errstmt; \
@@ -98,7 +98,7 @@ do { \
 	}\
 } while(0)
 
-/*** parse objects ***/
+/*** parse objects: global/meta ***/
 
 static int easyeda_pro_parse_canvas(easy_read_ctx_t *ctx)
 {
@@ -203,6 +203,7 @@ static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 
 
 
+/*** parse objects: PAD ***/
 
 /* pad shape ELLIPSE:  ELLIPSE, xdia, ydia
    (fill circle, xdia == ydia always) */
@@ -500,15 +501,142 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 }
 
 
+/*** parse objects: poly-objects ***/
+
+static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, rnd_coord_t thick)
+{
+	double lx, ly, x, y, r;
+	const char *cmd;
+	gdom_node_t p;
+
+#define ASHIFT(n) p.value.array.child+=n,p.value.array.used-=n
+
+	/* cursor version of path where ->child and ->used can be modified */
+	p.type = GDOM_ARRAY;
+	p.value.array.child = path->value.array.child;
+	p.value.array.used = path->value.array.used;
+
+	if (p.value.array.child[0]->type == GDOM_DOUBLE) {
+		/* parse path startpoint; L, ARC */
+		GET_ARG_DBL(lx, path, 0, "POLY path lx", return -1);
+		GET_ARG_DBL(ly, path, 1, "POLY path ly", return -1);
+		ASHIFT(2);
+	}
+
+	/* parse path commands */
+	while(p.value.array.used > 0) {
+		GET_ARG_STR(cmd, &p, 0, "POLY path cmd", return -1);
+		ASHIFT(1);
+		if ((cmd == NULL) || (*cmd == '\0')) {
+			error_at(ctx, path, ("Missing or empty path command\n"));
+			return -1;
+		}
+
+		switch(*cmd) {
+			case 'L':
+				if (cmd[1] != '\0') goto unknown;
+				while(p.value.array.used > 0) {
+					REQ_ARGC_GTE(&p, 2, "POLY path L coords", return -1);
+					GET_ARG_DBL(x, &p, 0, "POLY path L x", return -1);
+					GET_ARG_DBL(y, &p, 1, "POLY path  :y", return -1);
+					ASHIFT(2);
+
+					if (in_poly == NULL) {
+						pcb_line_t *line = pcb_line_alloc(layer);
+
+						line->Point1.X = TRX(lx);
+						line->Point1.Y = TRY(ly);
+						line->Point2.X = TRX(x);
+						line->Point2.Y = TRY(y);
+						line->Thickness = thick;
+						line->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+						line->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
+						pcb_add_line_on_layer(layer, line);
+					}
+					else {
+						error_at(ctx, path, ("circle path in poly not yet supported\n"));
+						return -1;
+					}
+
+					lx = x;
+					ly = y;
+				}
+				break;
+			case 'C':
+				if (strcmp(cmd, "CIRCLE") != 0) goto unknown;
+				REQ_ARGC_GTE(&p, 3, "POLY path CIRCLE coords", return -1);
+				GET_ARG_DBL(x, &p, 0, "POLY path CIRCLE x", return -1);
+				GET_ARG_DBL(y, &p, 1, "POLY path CIRCLE y", return -1);
+				GET_ARG_DBL(r, &p, 2, "POLY path CIRCLE r", return -1);
+				ASHIFT(3);
+
+				if (in_poly == NULL) {
+					pcb_arc_t *arc = pcb_arc_alloc(layer);
+
+					arc->X = TRX(x);
+					arc->Y = TRY(y);
+					arc->Width = arc->Height = TRR(r);
+					arc->Thickness = thick;
+					arc->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+					arc->StartAngle = 0;
+					arc->Delta = 360;
+					arc->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
+					pcb_add_arc_on_layer(layer, arc);
+				}
+				else {
+					error_at(ctx, path, ("circle path in poly not yet supported\n"));
+					return -1;
+				}
+
+				break;
+
+			default:
+				unknown:;
+				error_at(ctx, path, ("Unknown path command '%s'\n", cmd));
+				return -1;
+			}
+	}
+
+#undef ASHIFT
+	return 0;
+}
+
+
+/* polyline and other drawing objects
+   "POLY","e34",  0,  "",  11,     10,   [0,0,"L",0,3937,3937,3937,3937,0,0,0] ,0
+            id        net  layer  thick  path                                   locked */
+static int easyeda_pro_parse_poly(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double lid, thick, locked;
+	gdom_node_t *path;
+	pcb_layer_t *layer;
+
+
+	REQ_ARGC_GTE(nd, 8, "POLY", return -1);
+	GET_ARG_DBL(lid, nd, 4, "POLY layer", return -1);
+	GET_ARG_DBL(thick, nd, 5, "POLY thickness", return -1);
+	GET_ARG_ARRAY(path, nd, 6, "POLY path", return -1);
+	GET_ARG_DBL(locked, nd, 7, "POLY locked", return -1);
+
+	GET_LAYER(layer, (int)lid, nd, return -1);
+
+	return pro_draw_polyobj(ctx, path, layer, NULL, TRR(thick));
+}
+
+
+/*** parse objects: dispatcher ***/
+
 static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	switch(nd->name) {
 		case easy_PAD: return easyeda_pro_parse_pad(ctx, nd);
+		case easy_POLY: return easyeda_pro_parse_poly(ctx, nd);
 
 		TODO("handle these");
 		case easy_ATTR:
 		case easy_FILL:
-		case easy_POLY:
 		case easy_LAYER_PHYS:
 		case easy_NET:
 		case easy_PRIMITIVE:

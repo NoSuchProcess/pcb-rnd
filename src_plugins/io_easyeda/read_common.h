@@ -132,6 +132,23 @@ do { \
 	dst = tmp->value.str; \
 } while(0)
 
+#define GET_LAYER(dst, easyeda_lid, err_nd, err_stmt) \
+do { \
+	if ((easyeda_lid <= 0) || (easyeda_lid >= EASY_MAX_LAYERS)) { \
+		error_at(ctx, err_nd, ("layer ID %ld is out of range [0..%d]\n", easyeda_lid, EASY_MAX_LAYERS-1)); \
+		err_stmt; \
+	} \
+	dst = ctx->layers[easyeda_lid]; \
+	if (dst == NULL) { \
+		error_at(ctx, err_nd, ("layer ID %ld does not exist\n", easyeda_lid)); \
+		err_stmt; \
+	} \
+	if ((ctx->pcb != NULL) && (ctx->data != ctx->pcb->Data)) { \
+		long lid = dst - ctx->pcb->Data->Layer; \
+		dst = ctx->data->Layer + lid; \
+	} \
+} while(0)
+
 #define HASH_GET_LAYER_GLOBAL(dst, is_any, nd, lname, err_stmt) \
 do { \
 	gdom_node_t *tmp; \
@@ -142,15 +159,7 @@ do { \
 	} \
 	if (tmp->value.lng != EASY_MULTI_LAYER) { \
 		is_any = 0; \
-		dst = ctx->layers[tmp->value.lng]; \
-		if (dst == NULL) { \
-			error_at(ctx, nd, ("layer ID %ld does not exist\n", tmp->value.lng)); \
-			err_stmt; \
-		} \
-		if ((ctx->pcb != NULL) && (ctx->data != ctx->pcb->Data)) { \
-			long lid = dst - ctx->pcb->Data->Layer; \
-			dst = ctx->data->Layer + lid; \
-		} \
+		GET_LAYER(dst, tmp->value.lng, nd, err_stmt); \
 	} \
 	else { \
 		is_any = 1; \
