@@ -587,9 +587,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 #define ASHIFT(n) p.value.array.child+=n,p.value.array.used-=n
 
 	/* cursor version of path where ->child and ->used can be modified */
-	p.type = GDOM_ARRAY;
-	p.value.array.child = path->value.array.child;
-	p.value.array.used = path->value.array.used;
+	memcpy(&p, path, sizeof(p));
 
 	if (p.value.array.child[0]->type == GDOM_DOUBLE) {
 		/* parse path startpoint; L, ARC */
@@ -637,6 +635,8 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 
 					lx = x;
 					ly = y;
+					if ((p.value.array.used > 0) && (p.value.array.child[0]->type != GDOM_DOUBLE))
+						break; /* proceed to read next command */
 				}
 				break;
 			case 'C':
@@ -667,8 +667,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 					double astep, cosa, sina;
 					rnd_coord_t ax, ay, cx, cy;
 
-TODO("enable this");
-/*					if (steps < 8)*/
+					if (steps < 8)
 						steps = 8;
 					
 					astep = 2*3.141592654/(double)steps;
@@ -678,15 +677,12 @@ TODO("enable this");
 					ax = cx + TRR(r);
 					ay = cy;
 
-					steps--;
-rnd_trace("steps=%d\n", steps);
 					for(n = 0; n < steps; n++) {
 						rnd_point_t *pt = pcb_poly_point_alloc(in_poly);
 						if (n > 0)
 							rnd_rotate(&ax, &ay, cx, cy, cosa, sina);
 						pt->X = ax;
 						pt->Y = ay;
-rnd_trace(" %mm %mm c(%mm;%mm) astep=%f\n", ax, ay, cx, cy, astep);
 					}
 				}
 
