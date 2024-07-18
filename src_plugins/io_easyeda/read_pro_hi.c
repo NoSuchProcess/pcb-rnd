@@ -798,7 +798,7 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 /*** glue ***/
 static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE *f, rnd_conf_role_t settings_dest)
 {
-	easy_read_ctx_t ctx;
+	easy_read_ctx_t ctx = {0};
 	unsigned char ul[3];
 	int res = 0;
 	pcb_subc_t *subc_as_board;
