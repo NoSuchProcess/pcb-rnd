@@ -555,8 +555,9 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 						pcb_add_line_on_layer(layer, line);
 					}
 					else {
-						error_at(ctx, path, ("circle path in poly not yet supported\n"));
-						return -1;
+						rnd_point_t *pt = pcb_poly_point_alloc(in_poly);
+						pt->X = TRX(x);
+						pt->Y = TRY(y);
 					}
 
 					lx = x;
@@ -622,9 +623,44 @@ static int easyeda_pro_parse_poly(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	GET_LAYER(layer, (int)lid, nd, return -1);
 
+	TODO("lock");
+
 	return pro_draw_polyobj(ctx, path, layer, NULL, TRR(thick));
 }
 
+
+/* polygon
+   "FILL","e46",0, "", 50,   0.2,   0,[[-165.354,135.827,"L",-149.606,135.827,-149.606,127.953...]],0]
+            id    net layer  thick     path                                                         locked */
+static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double lid, thick, locked;
+	int res;
+	gdom_node_t *path;
+	pcb_layer_t *layer = NULL;
+	pcb_poly_t *poly;
+
+
+	REQ_ARGC_GTE(nd, 8, "FILL", return -1);
+	GET_ARG_DBL(lid, nd, 4, "FILL layer", return -1);
+	GET_ARG_DBL(thick, nd, 5, "FILL thickness", return -1);
+	GET_ARG_ARRAY(path, nd, 7, "FILL path", return -1);
+	GET_ARG_DBL(locked, nd, 8, "FILL locked", return -1);
+
+	GET_LAYER(layer, (int)lid, nd, return -1);
+
+	TODO("lock");
+
+	poly = pcb_poly_alloc(layer);
+
+	res = pro_draw_polyobj(ctx, path, layer, poly, TRR(thick));
+
+	pcb_add_poly_on_layer(layer, poly);
+	if (ctx->pcb != NULL)
+		pcb_poly_init_clip(layer->parent.data, layer, poly);
+
+	return res;
+}
 
 /*** parse objects: dispatcher ***/
 
@@ -633,10 +669,10 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	switch(nd->name) {
 		case easy_PAD: return easyeda_pro_parse_pad(ctx, nd);
 		case easy_POLY: return easyeda_pro_parse_poly(ctx, nd);
+		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
 
 		TODO("handle these");
 		case easy_ATTR:
-		case easy_FILL:
 		case easy_LAYER_PHYS:
 		case easy_NET:
 		case easy_PRIMITIVE:
