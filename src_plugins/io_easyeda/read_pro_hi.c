@@ -381,13 +381,14 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	const char *termid;
 	long lid;
-	double x, y, rot, mask, paste, plating, slot_offx, slot_offy, slot_rot, holed = 0;
+	double x, y, rot, dmask, dpaste, plating, slot_offx, slot_offy, slot_rot, holed = 0;
 	gdom_node_t *shape_nd, *slot_nd = NULL;
 	int is_plated, is_any, nopaste, sloti;
 	pcb_pstk_shape_t shapes[9] = {0};
 	pcb_layer_type_t side;
 	pcb_pstk_t *pstk;
 	const char *netname;
+	rnd_coord_t cmask, cpaste;
 
 	REQ_ARGC_GTE(nd, 23, "PAD", return -1);
 	GET_ARG_DBL(lid, nd, 4, "PAD layer", return -1);
@@ -401,8 +402,8 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(slot_offy, nd, 13, "PAD slot offset y", return -1);
 	GET_ARG_DBL(slot_rot, nd, 14, "PAD slot rotation", return -1);
 	GET_ARG_DBL(plating, nd, 15, "PAD plating", return -1);
-	GET_ARG_DBL(mask, nd, 17, "PAD mask", return -1);
-	GET_ARG_DBL(paste, nd, 19, "PAD paste", return -1);
+	GET_ARG_DBL(dmask, nd, 17, "PAD mask", return -1);
+	GET_ARG_DBL(dpaste, nd, 19, "PAD paste", return -1);
 
 	if ((lid < 0) || (lid >= EASY_MAX_LAYERS)) {
 		error_at(ctx, nd, ("PAD: invalid layer number %ld\n", lid));
@@ -414,6 +415,8 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	is_any = (lid == (EASY_MULTI_LAYER+1));
 	is_plated = (plating == 1);
+	cmask = TRR(dmask);
+	cpaste = TRR(dpaste);
 	TODO("figure nopaste"); nopaste = 0;
 	TODO("figure netname"); netname = NULL;
 
@@ -431,12 +434,12 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
 		shapes[1].layer_mask = side | PCB_LYT_MASK;
 		shapes[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-		pcb_pstk_shape_grow_(&shapes[1], 0, RND_MIL_TO_COORD(4));
+		pcb_pstk_shape_grow_(&shapes[1], 0, cmask);
 
 		pcb_pstk_shape_copy(&shapes[2], &shapes[0]);
 		shapes[2].layer_mask = side | PCB_LYT_PASTE;
 		shapes[2].comb = PCB_LYC_AUTO;
-		pcb_pstk_shape_grow_(&shapes[2], 0, -RND_MIL_TO_COORD(4));
+		pcb_pstk_shape_grow_(&shapes[2], 0, -cpaste);
 
 		sloti = 3;
 	}
@@ -450,24 +453,24 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		pcb_pstk_shape_copy(&shapes[3], &shapes[0]);
 		shapes[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
 		shapes[3].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-		pcb_pstk_shape_grow_(&shapes[3], 0, RND_MIL_TO_COORD(4));
+		pcb_pstk_shape_grow_(&shapes[3], 0, cmask);
 
 
 		pcb_pstk_shape_copy(&shapes[4], &shapes[0]);
 		shapes[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
 		shapes[4].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-		pcb_pstk_shape_grow_(&shapes[4], 0, RND_MIL_TO_COORD(4));
+		pcb_pstk_shape_grow_(&shapes[4], 0, cmask);
 
 		if (!nopaste) {
 			pcb_pstk_shape_copy(&shapes[5], &shapes[0]);
 			shapes[5].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
 			shapes[5].comb = PCB_LYC_AUTO;
-			pcb_pstk_shape_grow_(&shapes[5], 0, -RND_MIL_TO_COORD(4));
+			pcb_pstk_shape_grow_(&shapes[5], 0, -cpaste);
 
 			pcb_pstk_shape_copy(&shapes[6], &shapes[0]);
 			shapes[6].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
 			shapes[6].comb = PCB_LYC_AUTO;
-			pcb_pstk_shape_grow_(&shapes[6], 0, -RND_MIL_TO_COORD(4));
+			pcb_pstk_shape_grow_(&shapes[6], 0, -cpaste);
 
 			sloti = 7;
 		}
