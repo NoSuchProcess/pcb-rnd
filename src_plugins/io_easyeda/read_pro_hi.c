@@ -529,6 +529,7 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 
 		res = easyeda_pro_parse_drawing_objs(&ctx, ctx.root);
 
+		ctx.data = pcb->Data;
 		easyeda_subc_finalize(&ctx, subc_as_board, 0, 0, 0);
 	}
 
