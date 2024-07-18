@@ -664,28 +664,29 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				else {
 					static const double side_len_mil = 10;
 					long n, steps = (2.0*r*3.2/side_len_mil)+1;
-					double astep = 2*3.141592654/(double)steps, cosa, sina;
-					rnd_coord_t ax, ay;
+					double astep, cosa, sina;
+					rnd_coord_t ax, ay, cx, cy;
 
 TODO("enable this");
 /*					if (steps < 8)*/
 						steps = 8;
-
+					
+					astep = 2*3.141592654/(double)steps;
 					cosa = cos(astep);
 					sina = sin(astep);
-					x = TRX(x); y = TRY(y);
-					ax = x + TRR(r);
-					ay = y;
+					cx = TRX(x); cy = TRY(y);
+					ax = cx + TRR(r);
+					ay = cy;
 
 					steps--;
 rnd_trace("steps=%d\n", steps);
 					for(n = 0; n < steps; n++) {
 						rnd_point_t *pt = pcb_poly_point_alloc(in_poly);
 						if (n > 0)
-							rnd_rotate(&ax, &ay, x, y, cosa, sina);
+							rnd_rotate(&ax, &ay, cx, cy, cosa, sina);
 						pt->X = ax;
 						pt->Y = ay;
-rnd_trace(" %mm %mm\n", ax, ay);
+rnd_trace(" %mm %mm c(%mm;%mm) astep=%f\n", ax, ay, cx, cy, astep);
 					}
 				}
 
@@ -732,26 +733,29 @@ static int easyeda_pro_parse_poly(easy_read_ctx_t *ctx, gdom_node_t *nd)
             id    net layer  thick     path                                                         locked */
 static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
-	double lid, thick, locked;
-	int res;
-	gdom_node_t *path;
+	double lid, dthick, locked;
+	rnd_coord_t cthick;
+	int n, res = 0;
+	gdom_node_t *paths;
 	pcb_layer_t *layer = NULL;
 	pcb_poly_t *poly;
 
 
 	REQ_ARGC_GTE(nd, 8, "FILL", return -1);
 	GET_ARG_DBL(lid, nd, 4, "FILL layer", return -1);
-	GET_ARG_DBL(thick, nd, 5, "FILL thickness", return -1);
-	GET_ARG_ARRAY(path, nd, 7, "FILL path", return -1);
+	GET_ARG_DBL(dthick, nd, 5, "FILL thickness", return -1);
+	GET_ARG_ARRAY(paths, nd, 7, "FILL path", return -1);
 	GET_ARG_DBL(locked, nd, 8, "FILL locked", return -1);
 
 	GET_LAYER(layer, (int)lid, nd, return -1);
+	cthick = TRR(dthick);
 
 	TODO("lock");
 
 	poly = pcb_poly_alloc(layer);
 
-	res = pro_draw_polyobj(ctx, path, layer, poly, TRR(thick));
+	for(n = 0; (n < paths->value.array.used) && (res == 0); n++)
+		res |= pro_draw_polyobj(ctx, paths->value.array.child[n], layer, poly, cthick);
 
 	pcb_add_poly_on_layer(layer, poly);
 	if (ctx->pcb != NULL)
