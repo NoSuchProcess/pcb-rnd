@@ -417,14 +417,13 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	is_plated = (plating == 1);
 	cmask = TRR(dmask);
 	cpaste = TRR(dpaste);
-	TODO("figure nopaste"); nopaste = 0;
+	nopaste = is_any;
 	TODO("figure netname"); netname = NULL;
 
 	/* create the main shape in shape[0] */
 	if (pro_parse_pad_shape(ctx, &shapes[0], shape_nd) != 0)
 		return -1;
 
-	TODO("use local vars mask and shape here");
 	if (!is_any) {
 		pcb_layer_t *layer = ctx->layers[lid];
 
