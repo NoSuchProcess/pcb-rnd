@@ -96,7 +96,7 @@ int easypro_layer_id2type_size = sizeof(easypro_layer_id2type) / sizeof(easypro_
 
 /* load layers in a specific order so the pcb-rnd layer stack looks normal;
    these numbers are base-1 to match the layer ID in comments above */
-const int easypro_layertab[] = {5, 6, 3, 1, LAYERTAB_INNER, 2, 8, 6, 4,    9, 10, 11, 12, 13, 14, 48, 49,   0};
+const int easypro_layertab[] = {5, 6, 3, 1, LAYERTAB_INNER, 2, 8, 6, 4,    9, 10, 11, 12, 13, 14, 48, 49, 50,   0};
 const int easypro_layertab_in_first = 15;
 const int easypro_layertab_in_last = 46;
 
