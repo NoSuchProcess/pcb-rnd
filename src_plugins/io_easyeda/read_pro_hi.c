@@ -297,20 +297,61 @@ static int pro_parse_pad_shape(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom
 	return -1;
 }
 
-/* "PAD","e6",0,"", 1, "5",75.003,107.867,0,  null,["OVAL",23.622,59.843],[],0,0,null,1,0,   2,   2,  0,0,   0,   null,null,null,null,[]
-          id        ly num  x      y      rot      [ shape ]                                mask      paste  lock  
+static int pro_parse_slot_shape_round(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, double *holed, gdom_node_t *nd, double offx, double offy, double rot)
+{
+	double dx, dy;
+	REQ_ARGC_GTE(nd, 3, "PAD slot shape round", return -1);
+	GET_ARG_DBL(dx, nd, 1, "PAD slot shape round x diameter", return -1);
+	GET_ARG_DBL(dy, nd, 2, "PAD slot shape round y diameter", return -1);
+	if (dx != dy)
+		error_at(ctx, nd, ("real ellipse slot shape not yet supported;\nplease report this bug to pcb-rnd sending the file!\nfalling back to circle\n\n"));
+
+	*holed = TRR(dx);
+	return 0;
+}
+
+static int pro_parse_slot_shape_slot(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, double *holed, gdom_node_t *nd, double offx, double offy, double rot)
+{
+	rnd_coord_t w, w2, h, h2, r;
+
+	REQ_ARGC_GTE(nd, 2, "PAD slot shape slot", return -1);
+	GET_ARG_DBL(w, nd, 1, "PAD slot shape slot width", return -1);
+	GET_ARG_DBL(h, nd, 2, "PAD slot shape slot height", return -1);
+
+	error_at(ctx, nd, ("TODO: slot\n"));
+	return -1;
+}
+
+static int pro_parse_slot_shape(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, double *holed, gdom_node_t *nd, double offx, double offy, double rot)
+{
+	const char *slname;
+	REQ_ARGC_GTE(nd, 1, "PAD slot shape", return -1);
+	GET_ARG_STR(slname, nd, 0, "PAD slot shape name", return -1);
+
+	if (strcmp(slname, "ROUND") == 0) return pro_parse_slot_shape_round(ctx, dst, holed, nd, offx, offy, rot);
+	if (strcmp(slname, "SLOT") == 0) return pro_parse_slot_shape_slot(ctx, dst, holed, nd, offx, offy, rot);
+
+	error_at(ctx, nd, ("Invalid pad slot shape name: '%s'\n", slname));
+	return -1;
+
+}
+
+
+/* "PAD","e6",0,"", 1, "5",75.003,107.867,0,  null,   ["OVAL",23.622,59.843],[],  0,  0,  null,  1,       0,    2,2,  0,0,   0,   null,null,null,null,[]
+          id        ly num  x      y      rot [slot]  [ shape ]                  ofx ofy  rot    plate          mask  paste  lock
+                                                                                 \---slot---/
    ly==12 means all layers (EASY_MULTI_LAYER+1) */
 static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	const char *termid;
 	long lid;
-	double x, y, rot, mask, paste;
-	gdom_node_t *shape_nd, *slot_nd;
+	double x, y, rot, mask, paste, plating, slot_offx, slot_offy, slot_rot;
+	gdom_node_t *shape_nd, *slot_nd = NULL;
 	int is_plated, is_any, nopaste, sloti;
 	pcb_pstk_shape_t shapes[9] = {0};
 	pcb_layer_type_t side;
 	pcb_pstk_t *pstk;
-	rnd_coord_t holer;
+	rnd_coord_t holed = 0;
 	const char *netname;
 
 	REQ_ARGC_GTE(nd, 23, "PAD", return -1);
@@ -319,7 +360,12 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(x, nd, 6, "PAD x", return -1);
 	GET_ARG_DBL(y, nd, 7, "PAD y", return -1);
 	GET_ARG_DBL(rot, nd, 8, "PAD rotation", return -1);
+	if (nd->value.array.child[9]->type == GDOM_ARRAY) GET_ARG_ARRAY(slot_nd, nd, 9, "PAD slot shape", return -1);
 	GET_ARG_ARRAY(shape_nd, nd, 10, "PAD shape", return -1);
+	GET_ARG_DBL(slot_offx, nd, 12, "PAD slot offset x", return -1);
+	GET_ARG_DBL(slot_offy, nd, 13, "PAD slot offset y", return -1);
+	GET_ARG_DBL(slot_rot, nd, 14, "PAD slot rotation", return -1);
+	GET_ARG_DBL(plating, nd, 15, "PAD plating", return -1);
 	GET_ARG_DBL(mask, nd, 17, "PAD mask", return -1);
 	GET_ARG_DBL(paste, nd, 19, "PAD paste", return -1);
 
@@ -328,10 +374,11 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		return -1;
 	}
 
+	if ((plating < 0) || (plating > 1))
+		error_at(ctx, nd, ("PAD: invalid plating value %f\n", plating));
 
 	is_any = (lid == (EASY_MULTI_LAYER+1));
-	TODO("figure hole geo"); holer=0;
-	TODO("figure is_plated and slot_nd"); is_plated = 0; slot_nd = NULL;
+	is_plated = (plating == 1);
 	TODO("figure nopaste"); nopaste = 0;
 	TODO("figure netname"); netname = NULL;
 
@@ -393,9 +440,13 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 			sloti = 5;
 	}
 
-	TODO("figure slot");
+	if (slot_nd != NULL) {
+		/* load slot or hole */
+		if (pro_parse_slot_shape(ctx, &shapes[sloti], &holed, slot_nd, slot_offx, slot_offy, slot_rot) != 0)
+			return -1;
+	}
 
-	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(x), TRY(y), TRR(holer)*2, is_plated, 0, shapes);
+	pstk = pcb_pstk_new_from_shape(ctx->data, TRX(x), TRY(y), TRR(holed), is_plated, 0, shapes);
 	if (pstk == NULL) {
 		error_at(ctx, nd, ("Failed to create padstack for pad\n"));
 		return -1;
