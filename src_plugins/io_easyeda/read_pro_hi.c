@@ -662,8 +662,31 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 					pcb_add_arc_on_layer(layer, arc);
 				}
 				else {
-					error_at(ctx, path, ("circle path in poly not yet supported\n"));
-					return -1;
+					static const double side_len_mil = 10;
+					long n, steps = (2.0*r*3.2/side_len_mil)+1;
+					double astep = 2*3.141592654/(double)steps, cosa, sina;
+					rnd_coord_t ax, ay;
+
+TODO("enable this");
+/*					if (steps < 8)*/
+						steps = 8;
+
+					cosa = cos(astep);
+					sina = sin(astep);
+					x = TRX(x); y = TRY(y);
+					ax = x + TRR(r);
+					ay = y;
+
+					steps--;
+rnd_trace("steps=%d\n", steps);
+					for(n = 0; n < steps; n++) {
+						rnd_point_t *pt = pcb_poly_point_alloc(in_poly);
+						if (n > 0)
+							rnd_rotate(&ax, &ay, x, y, cosa, sina);
+						pt->X = ax;
+						pt->Y = ay;
+rnd_trace(" %mm %mm\n", ax, ay);
+					}
 				}
 
 				break;
