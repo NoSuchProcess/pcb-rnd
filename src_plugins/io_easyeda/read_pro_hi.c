@@ -752,14 +752,16 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	TODO("lock");
 
-	poly = pcb_poly_alloc(layer);
 
-	for(n = 0; (n < paths->value.array.used) && (res == 0); n++)
+	for(n = 0; (n < paths->value.array.used) && (res == 0); n++) {
+		poly = pcb_poly_alloc(layer);
+
 		res |= pro_draw_polyobj(ctx, paths->value.array.child[n], layer, poly, cthick);
 
-	pcb_add_poly_on_layer(layer, poly);
-	if (ctx->pcb != NULL)
-		pcb_poly_init_clip(layer->parent.data, layer, poly);
+		pcb_add_poly_on_layer(layer, poly);
+		if (ctx->pcb != NULL)
+			pcb_poly_init_clip(layer->parent.data, layer, poly);
+	}
 
 	return res;
 }
