@@ -305,6 +305,8 @@ static int pro_parse_slot_shape_round(easy_read_ctx_t *ctx, pcb_pstk_shape_t *ds
 	GET_ARG_DBL(dy, nd, 2, "PAD slot shape round y diameter", return -1);
 	if (dx != dy)
 		error_at(ctx, nd, ("real ellipse slot shape not yet supported;\nplease report this bug to pcb-rnd sending the file!\nfalling back to circle\n\n"));
+	if ((offx != 0) || (offy != 0))
+		error_at(ctx, nd, ("round hole offset not yet supported;\nplease report this bug to pcb-rnd sending the file!\nfalling back to centered hole\n"));
 
 	*holed = dx;
 	return 0;
