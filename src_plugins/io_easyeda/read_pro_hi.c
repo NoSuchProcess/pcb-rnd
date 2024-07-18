@@ -306,7 +306,7 @@ static int pro_parse_slot_shape_round(easy_read_ctx_t *ctx, pcb_pstk_shape_t *ds
 	if (dx != dy)
 		error_at(ctx, nd, ("real ellipse slot shape not yet supported;\nplease report this bug to pcb-rnd sending the file!\nfalling back to circle\n\n"));
 
-	*holed = TRR(dx);
+	*holed = dx;
 	return 0;
 }
 
@@ -345,13 +345,12 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	const char *termid;
 	long lid;
-	double x, y, rot, mask, paste, plating, slot_offx, slot_offy, slot_rot;
+	double x, y, rot, mask, paste, plating, slot_offx, slot_offy, slot_rot, holed = 0;
 	gdom_node_t *shape_nd, *slot_nd = NULL;
 	int is_plated, is_any, nopaste, sloti;
 	pcb_pstk_shape_t shapes[9] = {0};
 	pcb_layer_type_t side;
 	pcb_pstk_t *pstk;
-	rnd_coord_t holed = 0;
 	const char *netname;
 
 	REQ_ARGC_GTE(nd, 23, "PAD", return -1);
