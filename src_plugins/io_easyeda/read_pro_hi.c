@@ -340,7 +340,7 @@ static int pro_parse_slot_shape_slot(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst
 	}
 
 	if (rot != 0) {
-		double rad = -rot / RND_RAD_TO_DEG;
+		double rad = rot / RND_RAD_TO_DEG;
 		double cosa = cos(rad), sina = sin(rad);
 		rnd_rotate(&dst->data.line.x1, &dst->data.line.y1, 0, 0, cosa, sina);
 		rnd_rotate(&dst->data.line.x2, &dst->data.line.y2, 0, 0, cosa, sina);
@@ -351,8 +351,8 @@ static int pro_parse_slot_shape_slot(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst
 		dst->data.line.x2 += TRR(offx);
 	}
 	if (offy != 0) {
-		dst->data.line.y1 += TRR(offy);
-		dst->data.line.y2 += TRR(offy);
+		dst->data.line.y1 -= TRR(offy);
+		dst->data.line.y2 -= TRR(offy);
 	}
 
 	return 0;

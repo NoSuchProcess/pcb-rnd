@@ -54,11 +54,14 @@ RND_INLINE gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 
 #define TRR_STD(c)   RND_MIL_TO_COORD((c) * 10.0)
 #define TRR_PRO(c)   RND_MIL_TO_COORD((c))
+#define TRY_STD(c)   TRR_STD((c) - ctx->oy)
+#define TRY_PRO(c)   TRR_PRO(-(c) - ctx->oy)
+
 
 /* raw coord transform (e.g. for radius, diameter, width) */
 #define TRR(c)   (ctx->is_pro ? TRR_PRO(c) : TRR_STD(c))
 #define TRX(c)   TRR((c) - ctx->ox)
-#define TRY(c)   TRR((c) - ctx->oy)
+#define TRY(c)   (ctx->is_pro ? TRY_PRO(c) : TRY_STD(c))
 
 typedef struct easy_read_ctx_s {
 	FILE *f;
