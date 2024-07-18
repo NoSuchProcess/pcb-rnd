@@ -387,7 +387,6 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	pcb_pstk_shape_t shapes[9] = {0};
 	pcb_layer_type_t side;
 	pcb_pstk_t *pstk;
-	const char *netname;
 	rnd_coord_t cmask, cpaste;
 
 	REQ_ARGC_GTE(nd, 23, "PAD", return -1);
@@ -418,7 +417,6 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	cmask = TRR(dmask);
 	cpaste = TRR(dpaste);
 	nopaste = is_any;
-	TODO("figure netname"); netname = NULL;
 
 	/* create the main shape in shape[0] */
 	if (pro_parse_pad_shape(ctx, &shapes[0], shape_nd) != 0)
@@ -497,22 +495,6 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	}
 
 	pcb_attribute_put(&pstk->Attributes, "term", termid);
-
-	TODO("this could be common with std");
-	/* add term conn to the netlist if therminal has a net field */
-	if ((netname != NULL) && (*netname != '\0')) {
-		pcb_subc_t *subc = pcb_gobj_parent_subc(pstk->parent_type, &pstk->parent);
-		if (subc != NULL) {
-			const char *refdes = pcb_attribute_get(&subc->Attributes, "refdes");
-			if (refdes != NULL) {
-				pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
-				pcb_net_term_get(net, refdes, termid, 1);
-/*				rnd_trace("NETLIST TERM: %s-%s to %s\n", refdes, termid, netname);*/
-			}
-			else
-				rnd_message(RND_MSG_ERROR, "EasyEDA pad before refdes text - please report this but to pcb-rnd developers\n");
-		}
-	}
 
 	return 0;
 }

@@ -477,6 +477,7 @@ static int std_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *pad)
 	rnd_snprintf(termid, sizeof(termid), "%ld", number);
 	pcb_attribute_put(&pstk->Attributes, "term", termid);
 
+	TODO("this could be common with pro");
 	/* add term conn to the netlist if therminal has a net field */
 	if ((netname != NULL) && (*netname != '\0')) {
 		pcb_subc_t *subc = pcb_gobj_parent_subc(pstk->parent_type, &pstk->parent);
