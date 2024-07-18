@@ -306,7 +306,7 @@ static int pro_parse_slot_shape_round(easy_read_ctx_t *ctx, pcb_pstk_shape_t *ds
 	if (dx != dy)
 		error_at(ctx, nd, ("real ellipse slot shape not yet supported;\nplease report this bug to pcb-rnd sending the file!\nfalling back to circle\n\n"));
 	if ((offx != 0) || (offy != 0))
-		error_at(ctx, nd, ("round hole offset not yet supported;\nplease report this bug to pcb-rnd sending the file!\nfalling back to centered hole\n")); /* could be a zero-length line slot */
+		error_at(ctx, nd, ("round hole offset not yet supported;\nplease report this bug to pcb-rnd sending the file!\nfalling back to centered hole\n")); /* move all existing shapes in the opposite direction */
 
 	*holed = dx;
 	return 0;
