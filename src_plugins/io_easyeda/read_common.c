@@ -46,68 +46,6 @@
 
 #include "read_common.h"
 
-/* EasyEDA std has a static layer assignment, layers identified by their
-   integer ID, not by their name and there's no layer type saved. */
-pcb_layer_type_t easyeda_layer_id2type[200] = {
-/*1~TopLayer*/               PCB_LYT_TOP | PCB_LYT_COPPER,
-/*2~BottomLayer*/            PCB_LYT_BOTTOM | PCB_LYT_COPPER,
-/*3~TopSilkLayer*/           PCB_LYT_TOP | PCB_LYT_SILK,
-/*4~BottomSilkLayer*/        PCB_LYT_BOTTOM | PCB_LYT_SILK,
-/*5~TopPasteMaskLayer*/      PCB_LYT_TOP | PCB_LYT_PASTE,
-/*6~BottomPasteMaskLayer*/   PCB_LYT_BOTTOM | PCB_LYT_PASTE,
-/*7~TopSolderMaskLayer*/     PCB_LYT_TOP | PCB_LYT_MASK,
-/*8~BottomSolderMaskLayer*/  PCB_LYT_BOTTOM | PCB_LYT_MASK,
-/*9~Ratlines*/               0,
-/*10~BoardOutLine*/          PCB_LYT_BOUNDARY,
-/*11~Multi-Layer*/           0,
-/*12~Document*/              PCB_LYT_DOC,
-/*13~TopAssembly*/           PCB_LYT_TOP | PCB_LYT_DOC,
-/*14~BottomAssembly*/        PCB_LYT_BOTTOM | PCB_LYT_DOC,
-/*15~Mechanical*/            PCB_LYT_MECH,
-/*19~3DModel*/               0,
-/*21~Inner1*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*22~Inner2*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*23~Inner3*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*24~Inner4*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*25~Inner5*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*26~Inner6*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*27~Inner7*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*28~Inner8*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*29~Inner9*/                PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*30~Inner10*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*31~Inner11*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*32~Inner12*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*33~Inner13*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*34~Inner14*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*35~Inner15*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*36~Inner16*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*37~Inner17*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*38~Inner18*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*39~Inner19*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*40~Inner20*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*41~Inner21*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*42~Inner22*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*43~Inner23*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*44~Inner24*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*45~Inner25*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*46~Inner26*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*47~Inner27*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*48~Inner28*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*49~Inner29*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*50~Inner30*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*51~Inner31*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-/*52~Inner32*/               PCB_LYT_INTERN | PCB_LYT_COPPER,
-0
-};
-
-int easyeda_layer_id2type_size = sizeof(easyeda_layer_id2type) / sizeof(easyeda_layer_id2type[0]);
-
-/* load layers in a specific order so the pcb-rnd layer stack looks normal;
-   these numbers are base-1 to match the layer ID in comments above */
-const int easyeda_layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 13, 14, 15, 99, 100, 101   , 0};
-const int easyeda_layertab_in_first = 21;
-const int easyeda_layertab_in_last = 52;
-
 int easyeda_create_misc_layers(easy_read_ctx_t *ctx)
 {
 	pcb_layer_t *ly[8];
@@ -340,7 +278,7 @@ void easyeda_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x
 
 void easyeda_read_common_init(void)
 {
-	easyeda_layer_id2type[99-1] = PCB_LYT_DOC;
-	easyeda_layer_id2type[100-1] = PCB_LYT_DOC;
-	easyeda_layer_id2type[101-1] = PCB_LYT_DOC;
+	easystd_layer_id2type[99-1] = PCB_LYT_DOC;
+	easystd_layer_id2type[100-1] = PCB_LYT_DOC;
+	easystd_layer_id2type[101-1] = PCB_LYT_DOC;
 }
