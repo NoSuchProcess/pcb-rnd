@@ -164,7 +164,7 @@ static int pro_parse_layer(easy_read_ctx_t *ctx, gdom_node_t *nd, pcb_layer_type
 
 static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 {
-	long lineno, lid;
+	long lineno;
 	gdom_node_t *lyline[EASY_MAX_LAYERS] = {0};
 	int res = 0;
 	const int *lt;
@@ -183,14 +183,17 @@ static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 
 
 	/* create layers in ctx->data */
-	for(lt = easyeda_layertab, lid = 1; *lt != 0; lt++,lid++) {
-		if (*lt == LAYERTAB_INNER) {
+	for(lt = easyeda_layertab; *lt != 0; lt++) {
+		int easyeda_id = *lt;
+		if (easyeda_id == LAYERTAB_INNER) {
 			long n;
-			for(n = easyeda_layertab_in_first; n <= easyeda_layertab_in_last; n++)
-				res |= pro_parse_layer(ctx, lyline[n], easyeda_layertab[n-1], n);
+			for(n = easyeda_layertab_in_first; n <= easyeda_layertab_in_last; n++) {
+				easyeda_id = n;
+				res |= pro_parse_layer(ctx, lyline[easyeda_id], easyeda_layer_id2type[easyeda_id-1], easyeda_id);
+			}
 		}
 		else
-			res |= pro_parse_layer(ctx, lyline[lid], *lt, lid);
+			res |= pro_parse_layer(ctx, lyline[easyeda_id], easyeda_layer_id2type[easyeda_id-1], easyeda_id);
 	}
 
 	res |= easyeda_create_misc_layers(ctx);
