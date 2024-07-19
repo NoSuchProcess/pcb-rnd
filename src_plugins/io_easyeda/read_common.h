@@ -186,7 +186,7 @@ extern const int easystd_layertab_in_last, easypro_layertab_in_last;
 
 #define easyeda_layer_id2type      (ctx->is_pro ? easypro_layer_id2type:easystd_layer_id2type)
 #define easyeda_layer_id2type_size (ctx->is_pro ? easypro_layer_id2type_size : easystd_layer_id2type_size)
-#define easyeda_layertab           (ctx->is_pro ? easypro_layertab : easypro_layertab)
+#define easyeda_layertab           (ctx->is_pro ? easypro_layertab : easystd_layertab)
 #define easyeda_layertab_in_first  (ctx->is_pro ? easypro_layertab_in_first : easystd_layertab_in_first)
 #define easyeda_layertab_in_last   (ctx->is_pro ? easypro_layertab_in_last : easystd_layertab_in_last)
 
