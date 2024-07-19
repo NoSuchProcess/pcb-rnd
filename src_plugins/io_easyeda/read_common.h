@@ -199,3 +199,5 @@ int easyeda_layer_create(easy_read_ctx_t *ctx, unsigned ltype, const char *name,
 pcb_subc_t *easyeda_subc_create(easy_read_ctx_t *ctx);
 void easyeda_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, double rot);
 
+/* If the first 3 bytes of f is the utf BOM, eat it up */
+int easyeda_eat_bom(FILE *f, const char *fn);

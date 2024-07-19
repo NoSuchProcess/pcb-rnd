@@ -875,10 +875,10 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 
 /*** glue ***/
+
 static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE *f, rnd_conf_role_t settings_dest)
 {
 	easy_read_ctx_t ctx = {0};
-	unsigned char ul[3];
 	int res = 0;
 	pcb_subc_t *subc_as_board;
 
@@ -891,12 +891,8 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 
 
 	/* eat up the bom */
-	if (fread(ul, 1, 3, f) != 3) {
-		rnd_message(RND_MSG_ERROR, "easyeda pro: premature EOF on %s (bom)\n", fn);
+	if (easyeda_eat_bom(f, fn) != 0)
 		return -1;
-	}
-	if ((ul[0] != 0xef) || (ul[1] != 0xbb) || (ul[2] != 0xbf))
-		rewind(f);
 
 	/* run low level */
 	ctx.root = easypro_low_parse(f);

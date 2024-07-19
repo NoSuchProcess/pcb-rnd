@@ -274,6 +274,19 @@ void easyeda_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x
 	rnd_rtree_insert(ctx->data->subc_tree, subc, (rnd_rtree_box_t *)subc);
 }
 
+int easyeda_eat_bom(FILE *f, const char *fn)
+{
+	unsigned char ul[3];
+
+	if (fread(ul, 1, 3, f) != 3) {
+		rnd_message(RND_MSG_ERROR, "easyeda pro: premature EOF on %s (bom)\n", fn);
+		return -1;
+	}
+	if ((ul[0] != 0xef) || (ul[1] != 0xbb) || (ul[2] != 0xbf))
+		rewind(f);
+	return 0;
+}
+
 
 
 void easyeda_read_common_init(void)
