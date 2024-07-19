@@ -865,7 +865,6 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	for(lineno = 0; lineno < nd->value.array.used; lineno++) {
 		gdom_node_t *line = ctx->root->value.array.child[lineno];
-		long lid;
 
 		if (line->type != GDOM_ARRAY) continue;
 		if (easyeda_pro_parse_drawing_obj(ctx, line) != 0)
