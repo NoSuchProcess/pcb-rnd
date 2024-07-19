@@ -595,7 +595,7 @@ static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c
 	cx = TRX(c_x); cy = TRY(c_y);
 	cr = TRR(r);
 	ax = cx + cos(start_rad) * cr;
-	ay = cy + sin(start_rad) * cr;
+	ay = cy - sin(start_rad) * cr;
 
 	rnd_trace("arc str: %ml %ml start=%f\n", ax, -ay, start_rad);
 
@@ -610,8 +610,8 @@ static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c
 
 	/* place last point accurately */
 	pt = pcb_poly_point_alloc(in_poly);
-	pt->X = cx + cos(start_rad-delta_rad) * cr;
-	pt->Y = cy + sin(start_rad-delta_rad) * cr;
+	pt->X = cx + cos(start_rad+delta_rad) * cr;
+	pt->Y = cy - sin(start_rad+delta_rad) * cr;
 
 	rnd_trace("arc end: %ml %ml\n", pt->X, -pt->Y);
 
@@ -717,7 +717,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 
 				res = arc_start_end_delta(lx, ly, ex, ey, delta, &cx, &cy, &r, &srad, &erad);
 
-				rnd_trace("arc STR: %f %f\n", lx, ly);
+				rnd_trace("arc STR: %f %f srad: %f erad: %f\n", lx, ly, srad, erad);
 				if (in_poly == NULL) {
 					pcb_arc_t *arc = pcb_arc_alloc(layer);
 
@@ -733,7 +733,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 					pcb_add_arc_on_layer(layer, arc);
 				}
 				else
-					pro_draw_polyarc(ctx, in_poly, cx, cy, r, srad + M_PI, delta / RND_RAD_TO_DEG);
+					pro_draw_polyarc(ctx, in_poly, cx, cy, r, srad, delta / RND_RAD_TO_DEG);
 
 				lx = ex;
 				ly = ey;
