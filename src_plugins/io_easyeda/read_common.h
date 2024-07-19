@@ -201,3 +201,14 @@ void easyeda_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x
 
 /* If the first 3 bytes of f is the utf BOM, eat it up */
 int easyeda_eat_bom(FILE *f, const char *fn);
+
+/* reset buffer layers that are set up to board layers by default;
+   new layers are loaded from the file; fills in *pcb with the (dummy) board
+   the footprint is loaded into */
+void easyeda_data_layer_reset(pcb_board_t **pcb, pcb_data_t *data);
+
+/* rewire ctx.layers so they point to the corresponding subc layer so that
+   objects are created within the subc, not in parent data */
+void easyeda_subc_layer_bind(easy_read_ctx_t *ctx, pcb_subc_t *subc);
+
+

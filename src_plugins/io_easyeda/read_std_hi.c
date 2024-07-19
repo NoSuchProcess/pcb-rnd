@@ -816,7 +816,6 @@ static int easyeda_std_parse_board(pcb_board_t *dst, const char *fn, rnd_conf_ro
 	return res;
 }
 
-
 static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 {
 	pcb_board_t *pcb = NULL;
@@ -826,18 +825,7 @@ static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 	pcb_subc_t *subc;
 	pcb_data_t *save;
 
-	/* reset buffer layers that are set up to board layers by default;
-	   new layers are loaded from the file */
-	for(n = 0; n < data->LayerN; n++) {
-		pcb_layer_t *rl = data->Layer[n].meta.bound.real;
-
-		if ((pcb == NULL) && (rl != NULL)) { /* resolve target pcb from a real layer */
-			pcb_data_t *rd = rl->parent.data;
-			pcb = rd->parent.board;
-		}
-		pcb_layer_free_fields(&data->Layer[n], 0);
-	}
-	data->LayerN = 0;
+	easyeda_data_layer_reset(&pcb, data);
 
 	ctx.pcb = NULL; /* indicate we are not loading a board but a footprint to buffer */
 	ctx.data = data;
@@ -868,19 +856,7 @@ static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 	subc = easyeda_subc_create(&ctx);
 	ctx.data = subc->data;
 
-	/* rewire ctx.layers so they point to the corresponding subc layer so that
-	   objects are created within the subc, not in parent data */
-	for(n = 0; n < subc->data->LayerN; n++) {
-		int i, idx = 0;
-		for(i = 0; i < subc->data->LayerN; i++) {
-			pcb_layer_t *cl =ctx.layers[n];
-			if ((cl != NULL) && (cl->meta.bound.type == subc->data->Layer[i].meta.bound.type)) {
-				idx = i;
-				break;
-			}
-		}
-		ctx.layers[n] = &subc->data->Layer[idx];
-	}
+	easyeda_subc_layer_bind(&ctx, subc);
 
 	if (res == 0) res |= std_parse_shapes_array(&ctx, gdom_hash_get(ctx.root, easy_shape));
 

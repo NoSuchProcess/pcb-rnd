@@ -287,6 +287,39 @@ int easyeda_eat_bom(FILE *f, const char *fn)
 	return 0;
 }
 
+void easyeda_data_layer_reset(pcb_board_t **pcb, pcb_data_t *data)
+{
+	long n;
+
+	for(n = 0; n < data->LayerN; n++) {
+		pcb_layer_t *rl = data->Layer[n].meta.bound.real;
+
+		if ((*pcb == NULL) && (rl != NULL)) { /* resolve target pcb from a real layer */
+			pcb_data_t *rd = rl->parent.data;
+			(*pcb) = rd->parent.board;
+		}
+		pcb_layer_free_fields(&data->Layer[n], 0);
+	}
+	data->LayerN = 0;
+}
+
+void easyeda_subc_layer_bind(easy_read_ctx_t *ctx, pcb_subc_t *subc)
+{
+	long n;
+
+	for(n = 0; n < subc->data->LayerN; n++) {
+		int i, idx = 0;
+		for(i = 0; i < subc->data->LayerN; i++) {
+			pcb_layer_t *cl =ctx->layers[n];
+			if ((cl != NULL) && (cl->meta.bound.type == subc->data->Layer[i].meta.bound.type)) {
+				idx = i;
+				break;
+			}
+		}
+		ctx->layers[n] = &subc->data->Layer[idx];
+	}
+}
+
 
 
 void easyeda_read_common_init(void)
