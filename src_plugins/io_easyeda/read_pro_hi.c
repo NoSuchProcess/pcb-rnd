@@ -578,9 +578,43 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 /*** parse objects: poly-objects ***/
 
+static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c_x, double c_y, double r, double start_rad, double delta_rad)
+{
+	static const double side_len_mil = 10;
+	long n, steps = (r*delta_rad/side_len_mil)+1;
+	double astep, cosa, sina, cr;
+	rnd_coord_t ax, ay, cx, cy;
+	rnd_point_t *pt;
+
+	if (steps < 8)
+		steps = 8;
+	
+	astep = delta_rad/(double)steps;
+	cosa = cos(astep);
+	sina = sin(astep);
+	cx = TRX(c_x); cy = TRY(c_y);
+	cr = TRR(r);
+	ax = cx + cos(start_rad) * cr;
+	ay = cy + sin(start_rad) * cr;
+
+	for(n = 0; n < steps; n++) {
+		pt = pcb_poly_point_alloc(in_poly);
+		pt->X = ax;
+		pt->Y = ay;
+		if (n != steps-1)
+			rnd_rotate(&ax, &ay, cx, cy, cosa, sina);
+	}
+
+	/* place last point accurately */
+	pt = pcb_poly_point_alloc(in_poly);
+	pt->X = cx + cos(start_rad-delta_rad) * cr;
+	pt->Y = cy + sin(start_rad-delta_rad) * cr;
+}
+
 static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, rnd_coord_t thick)
 {
-	double lx, ly, x, y, r;
+	int res;
+	double lx, ly, x, y, r, cx, cy, ex, ey, delta, starta, enda, srad, erad;
 	const char *cmd;
 	gdom_node_t p;
 
@@ -661,31 +695,40 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 
 					pcb_add_arc_on_layer(layer, arc);
 				}
-				else {
-					static const double side_len_mil = 10;
-					long n, steps = (2.0*r*3.2/side_len_mil)+1;
-					double astep, cosa, sina;
-					rnd_coord_t ax, ay, cx, cy;
+				else
+					pro_draw_polyarc(ctx, in_poly, cx, cy, r, 0, 2*3.141592654);
+				break;
 
-					if (steps < 8)
-						steps = 8;
-					
-					astep = 2*3.141592654/(double)steps;
-					cosa = cos(astep);
-					sina = sin(astep);
-					cx = TRX(x); cy = TRY(y);
-					ax = cx + TRR(r);
-					ay = cy;
+			case 'A':
+				if (strcmp(cmd, "ARC") != 0) goto unknown;
 
-					for(n = 0; n < steps; n++) {
-						rnd_point_t *pt = pcb_poly_point_alloc(in_poly);
-						if (n > 0)
-							rnd_rotate(&ax, &ay, cx, cy, cosa, sina);
-						pt->X = ax;
-						pt->Y = ay;
-					}
+				REQ_ARGC_GTE(&p, 3, "POLY path ARC coords", return -1);
+				GET_ARG_DBL(delta, &p, 0, "POLY path ARC delta angle", return -1);
+				GET_ARG_DBL(ex, &p, 1, "POLY path ARC ex", return -1);
+				GET_ARG_DBL(ey, &p, 2, "POLY path ARC ey", return -1);
+				ASHIFT(3);
+
+				res = arc_start_end_delta(lx, ly, ex, ey, delta, &cx, &cy, &r, &srad, &erad);
+
+				if (in_poly == NULL) {
+					pcb_arc_t *arc = pcb_arc_alloc(layer);
+
+					arc->X = TRX(cx);
+					arc->Y = TRY(cy);
+					arc->Width = arc->Height = TRR(r);
+					arc->Thickness = thick;
+					arc->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+					arc->StartAngle = srad * RND_RAD_TO_DEG + 180;
+					arc->Delta = delta;
+					arc->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
+					pcb_add_arc_on_layer(layer, arc);
 				}
+				else
+					pro_draw_polyarc(ctx, in_poly, cx, cy, r, srad + M_PI, delta / RND_RAD_TO_DEG);
 
+				lx = ex;
+				ly = ey;
 				break;
 
 			default:

@@ -49,6 +49,7 @@
 #include "read_common.h"
 
 #include <rnd_inclib/lib_easyeda/easyeda_low.c>
+#include <rnd_inclib/lib_geo/arc_sed.c>
 #include "read_pro_low.c"
 #include "read_pro_hi.c"
 
