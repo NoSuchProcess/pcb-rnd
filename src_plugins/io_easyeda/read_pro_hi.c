@@ -774,7 +774,7 @@ static int easyeda_pro_parse_poly(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	GET_LAYER(layer, (int)lid, nd, return -1);
 
-	TODO("lock");
+	(void)locked; /* ignored for now */
 
 	return pro_draw_polyobj(ctx, path, layer, NULL, TRR(thick));
 }
@@ -802,8 +802,7 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_LAYER(layer, (int)lid, nd, return -1);
 	cthick = TRR(dthick);
 
-	TODO("lock");
-
+	(void)locked; /* ignored for now */
 
 	for(n = 0; (n < paths->value.array.used) && (res == 0); n++) {
 		poly = pcb_poly_alloc(layer);
