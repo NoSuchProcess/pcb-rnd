@@ -344,7 +344,7 @@ static int pro_parse_pad_shape_rect(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst,
 	GET_ARG_DBL(h, nd, 2, "PAD shape rect height", return -1);
 	GET_ARG_DBL(r, nd, 3, "PAD shape rect rounding radius", return -1);
 
-	TODO("this ignores the rounding radius");
+	(void)r;TODO("this ignores the rounding radius");
 
 	w2 = TRR(w/2.0);
 	h2 = TRR(h/2.0);
@@ -390,7 +390,7 @@ static int pro_parse_slot_shape_round(easy_read_ctx_t *ctx, pcb_pstk_shape_t *ds
 
 static int pro_parse_slot_shape_slot(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, double *holed, gdom_node_t *nd, double offx, double offy, double rot)
 {
-	rnd_coord_t w, h, r;
+	rnd_coord_t w, h;
 
 	REQ_ARGC_GTE(nd, 2, "PAD slot shape slot", return -1);
 	GET_ARG_DBL(w, nd, 1, "PAD slot shape slot width", return -1);
@@ -620,7 +620,7 @@ static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c
 static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, rnd_coord_t thick)
 {
 	int res;
-	double lx, ly, x, y, r, cx, cy, ex, ey, delta, starta, enda, srad, erad;
+	double lx, ly, x, y, r, cx, cy, ex, ey, delta, srad, erad;
 	const char *cmd;
 	gdom_node_t p;
 
