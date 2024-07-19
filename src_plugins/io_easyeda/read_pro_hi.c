@@ -716,6 +716,10 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				ASHIFT(3);
 
 				res = arc_start_end_delta(lx, ly, ex, ey, delta, &cx, &cy, &r, &srad, &erad);
+				if (res != 0) {
+					error_at(ctx, path, ("Failed to work out arc parameters\nplease report this bug to pcb-rnd, with the board file included\n"));
+					return -1;
+				}
 
 /*				rnd_trace("arc STR: %f %f srad: %f erad: %f\n", lx, ly, srad, erad);*/
 				if (in_poly == NULL) {
