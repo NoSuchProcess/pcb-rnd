@@ -21,7 +21,7 @@
 
 #include <math.h>
 
-#define DEG2RAD (M_PI/180)
+#define DEG2RAD (3.14159265358979323846/180.0)
 
 #define SWAP(typ, a, b) \
 do { \
