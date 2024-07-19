@@ -1423,6 +1423,29 @@
  ../src_plugins/io_easyeda/read_std.h \
  ../src_plugins/io_easyeda/read_pro.h \
  ../src_plugins/io_easyeda/io_easyeda_conf_fields.h
+../src_plugins/io_easyeda/read_common.o: \
+ ../src_plugins/io_easyeda/read_common.c ../config.h board.h \
+ vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
+ board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h layer.h layer_grp.h \
+ ../src_3rd/rnd_inclib/lib_svgpath/svgpath.h \
+ ../src_3rd/libnanojson/nanojson.c ../src_3rd/libnanojson/nanojson.h \
+ ../src_3rd/libnanojson/semantic.c ../src_3rd/libnanojson/semantic.h \
+ ../src_3rd/libnanojson/nanojson.h \
+ ../src_3rd/rnd_inclib/lib_easyeda/gendom.c \
+ ../src_3rd/rnd_inclib/lib_easyeda/gendom.h \
+ ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.c \
+ ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.h \
+ ../src_plugins/io_easyeda/io_easyeda_conf.h \
+ ../src_plugins/io_easyeda/read_common.h global_typedefs.h \
+ ../src_3rd/libnanojson/semantic.h \
+ ../src_3rd/rnd_inclib/lib_easyeda/gendom.h \
+ ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.h
 ../src_plugins/io_easyeda/read_pro.o: \
  ../src_plugins/io_easyeda/read_pro.c ../config.h \
  ../src_plugins/io_easyeda/../lib_compat_help/pstk_compat.h obj_pstk.h \
@@ -1437,13 +1460,16 @@
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h netlist.h obj_subc_parent.h data.h plug_io.h \
  plug_footprint.h ../src_plugins/io_easyeda/io_easyeda_conf.h \
- ../src_plugins/io_easyeda/read_pro_low.c \
- ../src_3rd/libnanojson/nanojson.h \
+ ../src_plugins/io_easyeda/easyeda_sphash.h \
+ ../src_plugins/io_easyeda/read_common.h global_typedefs.h \
+ ../src_3rd/libnanojson/nanojson.h ../src_3rd/libnanojson/semantic.h \
  ../src_3rd/rnd_inclib/lib_easyeda/gendom.h \
  ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.h \
  ../src_3rd/rnd_inclib/lib_easyeda/gendom.h \
  ../src_3rd/rnd_inclib/lib_easyeda/easyeda_low.c \
  ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.h \
+ ../src_3rd/rnd_inclib/lib_geo/arc_sed.c \
+ ../src_plugins/io_easyeda/read_pro_low.c \
  ../src_plugins/io_easyeda/read_pro_hi.c
 ../src_plugins/io_easyeda/read_std.o: \
  ../src_plugins/io_easyeda/read_std.c ../config.h \
@@ -1459,15 +1485,14 @@
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h netlist.h obj_subc_parent.h data.h plug_io.h \
  plug_footprint.h ../src_plugins/io_easyeda/io_easyeda_conf.h \
- ../src_plugins/io_easyeda/read_std_low.c \
- ../src_3rd/libnanojson/nanojson.c ../src_3rd/libnanojson/nanojson.h \
- ../src_3rd/libnanojson/semantic.c ../src_3rd/libnanojson/semantic.h \
- ../src_3rd/libnanojson/nanojson.h \
- ../src_3rd/rnd_inclib/lib_easyeda/gendom.c \
+ ../src_plugins/io_easyeda/read_common.h global_typedefs.h \
+ ../src_3rd/libnanojson/nanojson.h ../src_3rd/libnanojson/semantic.h \
  ../src_3rd/rnd_inclib/lib_easyeda/gendom.h \
- ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.c \
  ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.h \
+ ../src_3rd/rnd_inclib/lib_easyeda/gendom.h \
  ../src_3rd/rnd_inclib/lib_easyeda/easyeda_low.c \
+ ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.h \
+ ../src_plugins/io_easyeda/read_std_low.c \
  ../src_plugins/io_easyeda/easyeda_sphash.h \
  ../src_plugins/io_easyeda/read_std_hi.c
 ../src_plugins/io_easyeda/svgpath.o: ../src_plugins/io_easyeda/svgpath.c \
