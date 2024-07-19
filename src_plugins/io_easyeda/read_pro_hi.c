@@ -919,3 +919,59 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 
 	return res;
 }
+
+static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn)
+{
+	pcb_board_t *pcb = NULL;
+	easy_read_ctx_t ctx = {0};
+	long n;
+	int res = 0;
+	pcb_subc_t *subc;
+	pcb_data_t *save;
+
+	easyeda_data_layer_reset(&pcb, data);
+
+	ctx.is_pro = 1;
+	ctx.pcb = NULL; /* indicate we are not loading a board but a footprint to buffer */
+	ctx.data = data;
+	ctx.fn = fn;
+	ctx.f = rnd_fopen(&pcb->hidlib, fn, "r");
+	ctx.settings_dest = -1;
+	if (ctx.f == NULL) {
+		rnd_message(RND_MSG_ERROR, "filed to open %s for read\n", fn);
+		return -1;
+	}
+
+	/* eat up the bom */
+	if (easyeda_eat_bom(ctx.f, fn) != 0)
+		return -1;
+
+	/* run low level */
+	ctx.root = easypro_low_parse(ctx.f);
+	fclose(ctx.f);
+	if (ctx.root == NULL) {
+		rnd_message(RND_MSG_ERROR, "easyeda pro: failed to run the low level parser on %s\n", fn);
+		return -1;
+	}
+
+	rnd_trace("load efoo as board\n");
+
+	assert(ctx.root->type == GDOM_ARRAY);
+	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
+	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
+
+	pcb_data_binding_update(pcb, data);
+
+	save = ctx.data;
+	subc = easyeda_subc_create(&ctx);
+	ctx.data = subc->data;
+
+	easyeda_subc_layer_bind(&ctx, subc);
+
+	if (res == 0) res |= easyeda_pro_parse_drawing_objs(&ctx, ctx.root);
+
+	ctx.data = save;
+	easyeda_subc_finalize(&ctx, subc, 0, 0, 0);
+
+	return res;
+}
