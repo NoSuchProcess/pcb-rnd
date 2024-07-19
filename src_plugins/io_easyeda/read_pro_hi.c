@@ -597,6 +597,9 @@ static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c
 	ax = cx + cos(start_rad) * cr;
 	ay = cy + sin(start_rad) * cr;
 
+	rnd_trace("arc str: %ml %ml start=%f\n", ax, -ay, start_rad);
+
+
 	for(n = 0; n < steps; n++) {
 		pt = pcb_poly_point_alloc(in_poly);
 		pt->X = ax;
@@ -609,6 +612,9 @@ static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c
 	pt = pcb_poly_point_alloc(in_poly);
 	pt->X = cx + cos(start_rad-delta_rad) * cr;
 	pt->Y = cy + sin(start_rad-delta_rad) * cr;
+
+	rnd_trace("arc end: %ml %ml\n", pt->X, -pt->Y);
+
 }
 
 static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, rnd_coord_t thick)
@@ -665,6 +671,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 						rnd_point_t *pt = pcb_poly_point_alloc(in_poly);
 						pt->X = TRX(x);
 						pt->Y = TRY(y);
+				rnd_trace("line: %f %f\n", x, y);
 					}
 
 					lx = x;
@@ -710,6 +717,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 
 				res = arc_start_end_delta(lx, ly, ex, ey, delta, &cx, &cy, &r, &srad, &erad);
 
+				rnd_trace("arc STR: %f %f\n", lx, ly);
 				if (in_poly == NULL) {
 					pcb_arc_t *arc = pcb_arc_alloc(layer);
 
@@ -729,6 +737,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 
 				lx = ex;
 				ly = ey;
+				rnd_trace("arc END: %f %f\n", lx, ly);
 				break;
 
 			default:
