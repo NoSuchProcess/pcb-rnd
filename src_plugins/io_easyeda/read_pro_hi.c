@@ -884,6 +884,7 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 	pcb_subc_t *subc_as_board;
 
 	ctx.is_pro = 1;
+	ctx.is_footprint = 1;
 	ctx.pcb = pcb;
 	ctx.fn = fn;
 	ctx.data = pcb->Data;
@@ -921,7 +922,8 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 	return res;
 }
 
-static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn)
+/* is_footprint should be set to 0 when loading a footprint as part of a board */
+static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footprint)
 {
 	pcb_board_t *pcb = NULL;
 	easy_read_ctx_t ctx = {0};
@@ -933,6 +935,7 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn)
 	easyeda_data_layer_reset(&pcb, data);
 
 	ctx.is_pro = 1;
+	ctx.is_footprint = is_footprint;
 	ctx.pcb = NULL; /* indicate we are not loading a board but a footprint to buffer */
 	ctx.data = data;
 	ctx.fn = fn;
