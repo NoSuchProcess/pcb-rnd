@@ -964,7 +964,7 @@ static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(xmir, nd, 16, "STRING xmir", return -1);
 	GET_ARG_DBL(locked, nd, 17, "STRING locked", return -1);
 
-	return 0;
+	return pro_create_text(ctx, nd, lid, x, y, anchor, rot, xmir, height, thick, 1, 0, textstr, NULL);
 }
 
 
