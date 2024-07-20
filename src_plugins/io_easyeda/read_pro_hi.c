@@ -819,7 +819,7 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 /* attribute with or without floater dyntext 
    "ATTR",  "e0",  0,  "",  3,   -321.652,-590.45,  "Price",  "",   1,       1,   "default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
-                          layer     x        y        key     val  keyvis  valvis   font     height thick        anchor rot  invert invert-expand   xmir locked
+                          layer     x        y        key     val  keyvis  valvis   font     height thick ?   ?  anchor rot  invert invert-expand   xmir locked
    anchors: 1=left-top 2=left-middle 3=left-bottom 4=cent-top 5=cent-middle 6=cent-bottom 7=right-top 8=right-middle 9=right-bottom */
 static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
@@ -936,6 +936,32 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
+/* static text object
+   "STRING","e73",0,  3,  -305, -510,  "foshenger",  "default",  120,     8,    0,  0,  3,  44,    0,      0,      0,    0]
+                     layer  x     y     textstr        font     height  thick   ?   ?  anch rot  invert inv-exten xmir  locked  */
+static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double lid, x, y, height, thick, anchor, rot, xmir, locked;
+	int mktext;
+	const char *textstr;
+
+	REQ_ARGC_GTE(nd, 18, "STRING", return -1);
+
+	GET_ARG_DBL(lid, nd, 4, "STRING layer", return -1);
+	GET_ARG_DBL(x, nd, 5, "STRING x", return -1);
+	GET_ARG_DBL(y, nd, 6, "STRING y", return -1);
+	GET_ARG_STR(textstr, nd, 7, "STRING key", return -1);
+	GET_ARG_DBL(height, nd, 8, "STRING height", return -1);
+	GET_ARG_DBL(thick, nd, 9, "STRING height", return -1);
+	GET_ARG_DBL(anchor, nd, 12, "STRING anchor", return -1);
+	GET_ARG_DBL(rot, nd, 13, "STRING anchor", return -1);
+	GET_ARG_DBL(xmir, nd, 16, "STRING xmir", return -1);
+	GET_ARG_DBL(locked, nd, 17, "STRING locked", return -1);
+
+	return 0;
+}
+
+
 /*** parse objects: dispatcher ***/
 
 static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
@@ -945,6 +971,7 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_POLY: return easyeda_pro_parse_poly(ctx, nd);
 		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
 		case easy_ATTR: return easyeda_pro_parse_attr(ctx, nd);
+		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
 
 		TODO("handle these");
 		case easy_LAYER_PHYS:
