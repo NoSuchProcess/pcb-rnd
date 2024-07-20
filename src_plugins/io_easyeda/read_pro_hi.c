@@ -819,84 +819,84 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double x, double y, double anchor, double rot, double xmir, double height, double thick, int keyvis, int valvis, const char *key, const char *val)
 {
-		pcb_text_t *t;
-		pcb_layer_t *layer;
-		int acx, acy; /* -1 is left/top, 0 is center, +1 is bottom/right */
-		rnd_coord_t offx, offy, cx, cy;
-		int dyn = 0;
+	pcb_text_t *t;
+	pcb_layer_t *layer;
+	int acx, acy; /* -1 is left/top, 0 is center, +1 is bottom/right */
+	rnd_coord_t offx, offy, cx, cy;
+	int dyn = 0;
 
-		GET_LAYER(layer, (int)lid, nd, return -1);
+	GET_LAYER(layer, (int)lid, nd, return -1);
 
-		switch((int)anchor) {
-			case 1: acx = -1; acy = -1; break; /* left-top */
-			case 2: acx = -1; acy =  0; break; /* left-middle */
-			case 3: acx = -1; acy = +1; break; /* left-bottom */
-			case 4: acx =  0; acy = -1; break; /* cent-top */
-			case 5: acx =  0; acy =  0; break; /* cent-middle */
-			case 6: acx =  0; acy = +1; break; /* cent-bottom */
-			case 7: acx = +1; acy = -1; break; /* right-top */
-			case 8: acx = +1; acy =  0; break; /* right-middle */
-			case 9: acx = +1; acy = +1; break; /* right-bottom */
-			default:
-				error_at(ctx, nd, ("ATTR with invalid anchor (text alignment)\n"));
-				return -1;
-		}
-		
-
-		t = pcb_text_alloc(layer);
-		if (t == NULL) {
-			error_at(ctx, nd, ("Failed to allocate text object\n"));
+	switch((int)anchor) {
+		case 1: acx = -1; acy = -1; break; /* left-top */
+		case 2: acx = -1; acy =  0; break; /* left-middle */
+		case 3: acx = -1; acy = +1; break; /* left-bottom */
+		case 4: acx =  0; acy = -1; break; /* cent-top */
+		case 5: acx =  0; acy =  0; break; /* cent-middle */
+		case 6: acx =  0; acy = +1; break; /* cent-bottom */
+		case 7: acx = +1; acy = -1; break; /* right-top */
+		case 8: acx = +1; acy =  0; break; /* right-middle */
+		case 9: acx = +1; acy = +1; break; /* right-bottom */
+		default:
+			error_at(ctx, nd, ("ATTR with invalid anchor (text alignment)\n"));
 			return -1;
-		}
+	}
+	
 
-		t->X = 0;
-		t->Y = 0;
-		t->rot = 0;
-		t->mirror_x = 0;
+	t = pcb_text_alloc(layer);
+	if (t == NULL) {
+		error_at(ctx, nd, ("Failed to allocate text object\n"));
+		return -1;
+	}
 
-		if (keyvis && valvis) {
-			t->TextString = rnd_strdup_printf("%s: %%a.parent.%s%%", key, key);
-			dyn = 1;
-		}
-		else if (!keyvis && valvis) {
-			t->TextString = rnd_strdup_printf("%%a.parent.%s%%", key);
-			dyn = 1;
-		}
-		else if (keyvis && !valvis)
-			t->TextString = rnd_strdup(key);
+	t->X = 0;
+	t->Y = 0;
+	t->rot = 0;
+	t->mirror_x = 0;
 
-		t->Scale = height/8.0 * 15.0;
-		t->thickness = TRR(thick);
-		t->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE | (dyn ? PCB_FLAG_DYNTEXT : 0) | PCB_FLAG_FLOATER);
+	if (keyvis && valvis) {
+		t->TextString = rnd_strdup_printf("%s: %%a.parent.%s%%", key, key);
+		dyn = 1;
+	}
+	else if (!keyvis && valvis) {
+		t->TextString = rnd_strdup_printf("%%a.parent.%s%%", key);
+		dyn = 1;
+	}
+	else if (keyvis && !valvis)
+		t->TextString = rnd_strdup(key);
 
-		pcb_text_bbox(pcb_font(ctx->pcb, 0, 1), t);
-		switch(acx) {
-			case -1: offx = 0; break;
-			case  0: offx = -t->BoundingBox.X2 / 2;
-			case +1: offx = -t->BoundingBox.X2;
-		}
-		switch(acy) {
-			case -1: offy = 0; break;
-			case  0: offy = -t->BoundingBox.Y2 / 2;
-			case +1: offy = -t->BoundingBox.Y2;
-		}
+	t->Scale = height/8.0 * 15.0;
+	t->thickness = TRR(thick);
+	t->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE | (dyn ? PCB_FLAG_DYNTEXT : 0) | PCB_FLAG_FLOATER);
 
-		cx = TRX(x);
-		cy = TRY(y);
-		t->X = cx + offx;
-		t->Y = cy + offy;
+	pcb_text_bbox(pcb_font(ctx->pcb, 0, 1), t);
+	switch(acx) {
+		case -1: offx = 0; break;
+		case  0: offx = -t->BoundingBox.X2 / 2;
+		case +1: offx = -t->BoundingBox.X2;
+	}
+	switch(acy) {
+		case -1: offy = 0; break;
+		case  0: offy = -t->BoundingBox.Y2 / 2;
+		case +1: offy = -t->BoundingBox.Y2;
+	}
 
-		if (rot != 0) {
-			double rad = (xmir ? -rot : rot) / RND_RAD_TO_DEG;
-			double cosa = cos(rad), sina = sin(rad);
-			rnd_rotate(&t->X, &t->Y, cx, cy, cosa, sina);
-		}
+	cx = TRX(x);
+	cy = TRY(y);
+	t->X = cx + offx;
+	t->Y = cy + offy;
 
-		t->rot = rot;
-		t->mirror_x = xmir;
-		pcb_text_bbox(pcb_font(ctx->pcb, 0, 1), t);
+	if (rot != 0) {
+		double rad = (xmir ? -rot : rot) / RND_RAD_TO_DEG;
+		double cosa = cos(rad), sina = sin(rad);
+		rnd_rotate(&t->X, &t->Y, cx, cy, cosa, sina);
+	}
 
-		pcb_add_text_on_layer(layer, t, pcb_font(ctx->pcb, 0, 1));
+	t->rot = rot;
+	t->mirror_x = xmir;
+	pcb_text_bbox(pcb_font(ctx->pcb, 0, 1), t);
+
+	pcb_add_text_on_layer(layer, t, pcb_font(ctx->pcb, 0, 1));
 
 	return 0;
 }
