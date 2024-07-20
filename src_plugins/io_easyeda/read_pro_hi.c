@@ -818,12 +818,13 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 }
 
 /* attribute with or without floater dyntext 
-   "ATTR",  "e0",  0,  "",  3,   -321.652,-590.45,  "Price",  "", 1, 1 ,"default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
-                          layer     x        y        key     val         font     height thick        anchor rot  invert invert-expand   xmir locked
+   "ATTR",  "e0",  0,  "",  3,   -321.652,-590.45,  "Price",  "",   1,       1,   "default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
+                          layer     x        y        key     val  keyvis  valvis   font     height thick        anchor rot  invert invert-expand   xmir locked
    anchors: 1=left-top 2=left-middle 3=left-bottom 4=cent-top 5=cent-middle 6=cent-bottom 7=right-top 8=right-middle 9=right-bottom */
 static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
-	double lid, x, y, height, thick, anchor, rot, xmir, locked;
+	double lid, x, y, keyvis, valvis, height, thick, anchor, rot, xmir, locked;
+	int mktext;
 	const char *key, *val;
 
 	REQ_ARGC_GTE(nd, 22, "ATTR", return -1);
@@ -833,6 +834,8 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(y, nd, 6, "FILL y", return -1);
 	GET_ARG_STR(key, nd, 7, "FILL key", return -1);
 	GET_ARG_STR(val, nd, 8, "FILL val", return -1);
+	GET_ARG_DBL(keyvis, nd, 9, "FILL keyvis", return -1);
+	GET_ARG_DBL(valvis, nd, 10, "FILL valvis", return -1);
 	GET_ARG_DBL(height, nd, 12, "FILL height", return -1);
 	GET_ARG_DBL(thick, nd, 13, "FILL height", return -1);
 	GET_ARG_DBL(anchor, nd, 16, "FILL anchor", return -1);
@@ -840,12 +843,95 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(xmir, nd, 20, "FILL xmir", return -1);
 	GET_ARG_DBL(locked, nd, 21, "FILL locked", return -1);
 
+	mktext = (x != -1) && (y != -1) && (keyvis || valvis);
+
 	if (ctx->in_subc == NULL) {
 		error_at(ctx, nd, ("ATTR without subcircuit\n"));
 		return -1;
 	}
 
 	pcb_attribute_put(&ctx->in_subc->Attributes, key, val);
+
+	if (mktext) {
+		pcb_text_t *t;
+		pcb_layer_t *layer;
+		int acx, acy; /* -1 is left/top, 0 is center, +1 is bottom/right */
+		rnd_coord_t offx, offy, cx, cy;
+		int dyn = 0;
+
+		GET_LAYER(layer, (int)lid, nd, return -1);
+
+		switch((int)anchor) {
+			case 1: acx = -1; acy = -1; break; /* left-top */
+			case 2: acx = -1; acy =  0; break; /* left-middle */
+			case 3: acx = -1; acy = +1; break; /* left-bottom */
+			case 4: acx =  0; acy = -1; break; /* cent-top */
+			case 5: acx =  0; acy =  0; break; /* cent-middle */
+			case 6: acx =  0; acy = +1; break; /* cent-bottom */
+			case 7: acx = +1; acy = -1; break; /* right-top */
+			case 8: acx = +1; acy =  0; break; /* right-middle */
+			case 9: acx = +1; acy = +1; break; /* right-bottom */
+			default:
+				error_at(ctx, nd, ("ATTR with invalid anchor (text alignment)\n"));
+				return -1;
+		}
+		
+
+		t = pcb_text_alloc(layer);
+		if (t == NULL) {
+			error_at(ctx, nd, ("Failed to allocate text object\n"));
+			return -1;
+		}
+
+		t->X = 0;
+		t->Y = 0;
+		t->rot = 0;
+		t->mirror_x = 0;
+
+		if (keyvis && valvis) {
+			t->TextString = rnd_strdup_printf("%s: %%a.parent.%s%%", key, key);
+			dyn = 1;
+		}
+		else if (!keyvis && valvis) {
+			t->TextString = rnd_strdup_printf("%%a.parent.%s%%", key);
+			dyn = 1;
+		}
+		else if (keyvis && !valvis)
+			t->TextString = rnd_strdup(key);
+
+		t->Scale = height/8.0 * 15.0;
+		t->thickness = TRR(thick);
+		t->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE | (dyn ? PCB_FLAG_DYNTEXT : 0) | PCB_FLAG_FLOATER);
+
+		pcb_text_bbox(pcb_font(ctx->pcb, 0, 1), t);
+		switch(acx) {
+			case -1: offx = 0; break;
+			case  0: offx = -t->BoundingBox.X2 / 2;
+			case +1: offx = -t->BoundingBox.X2;
+		}
+		switch(acy) {
+			case -1: offy = 0; break;
+			case  0: offy = -t->BoundingBox.Y2 / 2;
+			case +1: offy = -t->BoundingBox.Y2;
+		}
+
+		cx = TRX(x);
+		cy = TRY(y);
+		t->X = cx + offx;
+		t->Y = cy + offy;
+
+		if (rot != 0) {
+			double rad = (xmir ? -rot : rot) / RND_RAD_TO_DEG;
+			double cosa = cos(rad), sina = sin(rad);
+			rnd_rotate(&t->X, &t->Y, cx, cy, cosa, sina);
+		}
+
+		t->rot = rot;
+		t->mirror_x = xmir;
+		pcb_text_bbox(pcb_font(ctx->pcb, 0, 1), t);
+
+		pcb_add_text_on_layer(layer, t, pcb_font(ctx->pcb, 0, 1));
+	}
 
 	return 0;
 }
