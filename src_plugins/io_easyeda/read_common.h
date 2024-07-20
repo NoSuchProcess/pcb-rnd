@@ -77,6 +77,7 @@ typedef struct easy_read_ctx_s {
 
 	pcb_text_t *last_refdes; /* std: last text object created as a refdes dyntext+floater */
 	pcb_subc_t *in_subc;     /* pro: while loading a footprint into a subc */
+	double version;          /* pro: file format version from DOCTYPE */
 } easy_read_ctx_t;
 
 #define error_at(ctx, node, args) \

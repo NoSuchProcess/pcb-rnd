@@ -175,6 +175,43 @@ do { \
 
 /*** parse objects: global/meta ***/
 
+static int easyeda_pro_parse_doctype(easy_read_ctx_t *ctx)
+{
+	long lineno;
+	int found = 0;
+
+	for(lineno = 0; lineno < ctx->root->value.array.used; lineno++) {
+		gdom_node_t *line = ctx->root->value.array.child[lineno];
+		const char *sver;
+		char *end;
+
+		if ((line->type != GDOM_ARRAY) || (line->name != easy_DOCTYPE)) continue;
+
+		if (found) {
+			error_at(ctx, line, ("multiple DOCTYPE nodes\n"));
+			return -1;
+		}
+
+		REQ_ARGC_GTE(line, 3, "DOCTYTPE", return -1);
+		GET_ARG_STR(sver, line, 2, "DOCTYPE version", return -1);
+
+		ctx->version = strtod(sver, &end);
+		if (*end != '\0') {
+			error_at(ctx, ctx->root, ("invalid DOCTYPE version '%s', must be a decimal\n", sver));
+			return -1;
+		}
+		found = 1;
+	}
+
+	if (!found) {
+		error_at(ctx, ctx->root, ("no DOCTYPE node: invalid document\n"));
+		return -1;
+	}
+
+	return 0;
+}
+
+
 static int easyeda_pro_parse_canvas(easy_read_ctx_t *ctx)
 {
 	long lineno;
@@ -1060,6 +1097,7 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 	rnd_trace("load efoo as board\n");
 
 	assert(ctx.root->type == GDOM_ARRAY);
+	if (res == 0) res = easyeda_pro_parse_doctype(&ctx);
 	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
 	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
 
@@ -1115,6 +1153,7 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 	rnd_trace("load efoo as board\n");
 
 	assert(ctx.root->type == GDOM_ARRAY);
+	if (res == 0) res = easyeda_pro_parse_doctype(&ctx);
 	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
 	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
 
