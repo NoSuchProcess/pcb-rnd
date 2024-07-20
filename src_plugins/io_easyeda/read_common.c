@@ -310,7 +310,7 @@ void easyeda_subc_layer_bind(easy_read_ctx_t *ctx, pcb_subc_t *subc)
 	for(n = 0; n < subc->data->LayerN; n++) {
 		int i, idx = 0;
 		for(i = 0; i < subc->data->LayerN; i++) {
-			pcb_layer_t *cl =ctx->layers[n];
+			pcb_layer_t *cl = ctx->layers[n];
 			if ((cl != NULL) && (cl->meta.bound.type == subc->data->Layer[i].meta.bound.type)) {
 				idx = i;
 				break;
