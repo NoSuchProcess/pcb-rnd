@@ -817,6 +817,16 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return res;
 }
 
+/* attribute with or without floater dyntext 
+   "ATTR",  "e0",  0,  "",  3,   -321.652,-590.45,  "Price",  "", 1, 1 ,"default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
+                          layer     x        y        key     val         font     height thick        anchor rot  invert invert-expand   xmir locked
+   anchors: 1=left-top 2=left-middle 3=left-bottom 4=cent-top 5=cent-middle 6=cent-bottom 7=right-top 8=right-middle 9=right-bottom */
+static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+
+	return 0;
+}
+
 /*** parse objects: dispatcher ***/
 
 static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
@@ -825,9 +835,9 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_PAD: return easyeda_pro_parse_pad(ctx, nd);
 		case easy_POLY: return easyeda_pro_parse_poly(ctx, nd);
 		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
+		case easy_ATTR: return easyeda_pro_parse_attr(ctx, nd);
 
 		TODO("handle these");
-		case easy_ATTR:
 		case easy_LAYER_PHYS:
 		case easy_NET:
 		case easy_PRIMITIVE:
