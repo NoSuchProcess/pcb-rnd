@@ -823,6 +823,22 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
    anchors: 1=left-top 2=left-middle 3=left-bottom 4=cent-top 5=cent-middle 6=cent-bottom 7=right-top 8=right-middle 9=right-bottom */
 static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
+	double lid, x, y, height, thick, anchor, rot, xmir, locked;
+	const char *key, *val;
+
+	REQ_ARGC_GTE(nd, 22, "ATTR", return -1);
+
+	GET_ARG_DBL(lid, nd, 4, "FILL layer", return -1);
+	GET_ARG_DBL(x, nd, 5, "FILL x", return -1);
+	GET_ARG_DBL(y, nd, 6, "FILL y", return -1);
+	GET_ARG_STR(key, nd, 7, "FILL key", return -1);
+	GET_ARG_STR(val, nd, 8, "FILL val", return -1);
+	GET_ARG_DBL(height, nd, 12, "FILL height", return -1);
+	GET_ARG_DBL(thick, nd, 13, "FILL height", return -1);
+	GET_ARG_DBL(anchor, nd, 16, "FILL anchor", return -1);
+	GET_ARG_DBL(rot, nd, 17, "FILL anchor", return -1);
+	GET_ARG_DBL(xmir, nd, 20, "FILL xmir", return -1);
+	GET_ARG_DBL(locked, nd, 21, "FILL locked", return -1);
 
 	return 0;
 }
