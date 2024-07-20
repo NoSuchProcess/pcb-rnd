@@ -703,7 +703,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 					pcb_add_arc_on_layer(layer, arc);
 				}
 				else
-					pro_draw_polyarc(ctx, in_poly, cx, cy, r, 0, 2*3.141592654);
+					pro_draw_polyarc(ctx, in_poly, x, y, r, 0, 2*3.141592654);
 				break;
 
 			case 'A':
