@@ -980,13 +980,9 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
 
 		TODO("handle these");
-		case easy_LAYER_PHYS:
+		case easy_LAYER_PHYS: /* physical stackup with extra info on substrate */
 		case easy_NET:
-		case easy_PRIMITIVE:
-		case easy_SILK_OPTS:
 		case easy_CONNECT:
-		case easy_PREFERENCE:
-		case easy_PROP:
 
 		/* ignored (no support) */
 		case easy_ACTIVE_LAYER:
@@ -997,6 +993,10 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_PANELIZE_STAMP:
 		case easy_PANELIZE_SIDE:
 		case easy_REGION: /* could draw objects on a keepout layer */
+		case easy_PRIMITIVE: /* visibility per object type */
+		case easy_PREFERENCE: /* tool states; L45 is refraction setting */
+		case easy_SILK_OPTS: /* color-only */
+		case easy_PROP: /* per object (silk) color */
 
 		/* already handled elsewhere (not drawing objects) */
 		case easy_DOCTYPE:
