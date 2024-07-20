@@ -996,6 +996,7 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_PANELIZE:
 		case easy_PANELIZE_STAMP:
 		case easy_PANELIZE_SIDE:
+		case easy_REGION: /* could draw objects on a keepout layer */
 
 		/* already handled elsewhere (not drawing objects) */
 		case easy_DOCTYPE:
