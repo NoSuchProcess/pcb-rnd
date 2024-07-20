@@ -840,6 +840,13 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(xmir, nd, 20, "FILL xmir", return -1);
 	GET_ARG_DBL(locked, nd, 21, "FILL locked", return -1);
 
+	if (ctx->in_subc == NULL) {
+		error_at(ctx, nd, ("ATTR without subcircuit\n"));
+		return -1;
+	}
+
+	pcb_attribute_put(&ctx->in_subc->Attributes, key, val);
+
 	return 0;
 }
 
@@ -938,6 +945,7 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 	if (res == 0) {
 		subc_as_board = easyeda_subc_create(&ctx);
 		ctx.data = subc_as_board->data;
+		ctx.in_subc = subc_as_board;
 
 		res = easyeda_pro_parse_drawing_objs(&ctx, ctx.root);
 
@@ -995,6 +1003,7 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 	save = ctx.data;
 	subc = easyeda_subc_create(&ctx);
 	ctx.data = subc->data;
+	ctx.in_subc = subc;
 
 	easyeda_subc_layer_bind(&ctx, subc);
 
