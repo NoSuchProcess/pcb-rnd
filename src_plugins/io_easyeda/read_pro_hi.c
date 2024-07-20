@@ -817,42 +817,8 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return res;
 }
 
-/* attribute with or without floater dyntext 
-   "ATTR",  "e0",  0,  "",  3,   -321.652,-590.45,  "Price",  "",   1,       1,   "default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
-                          layer     x        y        key     val  keyvis  valvis   font     height thick ?   ?  anchor rot  invert invert-expand   xmir locked
-   anchors: 1=left-top 2=left-middle 3=left-bottom 4=cent-top 5=cent-middle 6=cent-bottom 7=right-top 8=right-middle 9=right-bottom */
-static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
+static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double x, double y, double anchor, double rot, double xmir, double height, double thick, int keyvis, int valvis, const char *key, const char *val)
 {
-	double lid, x, y, keyvis, valvis, height, thick, anchor, rot, xmir, locked;
-	int mktext;
-	const char *key, *val;
-
-	REQ_ARGC_GTE(nd, 22, "ATTR", return -1);
-
-	GET_ARG_DBL(lid, nd, 4, "ATTR layer", return -1);
-	GET_ARG_DBL(x, nd, 5, "ATTR x", return -1);
-	GET_ARG_DBL(y, nd, 6, "ATTR y", return -1);
-	GET_ARG_STR(key, nd, 7, "ATTR key", return -1);
-	GET_ARG_STR(val, nd, 8, "ATTR val", return -1);
-	GET_ARG_DBL(keyvis, nd, 9, "ATTR keyvis", return -1);
-	GET_ARG_DBL(valvis, nd, 10, "ATTR valvis", return -1);
-	GET_ARG_DBL(height, nd, 12, "ATTR height", return -1);
-	GET_ARG_DBL(thick, nd, 13, "ATTR height", return -1);
-	GET_ARG_DBL(anchor, nd, 16, "ATTR anchor", return -1);
-	GET_ARG_DBL(rot, nd, 17, "ATTR anchor", return -1);
-	GET_ARG_DBL(xmir, nd, 20, "ATTR xmir", return -1);
-	GET_ARG_DBL(locked, nd, 21, "ATTR locked", return -1);
-
-	mktext = (x != -1) && (y != -1) && (keyvis || valvis);
-
-	if (ctx->in_subc == NULL) {
-		error_at(ctx, nd, ("ATTR without subcircuit\n"));
-		return -1;
-	}
-
-	pcb_attribute_put(&ctx->in_subc->Attributes, key, val);
-
-	if (mktext) {
 		pcb_text_t *t;
 		pcb_layer_t *layer;
 		int acx, acy; /* -1 is left/top, 0 is center, +1 is bottom/right */
@@ -931,9 +897,49 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		pcb_text_bbox(pcb_font(ctx->pcb, 0, 1), t);
 
 		pcb_add_text_on_layer(layer, t, pcb_font(ctx->pcb, 0, 1));
-	}
 
 	return 0;
+}
+
+/* attribute with or without floater dyntext 
+   "ATTR",  "e0",  0,  "",  3,   -321.652,-590.45,  "Price",  "",   1,       1,   "default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
+                          layer     x        y        key     val  keyvis  valvis   font     height thick ?   ?  anchor rot  invert invert-expand   xmir locked
+   anchors: 1=left-top 2=left-middle 3=left-bottom 4=cent-top 5=cent-middle 6=cent-bottom 7=right-top 8=right-middle 9=right-bottom */
+static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double lid, x, y, keyvis, valvis, height, thick, anchor, rot, xmir, locked;
+	int mktext;
+	const char *key, *val;
+
+	REQ_ARGC_GTE(nd, 22, "ATTR", return -1);
+
+	GET_ARG_DBL(lid, nd, 4, "ATTR layer", return -1);
+	GET_ARG_DBL(x, nd, 5, "ATTR x", return -1);
+	GET_ARG_DBL(y, nd, 6, "ATTR y", return -1);
+	GET_ARG_STR(key, nd, 7, "ATTR key", return -1);
+	GET_ARG_STR(val, nd, 8, "ATTR val", return -1);
+	GET_ARG_DBL(keyvis, nd, 9, "ATTR keyvis", return -1);
+	GET_ARG_DBL(valvis, nd, 10, "ATTR valvis", return -1);
+	GET_ARG_DBL(height, nd, 12, "ATTR height", return -1);
+	GET_ARG_DBL(thick, nd, 13, "ATTR height", return -1);
+	GET_ARG_DBL(anchor, nd, 16, "ATTR anchor", return -1);
+	GET_ARG_DBL(rot, nd, 17, "ATTR anchor", return -1);
+	GET_ARG_DBL(xmir, nd, 20, "ATTR xmir", return -1);
+	GET_ARG_DBL(locked, nd, 21, "ATTR locked", return -1);
+
+	mktext = (x != -1) && (y != -1) && (keyvis || valvis);
+
+	if (ctx->in_subc == NULL) {
+		error_at(ctx, nd, ("ATTR without subcircuit\n"));
+		return -1;
+	}
+
+	pcb_attribute_put(&ctx->in_subc->Attributes, key, val);
+
+	if (!mktext)
+		return 0;
+
+	return pro_create_text(ctx, nd, lid, x, y, anchor, rot, xmir, height, thick, (int)keyvis, (int)valvis, key, val);
 }
 
 /* static text object
@@ -947,10 +953,10 @@ static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	REQ_ARGC_GTE(nd, 18, "STRING", return -1);
 
-	GET_ARG_DBL(lid, nd, 4, "STRING layer", return -1);
-	GET_ARG_DBL(x, nd, 5, "STRING x", return -1);
-	GET_ARG_DBL(y, nd, 6, "STRING y", return -1);
-	GET_ARG_STR(textstr, nd, 7, "STRING key", return -1);
+	GET_ARG_DBL(lid, nd, 3, "STRING layer", return -1);
+	GET_ARG_DBL(x, nd, 4, "STRING x", return -1);
+	GET_ARG_DBL(y, nd, 5, "STRING y", return -1);
+	GET_ARG_STR(textstr, nd, 6, "STRING textstr", return -1);
 	GET_ARG_DBL(height, nd, 8, "STRING height", return -1);
 	GET_ARG_DBL(thick, nd, 9, "STRING height", return -1);
 	GET_ARG_DBL(anchor, nd, 12, "STRING anchor", return -1);
