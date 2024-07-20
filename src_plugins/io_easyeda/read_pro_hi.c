@@ -834,6 +834,7 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_SILK_OPTS:
 		case easy_CONNECT:
 		case easy_PREFERENCE:
+		case easy_PROP:
 
 		/* ignored (no support) */
 		case easy_ACTIVE_LAYER:
