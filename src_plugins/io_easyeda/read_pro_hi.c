@@ -829,19 +829,19 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	REQ_ARGC_GTE(nd, 22, "ATTR", return -1);
 
-	GET_ARG_DBL(lid, nd, 4, "FILL layer", return -1);
-	GET_ARG_DBL(x, nd, 5, "FILL x", return -1);
-	GET_ARG_DBL(y, nd, 6, "FILL y", return -1);
-	GET_ARG_STR(key, nd, 7, "FILL key", return -1);
-	GET_ARG_STR(val, nd, 8, "FILL val", return -1);
-	GET_ARG_DBL(keyvis, nd, 9, "FILL keyvis", return -1);
-	GET_ARG_DBL(valvis, nd, 10, "FILL valvis", return -1);
-	GET_ARG_DBL(height, nd, 12, "FILL height", return -1);
-	GET_ARG_DBL(thick, nd, 13, "FILL height", return -1);
-	GET_ARG_DBL(anchor, nd, 16, "FILL anchor", return -1);
-	GET_ARG_DBL(rot, nd, 17, "FILL anchor", return -1);
-	GET_ARG_DBL(xmir, nd, 20, "FILL xmir", return -1);
-	GET_ARG_DBL(locked, nd, 21, "FILL locked", return -1);
+	GET_ARG_DBL(lid, nd, 4, "ATTR layer", return -1);
+	GET_ARG_DBL(x, nd, 5, "ATTR x", return -1);
+	GET_ARG_DBL(y, nd, 6, "ATTR y", return -1);
+	GET_ARG_STR(key, nd, 7, "ATTR key", return -1);
+	GET_ARG_STR(val, nd, 8, "ATTR val", return -1);
+	GET_ARG_DBL(keyvis, nd, 9, "ATTR keyvis", return -1);
+	GET_ARG_DBL(valvis, nd, 10, "ATTR valvis", return -1);
+	GET_ARG_DBL(height, nd, 12, "ATTR height", return -1);
+	GET_ARG_DBL(thick, nd, 13, "ATTR height", return -1);
+	GET_ARG_DBL(anchor, nd, 16, "ATTR anchor", return -1);
+	GET_ARG_DBL(rot, nd, 17, "ATTR anchor", return -1);
+	GET_ARG_DBL(xmir, nd, 20, "ATTR xmir", return -1);
+	GET_ARG_DBL(locked, nd, 21, "ATTR locked", return -1);
 
 	mktext = (x != -1) && (y != -1) && (keyvis || valvis);
 
