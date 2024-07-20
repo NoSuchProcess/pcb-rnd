@@ -96,7 +96,7 @@ int easypro_layer_id2type_size = sizeof(easypro_layer_id2type) / sizeof(easypro_
 
 /* load layers in a specific order so the pcb-rnd layer stack looks normal;
    these numbers are base-1 to match the layer ID in comments above */
-const int easypro_layertab[] = {5, 6, 3, 1, LAYERTAB_INNER, 2, 8, 6, 4,    9, 10, 11, 12, 13, 14, 48, 49, 50,   0};
+const int easypro_layertab[] = {5, 7, 3, 1, LAYERTAB_INNER, 2, 8, 6, 4,    9, 10, 11, 12,   0};
 const int easypro_layertab_in_first = 15;
 const int easypro_layertab_in_last = 46;
 
@@ -277,7 +277,6 @@ static int pro_parse_layer(easy_read_ctx_t *ctx, gdom_node_t *nd, pcb_layer_type
 static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 {
 	long lineno;
-	gdom_node_t *lyline[EASY_MAX_LAYERS] = {0};
 	int res = 0;
 	const int *lt;
 
@@ -290,7 +289,7 @@ static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 
 		lid = easyeda_get_double(ctx, line->value.array.child[1]);
 		if ((lid >= 0) && (lid < EASY_MAX_LAYERS))
-			lyline[lid] = line;
+			ctx->lyline[lid] = line;
 	}
 
 
@@ -301,11 +300,11 @@ static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 			long n;
 			for(n = easyeda_layertab_in_first; n <= easyeda_layertab_in_last; n++) {
 				easyeda_id = n;
-				res |= pro_parse_layer(ctx, lyline[easyeda_id], easyeda_layer_id2type[easyeda_id-1], easyeda_id);
+				res |= pro_parse_layer(ctx, ctx->lyline[easyeda_id], easyeda_layer_id2type[easyeda_id-1], easyeda_id);
 			}
 		}
 		else
-			res |= pro_parse_layer(ctx, lyline[easyeda_id], easyeda_layer_id2type[easyeda_id-1], easyeda_id);
+			res |= pro_parse_layer(ctx, ctx->lyline[easyeda_id], easyeda_layer_id2type[easyeda_id-1], easyeda_id);
 	}
 
 	res |= easyeda_create_misc_layers(ctx);
@@ -313,6 +312,22 @@ static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 	return 0;
 }
 
+pcb_layer_t *easyeda_pro_dyn_layer(easy_read_ctx_t *ctx, int easyeda_lid, gdom_node_t *err_nd)
+{
+	rnd_trace("DYN create layer %d\n", easyeda_lid);
+
+	if (pro_parse_layer(ctx, ctx->lyline[easyeda_lid], easyeda_layer_id2type[easyeda_lid-1], easyeda_lid) == 0) {
+		if (ctx->is_footprint) {
+			pcb_layer_t *board_ly = ctx->layers[easyeda_lid], *subc_ly;
+
+			subc_ly = pcb_subc_alloc_layer_like(ctx->in_subc, board_ly);
+			ctx->layers[easyeda_lid] = subc_ly;
+		}
+		return ctx->layers[easyeda_lid];
+	}
+
+	return NULL;
+}
 
 
 /*** parse objects: PAD ***/
@@ -486,8 +501,17 @@ static int pro_parse_slot_shape(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, dou
 }
 
 
-/* "PAD","e6",0,"", 1, "5",75.003,107.867,0,  null,   ["OVAL",23.622,59.843],[],  0,  0,  null,  1,       0,    2,2,  0,0,   0,   null,null,null,null,[]
-          id        ly num  x      y      rot [slot]  [ shape ]                  ofx ofy  rot    plate          mask  paste  lock
+/*
+1.3 "PAD","e9",0,"", 1, "1",-38.39,-115.24,0,  null,   ["OVAL",13.898,57.244],[],  0,  0,  90,    1,       0,                      null,null,null,null,0
+           id        ly num  x      y      rot [slot]  [ shape ]                  ofx ofy  rot    plate                                               lock?
+                                                                                 \---slot---/
+
+1.4. "PAD","e5",0,"",1, "1",-39.4,-111    ,0,   null,  ["RECT",47.2,47.2,0],[],    0,  0,  0,     1,       0,    2,2,  0,0,   0]
+           id        ly num  x      y      rot [slot]  [ shape ]                  ofx ofy  rot    plate          mask  paste  lock?
+
+
+1.7 "PAD","e6",0,"", 1, "5",75.003,107.867,0,  null,   ["OVAL",23.622,59.843],[],  0,  0,  null,  1,       0,    2,2,  0,0,   0,   null,null,null,null,[]
+           id        ly num  x      y      rot [slot]  [ shape ]                  ofx ofy  rot    plate          mask  paste  lock
                                                                                  \---slot---/
    ly==12 means all layers (EASY_MULTI_LAYER+1) */
 static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
@@ -502,7 +526,11 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	pcb_pstk_t *pstk;
 	rnd_coord_t cmask, cpaste;
 
-	REQ_ARGC_GTE(nd, 23, "PAD", return -1);
+	if (ctx->version >= 1.7)
+		REQ_ARGC_GTE(nd, 23, "PAD", return -1);
+	else
+		REQ_ARGC_GTE(nd, 22, "PAD", return -1);
+
 	GET_ARG_DBL(lid, nd, 4, "PAD layer", return -1);
 	GET_ARG_STR(termid, nd, 5, "PAD number", return -1);
 	GET_ARG_DBL(x, nd, 6, "PAD x", return -1);

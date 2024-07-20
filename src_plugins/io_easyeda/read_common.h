@@ -78,6 +78,7 @@ typedef struct easy_read_ctx_s {
 	pcb_text_t *last_refdes; /* std: last text object created as a refdes dyntext+floater */
 	pcb_subc_t *in_subc;     /* pro: while loading a footprint into a subc */
 	double version;          /* pro: file format version from DOCTYPE */
+	gdom_node_t *lyline[EASY_MAX_LAYERS]; /* pro: remember layer lines for delayed layer creation */
 } easy_read_ctx_t;
 
 #define error_at(ctx, node, args) \
@@ -141,6 +142,8 @@ do { \
 		err_stmt; \
 	} \
 	dst = ctx->layers[easyeda_lid]; \
+	if (dst == NULL && ctx->is_pro) \
+		dst = easyeda_pro_dyn_layer(ctx, easyeda_lid, err_nd); \
 	if (dst == NULL) { \
 		error_at(ctx, err_nd, ("layer ID %ld does not exist\n", easyeda_lid)); \
 		err_stmt; \
@@ -213,4 +216,8 @@ void easyeda_data_layer_reset(pcb_board_t **pcb, pcb_data_t *data);
    objects are created within the subc, not in parent data */
 void easyeda_subc_layer_bind(easy_read_ctx_t *ctx, pcb_subc_t *subc);
 
+
+/*** user provided global callbacks ***/
+/* Create a layer on demand */
+pcb_layer_t *easyeda_pro_dyn_layer(easy_read_ctx_t *ctx, int easyeda_lid, gdom_node_t *err_nd);
 
