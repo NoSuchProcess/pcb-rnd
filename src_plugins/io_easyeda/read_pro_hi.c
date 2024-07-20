@@ -940,6 +940,7 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		return 0;
 
 	return pro_create_text(ctx, nd, lid, x, y, anchor, rot, xmir, height, thick, (int)keyvis, (int)valvis, key, val);
+	(void)locked; /* ignored for now */
 }
 
 /* static text object
@@ -948,7 +949,6 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	double lid, x, y, height, thick, anchor, rot, xmir, locked;
-	int mktext;
 	const char *textstr;
 
 	REQ_ARGC_GTE(nd, 18, "STRING", return -1);
@@ -965,6 +965,7 @@ static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(locked, nd, 17, "STRING locked", return -1);
 
 	return pro_create_text(ctx, nd, lid, x, y, anchor, rot, xmir, height, thick, 1, 0, textstr, NULL);
+	(void)locked; /* ignored for now */
 }
 
 
@@ -1081,7 +1082,6 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 {
 	pcb_board_t *pcb = NULL;
 	easy_read_ctx_t ctx = {0};
-	long n;
 	int res = 0;
 	pcb_subc_t *subc;
 	pcb_data_t *save;
