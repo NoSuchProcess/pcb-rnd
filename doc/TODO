@@ -2,6 +2,9 @@
 
 1. For the upcoming release ===============================================================================
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
+- FEATURE: pcb 4.3 file format support [report: John Wehle]
+	- search for TODO("4.3 in io_pcb
+	- test&document: we are saving in an old format version: 20070407 or 20100606
 - FEATURE: io_easyeda
 	- BUG: library window preview also creates silk objects around 0;0 on the board
 	- doc:
