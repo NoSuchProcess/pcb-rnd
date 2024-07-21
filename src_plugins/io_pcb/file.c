@@ -1068,13 +1068,33 @@ int pcb_layer_improvise(pcb_board_t *pcb, rnd_bool setup)
 }
 
 /*** Compatibility wrapper: create blind/burried via ***/
+
+
 pcb_pstk_t *pcb_old_via_new_bb(pcb_data_t *data, long int id, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, pcb_flag_t Flags, int startli, int endli)
 {
-	pcb_pstk_t *pstk = pcb_old_via_new(data, id, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
-	if (pstk == NULL)
-		return NULL;
-	rnd_message(RND_MSG_ERROR, "TODO: blind/buried vias are not yet loaded from geda/pcb, they are thru-hole for now - I am working on it\n");
-	TODO("4.3: resolve layers and set start-end");
+	pcb_pstk_t *pstk;
+
+	if (startli == endli) {
+		/* geda/pcb 4.3 takes this as a thru-hole */
+		rnd_message(RND_MSG_ERROR, "io_pcb: invalid bb via at %$mm;%$mm: start and end layers are the same\n", X, Y);
+		goto error_thru;
+	}
+
+	if ((startli < 0) || (endli < 0)) {
+		/* geda/pcb 4.3 segfaults; take it as thru-hole */
+		rnd_message(RND_MSG_ERROR, "io_pcb: invalid bb via at %$mm;%$mm: start or end layer negative\n", X, Y);
+		error_thru:;
+		pstk = pcb_old_via_new(data, id, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
+		return pstk;
+	}
+
+	if (startli < endli)
+		pstk = pcb_old_via_new_bbvia(data, id, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags, startli, -endli);
+	else
+		pstk = pcb_old_via_new_bbvia(data, id, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags, endli, -startli);
+
+/*	rnd_trace("bbvia: %ml;%ml %d..%d %p\n", X, Y, startli, endli, pstk);*/
+
 	return pstk;
 }
 
