@@ -862,7 +862,7 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
 }
 
 
-pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
+pcb_pstk_t *pcb_old_via_new_bbvia(pcb_data_t *data, long int id, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, pcb_flag_t Flags, int htop, int hbottom)
 {
 	pcb_pstk_t *p;
 	pcb_pstk_compshape_t shp;
@@ -878,7 +878,7 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, rnd_coord_t X, rnd_co
 	else
 		shp = PCB_PSTK_COMPAT_ROUND;
 
-	p = pcb_pstk_new_compat_via_(data, id, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE), 1, 0, 0);
+	p = pcb_pstk_new_compat_via_(data, id, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE), 1, htop, hbottom);
 	p->Flags.f |= Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
 	for(n = 0; n < sizeof(Flags.t) / sizeof(Flags.t[0]); n++) {
 		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);
@@ -899,6 +899,12 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, rnd_coord_t X, rnd_co
 
 	return p;
 }
+
+pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
+{
+	return pcb_old_via_new_bbvia(data, id, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags, 0, 0);
+}
+
 
 void pcb_shape_octagon(pcb_pstk_shape_t *dst, rnd_coord_t radiusx, rnd_coord_t radiusy)
 {
