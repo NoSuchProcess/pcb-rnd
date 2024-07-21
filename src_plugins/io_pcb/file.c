@@ -1083,6 +1083,12 @@ pcb_pstk_t *pcb_old_via_new_bb(pcb_data_t *data, long int id, rnd_coord_t X, rnd
 	if ((startli < 0) || (endli < 0)) {
 		/* geda/pcb 4.3 segfaults; take it as thru-hole */
 		rnd_message(RND_MSG_ERROR, "io_pcb: invalid bb via at %$mm;%$mm: start or end layer negative\n", X, Y);
+		goto error_thru;
+	}
+
+	if ((startli >= compat_pstk_cop_grps) || (endli >= compat_pstk_cop_grps)) {
+		/* geda/pcb 4.3 segfaults; take it as thru-hole */
+		rnd_message(RND_MSG_ERROR, "io_pcb: invalid bb via at %$mm;%$mm: start or end layer is above the number of copper layers\n", X, Y);
 		error_thru:;
 		pstk = pcb_old_via_new(data, id, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
 		return pstk;
