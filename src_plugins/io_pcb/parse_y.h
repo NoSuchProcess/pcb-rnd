@@ -96,7 +96,8 @@ extern int pcb_debug;
     T_UM = 302,
     T_MM = 303,
     T_M = 304,
-    T_KM = 305
+    T_KM = 305,
+    T_PX = 306
   };
 #endif
 
@@ -113,7 +114,7 @@ union YYSTYPE
 	pcb_flag_t	flagtype;
 	PLMeasure	measure;
 
-#line 117 "parse_y.h" /* yacc.c:1921  */
+#line 118 "parse_y.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

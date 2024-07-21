@@ -141,7 +141,7 @@ static void load_meta_float(const char *path, double val);
 %token	T_ELEMENTARC T_MARK T_GROUPS T_STYLES T_POLYGON T_POLYGON_HOLE T_NETLIST T_NET T_CONN
 %token	T_NETLISTPATCH T_ADD_CONN T_DEL_CONN T_CHANGE_ATTRIB
 %token	T_AREA T_THERMAL T_DRC T_ATTRIBUTE
-%token	T_UMIL T_CMIL T_MIL T_IN T_NM T_UM T_MM T_M T_KM
+%token	T_UMIL T_CMIL T_MIL T_IN T_NM T_UM T_MM T_M T_KM T_PX
 %type	<integer>	symbolid
 %type	<string>	opt_string
 %type	<flagtype>	flags
@@ -1036,8 +1036,9 @@ relementdef
 		: pin_1.7_format
 		| pin_hi_format
 		| pad_1.7_format
-		| pad_4.3_format
+		| pad_1.7c_format
 		| pad_hi_format
+		| pad_hic_format
 			/* x1, y1, x2, y2, thickness */
 		| T_ELEMENTLINE '[' measure measure measure measure measure ']'
 			{
@@ -1152,6 +1153,62 @@ pad_hi_format
 			}
 		;
 
+pad_hic_format
+			/* x, y, w, h, clearance, mask, name , pad number, flags */
+		: T_PAD '[' measure measure measure measure measure measure STRING STRING flags ']'
+			{
+#if 0
+the original code in geda/pcb:
+				pcb_pstk_t *pad;
+				rnd_coord_t tx = NU ($3),
+				      ty = NU ($4),
+				      tw = NU ($5),
+				      th = NU ($6),
+				      thk,
+				      dx,
+				      dy;
+
+				thk = (tw > th)?th:tw;
+				dx = (tw > th)?((tw - th)/2):0;
+				dy = (tw > th)?0:((th - tw)/2);
+
+				pad = io_pcb_element_pad_new(
+				CreateNewPad(yyElement, tx - dx + yyElement->MarkX,
+					ty - dy + yyElement->MarkY,
+					tx + dx + yyElement->MarkX,
+					ty + dy + yyElement->MarkY, thk, NU ($7), NU ($8),
+					$9, $10, $11);
+				pcb_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
+
+				free ($9);
+				free ($10);
+#else
+				/* more accurate code with proper rounding */
+				pcb_pstk_t *pad;
+				rnd_coord_t cx = NU($3), cy = NU($4), sx = NU($5), sy = NU($6);
+				rnd_coord_t x1, y1, x2, y2;
+				double ox, oy, thick;
+
+				thick = (sx > sy) ? sx : sy;
+				ox = (sx > sy) ? ((sx - sy) / 2.0) : 0;
+				oy = (sx > sy) ? 0 : ((sx - sy) / 2.0);
+
+				x1 = rnd_round(cx - ox); y1 = rnd_round(cy - oy);
+				x2 = rnd_round(cx + ox); y2 = rnd_round(cy + oy);
+
+				pad = io_pcb_element_pad_new(yysubc,
+					x1 + yysubc_ox, y1 + yysubc_oy,
+					x2 + yysubc_ox, y2 + yysubc_oy,
+					NU ($6), NU ($7), NU ($8),
+					$9, $10, $11);
+				pcb_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
+
+				free ($9);
+				free ($10);
+#endif
+
+			}
+
 pad_1.7_format
 			/* x1, y1, x2, y2, thickness, clearance, mask, name , pad number, flags */
 		: T_PAD '(' measure measure measure measure measure measure measure STRING STRING INTEGER ')'
@@ -1165,10 +1222,33 @@ pad_1.7_format
 			}
 		;
 
-pad_4.3_format
-			/* cx, cy, sx, sy, clearance, mask, name , pad number, flags */
-		: T_PAD '[' measure measure measure measure measure measure STRING STRING flags ']'
+pad_1.7c_format
+			/* x, y, w, h, clearance, mask, name , pad number, flags */
+		: T_PAD '(' measure measure measure measure measure measure STRING STRING INTEGER ')'
 			{
+#if 0
+	/* original from geda/pcb */
+				rnd_coord_t tx = OU ($3),
+				      ty = OU ($4),
+				      tw = OU ($5),
+				      th = OU ($6),
+				      thk,
+				      dx,
+				      dy;
+
+				thk = (tw > th)?th:tw;
+				dx = (tw > th)?((tw - th)/2):0;
+				dy = (tw > th)?0:((th - tw)/2);
+
+				CreateNewPad(yyElement, tx - dx + yyElement->MarkX,
+					ty - dy + yyElement->MarkY, tx + dx + yyElement->MarkX,
+					ty + dy + yyElement->MarkY, thk, OU ($7), OU ($8),
+					$9, $10, OldFlags($11));
+				free ($9);
+				free ($10);
+#else
+				/* more accurate code with proper rounding */
+				pcb_pstk_t *pad;
 				rnd_coord_t cx = OU($3), cy = OU($4), sx = OU($5), sy = OU($6);
 				rnd_coord_t x1, y1, x2, y2;
 				double ox, oy, thick;
@@ -1180,14 +1260,19 @@ pad_4.3_format
 				x1 = rnd_round(cx - ox); y1 = rnd_round(cy - oy);
 				x2 = rnd_round(cx + ox); y2 = rnd_round(cy + oy);
 
-				io_pcb_element_pad_new(yysubc,
+				pad = io_pcb_element_pad_new(yysubc,
 					x1 + yysubc_ox, y1 + yysubc_oy,
 					x2 + yysubc_ox, y2 + yysubc_oy,
 					OU ($6), OU ($7), OU ($8),
-					$9, $10, $11);
+					$9, $10, pcb_flag_old($11));
+				pcb_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
+
+				free ($9);
 				free ($10);
+#endif
 			}
 		;
+
 
 pad_newformat
 			/* x1, y1, x2, y2, thickness, name , pad number, flags */
@@ -1411,6 +1496,7 @@ measure
 		| number T_MIL	{ M ($$, $1, RND_MIL_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 		| number T_IN	{ M ($$, $1, RND_INCH_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 		| number T_NM	{ M ($$, $1, RND_MM_TO_COORD ($1) / 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_NANOMETER; }
+		| number T_PX	{ M ($$, $1, RND_MM_TO_COORD ($1) / 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_NANOMETER; }
 		| number T_UM	{ M ($$, $1, RND_MM_TO_COORD ($1) / 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 		| number T_MM	{ M ($$, $1, RND_MM_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 		| number T_M	{ M ($$, $1, RND_MM_TO_COORD ($1) * 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }

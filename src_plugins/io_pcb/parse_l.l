@@ -151,6 +151,7 @@ umil	{ return T_UMIL; }
 cmil	{ return T_CMIL; }
 mil	{ return T_MIL; }
 in	{ return T_IN; }
+px  { return T_PX; }
 
 \'.\'				{
 						pcb_lval.integer = (unsigned) *(yytext+1);
