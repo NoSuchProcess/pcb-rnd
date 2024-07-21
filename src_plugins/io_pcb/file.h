@@ -81,6 +81,7 @@ int PCBFileVersionNeeded(void);
 /* Improvise layers and groups for a partial input file that lacks layer groups (and maybe even some layers) */
 int pcb_layer_improvise(pcb_board_t *pcb, rnd_bool setup);
 
+pcb_pstk_t *pcb_old_via_new_bb(pcb_data_t *data, long int id, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, pcb_flag_t Flags, int startli, int endli);
 pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *Element, rnd_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB, char *Value, rnd_coord_t TextX, rnd_coord_t TextY, unsigned int Direction, int TextScale, pcb_flag_t TextFlags, rnd_bool uniqueName);
 void io_pcb_element_fin(pcb_data_t *Data);
 pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness);
