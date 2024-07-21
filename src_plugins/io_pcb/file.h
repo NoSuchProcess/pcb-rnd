@@ -96,7 +96,7 @@ void pcb_tmp_data_remove(void);
 #endif
 
 /* This is the version we support.  */
-#define PCB_FILE_VERSION 20110603
+#define PCB_FILE_VERSION 20180318
 
 pcb_plug_fp_map_t *io_pcb_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
 

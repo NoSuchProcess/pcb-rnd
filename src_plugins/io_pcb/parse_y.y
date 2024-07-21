@@ -521,11 +521,22 @@ pcbdefinition
 		;
 
 via
-		: via_hi_format
+		: via_ehi_format
+		| via_hi_format
 		| via_2.0_format
 		| via_1.7_format
 		| via_newformat
 		| via_oldformat
+		;
+
+via_ehi_format   /* from pcb 4.3; blind/burried vias */
+		/* x, y, thickness, clearance, mask, drilling-hole, buried_from, buried_to, name, flags */
+		: T_VIA '[' measure measure measure measure measure measure INTEGER INTEGER STRING flags ']'
+			{
+				pcb_old_via_new_bb (yyData, -1, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7),
+						     NU ($8), $11, $12, $9, $10);
+				free ($11);
+			}
 		;
 
 via_hi_format
