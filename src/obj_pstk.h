@@ -70,7 +70,7 @@ struct pcb_pstk_proto_s {
 	unsigned hplated:1;            /* if > 0, whether the hole is plated */
 	char *name;                    /* optional user assigned name (or NULL) */
 	rnd_coord_t hdia;              /* if > 0, diameter of the hole (else there's no hole) */
-	int htop, hbottom;             /* if hdia > 0, determine the hole's span, counted in copper layer groups from the top or bottom copper layer group */
+	int htop, hbottom;             /* if hdia > 0, determine the hole's span, counted in copper layer groups from the top (for htop) or bottom (for hbottom) copper layer group; a negative number starts counting from the opposite end; 0-0 means thru-hole from top-to-bottom */
 
 	pcb_vtpadstack_tshape_t tr;    /* [0] is the canonical prototype with rot=0, xmirror=0 and smirror=0; the rest is an unordered list of transformed entries */
 
