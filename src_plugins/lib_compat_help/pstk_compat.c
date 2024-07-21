@@ -138,6 +138,7 @@ static void compat_shape_free(pcb_pstk_shape_t *shp)
 		free(shp->data.poly.x);
 }
 
+int compat_pstk_cop_grps = 0;
 static rnd_cardinal_t pcb_pstk_new_compat_via_proto_(pcb_data_t *data, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack, int bb_top, int bb_bottom)
 {
 	pcb_pstk_proto_t proto;
@@ -162,6 +163,8 @@ static rnd_cardinal_t pcb_pstk_new_compat_via_proto_(pcb_data_t *data, rnd_coord
 	proto.hbottom = bb_bottom;
 
 	if (plated || hole_clearance_hack) {
+		long num_cop_grps = 0;
+
 		tshp.len = 3 + (mask > 0 ? 2 : 0);
 
 		/* we need to generate the shape only once as it's the same on all */
@@ -174,6 +177,36 @@ static rnd_cardinal_t pcb_pstk_new_compat_via_proto_(pcb_data_t *data, rnd_coord
 		shape[1].layer_mask = PCB_LYT_COPPER | PCB_LYT_BOTTOM; shape[1].comb = 0;
 		shape[2].layer_mask = PCB_LYT_COPPER | PCB_LYT_INTERN; shape[2].comb = 0;
 		tshp.len = 3;
+
+		/* remove bottom and top shape if bbvia doesn't reach those layers */
+		if ((bb_bottom < 0) || (bb_top < 0)) {
+			pcb_board_t *pcb = data->parent.board;
+
+			/* normalzie negative bb_top and bb_bottom so they are always positive so 0 is easier to detect */
+			if (pcb != NULL) {
+				if (compat_pstk_cop_grps <= 0) {
+					rnd_layergrp_id_t n;
+					for(n = 0; n < pcb->LayerGroups.len; n++)
+						if (pcb->LayerGroups.grp[n].ltype & PCB_LYT_COPPER)
+							num_cop_grps++;
+				}
+				else
+					num_cop_grps = compat_pstk_cop_grps;
+			}
+
+			if (bb_bottom < 0)
+				bb_bottom = bb_bottom + num_cop_grps - 1;
+			if (bb_top < 0)
+				bb_top = bb_top + num_cop_grps - 1;
+		}
+		if (bb_bottom != 0) {
+			memcpy(&shape[1], &shape[2], sizeof(copper_master)*1);
+			tshp.len--;
+		}
+		if ((bb_top != 0) && (bb_top != -num_cop_grps)) {
+			memcpy(&shape[0], &shape[1], sizeof(copper_master)*2);
+			tshp.len--;
+		}
 	}
 	else
 		tshp.len = 0;
