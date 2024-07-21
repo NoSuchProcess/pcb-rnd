@@ -43,7 +43,10 @@ static rnd_coord_t pcb_get_num(char **s, const char *default_unit)
 
 /* parses the routes definition string which is a colon separated list of
    comma separated Name, Dimension, Dimension, Dimension, Dimension
-   e.g. Signal,20,40,20,10:Power,40,60,28,10:... */
+   e.g. Signal,20,40,20,10:Power,40,60,28,10:...
+   Args: name,thickness,pad_dia,hole,[clearance],[mask]
+   A more recent file format versio (2017? 2018?) has an 5th Dimension for
+   mask. */
 int pcb_route_string_parse1(pcb_data_t *data, char **str, pcb_route_style_t *routeStyle, const char *default_unit)
 {
 	rnd_coord_t hole_dia = 0, pad_dia = 0, mask = 0;
@@ -86,6 +89,7 @@ int pcb_route_string_parse1(pcb_data_t *data, char **str, pcb_route_style_t *rou
 	if (!isdigit((int) *s))
 		goto error;
 	hole_dia = pcb_get_num(&s, default_unit);
+
 	/* for backwards-compatibility, we use a 10-mil default
 	   for styles which omit the clearance specification. */
 	if (*s != ',')
@@ -97,6 +101,23 @@ int pcb_route_string_parse1(pcb_data_t *data, char **str, pcb_route_style_t *rou
 		if (!isdigit((int) *s))
 			goto error;
 		routeStyle->Clearance = pcb_get_num(&s, default_unit);
+		while (*s && isspace((int) *s))
+			s++;
+	}
+
+	/* Optional fields, extended file format */
+
+	/* for backwards-compatibility, use mask=0 (tented via)
+	   for styles which omit the mask specification. */
+	if (*s != ',')
+		mask = 0;
+	else {
+		s++;
+		while (*s && isspace((int) *s))
+			s++;
+		if (!isdigit((int) *s))
+			goto error;
+		mask = pcb_get_num(&s, default_unit);
 		while (*s && isspace((int) *s))
 			s++;
 	}
