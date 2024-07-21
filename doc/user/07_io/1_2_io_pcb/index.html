@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h1 nopdf="yes"> pcb-rnd - user manual </h1>
+<h2 nopdf="yes"> 7.1 IO plugins </h2>
+<h3> 7.1.2 io_pcb </h3>
+<p>
+Historically geda/PCB is the predecessor of pcb-rnd, but pcb-rnd has
+switched native file format during the big data model rewrite (2016..2017).
+This means the old geda/PCB file formats (board and element) are supported
+only as alien file formats, with the usual alien format limitations.
+<p>
+At the moment pcb-rnd supports loading files up to geda/PCB version 4.3
+(file version 20180318). This includes loading the latest additions of
+blind/buried vias, center-specified pads and mask value in routing style.
+When saving in this format, pcb-rnd will pick a much older format version,
+see limitations below.
+<p>
+Extras in pcb-rnd:
+<ul>
+	<li> minor bugfixes so that numeric roundings on corner cases are better
+	<li> unlike geda/PCB, pcb-rnd won't crash on invalid bbvia span values but throw an error message with the coords and load the via as thru-hole
+	<li> pcb-rnd can save with different units
+	<li> pcb-rnd makes an effort to preserve the unit style so a load-save operation causes less changes to the file than in geda/PCB
+	<li> pcb-rnd has better support for ancient (pre-2000) file versions
+</ul>
+<p>
+Limitations in pcb-rnd:
+<ul>
+	<li> saving files: the newest geda/PCB file format version pcb-rnd can save is, 20100606; that already has polygon holes but:
+	<ul>
+		<li> no center-defined pads so pad format is converted to line-based (in fact geda/PCB 4.3 also does this conversion on save)
+		<li> no blind/buried vias
+		<li> no mask value in routing style
+	</ul>
+</ul>
+
+
