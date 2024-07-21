@@ -230,6 +230,7 @@ parsepcb
 			}
 			PCB_ENDALL_LOOP;
 			PCB = pcb_save;
+			compat_pstk_cop_grps = 0; /* reset preliminary number-of-copper-layers */
 			}
 
 		| { PreLoadElementPCB ();
@@ -467,7 +468,15 @@ pcbflags
 pcbgroups
 		: T_GROUPS '(' STRING ')'
 			{
-			  layer_group_string = $3;
+				const char *s;
+
+				layer_group_string = $3;
+
+				/* count number of copper layers for bbvia offseting (negative bbvia values internally) */
+				compat_pstk_cop_grps = 1;
+				for(s = $3; *s != '\0'; s++)
+					if (*s == ':')
+						compat_pstk_cop_grps++;
 			}
 		|
 		;
