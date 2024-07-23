@@ -95,6 +95,8 @@
 	- add keepout
 	- revise pad sizes and hole sizes, maybe starting from bedrock
 	- revise 3d (openscad) models if they still line up
+	- parametric common bugs:
+		- so(8,pad_clearance=0.1mm) creates pad clearance twice as large as needed [report: aron]
 - BUG: start new layout: pcb-rnd foo.rp, export scad model, will export to foo.scad by default; then start new layout, save layout as bar.rp. When using export dialogue, dialogue defaults to previous filename foo.XXX for any of the export options. [report: Erich]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
