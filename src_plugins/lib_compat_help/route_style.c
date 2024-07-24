@@ -39,8 +39,10 @@ int pcb_compat_route_style_via_save(pcb_data_t *data, const pcb_route_style_t *r
 
 		if ((proto != NULL) && (proto->tr.used > 0)) {
 			if (pcb_pstk_export_compat_proto(proto, drill_dia, pad_dia, mask, &cshape, &plated)) {
-				if ((*drill_dia <= 0) || !plated || (*mask > 0) || (cshape != PCB_PSTK_COMPAT_ROUND))
+				if ((*drill_dia <= 0) || !plated || (cshape != PCB_PSTK_COMPAT_ROUND))
 					pcb_io_incompat_save(data, NULL, "route-style", "Route style's via padstack proto is too complex for old via description", "Use a simpler via style: copper shapes only, on all copper layers, all circle and of the same size, plus a plated round hole - gEDA/pcb can't handle anything more complex.");
+				else if (*mask > 0)
+					pcb_io_incompat_save(data, NULL, "route-style", "Route style's via padstack proto has a mask opening that is not saved", "Use tented vias only (no mask shape); pcb-rnd can load gEDA/pcb's 2018 file format that can specify a mask opening but pcb-rnd saves an older gEDA/pcb file format version that doesn't yet have via mask opening value in routing style");
 			}
 			else
 				return pcb_io_incompat_save(data, NULL, "route-style", "Failed to convert route style's via padstack proto to old via description", "Use a simpler via style: copper shapes only, on all copper layers, all circle and of the same size, plus a plated round hole - gEDA/pcb can't handle anything more complex.");
