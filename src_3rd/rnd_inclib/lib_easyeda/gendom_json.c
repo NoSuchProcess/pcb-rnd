@@ -20,6 +20,14 @@
 #include "gendom_json.h"
 #include <libnanojson/nanojson.h>
 
+#define GDOM_ALLOC_POST(nd) \
+do { \
+	nd->lineno = ctx.lineno+1; \
+	nd->col = ctx.col+1; \
+	nd->name_str = name_str; \
+	name_str = NULL; \
+} while(0)
+
 
 gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*str2name)(const char *str))
 {
@@ -28,6 +36,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 	int chr, kw;
 	gdom_node_t *curr = NULL, *root = NULL, *nd;
 	long name = -1;
+	char *name_str = NULL;
 
 	for(;;) {
 		njson_ev_t ev;
@@ -46,8 +55,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 		switch(ev) {
 			case NJSON_EV_OBJECT_BEGIN:
 				nd = gdom_alloc(name, GDOM_HASH);
-				nd->lineno = ctx.lineno+1;
-				nd->col = ctx.col+1;
+				GDOM_ALLOC_POST(nd);
 
 				if (root == NULL) {
 					root = nd;
@@ -62,8 +70,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 
 			case NJSON_EV_ARRAY_BEGIN:
 				nd = gdom_alloc(name, GDOM_ARRAY);
-				nd->lineno = ctx.lineno+1;
-				nd->col = ctx.col+1;
+				GDOM_ALLOC_POST(nd);
 
 				if (root == NULL) {
 					root = nd;
@@ -83,13 +90,18 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 				break;
 
 			case NJSON_EV_NAME:
-				name = str2name(ctx.value.string);
+				if (str2name == NULL) {
+					if (name_str != NULL)
+						free(name_str);
+					name_str = gdom_strdup(ctx.value.string);
+				}
+				else
+					name = str2name(ctx.value.string);
 				break;
 
 			case NJSON_EV_STRING:
 				nd = gdom_alloc(name, GDOM_STRING);
-				nd->lineno = ctx.lineno+1;
-				nd->col = ctx.col+1;
+				GDOM_ALLOC_POST(nd);
 
 				if (curr == NULL) { fprintf(stderr, "error 'root is not an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
@@ -102,8 +114,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 
 			case NJSON_EV_NUMBER:
 				nd = gdom_alloc(name, GDOM_DOUBLE);
-				nd->lineno = ctx.lineno+1;
-				nd->col = ctx.col+1;
+				GDOM_ALLOC_POST(nd);
 
 				if (curr == NULL) { fprintf(stderr, "error 'root is not an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
@@ -124,8 +135,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 				kw = -1;
 				append_kw:;
 				nd = gdom_alloc(name, GDOM_DOUBLE);
-				nd->lineno = ctx.lineno+1;
-				nd->col = ctx.col+1;
+				GDOM_ALLOC_POST(nd);
 
 				if (curr == NULL) { fprintf(stderr, "error 'root is not an object or array' at %ld:%ld\n", line, col); goto error; }
 				if (gdom_append(curr, nd) != 0) {
@@ -137,7 +147,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 				break;
 
 			case NJSON_EV_error:  fprintf(stderr, "error '%s' at %ld:%ld\n", ctx.error, line, col); goto error;
-			case NJSON_EV_eof:    njson_uninit(&ctx); return root;
+			case NJSON_EV_eof:    njson_uninit(&ctx); free(name_str); return root;
 			case NJSON_EV_more:   break;
 		}
 	}
@@ -146,6 +156,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 	njson_uninit(&ctx);
 	if (root != NULL)
 		gdom_free(root);
+	free(name_str);
 	return NULL;
 }
 

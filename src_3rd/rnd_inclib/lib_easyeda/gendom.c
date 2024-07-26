@@ -66,6 +66,7 @@ void gdom_free(gdom_node_t *nd)
 
 	}
 
+	free(nd->name_str);
 	free(nd);
 }
 

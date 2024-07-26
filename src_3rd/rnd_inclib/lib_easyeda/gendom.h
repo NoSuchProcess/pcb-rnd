@@ -17,7 +17,7 @@ typedef enum gdom_node_type_e {
 typedef struct gdom_node_s gdom_node_t;
 
 struct gdom_node_s {
-	long name;                 /* format-specific enum declared by the low level parser */
+	long name;                 /* format-specific enum declared by the low level parser - in case str2name() is not NULL */
 	gdom_node_type_t type;
 	gdom_node_t *parent;
 	union {
@@ -31,6 +31,7 @@ struct gdom_node_s {
 		long lng;
 	} value;
 	long lineno, col;          /* location, counting from 1; 0 means unknown location */
+	char *name_str;            /* in case str2name() is NULL */
 };
 
 gdom_node_t *gdom_alloc(long name, gdom_node_type_t type);
