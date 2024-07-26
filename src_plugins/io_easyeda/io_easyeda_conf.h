@@ -11,6 +11,7 @@ typedef struct {
 			RND_CFT_BOOLEAN load_color_copper;     /* load color of copper layers; when disabled pick random colors */
 			RND_CFT_BOOLEAN load_color_noncopper;  /* load color of non-copper layers; when disabled use pcb-rnd standard layer colors */
 			RND_CFT_REAL line_approx_seg_len;      /* path approximation line length in EasyEDA units (which is 10mil, so a value of 3 here means 30mil) */
+			RND_CFT_STRING load_board_name;        /* if an epro file (easyeda_pro) has multiple boards, load this one by visual name instead of asking or failing */
 			const struct {
 				RND_CFT_BOOLEAN dump_dom;            /* print the DOM after expanding strings */
 				RND_CFT_BOOLEAN unzip_static;        /* always unzip to /tmp/easypro and don't remove it - don't use in production (unsafe temp file creation, unzip blocking to ask for overwrite on console) */

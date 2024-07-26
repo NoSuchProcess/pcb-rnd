@@ -130,7 +130,10 @@ int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_con
 	if (epro_load_project_json(&epro) != 0)
 		goto error;
 
-	TODO("figure which board file to load");
+	if (epro_select_board(&epro) != 0)
+		goto error;
+
+	TODO("load the board");
 
 	error:;
 	epro_uninit(&epro);
