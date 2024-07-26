@@ -55,6 +55,7 @@
 #include <rnd_inclib/lib_geo/arc_sed.c>
 #include "read_pro_low.c"
 #include "read_pro_hi.c"
+#include "read_pro_epro.c"
 
 /* True when the user configured zip commands */
 #define CAN_UNZIP ((conf_io_easyeda.plugins.io_easyeda.zip_list_cmd != NULL) && (*conf_io_easyeda.plugins.io_easyeda.zip_list_cmd != '\0'))
@@ -90,19 +91,20 @@ int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_con
 {
 	char *cmd, *fullpath, *dir;
 	const char *prefix[4];
-	gds_t vdir = {0};
+	epro_t epro = {0};
 	int res = -1;
 
 	/* unpack: create a temp dir... */
 	if (!conf_io_easyeda.plugins.io_easyeda.debug.unzip_static) {
-		if (rnd_mktempdir(NULL, &vdir, "easypro") != 0) {
+		if (rnd_mktempdir(NULL, &epro.zipdir, "easypro") != 0) {
 			rnd_message(RND_MSG_ERROR, "io_easyeda: failed to create temp dir for unpacking zip file '%s'\n", Filename);
 			goto error;
 		}
-		dir = vdir.array;
+		dir = epro.zipdir.array;
 	}
 	else {
-		dir = "/tmp/easypro";
+		gds_append_str(&epro.zipdir, "/tmp/easypro");
+		dir = epro.zipdir.array;
 		rnd_mkdir(&pcb->hidlib, dir, 0755);
 	}
 
@@ -129,8 +131,7 @@ int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_con
 	TODO("figure which board file to load");
 
 	error:;
-	gds_uninit(&vdir);
-	TODO("clean up the temp dir");
+	epro_uninit(&epro);
 	return res;
 }
 
