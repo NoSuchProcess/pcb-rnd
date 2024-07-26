@@ -54,7 +54,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 		ev = njson_push(&ctx, chr);
 		switch(ev) {
 			case NJSON_EV_OBJECT_BEGIN:
-				nd = gdom_alloc(name, GDOM_HASH);
+				nd = gdom_alloc(name, (str2name == NULL) ? GDOM_ARRAY : GDOM_HASH);
 				GDOM_ALLOC_POST(nd);
 
 				if (root == NULL) {
