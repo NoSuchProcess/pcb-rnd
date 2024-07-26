@@ -134,7 +134,7 @@ int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_con
 
 int io_easyeda_pro_test_parse_epro(pcb_plug_iot_t type, const char *Filename, FILE *f)
 {
-	int res = -1;
+	int res = 0;
 	char *cmd;
 	FILE *fc;
 
@@ -148,7 +148,7 @@ int io_easyeda_pro_test_parse_epro(pcb_plug_iot_t type, const char *Filename, FI
 		char *line, buf[1024];
 		while((line = fgets(buf, sizeof(buf), fc)) != NULL) {
 			if (strstr(line, "project.json") != NULL) { /* board */
-				res = 0;
+				res = 1;
 				break;
 			}
 		}
