@@ -127,7 +127,9 @@ int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_con
 	}
 	free(cmd);
 
-	TODO("load project.json");
+	if (epro_load_project_json(&epro) != 0)
+		goto error;
+
 	TODO("figure which board file to load");
 
 	error:;
