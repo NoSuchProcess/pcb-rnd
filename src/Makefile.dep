@@ -1470,7 +1470,8 @@
  ../src_3rd/rnd_inclib/lib_easyeda/gendom_json.h \
  ../src_3rd/rnd_inclib/lib_geo/arc_sed.c \
  ../src_plugins/io_easyeda/read_pro_low.c \
- ../src_plugins/io_easyeda/read_pro_hi.c
+ ../src_plugins/io_easyeda/read_pro_hi.c \
+ ../src_plugins/io_easyeda/read_pro_epro.c
 ../src_plugins/io_easyeda/read_std.o: \
  ../src_plugins/io_easyeda/read_std.c ../config.h \
  ../src_plugins/io_easyeda/../lib_compat_help/pstk_compat.h obj_pstk.h \
