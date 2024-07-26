@@ -314,8 +314,6 @@ static int easyeda_pro_parse_layers(easy_read_ctx_t *ctx)
 
 pcb_layer_t *easyeda_pro_dyn_layer(easy_read_ctx_t *ctx, int easyeda_lid, gdom_node_t *err_nd)
 {
-	rnd_trace("DYN create layer %d\n", easyeda_lid);
-
 	if (pro_parse_layer(ctx, ctx->lyline[easyeda_lid], easyeda_layer_id2type[easyeda_lid-1], easyeda_lid) == 0) {
 		if (ctx->is_footprint) {
 			pcb_layer_t *board_ly = ctx->layers[easyeda_lid], *subc_ly;
