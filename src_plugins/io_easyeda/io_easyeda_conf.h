@@ -13,6 +13,7 @@ typedef struct {
 			RND_CFT_REAL line_approx_seg_len;      /* path approximation line length in EasyEDA units (which is 10mil, so a value of 3 here means 30mil) */
 			const struct {
 				RND_CFT_BOOLEAN dump_dom;            /* print the DOM after expanding strings */
+				RND_CFT_BOOLEAN unzip_static;        /* always unzip to /tmp/easypro and don't remove it - don't use in production (unsafe temp file creation, unzip blocking to ask for overwrite on console) */
 			} debug;
 		} io_easyeda;
 	} plugins;

@@ -33,6 +33,8 @@
 #include <ctype.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/compat_fs_dir.h>
+#include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/rotate.h>
 #include "../lib_compat_help/pstk_compat.h"
 #include "../lib_compat_help/pstk_help.h"
@@ -49,10 +51,13 @@
 #include "read_common.h"
 
 #include <rnd_inclib/lib_easyeda/easyeda_low.c>
+#include <rnd_inclib/lib_easyeda/zip_helper.c>
 #include <rnd_inclib/lib_geo/arc_sed.c>
 #include "read_pro_low.c"
 #include "read_pro_hi.c"
 
+/* True when the user configured zip commands */
+#define CAN_UNZIP ((conf_io_easyeda.plugins.io_easyeda.zip_list_cmd != NULL) && (*conf_io_easyeda.plugins.io_easyeda.zip_list_cmd != '\0'))
 
 /* assume plain text, search for ["DOCTYPE","FOOTPRINT" in the first few lines */
 int io_easyeda_pro_test_parse_efoo(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const char *Filename, FILE *f)
@@ -81,6 +86,79 @@ int io_easyeda_pro_test_parse_efoo(pcb_plug_io_t *ctx, pcb_plug_iot_t type, cons
 	return 0;
 }
 
+int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_conf_role_t settings_dest)
+{
+	char *cmd, *fullpath, *dir;
+	const char *prefix[4];
+	gds_t vdir = {0};
+	int res = -1;
+
+	/* unpack: create a temp dir... */
+	if (!conf_io_easyeda.plugins.io_easyeda.debug.unzip_static) {
+		if (rnd_mktempdir(NULL, &vdir, "easypro") != 0) {
+			rnd_message(RND_MSG_ERROR, "io_easyeda: failed to create temp dir for unpacking zip file '%s'\n", Filename);
+			goto error;
+		}
+		dir = vdir.array;
+	}
+	else
+		dir = "/tmp/easypro";
+
+	/* ... cd to it and unpacl there with full path to the zip */
+	prefix[0] = "cd ";
+	prefix[1] = dir;
+	prefix[2] = ";";
+	prefix[3] = NULL;
+
+	fullpath = rnd_lrealpath(Filename);
+	cmd = easypro_zip_cmd(prefix, conf_io_easyeda.plugins.io_easyeda.zip_extract_cmd, fullpath);
+	free(fullpath);
+
+	res = rnd_system(NULL, cmd);
+	if (res != 0) {
+		rnd_message(RND_MSG_ERROR, "io_easyeda: unable to unzip using command: '%s'\nDetails on stderr.\nPlease check your configuration!\n", cmd);
+		free(cmd);
+		res = -1;
+		goto error;
+	}
+	free(cmd);
+
+	TODO("load project.json");
+	TODO("figure which board file to load");
+
+	error:;
+	gds_uninit(&vdir);
+	TODO("clean up the temp dir");
+	return res;
+}
+
+int io_easyeda_pro_test_parse_epro(pcb_plug_iot_t type, const char *Filename, FILE *f)
+{
+	int res = -1;
+	char *cmd;
+	FILE *fc;
+
+	if (!easypro_is_file_zip(f))
+		return -1;
+
+	/* get a file list and look for known index files */
+	cmd = easypro_zip_cmd(NULL, conf_io_easyeda.plugins.io_easyeda.zip_list_cmd, Filename);
+	fc = rnd_popen(NULL, cmd, "r");
+	if (fc != NULL) {
+		char *line, buf[1024];
+		while((line = fgets(buf, sizeof(buf), fc)) != NULL) {
+			if (strstr(line, "project.json") != NULL) { /* board */
+				res = 0;
+				break;
+			}
+		}
+
+		fclose(fc);
+	}
+	free(cmd);
+	return res;
+}
+
 
 int io_easyeda_pro_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const char *Filename, FILE *f)
 {
@@ -89,6 +167,13 @@ int io_easyeda_pro_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t type, const cha
 	else
 		rewind(f);
 
+	if ((type == PCB_IOT_PCB) && CAN_UNZIP) {
+		int res = io_easyeda_pro_test_parse_epro(type, Filename, f);
+		if (res == 1)
+			return 1;
+		else
+			rewind(f);
+	}
 	/* return 1 for accept */
 	return 0;
 }
@@ -114,7 +199,7 @@ int io_easyeda_pro_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *F
 		fclose(f);
 
 
-	return /*easyeda_pro_parse_board(pcb, Filename, settings_dest);*/ -1;
+	return easyeda_pro_parse_epro_board(pcb, Filename, settings_dest);
 }
 
 int io_easyeda_pro_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
