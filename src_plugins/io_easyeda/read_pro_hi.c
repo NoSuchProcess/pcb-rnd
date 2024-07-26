@@ -321,7 +321,11 @@ pcb_layer_t *easyeda_pro_dyn_layer(easy_read_ctx_t *ctx, int easyeda_lid, gdom_n
 			pcb_layer_t *board_ly = ctx->layers[easyeda_lid], *subc_ly;
 
 			subc_ly = pcb_subc_alloc_layer_like(ctx->in_subc, board_ly);
-			ctx->layers[easyeda_lid] = subc_ly;
+			if (subc_ly != NULL)
+				subc_ly->meta.bound.real = board_ly;
+			else
+				rnd_message(RND_MSG_ERROR, "easyeda_pro internal error: failed to create subc layer for lid=%ld\n", easyeda_lid);
+			ctx->layers[easyeda_lid] = board_ly;
 		}
 		return ctx->layers[easyeda_lid];
 	}
