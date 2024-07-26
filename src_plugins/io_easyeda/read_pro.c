@@ -101,8 +101,10 @@ int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_con
 		}
 		dir = vdir.array;
 	}
-	else
+	else {
 		dir = "/tmp/easypro";
+		rnd_mkdir(&pcb->hidlib, dir, 0755);
+	}
 
 	/* ... cd to it and unpacl there with full path to the zip */
 	prefix[0] = "cd ";
