@@ -886,9 +886,37 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return res;
 }
 
+/* "LINE","e1",0,"S$15", 1,      0,3935, 815,3935, 10,     0
+           id     net    layer   x1;y1    x2;y2    thick   locked */
 static int easyeda_pro_parse_line(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
-	
+	double lid, x1, y1, x2, y2, dthick, locked;
+	pcb_layer_t *layer;
+	pcb_line_t *line;
+
+	REQ_ARGC_GTE(nd, 11, "LINE", return -1);
+	GET_ARG_DBL(lid, nd, 4, "LINE layer", return -1);
+	GET_ARG_DBL(x1, nd, 5, "LINE x1", return -1);
+	GET_ARG_DBL(y1, nd, 6, "LINE y1", return -1);
+	GET_ARG_DBL(x2, nd, 7, "LINE x2", return -1);
+	GET_ARG_DBL(y2, nd, 8, "LINE y2", return -1);
+	GET_ARG_DBL(dthick, nd, 9, "LINE thickness", return -1);
+	GET_ARG_DBL(locked, nd, 10, "LINE locked", return -1);
+
+	GET_LAYER(layer, (int)lid, nd, return -1);
+
+	line = pcb_line_alloc(layer);
+	line->Point1.X = TRX(x1);
+	line->Point1.Y = TRY(y1);
+	line->Point2.X = TRX(x2);
+	line->Point2.Y = TRY(y2);
+	line->Thickness = TRR(dthick);
+	line->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+	line->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
+	pcb_add_line_on_layer(layer, line);
+
+	return 0;
 }
 
 static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double x, double y, double anchor, double rot, double xmir, double height, double thick, int keyvis, int valvis, const char *key, const char *val)
