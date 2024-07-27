@@ -644,6 +644,32 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
+/* format ver 1.3
+   "VIA","e2",0,"S$54","", 500,2200,  12.203999999999999,24.409999999999997, 0, null,null,  0
+         id      net        x   y      drill_dia          ring_dia           ?  ?    ?      lock */
+static int easyeda_pro_parse_via(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double lid, x, y, drill_dia, ring_dia, locked;
+	pcb_pstk_t *pstk;
+
+	REQ_ARGC_GTE(nd, 13, "VIA", return -1);
+	GET_ARG_DBL(x, nd, 5, "VIA x", return -1);
+	GET_ARG_DBL(y, nd, 6, "VIA y", return -1);
+	GET_ARG_DBL(drill_dia, nd, 7, "VIA drill_dia", return -1);
+	GET_ARG_DBL(ring_dia, nd, 8, "VIA ring_dia", return -1);
+	GET_ARG_DBL(locked, nd, 12, "VIA locked", return -1);
+
+	pstk = pcb_pstk_new_compat_via(ctx->data, -1, TRX(x), TRY(y), TRR(drill_dia), TRR(ring_dia), 0, 0, PCB_PSTK_COMPAT_ROUND, 1);
+	if (pstk == NULL) {
+		error_at(ctx, nd, ("Failed to create padstack for via\n"));
+		return -1;
+	}
+	pstk->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+	pstk->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
+	return 0;
+}
+
 
 /*** parse objects: poly-objects ***/
 
@@ -1077,6 +1103,7 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	switch(nd->name) {
 		case easy_PAD: return easyeda_pro_parse_pad(ctx, nd);
+		case easy_VIA: return easyeda_pro_parse_via(ctx, nd);
 		case easy_POLY: return easyeda_pro_parse_poly(ctx, nd);
 		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
 		case easy_LINE: return easyeda_pro_parse_line(ctx, nd);
