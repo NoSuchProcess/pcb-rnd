@@ -947,13 +947,47 @@ static int easyeda_pro_parse_poly(easy_read_ctx_t *ctx, gdom_node_t *nd)
 }
 
 
-/* polygon
+static int pro_layer_fill(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double dthick, gdom_node_t *paths, double locked, int no_clr)
+{
+	rnd_coord_t cthick;
+	int res = 0;
+	long n;
+	pcb_layer_t *layer = NULL;
+	pcb_poly_t *poly;
+
+
+	GET_LAYER(layer, (int)lid, nd, return -1);
+	cthick = TRR(dthick);
+
+	for(n = 0; (n < paths->value.array.used) && (res == 0); n++) {
+		poly = pcb_poly_alloc(layer);
+
+		res |= pro_draw_polyobj(ctx, paths->value.array.child[n], layer, poly, NULL, cthick, NULL, NULL);
+
+		if (poly->PointN > 0) {
+			pcb_add_poly_on_layer(layer, poly);
+			if (ctx->pcb != NULL)
+				pcb_poly_init_clip(layer->parent.data, layer, poly);
+			if (!no_clr) {
+				TODO("enforce poly side clearance; figure clearance value from somewhere");
+			}
+		}
+		else
+			pcb_poly_free(poly);
+	}
+
+	(void)locked; /* ignored for now */
+	return 0;
+}
+
+
+
+/* polygon (without clipping?)
    "FILL","e46",0, "", 50,   0.2,   0,[[-165.354,135.827,"L",-149.606,135.827,-149.606,127.953...]],0]
             id    net layer  thick  ?  path                                                         locked */
 static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	double lid, dthick, locked;
-	rnd_coord_t cthick;
 	int n, res = 0, is_slot;
 	gdom_node_t *paths;
 	pcb_poly_t *poly;
@@ -966,13 +1000,15 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(locked, nd, 8, "FILL locked", return -1);
 
 	is_slot = (lid == EASY_MULTI_LAYER);
-	cthick = TRR(dthick);
 
 	if (is_slot) { /* padstack with MECH layer only for slot */
 		pcb_pstk_t *pstk;
 		pcb_pstk_shape_t shapes[2] = {0};
 		double tx = 0, ty = 0;
 		int is_plated = 0;
+		rnd_coord_t cthick;
+
+		cthick = TRR(dthick);
 
 		res |= pro_draw_polyobj(ctx, paths, NULL, NULL, &shapes[0], cthick, &tx, &ty);
 		shapes[0].layer_mask = PCB_LYT_MECH;
@@ -988,29 +1024,31 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 		/* copy padstack rot code from _pad()? */
 	}
-	else { /* layer object */
-		pcb_layer_t *layer = NULL;
+	else /* layer object */
+		res = pro_layer_fill(ctx, nd, lid, dthick, paths, locked, 1);
 
-		GET_LAYER(layer, (int)lid, nd, return -1);
-
-		for(n = 0; (n < paths->value.array.used) && (res == 0); n++) {
-			poly = pcb_poly_alloc(layer);
-
-			res |= pro_draw_polyobj(ctx, paths->value.array.child[n], layer, poly, NULL, cthick, NULL, NULL);
-
-			if (poly->PointN > 0) {
-				pcb_add_poly_on_layer(layer, poly);
-				if (ctx->pcb != NULL)
-					pcb_poly_init_clip(layer->parent.data, layer, poly);
-			}
-			else
-				pcb_poly_free(poly);
-		}
-	}
-
-	(void)locked; /* ignored for now */
 	return res;
 }
+
+
+
+/* polygon (with clipping?) 
+   "POUR","e7",0,"GND", 1,     0.1,   "gge14", 1, [[1600,2900,"L",1600,2495,700,2495,700,3320,1120,2900,1600,2900]],["SOLID",8],  0,  0]
+          id      net  layer   thick              poly                                                              render opts   ?   locked */
+static int easyeda_pro_parse_pour(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double lid, dthick, locked;
+	gdom_node_t *paths;
+	
+	REQ_ARGC_GTE(nd, 8, "FILL", return -1);
+	GET_ARG_DBL(lid, nd, 4, "FILL layer", return -1);
+	GET_ARG_DBL(dthick, nd, 5, "FILL thickness", return -1);
+	GET_ARG_ARRAY(paths, nd, 8, "FILL path", return -1);
+	GET_ARG_DBL(locked, nd, 11, "FILL locked", return -1);
+
+	return pro_layer_fill(ctx, nd, lid, dthick, paths, locked, 0);
+}
+
 
 /* "LINE","e1",0,"S$15", 1,      0,3935, 815,3935, 10,     0
            id     net    layer   x1;y1    x2;y2    thick   locked */
@@ -1214,7 +1252,7 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_VIA: return easyeda_pro_parse_via(ctx, nd);
 		case easy_POLY: return easyeda_pro_parse_poly(ctx, nd);
 		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
-		case easy_POUR: return /*easyeda_pro_parse_pour(ctx, nd)*/ 0; TODO("implement our");
+		case easy_POUR: return easyeda_pro_parse_pour(ctx, nd);
 		case easy_LINE: return easyeda_pro_parse_line(ctx, nd);
 		case easy_ATTR: return easyeda_pro_parse_attr(ctx, nd);
 		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
