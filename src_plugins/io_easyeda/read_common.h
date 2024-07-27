@@ -62,6 +62,15 @@ RND_INLINE gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 #define TRX(c)   TRR((c) - ctx->ox)
 #define TRY(c)   (ctx->is_pro ? TRY_PRO(c) : TRY_STD(c))
 
+#define HT_HAS_CONST_KEY
+typedef char *htsc_key_t;
+typedef const char *htsc_const_key_t;
+typedef rnd_coord_t htsc_value_t;
+#define HT(x) htsc_ ## x
+#include <genht/ht.h>
+#undef HT
+#undef HT_HAS_CONST_KEY
+
 typedef struct easy_read_ctx_s {
 	FILE *f;
 	gdom_node_t *root;
@@ -78,6 +87,7 @@ typedef struct easy_read_ctx_s {
 	pcb_subc_t *in_subc;     /* pro: while loading a footprint into a subc */
 	double version;          /* pro: file format version from DOCTYPE */
 	gdom_node_t *lyline[EASY_MAX_LAYERS]; /* pro: remember layer lines for delayed layer creation */
+	htsc_t rule2clr; /* pro: clearance value by rule name */
 } easy_read_ctx_t;
 
 #define error_at(ctx, node, args) \

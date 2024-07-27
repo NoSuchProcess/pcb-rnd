@@ -328,3 +328,7 @@ void easyeda_read_common_init(void)
 	easystd_layer_id2type[100-1] = PCB_LYT_DOC;
 	easystd_layer_id2type[101-1] = PCB_LYT_DOC;
 }
+
+#define HT(x) htsc_ ## x
+#include <genht/ht.c>
+#undef HT

@@ -947,7 +947,7 @@ static int easyeda_pro_parse_poly(easy_read_ctx_t *ctx, gdom_node_t *nd)
 }
 
 
-static int pro_layer_fill(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double dthick, gdom_node_t *paths, double locked, int no_clr)
+static int pro_layer_fill(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double dthick, gdom_node_t *paths, double locked, const char *clr_rule_name)
 {
 	rnd_coord_t cthick;
 	int res = 0;
@@ -968,8 +968,14 @@ static int pro_layer_fill(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, dou
 			pcb_add_poly_on_layer(layer, poly);
 			if (ctx->pcb != NULL)
 				pcb_poly_init_clip(layer->parent.data, layer, poly);
-			if (!no_clr) {
-				TODO("enforce poly side clearance; figure clearance value from somewhere");
+
+			if (clr_rule_name != NULL) {
+				rnd_coord_t clr = htsc_get(&ctx->rule2clr, clr_rule_name);
+
+				if (clr != 0) {
+					poly->enforce_clearance = clr;
+					poly->Flags = pcb_flag_add(poly->Flags, PCB_FLAG_CLEARPOLY);
+				}
 			}
 		}
 		else
@@ -1025,7 +1031,7 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		/* copy padstack rot code from _pad()? */
 	}
 	else /* layer object */
-		res = pro_layer_fill(ctx, nd, lid, dthick, paths, locked, 1);
+		res = pro_layer_fill(ctx, nd, lid, dthick, paths, locked, NULL);
 
 	return res;
 }
@@ -1034,19 +1040,21 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 /* polygon (with clipping?) 
    "POUR","e7",0,"GND", 1,     0.1,   "gge14", 1, [[1600,2900,"L",1600,2495,700,2495,700,3320,1120,2900,1600,2900]],["SOLID",8],  0,  0]
-          id      net  layer   thick              poly                                                              render opts   ?   locked */
+          id      net  layer   thick  rule        poly                                                              render opts   ?   locked */
 static int easyeda_pro_parse_pour(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	double lid, dthick, locked;
+	const char *rule = NULL;
 	gdom_node_t *paths;
 	
 	REQ_ARGC_GTE(nd, 8, "FILL", return -1);
 	GET_ARG_DBL(lid, nd, 4, "FILL layer", return -1);
 	GET_ARG_DBL(dthick, nd, 5, "FILL thickness", return -1);
+	GET_ARG_STR(rule, nd, 6, "POUR rule", return -1);
 	GET_ARG_ARRAY(paths, nd, 8, "FILL path", return -1);
 	GET_ARG_DBL(locked, nd, 11, "FILL locked", return -1);
 
-	return pro_layer_fill(ctx, nd, lid, dthick, paths, locked, 0);
+	return pro_layer_fill(ctx, nd, lid, dthick, paths, locked, rule);
 }
 
 
@@ -1242,10 +1250,46 @@ static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	(void)locked; /* ignored for now */
 }
 
+/* "RULE",  "7",  "gge14",   1,  ["mil",   11,   12,         0,   14,     13,    90, 0,    0,   16,    15,   90]
+           idx?   rulename   ?   display  clr   dist        shape spacing width deg      shape spacing width deg
+                                               to border    |---- smd thermal -----| ?   |- thru-hole thermal -| */
+static int easyeda_pro_parse_rule(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	gdom_node_t *data_nd;
+	const char *name;
+	double dclr;
+	rnd_coord_t clr;
+
+	REQ_ARGC_GTE(nd, 5, "RULE", return -1);
+	GET_ARG_STR(name, nd, 2, "RULE name", return -1);
+	GET_ARG_ARRAY(data_nd, nd, 4, "RULE data array", return -1);
+
+	if (data_nd->value.array.used < 8)
+		return 0; /* rule has a rather flexible syntax, ours are with 8..12 data fields */
+
+	GET_ARG_DBL(dclr, data_nd, 1, "RULE data clearance", return -1);
+
+	clr = TRR(dclr);
+	htsc_set(&ctx->rule2clr, (char *)name, clr);
+
+	return 0;
+}
 
 /*** parse objects: dispatcher ***/
 
-static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
+/* configuration for drawing objects */
+static int easyeda_pro_parse_drawing_obj_pass1(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+
+
+	switch(nd->name) {
+		case easy_RULE: return easyeda_pro_parse_rule(ctx, nd);
+	}
+	return 0; /* ignore anything else, pass2 will check for those */
+}
+
+/* Normal drawing objects */
+static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	switch(nd->name) {
 		case easy_PAD: return easyeda_pro_parse_pad(ctx, nd);
@@ -1262,10 +1306,13 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_NET:
 		case easy_CONNECT:
 
+		/* ignored (handled in pass 1) */
+		case easy_RULE:
+			return 0;
+
 		/* ignored (no support) */
 		case easy_ACTIVE_LAYER:
 		case easy_RULE_TEMPLATE:
-		case easy_RULE:
 		case easy_RULE_SELECTOR:
 		case easy_PANELIZE:
 		case easy_PANELIZE_STAMP:
@@ -1287,21 +1334,31 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0; /* ignore unknowns for now */
 }
 
-
 static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	long lineno;
 
 	assert(nd->type == GDOM_ARRAY);
 
+	htsc_init(&ctx->rule2clr, strhash, strkeyeq);
+
 	for(lineno = 0; lineno < nd->value.array.used; lineno++) {
 		gdom_node_t *line = ctx->root->value.array.child[lineno];
 
 		if (line->type != GDOM_ARRAY) continue;
-		if (easyeda_pro_parse_drawing_obj(ctx, line) != 0)
+		if (easyeda_pro_parse_drawing_obj_pass1(ctx, line) != 0)
 			return -1;
 	}
 
+	for(lineno = 0; lineno < nd->value.array.used; lineno++) {
+		gdom_node_t *line = ctx->root->value.array.child[lineno];
+
+		if (line->type != GDOM_ARRAY) continue;
+		if (easyeda_pro_parse_drawing_obj_pass2(ctx, line) != 0)
+			return -1;
+	}
+
+	htsc_uninit(&ctx->rule2clr); /* key is const (char *) rule name from the gendom, no need to free */
 	return 0;
 }
 
