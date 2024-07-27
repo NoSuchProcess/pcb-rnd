@@ -886,6 +886,11 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return res;
 }
 
+static int easyeda_pro_parse_line(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	
+}
+
 static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double x, double y, double anchor, double rot, double xmir, double height, double thick, int keyvis, int valvis, const char *key, const char *val)
 {
 	pcb_text_t *t;
@@ -1046,6 +1051,7 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_PAD: return easyeda_pro_parse_pad(ctx, nd);
 		case easy_POLY: return easyeda_pro_parse_poly(ctx, nd);
 		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
+		case easy_LINE: return easyeda_pro_parse_line(ctx, nd);
 		case easy_ATTR: return easyeda_pro_parse_attr(ctx, nd);
 		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
 
@@ -1208,7 +1214,36 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 
 static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rnd_conf_role_t settings_dest)
 {
-	rnd_trace("*** parse board ***\n");
-	return -1;
+	easy_read_ctx_t ctx = {0};
+	int res = 0;
+
+	ctx.is_pro = 1;
+	ctx.is_footprint = 1;
+	ctx.pcb = pcb;
+	ctx.fn = fn;
+	ctx.data = pcb->Data;
+
+	ctx.settings_dest = settings_dest;
+
+	/* eat up the bom */
+	if (easyeda_eat_bom(f, fn) != 0)
+		return -1;
+
+	/* run low level */
+	ctx.root = easypro_low_parse(f);
+	if (ctx.root == NULL) {
+		rnd_message(RND_MSG_ERROR, "easyeda pro: failed to run the low level parser on %s\n", fn);
+		return -1;
+	}
+
+	rnd_trace("load board\n");
+
+	assert(ctx.root->type == GDOM_ARRAY);
+	if (res == 0) res = easyeda_pro_parse_doctype(&ctx);
+	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
+	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
+	if (res == 0) res = easyeda_pro_parse_drawing_objs(&ctx, ctx.root);
+
+	return res;
 }
 
