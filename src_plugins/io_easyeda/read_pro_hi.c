@@ -714,7 +714,7 @@ static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c
 
 }
 
-static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, rnd_coord_t thick)
+static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, pcb_pstk_shape_t *in_shape, rnd_coord_t thick, double *shp_tx, double *shp_ty)
 {
 	int res;
 	double lx, ly, x, y, r, cx, cy, ex, ey, delta, srad, erad;
@@ -751,7 +751,11 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 					GET_ARG_DBL(y, &p, 1, "POLY path  :y", return -1);
 					ASHIFT(2);
 
-					if (in_poly == NULL) {
+					if (in_shape != NULL) {
+						error_at(ctx, path, ("line in slot not yet supported\n"));
+						return -1;
+					}
+					else if (in_poly == NULL) {
 						pcb_line_t *line = pcb_line_alloc(layer);
 
 						line->Point1.X = TRX(lx);
@@ -785,7 +789,13 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				GET_ARG_DBL(r, &p, 2, "POLY path CIRCLE r", return -1);
 				ASHIFT(3);
 
-				if (in_poly == NULL) {
+				if (in_shape != NULL) {
+					in_shape->shape = PCB_PSSH_CIRC;
+					in_shape->data.circ.dia = TRR(r*2.0);
+					*shp_tx = x;
+					*shp_ty = y;
+				}
+				else if (in_poly == NULL) {
 					pcb_arc_t *arc = pcb_arc_alloc(layer);
 
 					arc->X = TRX(x);
@@ -819,6 +829,10 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				}
 
 /*				rnd_trace("arc STR: %f %f srad: %f erad: %f\n", lx, ly, srad, erad);*/
+				if (in_shape != NULL) {
+					error_at(ctx, path, ("arc in slot not yet supported\n"));
+					return -1;
+				}
 				if (in_poly == NULL) {
 					pcb_arc_t *arc = pcb_arc_alloc(layer);
 
@@ -873,20 +887,19 @@ static int easyeda_pro_parse_poly(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	(void)locked; /* ignored for now */
 
-	return pro_draw_polyobj(ctx, path, layer, NULL, TRR(thick));
+	return pro_draw_polyobj(ctx, path, layer, NULL, NULL, TRR(thick), NULL, NULL);
 }
 
 
 /* polygon
    "FILL","e46",0, "", 50,   0.2,   0,[[-165.354,135.827,"L",-149.606,135.827,-149.606,127.953...]],0]
-            id    net layer  thick     path                                                         locked */
+            id    net layer  thick  ?  path                                                         locked */
 static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	double lid, dthick, locked;
 	rnd_coord_t cthick;
-	int n, res = 0;
+	int n, res = 0, is_slot;
 	gdom_node_t *paths;
-	pcb_layer_t *layer = NULL;
 	pcb_poly_t *poly;
 
 
@@ -896,21 +909,46 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_ARRAY(paths, nd, 7, "FILL path", return -1);
 	GET_ARG_DBL(locked, nd, 8, "FILL locked", return -1);
 
-	GET_LAYER(layer, (int)lid, nd, return -1);
+	is_slot = (lid == EASY_MULTI_LAYER);
 	cthick = TRR(dthick);
 
-	(void)locked; /* ignored for now */
+	if (is_slot) { /* padstack with MECH layer only for slot */
+		pcb_pstk_t *pstk;
+		pcb_pstk_shape_t shapes[2] = {0};
+		double tx = 0, ty = 0;
+		int is_plated = 0;
 
-	for(n = 0; (n < paths->value.array.used) && (res == 0); n++) {
-		poly = pcb_poly_alloc(layer);
+		res |= pro_draw_polyobj(ctx, paths, NULL, NULL, &shapes[0], cthick, &tx, &ty);
+		shapes[0].layer_mask = PCB_LYT_MECH;
+		shapes[0].comb = PCB_LYC_AUTO;
 
-		res |= pro_draw_polyobj(ctx, paths->value.array.child[n], layer, poly, cthick);
+		pstk = pcb_pstk_new_from_shape(ctx->data, TRX(tx), TRY(ty), 0, is_plated, 0, shapes);
+		if (pstk == NULL) {
+			error_at(ctx, nd, ("Failed to create padstack for multilayer fill\n"));
+			return -1;
+		}
+		pstk->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+		pstk->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
-		pcb_add_poly_on_layer(layer, poly);
-		if (ctx->pcb != NULL)
-			pcb_poly_init_clip(layer->parent.data, layer, poly);
+		/* copy padstack rot code from _pad()? */
+	}
+	else { /* layer object */
+		pcb_layer_t *layer = NULL;
+
+		GET_LAYER(layer, (int)lid, nd, return -1);
+
+		for(n = 0; (n < paths->value.array.used) && (res == 0); n++) {
+			poly = pcb_poly_alloc(layer);
+
+			res |= pro_draw_polyobj(ctx, paths->value.array.child[n], layer, poly, NULL, cthick, NULL, NULL);
+
+			pcb_add_poly_on_layer(layer, poly);
+			if (ctx->pcb != NULL)
+				pcb_poly_init_clip(layer->parent.data, layer, poly);
+		}
 	}
 
+	(void)locked; /* ignored for now */
 	return res;
 }
 
