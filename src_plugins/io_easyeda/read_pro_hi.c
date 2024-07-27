@@ -985,6 +985,7 @@ static int easyeda_pro_parse_line(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
+/* xmir == -1 means automatic (mirror on bottom) */
 static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double x, double y, double anchor, double rot, double xmir, double height, double thick, int keyvis, int valvis, const char *key, const char *val)
 {
 	pcb_text_t *t;
@@ -994,6 +995,10 @@ static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, do
 	int dyn = 0;
 
 	GET_LAYER(layer, (int)lid, nd, return -1);
+
+	/* auto-mirror on bottom when requested */
+	if (xmir == -1)
+			xmir = !!(pcb_layer_flags_(layer) & PCB_LYT_BOTTOM);
 
 	switch((int)anchor) {
 		case 1: acx = -1; acy = -1; break; /* left-top */
@@ -1131,6 +1136,9 @@ static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(rot, nd, 13, "STRING anchor", return -1);
 	GET_ARG_DBL(xmir, nd, 16, "STRING xmir", return -1);
 	GET_ARG_DBL(locked, nd, 17, "STRING locked", return -1);
+
+	if (!ctx->is_footprint && (xmir == 0))
+		xmir = -1;
 
 	return pro_create_text(ctx, nd, lid, x, y, anchor, rot, xmir, height, thick, 1, 0, textstr, NULL);
 	(void)locked; /* ignored for now */
