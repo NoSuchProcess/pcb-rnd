@@ -1272,6 +1272,17 @@ static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rn
 	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
 	if (res == 0) res = easyeda_pro_parse_drawing_objs(&ctx, ctx.root);
 
+	/* adjust coordinate systems by moving the design down by bbox Y1 and set up drawing area dimensions */
+	{
+		rnd_box_t bb;
+		pcb_data_bbox(&bb, ctx.data, 1);
+		pcb_data_move(ctx.data, 0, -bb.Y1, 0);
+		pcb->hidlib.dwg.X1 = bb.X1;
+		pcb->hidlib.dwg.Y1 = -bb.Y2;
+		pcb->hidlib.dwg.X2 = bb.X2;
+		pcb->hidlib.dwg.Y2 = -bb.Y1;
+	}
+
 	return res;
 }
 
