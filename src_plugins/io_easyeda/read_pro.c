@@ -140,6 +140,9 @@ int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_con
 	res = epro_load_board(&epro);
 
 	error:;
+	if (!conf_io_easyeda.plugins.io_easyeda.debug.unzip_static)
+		rnd_rmtempdir(NULL, &epro.zipdir);
+
 	epro_uninit(&epro);
 	return res;
 }
