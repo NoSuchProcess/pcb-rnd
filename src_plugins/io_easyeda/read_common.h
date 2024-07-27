@@ -50,7 +50,6 @@ RND_INLINE gdom_node_t *node_parent_with_loc(gdom_node_t *node)
 }
 
 #define EASY_MAX_LAYERS 128
-#define EASY_MULTI_LAYER 11
 
 #define TRR_STD(c)   ((rnd_coord_t)RND_MIL_TO_COORD((c) * 10.0))
 #define TRR_PRO(c)   ((rnd_coord_t)RND_MIL_TO_COORD((c)))

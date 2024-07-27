@@ -100,6 +100,8 @@ const int easypro_layertab[] = {5, 7, 3, 1, LAYERTAB_INNER, 2, 8, 6, 4,    9, 10
 const int easypro_layertab_in_first = 15;
 const int easypro_layertab_in_last = 46;
 
+#define EASY_MULTI_LAYER 12
+
 
 
 #define REQ_ARGC_(nd, op, num, errstr, errstmt) \
@@ -517,7 +519,7 @@ static int pro_parse_slot_shape(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, dou
 1.7 "PAD","e6",0,"", 1, "5",75.003,107.867,0,  null,   ["OVAL",23.622,59.843],[],  0,  0,  null,  1,       0,    2,2,  0,0,   0,   null,null,null,null,[]
            id        ly num  x      y      rot [slot]  [ shape ]                  ofx ofy  rot    plate          mask  paste  lock
                                                                                  \---slot---/
-   ly==12 means all layers (EASY_MULTI_LAYER+1) */
+   ly==12 means all layers (EASY_MULTI_LAYER) */
 static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	const char *termid;
@@ -557,7 +559,7 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	if ((plating < 0) || (plating > 1))
 		error_at(ctx, nd, ("PAD: invalid plating value %f\n", plating));
 
-	is_any = (lid == (EASY_MULTI_LAYER+1));
+	is_any = (lid == EASY_MULTI_LAYER);
 	is_plated = (plating == 1);
 	cmask = TRR(dmask);
 	cpaste = TRR(dpaste);

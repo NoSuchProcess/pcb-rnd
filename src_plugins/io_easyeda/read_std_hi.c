@@ -92,6 +92,7 @@ const int easystd_layertab[] = {5, 3, 7, 1, LAYERTAB_INNER, 2, 8, 4, 6, 10, 12, 
 const int easystd_layertab_in_first = 21;
 const int easystd_layertab_in_last = 52;
 
+#define EASY_MULTI_LAYER 11
 
 /*** board meta ***/
 
