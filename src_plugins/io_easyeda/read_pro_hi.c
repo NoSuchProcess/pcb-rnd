@@ -1246,7 +1246,6 @@ static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rn
 	int res = 0;
 
 	ctx.is_pro = 1;
-	ctx.is_footprint = 1;
 	ctx.pcb = pcb;
 	ctx.fn = fn;
 	ctx.data = pcb->Data;
