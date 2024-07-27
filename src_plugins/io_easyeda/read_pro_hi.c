@@ -717,9 +717,10 @@ static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c
 static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, pcb_pstk_shape_t *in_shape, rnd_coord_t thick, double *shp_tx, double *shp_ty)
 {
 	int res;
-	double lx, ly, x, y, r, cx, cy, ex, ey, delta, srad, erad;
+	double lx, ly, x, y, r, cx, cy, ex, ey, delta, srad, erad, x1, y1, x2, y2, w, h;
 	const char *cmd;
 	gdom_node_t p;
+	pcb_poly_t *tmp_poly;
 
 #define ASHIFT(n) p.value.array.child+=n,p.value.array.used-=n
 
@@ -811,6 +812,61 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				}
 				else
 					pro_draw_polyarc(ctx, in_poly, x, y, r, 0, 2*3.141592654);
+				break;
+
+			case 'R':
+				if (cmd[1] != '\0') goto unknown;
+				REQ_ARGC_GTE(&p, 5, "POLY path R(ect) coords", return -1);
+				GET_ARG_DBL(x1, &p, 0, "POLY path R(ect) x1", return -1);
+				GET_ARG_DBL(y1, &p, 1, "POLY path R(ect) y1", return -1);
+				GET_ARG_DBL(w, &p, 2, "POLY path R(ect) w", return -1);
+				GET_ARG_DBL(h, &p, 3, "POLY path R(ect) h", return -1);
+				GET_ARG_DBL(r, &p, 4, "POLY path R(ect) corner radius", return -1);
+				ASHIFT(5);
+
+				TODO("corner radius is not handled");
+
+				x2 = x1 + w;
+				y2 = y1 + h;
+
+				if (in_shape != NULL) {
+/*
+					in_shape->shape = PCB_PSSH_CIRC;
+					in_shape->data.circ.dia = TRR(r*2.0);
+					*shp_tx = x;
+					*shp_ty = y;
+*/
+					error_at(ctx, path, ("rect in slot not yet supported\n"));
+					return -1;
+				}
+				else if (in_poly == NULL)
+					tmp_poly = pcb_poly_alloc(layer);
+				else
+					tmp_poly = in_poly;
+
+				/* draw the rectangle */
+				{
+					rnd_point_t *pt;
+
+					pt = pcb_poly_point_alloc(tmp_poly);
+					pt->X = TRX(x1); pt->Y = TRY(y1);
+
+					pt = pcb_poly_point_alloc(tmp_poly);
+					pt->X = TRX(x2); pt->Y = TRY(y1);
+
+					pt = pcb_poly_point_alloc(tmp_poly);
+					pt->X = TRX(x2); pt->Y = TRY(y2);
+
+					pt = pcb_poly_point_alloc(tmp_poly);
+					pt->X = TRX(x1); pt->Y = TRY(y2);
+				}
+				
+				if (in_poly == NULL) {
+					pcb_add_poly_on_layer(layer, tmp_poly);
+					if (ctx->pcb != NULL)
+						pcb_poly_init_clip(layer->parent.data, layer, tmp_poly);
+				}
+
 				break;
 
 			case 'A':
@@ -1158,6 +1214,7 @@ static int easyeda_pro_parse_drawing_obj(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		case easy_VIA: return easyeda_pro_parse_via(ctx, nd);
 		case easy_POLY: return easyeda_pro_parse_poly(ctx, nd);
 		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
+		case easy_POUR: return /*easyeda_pro_parse_pour(ctx, nd)*/ 0; TODO("implement our");
 		case easy_LINE: return easyeda_pro_parse_line(ctx, nd);
 		case easy_ATTR: return easyeda_pro_parse_attr(ctx, nd);
 		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
