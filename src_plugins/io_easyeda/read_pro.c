@@ -127,13 +127,17 @@ int easyeda_pro_parse_epro_board(pcb_board_t *pcb, const char *Filename, rnd_con
 	}
 	free(cmd);
 
+	epro.zipname = Filename;
+	epro.pcb = pcb;
+	epro.settings_dest = settings_dest;
+
 	if (epro_load_project_json(&epro) != 0)
 		goto error;
 
 	if (epro_select_board(&epro) != 0)
 		goto error;
 
-	TODO("load the board");
+	res = epro_load_board(&epro);
 
 	error:;
 	epro_uninit(&epro);

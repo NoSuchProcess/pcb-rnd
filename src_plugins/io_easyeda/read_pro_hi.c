@@ -1205,3 +1205,10 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 
 	return res;
 }
+
+static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rnd_conf_role_t settings_dest)
+{
+	rnd_trace("*** parse board ***\n");
+	return -1;
+}
+

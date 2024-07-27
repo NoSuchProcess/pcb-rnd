@@ -6,6 +6,8 @@
 typedef struct epro_s {
 	pcb_board_t *pcb;
 	gds_t zipdir; /* where the zip is unpacked */
+	const char *zipname;  /* original file name */
+	rnd_conf_role_t settings_dest;
 
 	const char *want_pcb_name;
 
@@ -220,6 +222,33 @@ static int epro_select_board(epro_t *epro)
 
 	return 0;
 }
+
+static int epro_load_board(epro_t *epro)
+{
+	int res;
+	long save;
+	FILE *f;
+
+	save = epro->zipdir.used;
+	gds_append_str(&epro->zipdir, "/PCB/");
+	gds_append_str(&epro->zipdir, epro->want_pcb_name);
+	gds_append_str(&epro->zipdir, ".epcb");
+
+	f = rnd_fopen(&epro->pcb->hidlib, epro->zipdir.array, "r");
+	if (f == NULL)
+		rnd_message(RND_MSG_ERROR, "failed to open epro file's PCB %s\n", epro->zipdir.array);
+	epro->zipdir.used = save;
+	epro->zipdir.array[save] = '\0';
+	if (f == NULL)
+		return -1;
+
+	res = easyeda_pro_parse_board(epro->pcb, epro->zipname, f, epro->settings_dest);
+
+	fclose(f);
+
+	return res;
+}
+
 
 static void epro_uninit(epro_t *epro)
 {
