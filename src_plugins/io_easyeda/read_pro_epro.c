@@ -264,6 +264,5 @@ static void epro_uninit(epro_t *epro)
 	htss_uninit(&epro->pcb2fn);
 	htss_uninit(&epro->fp2fn);
 
-	TODO("clean up the temp dir");
 	gds_uninit(&epro->zipdir);
 }
