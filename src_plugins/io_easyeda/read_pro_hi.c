@@ -1318,10 +1318,8 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
 		case easy_POUR: return easyeda_pro_parse_pour(ctx, nd);
 		case easy_LINE: return easyeda_pro_parse_line(ctx, nd);
-		case easy_ATTR: return easyeda_pro_parse_attr(ctx, nd);
 		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
 		case easy_COMPONENT: return easyeda_pro_parse_component(ctx, nd);
-		case easy_PAD_NET: return easyeda_pro_parse_pad_net(ctx, nd);
 
 		TODO("handle these");
 		case easy_LAYER_PHYS: /* physical stackup with extra info on substrate */
@@ -1330,6 +1328,11 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 
 		/* ignored (handled in pass 1) */
 		case easy_RULE:
+			return 0;
+
+		/* ignored (handled in pass 3) */
+		case easy_ATTR:
+		case easy_PAD_NET:
 			return 0;
 
 		/* ignored (no support) */
@@ -1356,6 +1359,16 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 	return 0; /* ignore unknowns for now */
 }
 
+/* objects with back-references to pass2 objects */
+static int easyeda_pro_parse_drawing_obj_pass3(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	switch(nd->name) {
+		case easy_ATTR: return easyeda_pro_parse_attr(ctx, nd);
+		case easy_PAD_NET: return easyeda_pro_parse_pad_net(ctx, nd);
+	}
+	return 0; /* ignore anything else, pass2 will check for those */
+}
+
 static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	long lineno;
@@ -1377,6 +1390,15 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 		if (line->type != GDOM_ARRAY) continue;
 		if (easyeda_pro_parse_drawing_obj_pass2(ctx, line) != 0)
+			return -1;
+	}
+
+
+	for(lineno = 0; lineno < nd->value.array.used; lineno++) {
+		gdom_node_t *line = ctx->root->value.array.child[lineno];
+
+		if (line->type != GDOM_ARRAY) continue;
+		if (easyeda_pro_parse_drawing_obj_pass3(ctx, line) != 0)
 			return -1;
 	}
 

@@ -84,7 +84,7 @@ typedef struct easy_read_ctx_s {
 	unsigned is_pro:1;
 
 	pcb_text_t *last_refdes; /* std: last text object created as a refdes dyntext+floater */
-	pcb_subc_t *in_subc;     /* pro: subc being built, while loading a footprint into a subc; or (last seen) subc pads/attrs are part of while loading a board */
+	pcb_subc_t *in_subc;     /* pro: subc being built, while loading a footprint into a subc */
 	double version;          /* pro: file format version from DOCTYPE */
 	gdom_node_t *lyline[EASY_MAX_LAYERS]; /* pro: remember layer lines for delayed layer creation */
 	htsc_t rule2clr; /* pro: clearance value by rule name */
