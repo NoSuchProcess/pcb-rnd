@@ -1047,13 +1047,12 @@ static int easyeda_pro_parse_pour(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	const char *rule = NULL;
 	gdom_node_t *paths;
 
-	TODO("typo: s/FILL/POUR/");
-	REQ_ARGC_GTE(nd, 8, "FILL", return -1);
-	GET_ARG_DBL(lid, nd, 4, "FILL layer", return -1);
-	GET_ARG_DBL(dthick, nd, 5, "FILL thickness", return -1);
+	REQ_ARGC_GTE(nd, 8, "POUR", return -1);
+	GET_ARG_DBL(lid, nd, 4, "POUR layer", return -1);
+	GET_ARG_DBL(dthick, nd, 5, "POUR thickness", return -1);
 	GET_ARG_STR(rule, nd, 6, "POUR rule", return -1);
-	GET_ARG_ARRAY(paths, nd, 8, "FILL path", return -1);
-	GET_ARG_DBL(locked, nd, 11, "FILL locked", return -1);
+	GET_ARG_ARRAY(paths, nd, 8, "POUR path", return -1);
+	GET_ARG_DBL(locked, nd, 11, "POUR locked", return -1);
 
 	return pro_layer_fill(ctx, nd, lid, dthick, paths, locked, rule);
 }
