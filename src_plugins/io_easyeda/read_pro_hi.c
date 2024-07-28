@@ -1181,8 +1181,8 @@ static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, do
 }
 
 /* attribute with or without floater dyntext 
-   "ATTR",  "e0",  0,  "",  3,   -321.652,-590.45,  "Price",  "",   1,       1,   "default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
-                          layer     x        y        key     val  keyvis  valvis   font     height thick ?   ?  anchor rot  invert invert-expand   xmir locked
+   "ATTR",  "e0",  0,  "",      3,   -321.652,-590.45,  "Price",  "",   1,       1,   "default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
+                      subcid  layer     x        y        key     val  keyvis  valvis   font     height thick ?   ?  anchor rot  invert invert-expand   xmir locked
    anchors: 1=left-top 2=left-middle 3=left-bottom 4=cent-top 5=cent-middle 6=cent-bottom 7=right-top 8=right-middle 9=right-bottom */
 static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
@@ -1275,6 +1275,9 @@ static int easyeda_pro_parse_rule(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
+/*
+	"COMPONENT", "e12", 0, 1,     930, 2710, 0,   {"Designator":"U1",...}, 0
+	               id   ?  layer   x    y    rot    props                  lock */
 static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	TODO("implement me");
@@ -1282,6 +1285,8 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 }
 
 
+/* "PAD_NET", "e12",    "1",  "S$5538"
+              subc id   pin   net      */
 static int easyeda_pro_parse_pad_net(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	TODO("implement me");
