@@ -1046,7 +1046,8 @@ static int easyeda_pro_parse_pour(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	double lid, dthick, locked;
 	const char *rule = NULL;
 	gdom_node_t *paths;
-	
+
+	TODO("typo: s/FILL/POUR/");
 	REQ_ARGC_GTE(nd, 8, "FILL", return -1);
 	GET_ARG_DBL(lid, nd, 4, "FILL layer", return -1);
 	GET_ARG_DBL(dthick, nd, 5, "FILL thickness", return -1);
@@ -1296,12 +1297,31 @@ static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, co
 	               id   ?  layer   x    y    rot    props                  lock */
 static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
-	const char *fp_name;
+	const char *sid;
 	pcb_subc_t *src;
+	double lid, x, y, rot, locked;
+	gdom_node_t *props_nd, *name_nd;
 
-/*	props:Name*/
-	fp_name = "TODO";
-	src = pro_subc_from_cache(ctx, nd, fp_name);
+	REQ_ARGC_GTE(nd, 9, "COMPONENT", return -1);
+	GET_ARG_STR(sid, nd, 1, "COMPONENT id", return -1);
+	GET_ARG_DBL(lid, nd, 3, "COMPONENT layer id", return -1);
+	GET_ARG_DBL(x, nd, 4, "COMPONENT x", return -1);
+	GET_ARG_DBL(y, nd, 5, "COMPONENT y", return -1);
+	GET_ARG_DBL(rot, nd, 6, "COMPONENT rot", return -1);
+	GET_ARG_HASH(props_nd, nd, 7, "COMPONENT properties", return -1);
+	GET_ARG_DBL(y, nd, 8, "COMPONENT locked", return -1);
+
+	name_nd = gdom_hash_get(props_nd, easy_Name);
+	if (name_nd == NULL) {
+		error_at(ctx, nd, ("COMPONENT without a Name field\n"));
+		return -1;
+	}
+	if (name_nd->type != GDOM_STRING) {
+		error_at(ctx, nd, ("COMPONENT with a Name field not a string\n"));
+		return -1;
+	}
+
+	src = pro_subc_from_cache(ctx, nd, name_nd->value.str);
 	if (src == NULL)
 		return -1;
 

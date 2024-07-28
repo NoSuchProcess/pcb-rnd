@@ -13,6 +13,8 @@ typedef struct epro_s {
 
 	htss_t pcb2fn; /* key: pcb human readable name; value: UID (file name) */
 	htss_t fp2fn; /* key: footprint name as referenced from pcb; value: UID (file name) */
+	gds_t fp_tmp; /* building footprint names for return */
+	long fp_tmp_len;
 } epro_t;
 
 static int epro_load_pcbs(epro_t *epro, gdom_node_t *pcbs)
@@ -225,8 +227,21 @@ static int epro_select_board(epro_t *epro)
 
 static const char *epro_fplib_resolve(void *fplib_resolve_ctx, const char *ref_name)
 {
-	rnd_trace("epro_fplib_resolve(): '%s'\n", ref_name);
-	return NULL;
+	epro_t *epro = fplib_resolve_ctx;
+	const char *fn = htss_get(&epro->fp2fn, ref_name);
+	rnd_trace("### epro_fplib_resolve(): '%s' -> '%s'\n", ref_name, fn);
+
+	if (epro->fp_tmp.used == 0) {
+		gds_append_len(&epro->fp_tmp, epro->zipdir.array, epro->zipdir.used);
+		gds_append_str(&epro->fp_tmp, "/FOOTPRINT/");
+		epro->fp_tmp_len = epro->fp_tmp.used;
+	}
+	else
+		epro->fp_tmp.used = epro->fp_tmp_len;
+
+	gds_append_str(&epro->fp_tmp, epro->want_pcb_name);
+	gds_append_str(&epro->fp_tmp, ".efoo");
+	return epro->fp_tmp.array;
 }
 
 static int epro_load_board(epro_t *epro)
@@ -271,4 +286,5 @@ static void epro_uninit(epro_t *epro)
 	htss_uninit(&epro->fp2fn);
 
 	gds_uninit(&epro->zipdir);
+	gds_uninit(&epro->fp_tmp);
 }
