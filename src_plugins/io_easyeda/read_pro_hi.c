@@ -1278,8 +1278,12 @@ static int easyeda_pro_parse_rule(easy_read_ctx_t *ctx, gdom_node_t *nd)
 static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, const char *fp_name)
 {
 	const char *filename;
+	pcb_subc_t *subc;
 
-	TODO("implement me");
+	subc = htsp_get(&ctx->fp2subc, fp_name);
+	if (subc != NULL)
+		return subc;
+
 	filename = ctx->fplib_resolve(ctx->fplib_resolve_ctx, fp_name);
 	if (filename == NULL) {
 		error_at(ctx, nd, ("Can not find footprint '%s' in project.json\n", fp_name));
@@ -1288,7 +1292,10 @@ static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, co
 
 	rnd_trace("---> resolved fplib ref '%s' to '%s'\n", fp_name, filename);
 
-	return NULL;
+	TODO("load subc here");
+	htsp_set(&ctx->fp2subc, rnd_strdup(fp_name), subc);
+
+	return subc;
 }
 
 /*
@@ -1420,6 +1427,8 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	assert(nd->type == GDOM_ARRAY);
 
 	htsc_init(&ctx->rule2clr, strhash, strkeyeq);
+	if (!ctx->is_footprint)
+		htsp_init(&ctx->fp2subc, strhash, strkeyeq);
 
 	for(lineno = 0; lineno < nd->value.array.used; lineno++) {
 		gdom_node_t *line = ctx->root->value.array.child[lineno];
@@ -1447,6 +1456,15 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	}
 
 	htsc_uninit(&ctx->rule2clr); /* key is const (char *) rule name from the gendom, no need to free */
+
+	if (!ctx->is_footprint) {
+		htsp_entry_t *e;
+		for(e = htsp_first(&ctx->fp2subc); e != NULL; e = htsp_next(&ctx->fp2subc, e)) {
+			free(e->key);
+			TODO("remove and free (pcb_subc_t *)e->value");
+		}
+		htsp_uninit(&ctx->fp2subc);
+	}
 	return 0;
 }
 

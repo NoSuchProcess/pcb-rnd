@@ -88,6 +88,7 @@ typedef struct easy_read_ctx_s {
 	double version;          /* pro: file format version from DOCTYPE */
 	gdom_node_t *lyline[EASY_MAX_LAYERS]; /* pro: remember layer lines for delayed layer creation */
 	htsc_t rule2clr; /* pro: clearance value by rule name */
+	htsp_t fp2subc;  /* pro: char * footprint name to pcb_subc_t *; name is strdup'd; the subc is temporarily created on the board */
 
 	/* pro: resolve a reference name to a file name using epro */
 	void *fplib_resolve_ctx;
