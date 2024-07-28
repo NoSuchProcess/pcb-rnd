@@ -1038,7 +1038,7 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 
 
-/* polygon (with clipping?) 
+/* polygon (with clipping?)
    "POUR","e7",0,"GND", 1,     0.1,   "gge14", 1, [[1600,2900,"L",1600,2495,700,2495,700,3320,1120,2900,1600,2900]],["SOLID",8],  0,  0]
           id      net  layer   thick  rule        poly                                                              render opts   ?   locked */
 static int easyeda_pro_parse_pour(easy_read_ctx_t *ctx, gdom_node_t *nd)
