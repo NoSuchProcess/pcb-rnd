@@ -88,6 +88,10 @@ typedef struct easy_read_ctx_s {
 	double version;          /* pro: file format version from DOCTYPE */
 	gdom_node_t *lyline[EASY_MAX_LAYERS]; /* pro: remember layer lines for delayed layer creation */
 	htsc_t rule2clr; /* pro: clearance value by rule name */
+
+	/* pro: resolve a reference name to a file name using epro */
+	void *fplib_resolve_ctx;
+	const char *(*fplib_resolve)(void *fplib_resolve_ctx, const char *ref_name);
 } easy_read_ctx_t;
 
 #define error_at(ctx, node, args) \

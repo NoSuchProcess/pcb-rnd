@@ -223,6 +223,12 @@ static int epro_select_board(epro_t *epro)
 	return 0;
 }
 
+static const char *epro_fplib_resolve(void *fplib_resolve_ctx, const char *ref_name)
+{
+	rnd_trace("epro_fplib_resolve(): '%s'\n", ref_name);
+	return NULL;
+}
+
 static int epro_load_board(epro_t *epro)
 {
 	int res;
@@ -242,7 +248,7 @@ static int epro_load_board(epro_t *epro)
 	if (f == NULL)
 		return -1;
 
-	res = easyeda_pro_parse_board(epro->pcb, epro->zipname, f, epro->settings_dest);
+	res = easyeda_pro_parse_board(epro->pcb, epro->zipname, f, epro->settings_dest, epro_fplib_resolve, epro);
 
 	fclose(f);
 

@@ -1275,11 +1275,36 @@ static int easyeda_pro_parse_rule(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
+static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, const char *fp_name)
+{
+	const char *filename;
+
+	TODO("implement me");
+	filename = ctx->fplib_resolve(ctx->fplib_resolve_ctx, fp_name);
+	if (filename == NULL) {
+		error_at(ctx, nd, ("Can not find footprint '%s' in project.json\n", fp_name));
+		return NULL;
+	}
+
+	rnd_trace("---> resolved fplib ref '%s' to '%s'\n", fp_name, filename);
+
+	return NULL;
+}
+
 /*
 	"COMPONENT", "e12", 0, 1,     930, 2710, 0,   {"Designator":"U1",...}, 0
 	               id   ?  layer   x    y    rot    props                  lock */
 static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
+	const char *fp_name;
+	pcb_subc_t *src;
+
+/*	props:Name*/
+	fp_name = "TODO";
+	src = pro_subc_from_cache(ctx, nd, fp_name);
+	if (src == NULL)
+		return -1;
+
 	TODO("implement me");
 	return 0;
 }
@@ -1515,7 +1540,7 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 	return res;
 }
 
-static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rnd_conf_role_t settings_dest)
+static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rnd_conf_role_t settings_dest, const char *(*fplib_resolve)(void *, const char *), void *fplib_ctx)
 {
 	easy_read_ctx_t ctx = {0};
 	int res = 0;
@@ -1526,6 +1551,8 @@ static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rn
 	ctx.data = pcb->Data;
 
 	ctx.settings_dest = settings_dest;
+	ctx.fplib_resolve_ctx = fplib_ctx;
+	ctx.fplib_resolve = fplib_resolve;
 
 	/* eat up the bom */
 	if (easyeda_eat_bom(f, fn) != 0)
