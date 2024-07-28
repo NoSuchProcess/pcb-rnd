@@ -1275,6 +1275,21 @@ static int easyeda_pro_parse_rule(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
+static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	TODO("implement me");
+	return 0;
+}
+
+
+static int easyeda_pro_parse_pad_net(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	TODO("implement me");
+	return 0;
+}
+
+
+
 /*** parse objects: dispatcher ***/
 
 /* configuration for drawing objects */
@@ -1300,6 +1315,8 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_LINE: return easyeda_pro_parse_line(ctx, nd);
 		case easy_ATTR: return easyeda_pro_parse_attr(ctx, nd);
 		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
+		case easy_COMPONENT: return easyeda_pro_parse_component(ctx, nd);
+		case easy_PAD_NET: return easyeda_pro_parse_pad_net(ctx, nd);
 
 		TODO("handle these");
 		case easy_LAYER_PHYS: /* physical stackup with extra info on substrate */

@@ -141,3 +141,17 @@ REGION
 LINE
 VIA
 POUR
+COMPONENT
+PAD_NET
+Designator
+Add into BOM
+Unique ID
+Name
+Supplier
+Supplier Part
+Manufacturer
+Manufacturer Part
+JLCPCB Part Class
+3D Model
+3D Model Transform
+3D Model Title
