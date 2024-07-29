@@ -1402,15 +1402,33 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
               subc id   pin   net      */
 static int easyeda_pro_parse_pad_net(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
-	TODO("implement me");
-/*
+	const char *sid, *pinname, *netname, *refdes;
 	pcb_subc_t *in_subc;
+
+
+	REQ_ARGC_GTE(nd, 4, "PAD_NET", return -1);
+	GET_ARG_STR(sid, nd, 1, "PAD_NET COMPONENT id", return -1);
+	GET_ARG_STR(pinname, nd, 2, "PAD_NET pin", return -1);
+	GET_ARG_STR(netname, nd, 3, "PAD_NET net", return -1);
+
+	if ((netname == NULL) || (*netname == '\0'))
+		return 0; /* disconnected pads are also stored */
+
 	in_subc = pro_get_parent_subc(ctx, nd, sid);
 	if (in_subc == NULL) {
-		error_at(ctx, nd, ("ATTR: no parent\n"));
+		error_at(ctx, nd, ("PAD_NET: no parent\n"));
 		return -1;
 	}
-*/
+
+	refdes = pcb_attribute_get(&in_subc->Attributes, "refdes");
+	if (refdes != NULL) {
+		pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
+		pcb_net_term_get(net, refdes, pinname, 1);
+	}
+	else {
+		error_at(ctx, nd, ("Internal error: PAD_NET: parent subc has no refdes, can't create net\n"));
+		return -1;
+	}
 
 	return 0;
 }
