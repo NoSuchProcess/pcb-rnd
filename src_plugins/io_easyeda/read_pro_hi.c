@@ -1555,7 +1555,7 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		htsp_entry_t *e;
 		for(e = htsp_first(&ctx->fp2subc); e != NULL; e = htsp_next(&ctx->fp2subc, e)) {
 			free(e->key);
-			TODO("remove and free (pcb_subc_t *)e->value");
+			/* e->value is a subc within ctx->subc_data, which is free'd at pcb_data_uninit() below */
 		}
 		htsp_uninit(&ctx->fp2subc);
 		htsp_uninit(&ctx->id2subc);
