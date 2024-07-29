@@ -103,7 +103,7 @@ const int easypro_layertab_in_last = 46;
 #define EASY_MULTI_LAYER 12
 
 
-static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footprint);
+static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footprint, pcb_subc_t **subc_out);
 
 
 #define REQ_ARGC_(nd, op, num, errstr, errstmt) \
@@ -1212,7 +1212,7 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	if (ctx->in_subc == NULL) {
 		error_at(ctx, nd, ("ATTR without subcircuit\n"));
-		return -1;
+		return 0;
 	}
 
 	pcb_attribute_put(&ctx->in_subc->Attributes, key, val);
@@ -1297,9 +1297,9 @@ static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, co
 
 
 	/* create subc and load fp data */
-	subc = pcb_subc_alloc();
-	res = easyeda_pro_parse_fp(subc->data, filename, 1);
+	res = easyeda_pro_parse_fp(&ctx->subc_data, filename, 1, &subc);
 	htsp_set(&ctx->fp2subc, rnd_strdup(fp_name), subc);
+
 
 	return subc;
 }
@@ -1310,7 +1310,7 @@ static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, co
 static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	const char *sid;
-	pcb_subc_t *src;
+	pcb_subc_t *src, *subc;
 	double lid, x, y, rot, locked;
 	gdom_node_t *props_nd, *name_nd;
 
@@ -1337,7 +1337,17 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	if (src == NULL)
 		return -1;
 
-	TODO("implement me");
+	subc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, src, TRX(x), TRY(y), 0, 0);
+	rnd_trace("***** SUBC DUP %p -> %p\n", src, subc);
+
+/*
+	if (lid > 1) {
+		rnd_coord_t w, h;
+		pcb_subc_get_origin(sc, &w, &h);
+		pcb_subc_change_side(sc, 2 * h - PCB->hidlib.dwg.Y2);
+	}
+*/
+
 	return 0;
 }
 
@@ -1432,9 +1442,13 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	assert(nd->type == GDOM_ARRAY);
 
+
 	htsc_init(&ctx->rule2clr, strhash, strkeyeq);
-	if (!ctx->is_footprint)
+	if (!ctx->is_footprint) {
 		htsp_init(&ctx->fp2subc, strhash, strkeyeq);
+		pcb_data_init(&ctx->subc_data);
+		pcb_data_bind_board_layers(ctx->pcb, &ctx->subc_data, 0);
+	}
 
 	for(lineno = 0; lineno < nd->value.array.used; lineno++) {
 		gdom_node_t *line = ctx->root->value.array.child[lineno];
@@ -1470,7 +1484,10 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 			TODO("remove and free (pcb_subc_t *)e->value");
 		}
 		htsp_uninit(&ctx->fp2subc);
+
+		pcb_data_uninit(&ctx->subc_data);
 	}
+
 	return 0;
 }
 
@@ -1525,7 +1542,7 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 }
 
 /* is_footprint should be set to 0 when loading a footprint as part of a board */
-static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footprint)
+static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footprint, pcb_subc_t **subc_out)
 {
 	pcb_board_t *pcb = NULL;
 	easy_read_ctx_t ctx = {0};
@@ -1580,6 +1597,9 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 
 	ctx.data = save;
 	easyeda_subc_finalize(&ctx, subc, 0, 0, 0);
+
+	if ((res == 0) && (subc_out != NULL))
+		*subc_out = subc;
 
 	return res;
 }

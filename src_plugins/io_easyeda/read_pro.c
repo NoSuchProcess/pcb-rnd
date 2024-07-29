@@ -219,7 +219,7 @@ int io_easyeda_pro_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *F
 
 int io_easyeda_pro_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
 {
-	return easyeda_pro_parse_fp(data, filename, 1);
+	return easyeda_pro_parse_fp(data, filename, 1, NULL);
 }
 
 pcb_plug_fp_map_t *io_easyeda_pro_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
