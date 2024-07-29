@@ -103,6 +103,8 @@ const int easypro_layertab_in_last = 46;
 #define EASY_MULTI_LAYER 12
 
 
+static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footprint);
+
 
 #define REQ_ARGC_(nd, op, num, errstr, errstmt) \
 do { \
@@ -1279,6 +1281,7 @@ static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, co
 {
 	const char *filename;
 	pcb_subc_t *subc;
+	int res;
 
 	subc = htsp_get(&ctx->fp2subc, fp_name);
 	if (subc != NULL)
@@ -1292,7 +1295,10 @@ static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, co
 
 	rnd_trace("---> resolved fplib ref '%s' to '%s'\n", fp_name, filename);
 
-	TODO("load subc here");
+
+	/* create subc and load fp data */
+	subc = pcb_subc_alloc();
+	res = easyeda_pro_parse_fp(subc->data, filename, 1);
 	htsp_set(&ctx->fp2subc, rnd_strdup(fp_name), subc);
 
 	return subc;
