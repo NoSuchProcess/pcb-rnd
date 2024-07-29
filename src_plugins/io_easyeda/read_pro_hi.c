@@ -1182,6 +1182,13 @@ static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, do
 	return 0;
 }
 
+/* Translate easyeda attrib keys into pcb-rnd attrib keys (convention converter) */
+static void pro_attrib_key_filter(easy_read_ctx_t *ctx, gdom_node_t *nd, const char **key)
+{
+	if (strcmp(*key, "Designator") == 0)
+		*key = "refdes";
+}
+
 /* Return parent subc - when reading an fp it's always the fp, else it's the
    subc instance addressed by the objectusing an text ID */
 static pcb_subc_t *pro_get_parent_subc(easy_read_ctx_t *ctx, gdom_node_t *nd, const char *sid)
@@ -1237,6 +1244,8 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		error_at(ctx, nd, ("ATTR: no parent\n"));
 		return -1;
 	}
+
+	pro_attrib_key_filter(ctx, nd, &key);
 	pcb_attribute_put(&in_subc->Attributes, key, val);
 
 	if (!mktext)
