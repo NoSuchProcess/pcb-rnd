@@ -1566,7 +1566,8 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
 	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
 
-	pcb_data_binding_update(pcb, data);
+	if (pcb != NULL)
+		pcb_data_binding_update(pcb, data);
 
 	save = ctx.data;
 	subc = easyeda_subc_create(&ctx);
