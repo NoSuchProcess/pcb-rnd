@@ -1182,6 +1182,27 @@ static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, do
 	return 0;
 }
 
+/* Return parent subc - when reading an fp it's always the fp, else it's the
+   subc instance addressed by the objectusing an text ID */
+static pcb_subc_t *pro_get_parent_subc(easy_read_ctx_t *ctx, gdom_node_t *nd, const char *sid)
+{
+	pcb_subc_t *par;
+
+	if (ctx->in_subc != NULL)
+		return ctx->in_subc;
+
+	if ((sid == NULL) || (*sid == '\0'))
+		return NULL;
+
+	par = htsp_get(&ctx->id2subc, sid);
+	if (par == NULL) {
+		error_at(ctx, nd, ("failed to resolve parent subc easyeda id '%s'\n", sid));
+		return NULL;
+	}
+
+	return par;
+}
+
 /* attribute with or without floater dyntext 
    "ATTR",  "e0",  0,  "",      3,   -321.652,-590.45,  "Price",  "",   1,       1,   "default",  45,     6,  0,  0,  3,     0,    0,       0,           0,  0
                       subcid  layer     x        y        key     val  keyvis  valvis   font     height thick ?   ?  anchor rot  invert invert-expand   xmir locked
@@ -1190,10 +1211,11 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	double lid, x, y, keyvis, valvis, height, thick, anchor, rot, xmir, locked;
 	int mktext;
-	const char *key, *val;
+	const char *key, *val, *str, *sid;
+	pcb_subc_t *in_subc;
 
 	REQ_ARGC_GTE(nd, 22, "ATTR", return -1);
-
+	GET_ARG_STR(sid, nd, 3, "ATTR subc id", return -1);
 	GET_ARG_DBL(lid, nd, 4, "ATTR layer", return -1);
 	GET_ARG_DBL(x, nd, 5, "ATTR x", return -1);
 	GET_ARG_DBL(y, nd, 6, "ATTR y", return -1);
@@ -1210,12 +1232,12 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	mktext = (x != -1) && (y != -1) && (keyvis || valvis);
 
-	if (ctx->in_subc == NULL) {
-		error_at(ctx, nd, ("ATTR without subcircuit\n"));
-		return 0;
+	in_subc = pro_get_parent_subc(ctx, nd, sid);
+	if (in_subc == NULL) {
+		error_at(ctx, nd, ("ATTR: no parent\n"));
+		return -1;
 	}
-
-	pcb_attribute_put(&ctx->in_subc->Attributes, key, val);
+	pcb_attribute_put(&in_subc->Attributes, key, val);
 
 	if (!mktext)
 		return 0;
@@ -1353,6 +1375,8 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	pcb_subc_rotate(subc, TRX(x), TRY(y), cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 
+	htsp_set(&ctx->id2subc, sid, subc);
+
 	return 0;
 }
 
@@ -1362,6 +1386,15 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 static int easyeda_pro_parse_pad_net(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	TODO("implement me");
+/*
+	pcb_subc_t *in_subc;
+	in_subc = pro_get_parent_subc(ctx, nd, sid);
+	if (in_subc == NULL) {
+		error_at(ctx, nd, ("ATTR: no parent\n"));
+		return -1;
+	}
+*/
+
 	return 0;
 }
 
@@ -1451,6 +1484,7 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	htsc_init(&ctx->rule2clr, strhash, strkeyeq);
 	if (!ctx->is_footprint) {
 		htsp_init(&ctx->fp2subc, strhash, strkeyeq);
+		htsp_init(&ctx->id2subc, strhash, strkeyeq);
 		pcb_data_init(&ctx->subc_data);
 		pcb_data_bind_board_layers(ctx->pcb, &ctx->subc_data, 0);
 	}
@@ -1489,7 +1523,7 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 			TODO("remove and free (pcb_subc_t *)e->value");
 		}
 		htsp_uninit(&ctx->fp2subc);
-
+		htsp_uninit(&ctx->id2subc);
 		pcb_data_uninit(&ctx->subc_data);
 	}
 
