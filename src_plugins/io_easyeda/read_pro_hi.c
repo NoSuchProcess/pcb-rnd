@@ -1321,7 +1321,7 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(y, nd, 5, "COMPONENT y", return -1);
 	GET_ARG_DBL(rot, nd, 6, "COMPONENT rot", return -1);
 	GET_ARG_HASH(props_nd, nd, 7, "COMPONENT properties", return -1);
-	GET_ARG_DBL(y, nd, 8, "COMPONENT locked", return -1);
+	GET_ARG_DBL(locked, nd, 8, "COMPONENT locked", return -1);
 
 	name_nd = gdom_hash_get(props_nd, easy_Name);
 	if (name_nd == NULL) {
