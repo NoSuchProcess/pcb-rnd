@@ -1334,10 +1334,16 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	}
 
 	src = pro_subc_from_cache(ctx, nd, name_nd->value.str);
-	if (src == NULL)
+	if (src == NULL) {
+		error_at(ctx, nd, ("COMPONENT footprint lib load failed\n"));
 		return -1;
+	}
 
 	subc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, src, TRX(x), TRY(y), 0, 0);
+	if (subc == NULL) {
+		error_at(ctx, nd, ("COMPONENT placement failed\n"));
+		return -1;
+	}
 
 	if (lid > 1) {
 		rnd_coord_t w, h;
