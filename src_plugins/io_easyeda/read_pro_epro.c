@@ -239,7 +239,7 @@ static const char *epro_fplib_resolve(void *fplib_resolve_ctx, const char *ref_n
 	else
 		epro->fp_tmp.used = epro->fp_tmp_len;
 
-	gds_append_str(&epro->fp_tmp, epro->want_pcb_name);
+	gds_append_str(&epro->fp_tmp, fn);
 	gds_append_str(&epro->fp_tmp, ".efoo");
 	return epro->fp_tmp.array;
 }
