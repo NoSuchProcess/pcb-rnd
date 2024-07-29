@@ -1340,11 +1340,14 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	subc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, src, TRX(x), TRY(y), 0, 0);
 	rnd_trace("***** SUBC DUP %p -> %p\n", src, subc);
 
+
 	if (lid > 1) {
 		rnd_coord_t w, h;
 		pcb_subc_get_origin(subc, &w, &h);
 		pcb_subc_change_side(subc, 2 * h - PCB->hidlib.dwg.Y2);
 	}
+
+	pcb_subc_rotate(subc, TRX(x), TRY(y), cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 
 	return 0;
 }
