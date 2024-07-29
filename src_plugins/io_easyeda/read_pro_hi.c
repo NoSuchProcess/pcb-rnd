@@ -1094,15 +1094,12 @@ static int easyeda_pro_parse_line(easy_read_ctx_t *ctx, gdom_node_t *nd)
 }
 
 /* xmir == -1 means automatic (mirror on bottom) */
-static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, double x, double y, double anchor, double rot, double xmir, double height, double thick, int keyvis, int valvis, const char *key, const char *val)
+static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, pcb_layer_t *layer, double x, double y, double anchor, double rot, double xmir, double height, double thick, int keyvis, int valvis, const char *key, const char *val)
 {
 	pcb_text_t *t;
-	pcb_layer_t *layer;
 	int acx, acy; /* -1 is left/top, 0 is center, +1 is bottom/right */
 	rnd_coord_t offx, offy, cx, cy;
 	int dyn = 0;
-
-	GET_LAYER(layer, (int)lid, nd, return -1);
 
 	/* auto-mirror on bottom when requested */
 	if (xmir == -1)
@@ -1220,6 +1217,7 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	int mktext;
 	const char *key, *val, *str, *sid;
 	pcb_subc_t *in_subc;
+	pcb_layer_t *layer;
 
 	REQ_ARGC_GTE(nd, 22, "ATTR", return -1);
 	GET_ARG_STR(sid, nd, 3, "ATTR subc id", return -1);
@@ -1251,7 +1249,15 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	if (!mktext)
 		return 0;
 
-	return pro_create_text(ctx, nd, lid, x, y, anchor, rot, xmir, height, thick, (int)keyvis, (int)valvis, key, val);
+	{
+		pcb_data_t *save = ctx->data;
+
+		ctx->data = in_subc->data;
+		GET_LAYER(layer, (int)lid, nd, return -1);
+		ctx->data = save;
+	}
+
+	return pro_create_text(ctx, nd, layer, x, y, anchor, rot, xmir, height, thick, (int)keyvis, (int)valvis, key, val);
 	(void)locked; /* ignored for now */
 }
 
@@ -1262,6 +1268,7 @@ static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
 	double lid, x, y, height, thick, anchor, rot, xmir, locked;
 	const char *textstr;
+	pcb_layer_t *layer;
 
 	REQ_ARGC_GTE(nd, 18, "STRING", return -1);
 
@@ -1279,7 +1286,8 @@ static int easyeda_pro_parse_string(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	if (!ctx->is_footprint && (xmir == 0))
 		xmir = -1;
 
-	return pro_create_text(ctx, nd, lid, x, y, anchor, rot, xmir, height, thick, 1, 0, textstr, NULL);
+	GET_LAYER(layer, (int)lid, nd, return -1);
+	return pro_create_text(ctx, nd, layer, x, y, anchor, rot, xmir, height, thick, 1, 0, textstr, NULL);
 	(void)locked; /* ignored for now */
 }
 
