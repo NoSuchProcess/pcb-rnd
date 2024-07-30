@@ -399,10 +399,15 @@ static int pro_parse_pad_shape_rect(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst,
 {
 	rnd_coord_t w, w2, h, h2, r;
 
-	REQ_ARGC_GTE(nd, 4, "PAD shape rect", return -1);
+	REQ_ARGC_GTE(nd, 3, "PAD shape rect", return -1);
 	GET_ARG_DBL(w, nd, 1, "PAD shape rect width", return -1);
 	GET_ARG_DBL(h, nd, 2, "PAD shape rect height", return -1);
-	GET_ARG_DBL(r, nd, 3, "PAD shape rect rounding radius", return -1);
+
+	/* rounding is optional (seen in format version 1.3) */
+	if (nd->value.array.used > 3)
+		GET_ARG_DBL(r, nd, 3, "PAD shape rect rounding radius", return -1);
+	else
+		r = 0;
 
 	(void)r;TODO("this ignores the rounding radius");
 
