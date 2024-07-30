@@ -974,9 +974,20 @@ static int pro_layer_fill(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, dou
 	cthick = TRR(dthick);
 
 	for(n = 0; (n < paths->value.array.used) && (res == 0); n++) {
+		gdom_node_t *path = paths->value.array.child[n];
 		poly = pcb_poly_alloc(layer);
 
-		res |= pro_draw_polyobj(ctx, paths->value.array.child[n], layer, poly, NULL, cthick, NULL, NULL);
+		/* special case: sometimes paths is not an array-of-arrays but a single array
+		   and this n loop is a waste */
+		if ((n == 0) && (path->type != GDOM_ARRAY)) {
+			path = paths; /* pass on the original array */
+			n = paths->value.array.used; /* array consumed, exit from the loop */
+		}
+
+		res |= pro_draw_polyobj(ctx, path, layer, poly, NULL, cthick, NULL, NULL);
+
+		assert(poly->PointN != 1);
+		assert(poly->PointN != 2);
 
 		if (poly->PointN > 0) {
 			pcb_add_poly_on_layer(layer, poly);
