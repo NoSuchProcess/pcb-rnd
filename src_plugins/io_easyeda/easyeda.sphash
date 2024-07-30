@@ -155,3 +155,17 @@ JLCPCB Part Class
 3D Model
 3D Model Transform
 3D Model Title
+BottomHeight
+Thickness
+BottomInnerHeight
+TopInnerHeight
+Reuse Block
+Group ID
+Origin Footprint
+Channel ID
+3DModel
+SHELL_ENTITY
+CREASE
+BOSS
+SHELL
+DIMENSION
