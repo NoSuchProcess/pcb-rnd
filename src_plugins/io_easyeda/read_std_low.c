@@ -34,8 +34,15 @@
 long easyeda_str2name(const char *str)
 {
 	long res = easy_sphash(str);
-	if (res < 0)
+	if (res < 0) {
+		if (isdigit(*str)) {
+			char *end;
+			long l = strtol(str, &end, 10);
+			if ((*end == '\0') && (l < 10000))
+				return easy_INTEGER_BASE + l;
+		}
 		rnd_message(RND_MSG_ERROR, "Internal error: missing easyeda keyword '%s'\n", str);
+	}
 	return res;
 }
 

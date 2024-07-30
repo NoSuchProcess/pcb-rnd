@@ -37,6 +37,10 @@
 #include <rnd_inclib/lib_easyeda/gendom.h>
 #include <rnd_inclib/lib_easyeda/gendom_json.h>
 
+/* sphash dynamic base IDs */
+enum easyeda_sphash_dyn_base {
+	easy_INTEGER_BASE = 10000      /* small positive integers */
+};
 
 /* Return the first node that has valid location info (or fall back to root),
    starting from node, traversing up in the tree */
