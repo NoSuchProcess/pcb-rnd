@@ -231,6 +231,9 @@ static const char *epro_fplib_resolve(void *fplib_resolve_ctx, const char *ref_n
 	const char *fn = htss_get(&epro->fp2fn, ref_name);
 	rnd_trace("### epro_fplib_resolve(): '%s' -> '%s'\n", ref_name, fn);
 
+	if (fn == NULL)
+		return NULL;
+
 	if (epro->fp_tmp.used == 0) {
 		gds_append_len(&epro->fp_tmp, epro->zipdir.array, epro->zipdir.used);
 		gds_append_str(&epro->fp_tmp, "/FOOTPRINT/");
