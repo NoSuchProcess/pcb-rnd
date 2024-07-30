@@ -28,6 +28,7 @@
  */
 
 #include <librnd/core/conf.h>
+#include <genht/htss.h>
 #include "global_typedefs.h"
 
 #include <libnanojson/nanojson.h>
@@ -93,7 +94,8 @@ typedef struct easy_read_ctx_s {
 	gdom_node_t *lyline[EASY_MAX_LAYERS]; /* pro: remember layer lines for delayed layer creation */
 	htsc_t rule2clr; /* pro: clearance value by rule name */
 	htsp_t fp2subc;  /* pro: char * footprint name to pcb_subc_t *; name is strdup'd; the subc is temporarily created in cache */
-	htsp_t id2subc;  /* pro: key is const char *easyeda_id (pointing into the gdom) and value is the subc instance created on the board */
+	htss_t id2device; /* pro: key is COMPONENT id const char *easyeda_id, value is device attribute value (both are from gdom, not strdup'd); subc footprint names are in device attributes that refer back to the COMPONENT line */
+	htsp_t id2subc;  /* pro: key is COMPOENT id const char *easyeda_id (pointing into the gdom) and value is the subc instance created on the board */
 	pcb_data_t subc_data; /* pro: temporary data subcs of the subc cache are loaded into */
 
 	/* pro: resolve a reference name to a file name using epro */

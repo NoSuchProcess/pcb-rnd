@@ -1323,28 +1323,50 @@ static int easyeda_pro_parse_rule(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
-static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, const char *fp_name)
+/* In pass 1: parse attribute to extract subc device */
+static int easyeda_pro_parse_attr_device(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	const char *key, *val, *sid;
+
+	REQ_ARGC_GTE(nd, 9, "ATTR", return -1);
+	GET_ARG_STR(sid, nd, 3, "ATTR subc id", return -1);
+	GET_ARG_STR(key, nd, 7, "ATTR key", return -1);
+
+	if (strcmp(key, "Device") == 0) {
+		GET_ARG_STR(val, nd, 8, "ATTR val", return -1);
+		rnd_trace("*** SUBC Device: %s -> %s\n", sid, val);
+		if (htss_has(&ctx->id2device, sid)) {
+			error_at(ctx, nd, ("Duplicate Device attribute for '%s'\n", sid));
+			return 0;
+		}
+		htss_set(&ctx->id2device, sid, val);
+	}
+	return 0;
+}
+
+
+static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, const char *devname)
 {
 	const char *filename;
 	pcb_subc_t *subc;
 	int res;
 
-	subc = htsp_get(&ctx->fp2subc, fp_name);
+	subc = htsp_get(&ctx->fp2subc, devname);
 	if (subc != NULL)
 		return subc;
 
-	filename = ctx->fplib_resolve(ctx->fplib_resolve_ctx, fp_name);
+	filename = ctx->fplib_resolve(ctx->fplib_resolve_ctx, devname);
 	if (filename == NULL) {
-		error_at(ctx, nd, ("Can not find footprint '%s' in project.json\n", fp_name));
+		error_at(ctx, nd, ("Can not find footprint '%s' in project.json\n", devname));
 		return NULL;
 	}
 
-	rnd_trace("---> resolved fplib ref '%s' to '%s'\n", fp_name, filename);
+	rnd_trace("---> resolved fplib ref '%s' to '%s'\n", devname, filename);
 
 
 	/* create subc and load fp data */
 	res = easyeda_pro_parse_fp(&ctx->subc_data, filename, 1, &subc);
-	htsp_set(&ctx->fp2subc, rnd_strdup(fp_name), subc);
+	htsp_set(&ctx->fp2subc, rnd_strdup(devname), subc);
 
 
 	return subc;
@@ -1355,7 +1377,7 @@ static pcb_subc_t *pro_subc_from_cache(easy_read_ctx_t *ctx, gdom_node_t *nd, co
 	               id   ?  layer   x    y    rot    props                  lock */
 static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 {
-	const char *sid;
+	const char *sid, *device;
 	pcb_subc_t *src, *subc;
 	double lid, x, y, rot, locked;
 	gdom_node_t *props_nd, *name_nd;
@@ -1369,17 +1391,13 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_HASH(props_nd, nd, 7, "COMPONENT properties", return -1);
 	GET_ARG_DBL(locked, nd, 8, "COMPONENT locked", return -1);
 
-	name_nd = gdom_hash_get(props_nd, easy_Name);
-	if (name_nd == NULL) {
-		error_at(ctx, nd, ("COMPONENT without a Name field\n"));
-		return -1;
-	}
-	if (name_nd->type != GDOM_STRING) {
-		error_at(ctx, nd, ("COMPONENT with a Name field not a string\n"));
+	device = htss_get(&ctx->id2device, sid);
+	if (device == NULL) {
+		error_at(ctx, nd, ("Can not create COMPONENT: no Device attribute -> no footprint name\n"));
 		return -1;
 	}
 
-	src = pro_subc_from_cache(ctx, nd, name_nd->value.str);
+	src = pro_subc_from_cache(ctx, nd, device);
 	if (src == NULL) {
 		error_at(ctx, nd, ("COMPONENT footprint lib load failed\n"));
 		return -1;
@@ -1451,6 +1469,7 @@ static int easyeda_pro_parse_drawing_obj_pass1(easy_read_ctx_t *ctx, gdom_node_t
 
 	switch(nd->name) {
 		case easy_RULE: return easyeda_pro_parse_rule(ctx, nd);
+		case easy_ATTR: return easyeda_pro_parse_attr_device(ctx, nd);
 	}
 	return 0; /* ignore anything else, pass2 will check for those */
 }
@@ -1529,6 +1548,7 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	if (!ctx->is_footprint) {
 		htsp_init(&ctx->fp2subc, strhash, strkeyeq);
 		htsp_init(&ctx->id2subc, strhash, strkeyeq);
+		htss_init(&ctx->id2device, strhash, strkeyeq);
 		pcb_data_init(&ctx->subc_data);
 		pcb_data_bind_board_layers(ctx->pcb, &ctx->subc_data, 0);
 	}
@@ -1568,6 +1588,7 @@ static int easyeda_pro_parse_drawing_objs(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		}
 		htsp_uninit(&ctx->fp2subc);
 		htsp_uninit(&ctx->id2subc);
+		htss_uninit(&ctx->id2device);
 		pcb_data_uninit(&ctx->subc_data);
 	}
 

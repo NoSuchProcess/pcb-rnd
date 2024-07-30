@@ -48,42 +48,71 @@ static int epro_load_pcbs(epro_t *epro, gdom_node_t *pcbs)
 	return 0;
 }
 
-static int epro_load_fps(epro_t *epro, gdom_node_t *fps)
+/* Read the attributes array of a single device to figure the footprint attribute */
+static int epro_load_device(epro_t *epro, const char *devname, gdom_node_t *attributes)
+{
+	long n;
+
+	if (attributes == NULL) return 0;
+	if (attributes->type != GDOM_ARRAY) {
+		rnd_message(RND_MSG_ERROR, "epro's project.json: invalid device/attributes node type\n");
+		return -1;
+	}
+
+	for(n = 0; n < attributes->value.array.used; n++) {
+		gdom_node_t *nd = attributes->value.array.child[n];
+
+		if ((nd->type == GDOM_STRING) && (strcmp(nd->name_str, "Footprint") == 0)) {
+			const char *footprint = nd->value.str;
+
+			if (htss_has(&epro->fp2fn, devname)) {
+				rnd_message(RND_MSG_ERROR, "epro's project.json: duplicate device id %s\n", devname);
+				return -1;
+			}
+			htss_set(&epro->fp2fn, rnd_strdup(devname), rnd_strdup(footprint));
+			rnd_trace("*!* project json FP: %s -> %s\n", devname, footprint);
+			return 0;
+		}
+	}
+
+	rnd_message(RND_MSG_ERROR, "epro's project.json: device id %s has no footprint attribute\n", devname);
+	return 0;
+}
+
+/* go through the devices array and map device->footprint pairs */
+static int epro_load_devices(epro_t *epro, gdom_node_t *devices)
 {
 	int n, m;
 
-	if (fps == NULL)
+	if (devices == NULL)
 		return 0;
 
-	if (fps->type != GDOM_ARRAY) {
+	if (devices->type != GDOM_ARRAY) {
 		rnd_message(RND_MSG_ERROR, "epro's project.json: wrong footprints node type\n");
 		return -1;
 	}
 
-	for(n = 0; n < fps->value.array.used; n++) {
-		gdom_node_t *nd = fps->value.array.child[n];
-		const char *fn = nd->name_str, *title = NULL;
+	for(n = 0; n < devices->value.array.used; n++) {
+		gdom_node_t *nd = devices->value.array.child[n];
+		const char *devname = nd->name_str, *footprint = NULL;
+		gdom_node_t *attributes = NULL;
+
 		if (nd->type != GDOM_ARRAY) {
-			rnd_message(RND_MSG_ERROR, "epro's project.json: invalid footprint node type\n");
+			rnd_message(RND_MSG_ERROR, "epro's project.json: invalid device node type\n");
 			return -1;
 		}
 
+		/* find child node attributes[] */
 		for(m = 0; m < nd->value.array.used; m++) {
 			gdom_node_t *md = nd->value.array.child[m];
-			if ((md->type == GDOM_STRING) && (strcmp(md->name_str, "title") == 0)) {
-				title = md->value.str;
+			if ((md->type == GDOM_ARRAY) && (strcmp(md->name_str, "attributes") == 0)) {
+				attributes = md;
 				break;
 			}
 		}
 
-		if (title == NULL) continue;
-
-		if (htss_has(&epro->fp2fn, title)) {
-			rnd_message(RND_MSG_ERROR, "epro's project.json: duplicate footprint title %s - picked one of them randomly\n", title);
-			continue;
-		}
-		htss_set(&epro->fp2fn, rnd_strdup(title), rnd_strdup(fn));
-		rnd_trace("project json FP: %s -> %s\n", title, fn);
+		if (epro_load_device(epro, devname, attributes) != 0)
+			return -1;
 	}
 
 	return 0;
@@ -92,7 +121,7 @@ static int epro_load_fps(epro_t *epro, gdom_node_t *fps)
 
 static int epro_load_project_json(epro_t *epro)
 {
-	gdom_node_t *root, *nd_pcbs = NULL, *nd_fps = NULL;
+	gdom_node_t *root, *nd_pcbs = NULL, *nd_devices = NULL;
 	long save, n;
 	int res = -1;
 	FILE *f;
@@ -125,7 +154,7 @@ static int epro_load_project_json(epro_t *epro)
 
 	for(n = 0; n < root->value.array.used; n++) {
 		gdom_node_t *nd = root->value.array.child[n];
-		if (strcmp(nd->name_str, "footprints") == 0) nd_fps = nd;
+		if (strcmp(nd->name_str, "devices") == 0) nd_devices = nd;
 		else if (strcmp(nd->name_str, "pcbs") == 0) nd_pcbs = nd;
 	}
 
@@ -133,7 +162,7 @@ static int epro_load_project_json(epro_t *epro)
 	if (epro_load_pcbs(epro, nd_pcbs) != 0)
 		goto error;
 
-	if (epro_load_fps(epro, nd_fps) != 0)
+	if (epro_load_devices(epro, nd_devices) != 0)
 		goto error;
 
 	res = 0; /* success */
