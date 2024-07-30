@@ -818,6 +818,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 
 			case 'R':
 				if (cmd[1] != '\0') goto unknown;
+
 				REQ_ARGC_GTE(&p, 5, "POLY path R(ect) coords", return -1);
 				GET_ARG_DBL(x1, &p, 0, "POLY path R(ect) x1", return -1);
 				GET_ARG_DBL(y1, &p, 1, "POLY path R(ect) y1", return -1);
@@ -825,6 +826,12 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				GET_ARG_DBL(h, &p, 3, "POLY path R(ect) h", return -1);
 				GET_ARG_DBL(r, &p, 4, "POLY path R(ect) corner radius", return -1);
 				ASHIFT(5);
+
+				if (p.value.array.child[0]->type == GDOM_DOUBLE) {
+					/* sometimes there's an extra double at the end, probably for rx;ry; seen with format version 1.7 */
+					GET_ARG_DBL(r, &p, 0, "POLY path R(ect) corner radius", return -1);
+					ASHIFT(1);
+				}
 
 				TODO("corner radius is not handled");
 
