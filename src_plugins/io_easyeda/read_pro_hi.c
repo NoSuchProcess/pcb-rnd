@@ -1038,10 +1038,21 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 		double tx = 0, ty = 0;
 		int is_plated = 0;
 		rnd_coord_t cthick;
+		gdom_node_t *path = paths;
 
 		cthick = TRR(dthick);
 
-		res |= pro_draw_polyobj(ctx, paths, NULL, NULL, &shapes[0], cthick, &tx, &ty);
+		if (path->value.array.child[0]->type == GDOM_ARRAY) {
+			/* in case paths is an array-of-arrays */
+			if (path->value.array.used > 1)
+				error_at(ctx, path, ("Slot shape with multiple path not supported; loading only the first path\n"));
+			path = path->value.array.child[0];
+		}
+
+		res = pro_draw_polyobj(ctx, path, NULL, NULL, &shapes[0], cthick, &tx, &ty);
+		if (res < 0)
+			return -1;
+
 		shapes[0].layer_mask = PCB_LYT_MECH;
 		shapes[0].comb = PCB_LYC_AUTO;
 
