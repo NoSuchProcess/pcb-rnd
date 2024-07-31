@@ -832,7 +832,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				GET_ARG_DBL(r, &p, 4, "POLY path R(ect) corner radius", return -1);
 				ASHIFT(5);
 
-				if (p.value.array.child[0]->type == GDOM_DOUBLE) {
+				if ((p.value.array.used > 0) && (p.value.array.child[0]->type == GDOM_DOUBLE)) {
 					/* sometimes there's an extra double at the end, probably for rx;ry; seen with format version 1.7 */
 					GET_ARG_DBL(r, &p, 0, "POLY path R(ect) corner radius", return -1);
 					ASHIFT(1);
