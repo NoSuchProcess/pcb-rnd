@@ -1254,6 +1254,15 @@ static int easyeda_pro_parse_attr(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	pcb_layer_t *layer;
 
 	REQ_ARGC_GTE(nd, 22, "ATTR", return -1);
+
+	/* an ATTR for a dimension may look like this:
+	   ["DIMENSION","e147","LENGTH",13,"mm",6,1,1,[2165.3543,20,2850,20,2850,3957.0079,2165.3543,3957.0079],0]
+     ["ATTR","e147",0,"e147",13,2850,2188.354,"",393.70079,0,1,"default",100,6,0,0,3,0,0,0,0,0]
+     This has different syntax and we are interested only in attributes for
+     subcircuits anyway; ignore these */
+	if (nd->value.array.child[8]->type != GDOM_STRING)
+		return 0;
+
 	GET_ARG_STR(sid, nd, 3, "ATTR subc id", return -1);
 	GET_ARG_DBL(lid, nd, 4, "ATTR layer", return -1);
 	GET_ARG_DBL(x, nd, 5, "ATTR x", return -1);
