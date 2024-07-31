@@ -645,7 +645,19 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	if (rot != 0) {
 		double rad = rot / RND_RAD_TO_DEG;
+		pcb_data_t *save;
+
+		/* set pcb_pstk_data_hack so that pcb_pstk_rotate() has a chance to find the subcircuit */
+		save = pcb_pstk_data_hack;
+		pcb_pstk_data_hack = ctx->data;
+		if (pcb_pstk_data_hack->parent_type == PCB_PARENT_SUBC) {
+			pcb_subc_t *psc = pcb_pstk_data_hack->parent.subc;
+			pcb_pstk_data_hack = psc->parent.data;
+		}
+
 		pcb_pstk_rotate(pstk, TRX(x), TRY(y), cos(rad), sin(rad), rot);
+
+		pcb_pstk_data_hack = save;
 	}
 
 	pcb_attribute_put(&pstk->Attributes, "term", termid);
