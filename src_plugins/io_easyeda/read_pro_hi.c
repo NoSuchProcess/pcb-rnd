@@ -1527,6 +1527,7 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_LAYER_PHYS: /* physical stackup with extra info on substrate */
 		case easy_NET:
 		case easy_CONNECT:
+		case easy_DIMENSION:
 
 		/* ignored (handled in pass 1) */
 		case easy_RULE:
@@ -1546,6 +1547,8 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_PANELIZE_SIDE:
 		case easy_SHELL_ENTITY:
 		case easy_BOSS:
+		case easy_CREASE:
+		case easy_SHELL:
 		case easy_REGION: /* could draw objects on a keepout layer */
 		case easy_PRIMITIVE: /* visibility per object type */
 		case easy_PREFERENCE: /* tool states; L45 is refraction setting */
