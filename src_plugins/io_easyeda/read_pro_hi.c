@@ -1017,6 +1017,13 @@ static int pro_layer_fill(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, dou
 					poly->enforce_clearance = clr;
 					poly->Flags = pcb_flag_add(poly->Flags, PCB_FLAG_CLEARPOLY);
 				}
+				else {
+					/* fallback: there's a complicated RULE_SELECTOR mechanism that would
+					   figure this by net or by rule combinations - not replicated here;
+					   for now, apply a fallback */
+					poly->enforce_clearance = RND_MIL_TO_COORD(5);
+					poly->Flags = pcb_flag_add(poly->Flags, PCB_FLAG_CLEARPOLY);
+				}
 			}
 		}
 		else
