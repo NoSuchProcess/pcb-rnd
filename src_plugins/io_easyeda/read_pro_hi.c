@@ -857,7 +857,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				TODO("corner radius is not handled");
 
 				x2 = x1 + w;
-				y2 = y1 + h;
+				y2 = y1 - h;
 
 				if (in_shape != NULL) {
 /*
