@@ -7,9 +7,6 @@
 	- pro:
 		- line/poly slot not yet supported by pro_draw_polyobj()
 		- poly draw R(ect) corner radius is not handled
-	- doc:
-		- clearance rules differ (no net based clearance)
-		- keepout not loaded
 - FEATURE: emsim-rnd (dcpower)
 - revise release/packaging:
 	- remove suggesting geda-gnetlist from the debian package
