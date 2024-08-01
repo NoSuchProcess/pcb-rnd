@@ -1561,10 +1561,10 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_PANELIZE:
 		case easy_PANELIZE_STAMP:
 		case easy_PANELIZE_SIDE:
-		case easy_SHELL_ENTITY:
-		case easy_BOSS:
+		case easy_SHELL:        /* 3d shell */
+		case easy_SHELL_ENTITY: /* 3d shell - drawing object */
+		case easy_BOSS:         /* 3d shell - screw pillar */
 		case easy_CREASE:
-		case easy_SHELL:
 		case easy_REGION: /* could draw objects on a keepout layer */
 		case easy_PRIMITIVE: /* visibility per object type */
 		case easy_PREFERENCE: /* tool states; L45 is refraction setting */
