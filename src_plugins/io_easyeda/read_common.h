@@ -88,6 +88,7 @@ typedef struct easy_read_ctx_s {
 	unsigned is_footprint:1;
 	unsigned is_pro:1;
 
+	unsigned warned_pour_clr:1;
 	pcb_text_t *last_refdes; /* std: last text object created as a refdes dyntext+floater */
 	pcb_subc_t *in_subc;     /* pro: subc being built, while loading a footprint into a subc */
 	double version;          /* pro: file format version from DOCTYPE */

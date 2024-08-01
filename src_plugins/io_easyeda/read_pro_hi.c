@@ -1023,6 +1023,10 @@ static int pro_layer_fill(easy_read_ctx_t *ctx, gdom_node_t *nd, double lid, dou
 					   for now, apply a fallback */
 					poly->enforce_clearance = RND_MIL_TO_COORD(5);
 					poly->Flags = pcb_flag_add(poly->Flags, PCB_FLAG_CLEARPOLY);
+					if (!ctx->warned_pour_clr) {
+						error_at(ctx, path, ("POUR clearance specified using complex RULE_SELECTOR; pcb-rnd won't read that from the file\nUsing a hardwired clearance of 5mil (polygon-side enforced) as a fallback\n(Reported only once per board, there may be more polygons affected)\n"));
+						ctx->warned_pour_clr = 1;
+					}
 				}
 			}
 		}
