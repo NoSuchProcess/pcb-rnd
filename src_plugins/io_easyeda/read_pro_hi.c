@@ -1795,7 +1795,7 @@ static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rn
 		return -1;
 	}
 
-	rnd_trace("load board\n");
+	pcb_data_clip_inhibit_inc(ctx.pcb->Data);
 
 	assert(ctx.root->type == GDOM_ARRAY);
 	if (res == 0) res = easyeda_pro_parse_doctype(&ctx);
@@ -1813,6 +1813,9 @@ static int easyeda_pro_parse_board(pcb_board_t *pcb, const char *fn, FILE *f, rn
 		pcb->hidlib.dwg.X2 = bb.X2;
 		pcb->hidlib.dwg.Y2 = -bb.Y1;
 	}
+
+	pcb_data_clip_inhibit_dec(ctx.pcb->Data, 1);
+
 
 	return res;
 }
