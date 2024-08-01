@@ -150,13 +150,6 @@ void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable)
 	list_map0(&layer->Line, pcb_line_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_line_free));
 	list_map0(&layer->Arc,  pcb_arc_t,  undoable ? UFC(obj_free_undoable) : UFC(pcb_arc_free));
 	list_map0(&layer->Text, pcb_text_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_text_free));
-	if (!undoable) {
-		PCB_POLY_LOOP(layer);
-		{
-			pcb_poly_free_fields(polygon);
-		}
-		PCB_END_LOOP;
-	}
 	list_map0(&layer->Polygon, pcb_poly_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_poly_free));
 	if (!layer->is_bound) {
 		if (layer->line_tree) {
