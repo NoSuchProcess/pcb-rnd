@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+
+<H2 autotoc="yes"> io_easyeda </H2>
+<p>
+Type: boards, footprints
+
+<H3 autotoc="yes"> EasyEDA versions and compatibility </H3>
+<p>
+EasyEDA is an EDA tool for the schematics-pcb-simulation workflow. It is
+proprietary but offers essentially unlimited free access both as an online
+web service and an offline desktop software. As of 2024 neither the service
+nor the software do too much to lock users in:
+<ul>
+	<li> design files are easy to download or upload
+	<li> the native file formats are plain text or zipped plain text
+	<li> there's even some minimal documentation on some of the native file formats
+	<li> the software has alien format support
+</ul>
+<p>
+EasyEDA alien format support may be of interest to Ringdove users because
+EasyEDA is connected to:
+<ul>
+	<li> oshwlab: a community sharing open source hardware designs in EasyEDA
+	     format; being able to load those schematics makes it easier to fork
+	     them with free tools
+	<li> lcsc: a generic electronics part vendor with a huge variety of parts;
+	     besides datasheets, they also make symbols and footprints freely
+	     downloadable for most of their parts - in EasyEDA format
+	<li> jlcpcb: board fab and assembly shop; there seems to be some three-way
+	     affiliation among EasyEDA, lcsc and jlcpcb, which suggests symbols/footprints
+	     downloaded from lcsc would work well with the processes of jlc
+</ul>
+<p>
+EasyEDA offers two variants, called <b>std</b> and <b>pro</b>. The two
+variants are essentially two distinct software projects with
+differing file formats and menus. Footprints present
+in the part file downloaded from lcsc contains files,
+in the pro format.
+<p>
+The file saved from pro is really a zip that has a project file, may
+contain multiple PCBs and contains all necessary footprints as a local
+lib (of separate files). The std format has single file boards (json)
+with all footprints embedded.
+
+<p>
+pcb-rnd provides support for loading:
+<ul>
+	<li> std board file
+	<li> std footprint (both from library anddirectly in footprint editor mode)
+	<li> pro pcb project (one of the potentially multiple boards)
+	<li> pro footprint (both from library and directly in footprint editor mode)
+</ul>
+
+
+<H3 autotoc="yes"> How to export from EasyEDA </H3>
+<p>
+Before trying any of these, make sure you use the right variant (std or pro),
+the user interface and file formats really differ a lot.
+<p>
+<ul>
+	<li> <b>std board</b> from the online editor: File menu, File source...,
+	     download button; saves a json that contains the board with all
+	     footprints embedded
+	<li> <b>std footprint</b> from the online editor <b>from sheet</b>: click on
+	     the "library" icon on the left, this should bring up a library dialog
+	     that lists all parts (symbol+footprint) used on the board; select
+	     a part; click on the footprint preview on the right side of the window;
+	     this will open a new tab with the footprint; File menu, view source the
+	     click the download button.
+	<li> <b>pro board</b> from the online editor: File menu, Project save as (local);
+	     saves a zip file named *.epro.
+	<li> <b>pro footprint</b> from the online editor from a board: select the
+	     footprint on the board, right click, edit footprint, "apply only selected...",
+	     "yes" on the popup; this opens a new tab with the footprint; File menu,
+	     view source the click the download button.
+	<li> <b>pro footprint from lcsc</b>: navigate to the product detail page of the part,
+	     there should be an EasyEDA model link under the datasheet link;
+	     clicking that opens a preview; click "free trial" there and the
+	     file opens in the online editor; select the footprint tab; File menu,
+	     File source..., Download button; saves a text file starting with
+	     <i>["DOCTYPE","FOOTPRINT",...</i>; copy this file into the library,
+	     start pcb-rnd, open library window: the symbol should show up in
+	     the list
+</ul>
+
+<H3 autotoc="yes"> Alien format limitations </H3>
+<p>
+There are some details that are not imported; the data model and the logics
+of the software differ, so there are some manual editing steps needed after
+loading alien format data. Below is a list of known cases for EasyEDA.
+
+<H4 autotoc="yes"> Color </H4>
+<p>
+Layer color import depends on the config nodes plugins.io_easyeda.load_color_*;
+it is possible to import all EasyEDA layer colros or no EasyEDA colors or
+importing colors for certain layer types only.
+
+<H4 autotoc="yes"> Text alignment and size </H4>
+<p>
+Font differs a lot between EasyEDA and pcb-rnd. Text objects are generally
+placed where they should be, but their size may differ. Multiline text
+objects are not supported in pcb-rnd (as of 2024).
+
+<H4 autotoc="yes"> Multi-board bundles </H4>
+<p>
+An EasyEDA pro project files may contain multiple board files. Pcb-rnd can
+load only one board file for editing. There are two ways of controlling
+which board of a multi-board project is loaded:
+<ul>
+	<li> if the config node plugins/io_easyeda/load_board_name is set, pcb-rnd will look for a matching board name and load only that file (this is case sensitive 1:1 matching)
+	<li> else in interactive GUI mode a dialog is present with the board names and the user can select one
+	<li> in non-gui mode if the board name is not set, the load fails.
+</ul>
+
+<H4 autotoc="yes"> Terminal connection sensitivity </H4>
+<p>
+In EasyEDA there's a single point, typically the outer endpoint, of the terminal
+that is sensitive to wire and terminal connections. In sch-rnd the whole
+terminal is sensitive. EasyEDA wires crossing the insensitive middle
+section of a terminal are connected to the terminal when importing the
+file in sch-rnd and upon compilation a multi-connection warning is generated
+unless it is disabled.
+
+<H4 autotoc="yes"> pro: Clearance on "pours" </H4>
+<p>
+The POUR object has either a direct, hardwired rule to use for determining the
+clearance (it's the "custom" rule in EasyEDA GUI) or a "network based"
+mechanism, through complicated RULE_SELECTOR lines. pcb-rnd supports the
+former but not the latter. For any net-based poly clearance a hardwired
+value of 5 mil is used and a warning is thrown.
+<p>
+pcb-rnd's clearance model differs a lot from EasyEDA's. The closest thing
+pcb-rnd can do is using polygon-side clearances, so on EasyEDA imports:
+<ul>
+	<li> non-poly drawing objects (lines, arcs, padstacks) get a very small non-zero clearance value so that they clear
+	<li> polygons get the clear flag and a polygon-enforced clearance deducied from rules attached to the polygon's source object (see above)
+	<li> no connection/thermal is made (it's network-based nn EasyEDA)
+</ul>
+
+<H4 autotoc="yes"> keepout/keepaway not loaded </H4>
+<p>
+EasyEDA has special objects for representing restrictions. While pcb-rnd
+has enough features to represent most of the keepouts, currently the plugin
+is not loading this information.
+
+<H4 autotoc="yes"> How unzipping works </H4>
+<p>
+I decided not to introduce a libzip dependency, rather just call unzip as
+an external utility. Any zip implementation can be used as long as it
+provides two functionality:
+<ul>
+	<li> given a full path to a zip file, prints a file list to stdout (in whatever text format)
+	<li> given a full path to a zip file, extracts all files into the current working directory
+</ul>
+<p>
+For example on Debian-like systems the packgae <b>unzip</b> can do these.
+<p>
+The actual command lines for these two functions are configured, see
+config nodes <b>plugins/easyeda/zip_extract_cmd</b> and
+<b>plugins/easyeda/zip_list_cmd</b>; %s is substituted with the full path
+of the zip file and CWD is set before calling the extract command.
+<p>
+This is a weak dependency: any of these is required only if pro files are to
+be open. Manually unzipped board files can not be loaded (but footprints can be).
+
