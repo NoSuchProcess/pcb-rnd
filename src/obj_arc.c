@@ -884,6 +884,7 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, rnd_coord_t X, rnd_coord
 		rnd_rtree_delete(layer->arc_tree, arc, (rnd_rtree_box_t *)arc);
 	rnd_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
 	arc->StartAngle = rnd_normalize_angle(arc->StartAngle + angle);
+	pcb_arc_bbox(arc);
 	if (layer->arc_tree != NULL)
 		rnd_rtree_insert(layer->arc_tree, arc, (rnd_rtree_box_t *)arc);
 }
