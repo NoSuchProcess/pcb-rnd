@@ -558,6 +558,10 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_DBL(dmask, nd, 17, "PAD mask", return -1);
 	GET_ARG_DBL(dpaste, nd, 19, "PAD paste", return -1);
 
+	/* negative values are ignored by easyeda */
+	if (dmask < 0) dmask = 0;
+	if (dpaste < 0) dpaste = 0;
+
 	if ((lid < 0) || (lid >= EASY_MAX_LAYERS)) {
 		error_at(ctx, nd, ("PAD: invalid layer number %ld\n", lid));
 		return -1;
