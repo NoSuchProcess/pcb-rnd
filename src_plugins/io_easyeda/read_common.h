@@ -239,6 +239,10 @@ void easyeda_data_layer_reset(pcb_board_t **pcb, pcb_data_t *data);
    objects are created within the subc, not in parent data */
 void easyeda_subc_layer_bind(easy_read_ctx_t *ctx, pcb_subc_t *subc);
 
+/* same as pcb_layer_flags_() but works better with layers bound to
+   non-board data */
+unsigned int easyeda_layer_flags(const pcb_layer_t *layer);
+
 
 /*** user provided global callbacks ***/
 /* Create a layer on demand */

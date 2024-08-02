@@ -254,12 +254,23 @@ pcb_subc_t *easyeda_subc_create(easy_read_ctx_t *ctx)
 	return subc;
 }
 
+unsigned int easyeda_layer_flags(const pcb_layer_t *layer)
+{
+	unsigned int res = pcb_layer_flags_(layer);
+
+	if (res != 0)
+		return res;
+
+	assert(layer->is_bound);
+	return layer->meta.bound.type;
+}
+
 void easyeda_subc_finalize(easy_read_ctx_t *ctx, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, double rot)
 {
 	int on_bottom = 0;
 
 	if (ctx->last_refdes != NULL) {
-		int side = pcb_layer_flags_(ctx->last_refdes->parent.layer) & PCB_LYT_ANYWHERE;
+		int side = easyeda_layer_flags(ctx->last_refdes->parent.layer) & PCB_LYT_ANYWHERE;
 		if (side & PCB_LYT_BOTTOM)
 			on_bottom = 1;
 	}
@@ -319,8 +330,6 @@ void easyeda_subc_layer_bind(easy_read_ctx_t *ctx, pcb_subc_t *subc)
 		ctx->layers[n] = &subc->data->Layer[idx];
 	}
 }
-
-
 
 void easyeda_read_common_init(void)
 {
