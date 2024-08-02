@@ -858,8 +858,6 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 					ASHIFT(1);
 				}
 
-				TODO("corner radius is not handled");
-
 				x2 = x1 + w;
 				y2 = y1 - h;
 
@@ -880,7 +878,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 					tmp_poly = in_poly;
 
 				/* draw the rectangle */
-				{
+				if (r <= 0) {
 					rnd_point_t *pt;
 
 					pt = pcb_poly_point_alloc(tmp_poly);
@@ -894,6 +892,15 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 
 					pt = pcb_poly_point_alloc(tmp_poly);
 					pt->X = TRX(x1); pt->Y = TRY(y2);
+				}
+				else {
+					double rotdeg = 0;
+					rnd_coord_t rc = TRR(r);
+					pcb_shape_corner_t corner[4] = {PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND};
+					const char *err = NULL;
+
+					if (pcb_genpoly_roundrect_in(tmp_poly, TRR(w), TRR(h), rc, rc, rotdeg, TRX(x1+w/2.0), TRY(y1-h/2.0), corner, 2, &err) == NULL)
+						error_at(ctx, path, ("Failed to render round rect: %s\n", err));
 				}
 				
 				if (in_poly == NULL) {
