@@ -862,13 +862,6 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				y2 = y1 - h;
 
 				if (in_shape != NULL) {
-/*
-					in_shape->shape = PCB_PSSH_CIRC;
-					in_shape->data.circ.dia = TRR(r*2.0);
-					*shp_tx = x;
-					*shp_ty = y;
-*/
-					TODO("make an example and support this");
 					error_at(ctx, path, ("rect in slot not yet supported\n"));
 					return -1;
 				}
