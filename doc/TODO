@@ -4,8 +4,7 @@
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - FEATURE: io_easyeda
 	- pro:
-		- line/poly slot not yet supported by pro_draw_polyobj()
-		- poly draw R(ect) corner radius is not handled
+		- open rrect.epro, select PCB15 -> tries to open the wrong file
 - FEATURE: emsim-rnd (dcpower)
 - revise release/packaging:
 	- remove suggesting geda-gnetlist from the debian package
