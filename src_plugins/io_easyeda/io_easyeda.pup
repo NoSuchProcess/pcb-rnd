@@ -8,5 +8,6 @@ $fmt-feature-r EasyEDA std footprint
 $fmt-feature-r EasyEDA pro footprint
 $package io-alien
 dep lib_compat_help
+dep shape
 default disable-all
 autoload 1

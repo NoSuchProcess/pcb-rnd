@@ -38,6 +38,7 @@
 #include <librnd/core/rotate.h>
 #include "../lib_compat_help/pstk_compat.h"
 #include "../lib_compat_help/pstk_help.h"
+#include "../shape/shape.h"
 #include "rnd_inclib/lib_svgpath/svgpath.h"
 
 #include "board.h"
