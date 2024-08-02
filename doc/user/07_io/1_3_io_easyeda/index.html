@@ -163,6 +163,18 @@ plugin's std loader loads the DIMENSION object but places static objects instead
 of an extended object (so the result looks like in EasyEDA but is not easily
 editable in pcb-rnd). The pro loader ignores DIMENSION objects.
 
+<H4 autotoc="yes"> polygon not clipped by board outline </H4>
+<p>
+In EasyEDA polygons are clipped by the outline of the board. It's a common
+trick there to draw large POUR objects covering the whole board; if they are
+on multiple layers, multiple POUR objects are drawn and moved by a small offset
+so the objects are easier to select on the EasyEDA GUI. Since all the POUR
+countours are outside of board outline this offseting doesn't change the
+final board export.
+<p>
+pcb-rnd does not clip polygons on board outline so these large polygons
+will be preserved as they are drawn in EasyEDA.
+
 
 <H4 autotoc="yes"> How unzipping works </H4>
 <p>
