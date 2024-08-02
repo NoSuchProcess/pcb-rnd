@@ -44,6 +44,8 @@ typedef enum {
 extern const char *pcb_shape_corner_name[];
 
 pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres, const char **err);
+pcb_poly_t *pcb_genpoly_roundrect_in(pcb_poly_t *poly, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres, const char **err);
+
 
 /* shorthand rounded rectangle: rounding radius is roundness * smaller_size */
 void pcb_shape_roundrect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height, double roundness);

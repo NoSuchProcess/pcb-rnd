@@ -152,9 +152,8 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 	outx = rnd_round((double)cx + rect_signx * (double)w/2 + rsignx*rx); \
 	outy = rnd_round((double)cy + rect_signy * (double)h/2 + rsigny*ry);
 #define is_sq(idx) (corner[idx] == PCB_CORN_SQUARE)
-pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres, const char **err)
+static pcb_poly_t *pcb_genpoly_roundrect_(pcb_layer_t *layer, pcb_poly_t *p, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres, const char **err)
 {
-	pcb_poly_t *p;
 	rnd_coord_t maxr, maxrh, maxrw, x, y, ex, ey, acx, acy, ccx, ccy, lx, ly;
 	int segs, need_rot, flags = PCB_FLAG_CLEARPOLY;
 	int hsq, wsq;
@@ -193,10 +192,12 @@ pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t
 
 	segs = rnd_round((double)segs * roundres);
 
-	p = pcb_poly_new(layer, 2 * conf_core.design.clearance, pcb_flag_make(flags));
 	if (p == NULL) {
-		*err = "poly gen error";
-		return NULL;
+		p = pcb_poly_new(layer, 2 * conf_core.design.clearance, pcb_flag_make(flags));
+		if (p == NULL) {
+			*err = "poly gen error";
+			return NULL;
+		}
 	}
 
 	lx = ly = RND_COORD_MAX;
@@ -229,12 +230,24 @@ pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t
 	CORNER(ccx, ccy, +1, +1,  0,  0); /* corner point */
 	elarc90(p, ccx, ccy, acx, acy, x, y, ex, ey, rx, ry, M_PI*3.0/2.0, segs, need_rot, cosra, sinra, cx, cy, corner[3], &lx, &ly);
 
-	pcb_add_poly_on_layer(layer, p);
+	if (layer != NULL)
+		pcb_add_poly_on_layer(layer, p);
 
 	return p;
 }
 #undef is_sq
 #undef CORNER
+
+pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres, const char **err)
+{
+	return pcb_genpoly_roundrect_(layer, NULL, w, h, rx, ry, rot_deg, cx, cy, corner, roundres, err);
+}
+
+pcb_poly_t *pcb_genpoly_roundrect_in(pcb_poly_t *poly, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres, const char **err)
+{
+	return pcb_genpoly_roundrect_(NULL, poly, w, h, rx, ry, rot_deg, cx, cy, corner, roundres, err);
+}
+
 
 void pcb_shape_roundrect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height, double roundness)
 {
