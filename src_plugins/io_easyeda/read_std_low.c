@@ -31,6 +31,7 @@
 
 #define SEP3 "#@$"
 
+static long custom_id = 100000;
 long easyeda_str2name(const char *str)
 {
 	long res = easy_sphash(str);
@@ -41,7 +42,8 @@ long easyeda_str2name(const char *str)
 			if ((*end == '\0') && (l < 10000))
 				return easy_INTEGER_BASE + l;
 		}
-		rnd_message(RND_MSG_ERROR, "Internal error: missing easyeda keyword '%s'\n", str);
+		rnd_trace("*** Missing easyeda keyword '%s'\n", str);
+		return custom_id++;
 	}
 	return res;
 }
