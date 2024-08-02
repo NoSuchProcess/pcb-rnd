@@ -811,36 +811,36 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				break;
 			case 'C':
 				if (strcmp(cmd, "CIRCLE") == 0) {
-				REQ_ARGC_GTE(&p, 3, "POLY path CIRCLE coords", return -1);
-				GET_ARG_DBL(x, &p, 0, "POLY path CIRCLE x", return -1);
-				GET_ARG_DBL(y, &p, 1, "POLY path CIRCLE y", return -1);
-				GET_ARG_DBL(r, &p, 2, "POLY path CIRCLE r", return -1);
-				ASHIFT(3);
+					REQ_ARGC_GTE(&p, 3, "POLY path CIRCLE coords", return -1);
+					GET_ARG_DBL(x, &p, 0, "POLY path CIRCLE x", return -1);
+					GET_ARG_DBL(y, &p, 1, "POLY path CIRCLE y", return -1);
+					GET_ARG_DBL(r, &p, 2, "POLY path CIRCLE r", return -1);
+					ASHIFT(3);
 
-				if (in_shape != NULL) {
-					in_shape->shape = PCB_PSSH_CIRC;
-					in_shape->data.circ.dia = TRR(r*2.0);
-					*shp_tx = x;
-					*shp_ty = y;
-				}
-				else if (in_poly == NULL) {
-					pcb_arc_t *arc = pcb_arc_alloc(layer);
+					if (in_shape != NULL) {
+						in_shape->shape = PCB_PSSH_CIRC;
+						in_shape->data.circ.dia = TRR(r*2.0);
+						*shp_tx = x;
+						*shp_ty = y;
+					}
+					else if (in_poly == NULL) {
+						pcb_arc_t *arc = pcb_arc_alloc(layer);
 
-					arc->X = TRX(x);
-					arc->Y = TRY(y);
-					arc->Width = arc->Height = TRR(r);
-					arc->Thickness = thick;
-					arc->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
-					arc->StartAngle = 0;
-					arc->Delta = 360;
-					arc->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+						arc->X = TRX(x);
+						arc->Y = TRY(y);
+						arc->Width = arc->Height = TRR(r);
+						arc->Thickness = thick;
+						arc->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+						arc->StartAngle = 0;
+						arc->Delta = 360;
+						arc->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
 
-					pcb_add_arc_on_layer(layer, arc);
-				}
-				else
-					pro_draw_polyarc(ctx, in_poly, x, y, r, 0, 2*3.141592654);
-				break;
-				}
+						pcb_add_arc_on_layer(layer, arc);
+					}
+					else
+						pro_draw_polyarc(ctx, in_poly, x, y, r, 0, 2*3.141592654);
+					break;
+					}
 				if (strcmp(cmd, "CARC") == 0) {
 					/* "CARC",   53.6935,  593.9833, 909.8979 */
 					/*          delta ang  |----end x y ----| */
