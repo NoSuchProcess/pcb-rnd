@@ -104,6 +104,7 @@ const int easypro_layertab_in_last = 46;
 
 
 static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footprint, pcb_subc_t **subc_out);
+static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, pcb_pstk_shape_t *in_shape, rnd_coord_t thick, double *shp_tx, double *shp_ty);
 
 
 #define REQ_ARGC_(nd, op, num, errstr, errstmt) \
@@ -428,7 +429,35 @@ static int pro_parse_pad_shape_rect(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst,
 	return 0;
 }
 
-static int pro_parse_pad_shape(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom_node_t *nd)
+/* pad shape POLY:  POLY, [polypath] */
+static int pro_parse_pad_shape_poly(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom_node_t *nd, double ox, double oy)
+{
+	gdom_node_t *shape_nd;
+	double shp_tx = 0, shp_ty = 0;
+	long n;
+	int res;
+	rnd_coord_t cox, coy;
+
+	REQ_ARGC_GTE(nd, 2, "PAD shape poly", return -1);
+	GET_ARG_ARRAY(shape_nd, nd, 1, "PAD shape poly", return -1);
+
+	res = pro_draw_polyobj(ctx, shape_nd, NULL, NULL, dst, 0, &shp_tx, &shp_ty);
+	if (res != 0)
+		return res;
+
+	assert(shp_tx == 0);
+	assert(shp_ty == 0);
+
+	cox = TRX(ox);
+	coy = TRY(oy);
+	for(n = 0; n < dst->data.poly.len; n++) {
+		dst->data.poly.x[n] -= cox;
+		dst->data.poly.y[n] -= coy;
+	}
+	return 0;
+}
+
+static int pro_parse_pad_shape(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom_node_t *nd, double ox, double oy)
 {
 	const char *shname;
 	REQ_ARGC_GTE(nd, 1, "PAD shape", return -1);
@@ -437,6 +466,7 @@ static int pro_parse_pad_shape(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst, gdom
 	if (strcmp(shname, "ELLIPSE") == 0) return pro_parse_pad_shape_ellipse(ctx, dst, nd);
 	if (strcmp(shname, "RECT") == 0) return pro_parse_pad_shape_rect(ctx, dst, nd);
 	if (strcmp(shname, "OVAL") == 0) return pro_parse_pad_shape_oval(ctx, dst, nd);
+	if (strcmp(shname, "POLY") == 0) return pro_parse_pad_shape_poly(ctx, dst, nd, ox, oy);
 
 	error_at(ctx, nd, ("Invalid pad shape name: '%s'\n", shname));
 	return -1;
@@ -581,7 +611,7 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	nopaste = is_any;
 
 	/* create the main shape in shape[0] */
-	if (pro_parse_pad_shape(ctx, &shapes[0], shape_nd) != 0)
+	if (pro_parse_pad_shape(ctx, &shapes[0], shape_nd, x, y) != 0)
 		return -1;
 
 	if (!is_any) {
@@ -743,11 +773,12 @@ static void pro_draw_polyarc(easy_read_ctx_t *ctx, pcb_poly_t *in_poly, double c
 
 static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t *layer, pcb_poly_t *in_poly, pcb_pstk_shape_t *in_shape, rnd_coord_t thick, double *shp_tx, double *shp_ty)
 {
-	int res;
+	int res, retv = -1;
 	double lx, ly, x, y, r, cx, cy, ex, ey, delta, srad, erad, x1, y1, x2, y2, w, h;
 	const char *cmd;
 	gdom_node_t p;
 	pcb_poly_t *tmp_poly;
+	vtc0_t poly_in_shape = {0};
 
 #define ASHIFT(n) p.value.array.child+=n,p.value.array.used-=n
 
@@ -763,25 +794,29 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 
 	/* parse path commands */
 	while(p.value.array.used > 0) {
-		GET_ARG_STR(cmd, &p, 0, "POLY path cmd", return -1);
+		GET_ARG_STR(cmd, &p, 0, "POLY path cmd", goto error);
 		ASHIFT(1);
 		if ((cmd == NULL) || (*cmd == '\0')) {
 			error_at(ctx, path, ("Missing or empty path command\n"));
-			return -1;
+			goto error;
 		}
 
 		switch(*cmd) {
 			case 'L':
 				if (cmd[1] != '\0') goto unknown;
 				while(p.value.array.used > 0) {
-					REQ_ARGC_GTE(&p, 2, "POLY path L coords", return -1);
-					GET_ARG_DBL(x, &p, 0, "POLY path L x", return -1);
-					GET_ARG_DBL(y, &p, 1, "POLY path  :y", return -1);
+					REQ_ARGC_GTE(&p, 2, "POLY path L coords", goto error);
+					GET_ARG_DBL(x, &p, 0, "POLY path L x", goto error);
+					GET_ARG_DBL(y, &p, 1, "POLY path  :y", goto error);
 					ASHIFT(2);
 
 					if (in_shape != NULL) {
-						error_at(ctx, path, ("line in slot not yet supported\n"));
-						return -1;
+						if (poly_in_shape.used == 0) {
+							vtc0_append(&poly_in_shape, TRX(lx));
+							vtc0_append(&poly_in_shape, TRY(ly));
+						}
+						vtc0_append(&poly_in_shape, TRX(lx));
+						vtc0_append(&poly_in_shape, TRY(ly));
 					}
 					else if (in_poly == NULL) {
 						pcb_line_t *line = pcb_line_alloc(layer);
@@ -811,10 +846,10 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				break;
 			case 'C':
 				if (strcmp(cmd, "CIRCLE") == 0) {
-					REQ_ARGC_GTE(&p, 3, "POLY path CIRCLE coords", return -1);
-					GET_ARG_DBL(x, &p, 0, "POLY path CIRCLE x", return -1);
-					GET_ARG_DBL(y, &p, 1, "POLY path CIRCLE y", return -1);
-					GET_ARG_DBL(r, &p, 2, "POLY path CIRCLE r", return -1);
+					REQ_ARGC_GTE(&p, 3, "POLY path CIRCLE coords", goto error);
+					GET_ARG_DBL(x, &p, 0, "POLY path CIRCLE x", goto error);
+					GET_ARG_DBL(y, &p, 1, "POLY path CIRCLE y", goto error);
+					GET_ARG_DBL(r, &p, 2, "POLY path CIRCLE r", goto error);
 					ASHIFT(3);
 
 					if (in_shape != NULL) {
@@ -851,17 +886,17 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 			case 'R':
 				if (cmd[1] != '\0') goto unknown;
 
-				REQ_ARGC_GTE(&p, 5, "POLY path R(ect) coords", return -1);
-				GET_ARG_DBL(x1, &p, 0, "POLY path R(ect) x1", return -1);
-				GET_ARG_DBL(y1, &p, 1, "POLY path R(ect) y1", return -1);
-				GET_ARG_DBL(w, &p, 2, "POLY path R(ect) w", return -1);
-				GET_ARG_DBL(h, &p, 3, "POLY path R(ect) h", return -1);
-				GET_ARG_DBL(r, &p, 4, "POLY path R(ect) corner radius", return -1);
+				REQ_ARGC_GTE(&p, 5, "POLY path R(ect) coords", goto error);
+				GET_ARG_DBL(x1, &p, 0, "POLY path R(ect) x1", goto error);
+				GET_ARG_DBL(y1, &p, 1, "POLY path R(ect) y1", goto error);
+				GET_ARG_DBL(w, &p, 2, "POLY path R(ect) w", goto error);
+				GET_ARG_DBL(h, &p, 3, "POLY path R(ect) h", goto error);
+				GET_ARG_DBL(r, &p, 4, "POLY path R(ect) corner radius", goto error);
 				ASHIFT(5);
 
 				if ((p.value.array.used > 0) && (p.value.array.child[0]->type == GDOM_DOUBLE)) {
 					/* sometimes there's an extra double at the end, probably for rx;ry; seen with format version 1.7 */
-					GET_ARG_DBL(r, &p, 0, "POLY path R(ect) corner radius", return -1);
+					GET_ARG_DBL(r, &p, 0, "POLY path R(ect) corner radius", goto error);
 					ASHIFT(1);
 				}
 
@@ -918,22 +953,24 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				if (strcmp(cmd, "ARC") != 0) goto unknown;
 
 				cmd_arc:;
-				REQ_ARGC_GTE(&p, 3, "POLY path ARC coords", return -1);
-				GET_ARG_DBL(delta, &p, 0, "POLY path ARC delta angle", return -1);
-				GET_ARG_DBL(ex, &p, 1, "POLY path ARC ex", return -1);
-				GET_ARG_DBL(ey, &p, 2, "POLY path ARC ey", return -1);
+				REQ_ARGC_GTE(&p, 3, "POLY path ARC coords", goto error);
+				GET_ARG_DBL(delta, &p, 0, "POLY path ARC delta angle", goto error);
+				GET_ARG_DBL(ex, &p, 1, "POLY path ARC ex", goto error);
+				GET_ARG_DBL(ey, &p, 2, "POLY path ARC ey", goto error);
 				ASHIFT(3);
 
 				res = arc_start_end_delta(lx, ly, ex, ey, delta, &cx, &cy, &r, &srad, &erad);
 				if (res != 0) {
 					error_at(ctx, path, ("Failed to work out arc parameters\nplease report this bug to pcb-rnd, with the board file included\n"));
-					return -1;
+					goto error;
 				}
 
 /*				rnd_trace("arc STR: %f %f srad: %f erad: %f\n", lx, ly, srad, erad);*/
 				if (in_shape != NULL) {
+					/* copy the code from 'L': set first point, then arc approx;
+					   extend pro_draw_polyarc() to get poly_in_shape */
 					error_at(ctx, path, ("arc in slot not yet supported\n"));
-					return -1;
+					goto error;
 				}
 				if (in_poly == NULL) {
 					pcb_arc_t *arc = pcb_arc_alloc(layer);
@@ -960,12 +997,25 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 			default:
 				unknown:;
 				error_at(ctx, path, ("Unknown path command '%s'\n", cmd));
-				return -1;
+				goto error;
 			}
 	}
 
+
+
+	if ((in_shape != NULL) && poly_in_shape.used > 0) {
+		long o, i, len = poly_in_shape.used/2;
+		pcb_pstk_shape_alloc_poly(&in_shape->data.poly, len);
+		for(o = i = 0; i < poly_in_shape.used; i+=2, o++) {
+			in_shape->data.poly.x[o] = poly_in_shape.array[i];
+			in_shape->data.poly.y[o] = poly_in_shape.array[i+1];
+		}
+	}
 #undef ASHIFT
-	return 0;
+	retv = 0;
+	error:;
+	vtc0_uninit(&poly_in_shape);
+	return retv;
 }
 
 
