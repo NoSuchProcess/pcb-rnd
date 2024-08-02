@@ -810,7 +810,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				}
 				break;
 			case 'C':
-				if (strcmp(cmd, "CIRCLE") != 0) goto unknown;
+				if (strcmp(cmd, "CIRCLE") == 0) {
 				REQ_ARGC_GTE(&p, 3, "POLY path CIRCLE coords", return -1);
 				GET_ARG_DBL(x, &p, 0, "POLY path CIRCLE x", return -1);
 				GET_ARG_DBL(y, &p, 1, "POLY path CIRCLE y", return -1);
@@ -840,6 +840,13 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				else
 					pro_draw_polyarc(ctx, in_poly, x, y, r, 0, 2*3.141592654);
 				break;
+				}
+				if (strcmp(cmd, "CARC") == 0) {
+					/* "CARC",   53.6935,  593.9833, 909.8979 */
+					/*          delta ang  |----end x y ----| */
+					goto cmd_arc; /* same parameters */
+				}
+				goto unknown;
 
 			case 'R':
 				if (cmd[1] != '\0') goto unknown;
@@ -907,6 +914,7 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 			case 'A':
 				if (strcmp(cmd, "ARC") != 0) goto unknown;
 
+				cmd_arc:;
 				REQ_ARGC_GTE(&p, 3, "POLY path ARC coords", return -1);
 				GET_ARG_DBL(delta, &p, 0, "POLY path ARC delta angle", return -1);
 				GET_ARG_DBL(ex, &p, 1, "POLY path ARC ex", return -1);
