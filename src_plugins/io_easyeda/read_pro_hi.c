@@ -1555,12 +1555,6 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
 		case easy_COMPONENT: return easyeda_pro_parse_component(ctx, nd);
 
-		TODO("handle these");
-		case easy_LAYER_PHYS: /* physical stackup with extra info on substrate */
-		case easy_NET:
-		case easy_CONNECT:
-		case easy_DIMENSION:
-
 		/* ignored (handled in pass 1) */
 		case easy_RULE:
 			return 0;
@@ -1570,7 +1564,15 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_PAD_NET:
 			return 0;
 
+		/* ignored (no support yet but could be supported) */
+		case easy_LAYER_PHYS: /* physical stackup with extra info on substrate */
+		case easy_REGION: /* could draw objects on a keepout layer */
+		case easy_DIMENSION:
+			return 0;
+
 		/* ignored (no support) */
+		case easy_CONNECT:
+		case easy_NET:
 		case easy_ACTIVE_LAYER:
 		case easy_RULE_TEMPLATE:
 		case easy_RULE_SELECTOR:
@@ -1581,7 +1583,6 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_SHELL_ENTITY: /* 3d shell - drawing object */
 		case easy_BOSS:         /* 3d shell - screw pillar */
 		case easy_CREASE:
-		case easy_REGION: /* could draw objects on a keepout layer */
 		case easy_PRIMITIVE: /* visibility per object type */
 		case easy_PREFERENCE: /* tool states; L45 is refraction setting */
 		case easy_SILK_OPTS: /* color-only */
