@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - FEATURE: io_easyeda
-	- BUG: library window preview also creates silk objects around 0;0 on the board
 	- pro:
 		- line/poly slot not yet supported by pro_draw_polyobj()
 		- poly draw R(ect) corner radius is not handled
