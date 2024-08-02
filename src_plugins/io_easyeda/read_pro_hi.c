@@ -583,7 +583,7 @@ static int easyeda_pro_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	if (!is_any) {
 		pcb_layer_t *layer = ctx->layers[lid];
 
-		side = pcb_layer_flags_(layer) & PCB_LYT_ANYWHERE;
+		side = easyeda_layer_flags(layer) & PCB_LYT_ANYWHERE;
 		shapes[0].layer_mask = side | PCB_LYT_COPPER;
 
 		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
@@ -1164,7 +1164,7 @@ static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, pcb_layer_t *l
 
 	/* auto-mirror on bottom when requested */
 	if (xmir == -1)
-			xmir = !!(pcb_layer_flags_(layer) & PCB_LYT_BOTTOM);
+			xmir = !!(easyeda_layer_flags(layer) & PCB_LYT_BOTTOM);
 
 	switch((int)anchor) {
 		case 1: acx = -1; acy = -1; break; /* left-top */
@@ -1752,9 +1752,6 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 	if (res == 0) res = easyeda_pro_parse_doctype(&ctx);
 	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
 	if (res == 0) res = easyeda_pro_parse_layers(&ctx);
-
-	if (pcb != NULL)
-		pcb_data_binding_update(pcb, data);
 
 	save = ctx.data;
 	subc = easyeda_subc_create(&ctx);

@@ -445,7 +445,7 @@ static int std_parse_pad(easy_read_ctx_t *ctx, gdom_node_t *pad)
 		shapes[0].data.poly.len = points->value.array.used/2;
 	}
 	if (!is_any) {
-		side = pcb_layer_flags_(layer) & PCB_LYT_ANYWHERE;
+		side = easyeda_layer_flags(layer) & PCB_LYT_ANYWHERE;
 		shapes[0].layer_mask = side | PCB_LYT_COPPER;
 
 		pcb_pstk_shape_copy(&shapes[1], &shapes[0]);
@@ -850,8 +850,6 @@ static int easyeda_std_parse_fp(pcb_data_t *data, const char *fn)
 
 	if (res == 0) res |= std_parse_layers(&ctx);
 	if (res == 0) res |= std_parse_canvas(&ctx);
-
-	pcb_data_binding_update(pcb, data);
 
 	save = ctx.data;
 	subc = easyeda_subc_create(&ctx);
