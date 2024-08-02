@@ -869,8 +869,11 @@ static int pro_draw_polyobj(easy_read_ctx_t *ctx, gdom_node_t *path, pcb_layer_t
 				y2 = y1 - h;
 
 				if (in_shape != NULL) {
-					error_at(ctx, path, ("rect in slot not yet supported\n"));
-					return -1;
+					/* this happens on a multi-layer FILL which will be a padstack with mech */
+					pcb_shape_roundrect(in_shape, TRR(w), TRR(h), r/200.0);
+					*shp_tx = x1 + w/2;
+					*shp_ty = y1 - h/2;
+					return 0;
 				}
 				else if (in_poly == NULL)
 					tmp_poly = pcb_poly_alloc(layer);
