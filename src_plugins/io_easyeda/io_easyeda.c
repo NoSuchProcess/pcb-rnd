@@ -105,8 +105,8 @@ int pplg_init_io_easyeda(void)
 	io_easyeda_pro.default_fmt = "easyeda pro";
 	io_easyeda_pro.description = "EasyEDA pro board";
 	io_easyeda_pro.save_preference_prio = 61;
-	io_easyeda_pro.default_extension = ".json"; TODO("revise this");
-	io_easyeda_pro.fp_extension = ".json"; TODO("revise this");
+	io_easyeda_pro.default_extension = ".epro";
+	io_easyeda_pro.fp_extension = ".efoo";
 	io_easyeda_pro.mime_type = "application/x-easyeda";
 	io_easyeda_pro.multi_footprint = 1;
 
