@@ -248,7 +248,16 @@ static int epro_select_board(epro_t *epro)
 				rnd_message(RND_MSG_ERROR, "io_easyeda: epro's project.json has multiple board files and there's no gui to present a selection dialog\nPlease set config node plugins/io_easyeda/load_board_name to the desired board name!\n");
 				return -1;
 			}
-			return epro_select_board_gui(epro);
+			if (epro_select_board_gui(epro) != 0)
+				return -1;
+
+			cname = epro->want_pcb_name;
+			e = htss_getentry(&epro->pcb2fn, cname);
+			if (e == NULL) {
+				rnd_message(RND_MSG_ERROR, "io_easyeda: epro's project.json does not have a board called '%s'\n", cname);
+				return -1;
+			}
+			epro->want_pcb_name = e->value;
 	}
 
 	return 0;
