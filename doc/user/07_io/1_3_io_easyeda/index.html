@@ -150,6 +150,20 @@ EasyEDA has special objects for representing restrictions. While pcb-rnd
 has enough features to represent most of the keepouts, currently the plugin
 is not loading this information.
 
+<H4 autotoc="yes"> pro: physical layer stackup </H4>
+<p>
+EasyEDA stores properties of physical layers (material, thicnkess); pcb-rnd
+can represent similar properties but the plugin does not load these.
+
+<H4 autotoc="yes"> DIMENSION </H4>
+<p>
+EasyEDA has a complex object type called DIMENSION which displays a dimension
+line with the length printed. pcb-rnd has a similar extended object. The
+plugin's std loader loads the DIMENSION object but places static objects instead
+of an extended object (so the result looks like in EasyEDA but is not easily
+editable in pcb-rnd). The pro loader ignores DIMENSION objects.
+
+
 <H4 autotoc="yes"> How unzipping works </H4>
 <p>
 I decided not to introduce a libzip dependency, rather just call unzip as
