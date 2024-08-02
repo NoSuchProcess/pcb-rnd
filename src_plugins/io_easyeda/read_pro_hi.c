@@ -409,17 +409,21 @@ static int pro_parse_pad_shape_rect(easy_read_ctx_t *ctx, pcb_pstk_shape_t *dst,
 	else
 		r = 0;
 
-	(void)r;TODO("this ignores the rounding radius");
-
-	w2 = TRR(w/2.0);
-	h2 = TRR(h/2.0);
-	dst->shape = PCB_PSSH_POLY;
-	pcb_pstk_shape_alloc_poly(&dst->data.poly, 4);
-	dst->data.poly.x[0] = -w2; dst->data.poly.y[0] = -h2;
-	dst->data.poly.x[1] = +w2; dst->data.poly.y[1] = -h2;
-	dst->data.poly.x[2] = +w2; dst->data.poly.y[2] = +h2;
-	dst->data.poly.x[3] = -w2; dst->data.poly.y[3] = +h2;
-	dst->data.poly.len = 4;
+	if (r <= 0) {
+		w2 = TRR(w/2.0);
+		h2 = TRR(h/2.0);
+		dst->shape = PCB_PSSH_POLY;
+		pcb_pstk_shape_alloc_poly(&dst->data.poly, 4);
+		dst->data.poly.x[0] = -w2; dst->data.poly.y[0] = -h2;
+		dst->data.poly.x[1] = +w2; dst->data.poly.y[1] = -h2;
+		dst->data.poly.x[2] = +w2; dst->data.poly.y[2] = +h2;
+		dst->data.poly.x[3] = -w2; dst->data.poly.y[3] = +h2;
+		dst->data.poly.len = 4;
+	}
+	else {
+		/* r is in percetnage of minor dimension's half */
+		pcb_shape_roundrect(dst, TRR(w), TRR(h), r/200.0);
+	}
 
 	return 0;
 }
