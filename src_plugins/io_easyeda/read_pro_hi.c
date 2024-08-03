@@ -1866,8 +1866,6 @@ static int easyeda_pro_parse_fp(pcb_data_t *data, const char *fn, int is_footpri
 		return -1;
 	}
 
-	rnd_trace("load efoo as board\n");
-
 	assert(ctx.root->type == GDOM_ARRAY);
 	if (res == 0) res = easyeda_pro_parse_doctype(&ctx);
 	if (res == 0) res = easyeda_pro_parse_canvas(&ctx);
