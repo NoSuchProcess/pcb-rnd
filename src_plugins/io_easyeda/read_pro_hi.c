@@ -1655,6 +1655,8 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_PREFERENCE: /* tool states; L45 is refraction setting */
 		case easy_SILK_OPTS: /* color-only */
 		case easy_PROP: /* per object (silk) color */
+		case easy_TEARDROP: /* could use the teardrop plugin if we really wanted to */
+		case easy_GROUP: /* custom object grouping? not without subc-in-subc */
 
 		/* already handled elsewhere (not drawing objects) */
 		case easy_DOCTYPE:
