@@ -1159,8 +1159,12 @@ static int easyeda_pro_parse_fill(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 		/* copy padstack rot code from _pad()? */
 	}
-	else /* layer object */
+	else { /* layer object */
+		if (conf_io_easyeda.plugins.io_easyeda.debug.omit_pour)
+			return 0;
+
 		res = pro_layer_fill(ctx, nd, lid, dthick, paths, locked, NULL);
+	}
 
 	return res;
 }
@@ -1182,6 +1186,9 @@ static int easyeda_pro_parse_pour(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	GET_ARG_STR(rule, nd, 6, "POUR rule", return -1);
 	GET_ARG_ARRAY(paths, nd, 8, "POUR path", return -1);
 	GET_ARG_DBL(locked, nd, 11, "POUR locked", return -1);
+
+	if (conf_io_easyeda.plugins.io_easyeda.debug.omit_pour)
+		return 0;
 
 	return pro_layer_fill(ctx, nd, lid, dthick, paths, locked, rule);
 }
