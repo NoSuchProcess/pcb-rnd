@@ -1826,6 +1826,8 @@ static int easyeda_pro_parse_fp_as_board(pcb_board_t *pcb, const char *fn, FILE 
 
 		ctx.data = pcb->Data;
 		easyeda_subc_finalize(&ctx, subc_as_board, 0, 0, 0);
+
+		pcb->is_footprint = 1;
 	}
 
 	return res;
