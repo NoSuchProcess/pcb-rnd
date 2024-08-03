@@ -1227,6 +1227,49 @@ static int easyeda_pro_parse_line(easy_read_ctx_t *ctx, gdom_node_t *nd)
 	return 0;
 }
 
+/* "ARC","e12212",0,"USB3_N",  1,    511.3503,353.6497,  528.3209,353.6497,   90,       8,     0]
+           id         net     layer    startx starty        endx    endy     delta_ang  thick  locked? */
+static int easyeda_pro_parse_arc(easy_read_ctx_t *ctx, gdom_node_t *nd)
+{
+	double lid, x1, y1, x2, y2, delta, dthick, locked;
+	double srad, erad, cx, cy, r;
+	pcb_layer_t *layer;
+	pcb_arc_t *arc;
+	int res;
+
+	REQ_ARGC_GTE(nd, 11, "ARC", return -1);
+	GET_ARG_DBL(lid, nd, 4, "ARC layer", return -1);
+	GET_ARG_DBL(x1, nd, 5, "ARC x1", return -1);
+	GET_ARG_DBL(y1, nd, 6, "ARC y1", return -1);
+	GET_ARG_DBL(x2, nd, 7, "ARC x2", return -1);
+	GET_ARG_DBL(y2, nd, 8, "ARC y2", return -1);
+	GET_ARG_DBL(delta, nd, 9, "ARC delta", return -1);
+	GET_ARG_DBL(dthick, nd, 10, "ARC thickness", return -1);
+	GET_ARG_DBL(locked, nd, 11, "ARC locked", return -1);
+
+	GET_LAYER(layer, (int)lid, nd, return -1);
+
+	res = arc_start_end_delta(x1, y1, x2, y2, delta, &cx, &cy, &r, &srad, &erad);
+	if (res != 0)
+		return res;
+
+	arc = pcb_arc_alloc(layer);
+
+	arc->X = TRX(cx);
+	arc->Y = TRY(cy);
+	arc->Width = arc->Height = TRR(r);
+	arc->Thickness = TRR(dthick);
+	arc->Clearance = RND_MIL_TO_COORD(0.1); /* need to have a valid clearance so that the polygon can override it */
+	arc->StartAngle = srad * RND_RAD_TO_DEG + 180;
+	arc->Delta = delta;
+	arc->Flags = pcb_flag_make(PCB_FLAG_CLEARLINE);
+
+	pcb_add_arc_on_layer(layer, arc);
+
+	(void)locked;
+	return 0;
+}
+
 /* xmir == -1 means automatic (mirror on bottom) */
 static int pro_create_text(easy_read_ctx_t *ctx, gdom_node_t *nd, pcb_layer_t *layer, double x, double y, double anchor, double rot, double xmir, double height, double thick, int keyvis, int valvis, const char *key, const char *val)
 {
@@ -1620,6 +1663,7 @@ static int easyeda_pro_parse_drawing_obj_pass2(easy_read_ctx_t *ctx, gdom_node_t
 		case easy_FILL: return easyeda_pro_parse_fill(ctx, nd);
 		case easy_POUR: return easyeda_pro_parse_pour(ctx, nd);
 		case easy_LINE: return easyeda_pro_parse_line(ctx, nd);
+		case easy_ARC: return easyeda_pro_parse_arc(ctx, nd);
 		case easy_STRING: return easyeda_pro_parse_string(ctx, nd);
 		case easy_COMPONENT: return easyeda_pro_parse_component(ctx, nd);
 
