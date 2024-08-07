@@ -891,7 +891,7 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 			lx = v->point[0];
 			ly = v->point[1];
 
-			for (v = v->next; v != c->head; v = v->next) {
+			for(v = v->next; v != c->head; v = v->next) {
 				x = v->point[0];
 				y = v->point[1];
 				if (pcb_isc_poly_lineseg(ctx, c2, lx, ly, x, y, bloat-4)) /* -4 for compenasating for rounding errors */
