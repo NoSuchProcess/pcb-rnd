@@ -868,7 +868,7 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 
 	for (c = c1; c; c = c->next) {
 		rnd_coord_t lx, ly, x, y;
-		rnd_vnode_t *v = c->head;
+		rnd_vnode_t *v = c->head, *start;
 		if (c->xmin - bloat <= c2->xmax && c->xmax + bloat >= c2->xmin &&
 				c->ymin - bloat <= c2->ymax && c->ymax + bloat >= c2->ymin) {
 
@@ -891,14 +891,15 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 			lx = v->point[0];
 			ly = v->point[1];
 
-			for(v = v->next; v != c->head; v = v->next) {
+			v = start = v->next;
+			do {
 				x = v->point[0];
 				y = v->point[1];
 				if (pcb_isc_poly_lineseg(ctx, c2, lx, ly, x, y, bloat-4)) /* -4 for compenasating for rounding errors */
 					return rnd_true;
 				lx = x;
 				ly = y;
-			}
+			} while((v = v->next) != start);
 		}
 	}
 
