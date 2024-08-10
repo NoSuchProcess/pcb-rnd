@@ -87,6 +87,7 @@
 	- BUG: bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout: 90 degree error [report: Erich]
 		-> wrong subx-aux x and y lines (names mixed up)
 		-> apply patch in bug_files/fp_rework to fix that, check with the script in the same dir
+		- sot23 and the whole sot* series is affected as well
 	- revise sil graphics for at least smd
 	- add assy drawing
 	- add keepout
