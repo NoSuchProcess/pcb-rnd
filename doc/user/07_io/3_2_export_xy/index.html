@@ -124,3 +124,31 @@ it is inserted in the attribute name, e.g. for <i>--vendor foo</i> the
 attribute names xy::foo::translate and xy::foo::rotate are used instead
 of the plain xy::translate and xy::rotate.
 
+<h4> 7.3.2.4. Board origin and orientation </h4>
+<p>
+For the standard %subc.x%, %subc.y%, %subc.padcx% and %subc.padcy%,
+the board origin (coordinate 0;0) is the bottom left corner of the drawing
+area when looking at the board from the top. Positive X coordinates are to
+the right and Y coordinates increase when moving to the north from the origin.
+<p>
+The board origin can be set by creating a normal drawing object, typically
+a zero-length line on a documentation layer (e.g. on the assy layer) and
+setting the attribute <i>pnp-origin</i> to any value; export_xy will
+find the object by the attribute. The new board 0;0 will be the center
+point of this drawing object.
+<p>
+Sometimes the bottom side needs to have a different origin point; in that case
+place two objects (on any layer) use attribute names <i>pnp-origin</i> for
+the top side origin on one object and <i>bottom-pnp-origin</i> for the
+bottom side origin on the other object.
+<p>
+If the same board is used with multiple pnp vendors that require different
+origins many more origin objects can be created with attributes
+<i>pnp-origin-configname</i> (and optionally <i>bottom-pnp-origin-configname</i>).
+The suffix <i>configname</i> is the identifier of the format being used for
+the xy export, the same string that is used for <i>ID</i>.name in the template.
+<p>
+For example to change the origin only on the bottom side and only when exporting
+using the gxyrs format the attribute key is <i>bottom-pnp-origin-gxyrs</i>.
+
+
