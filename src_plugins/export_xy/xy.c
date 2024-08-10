@@ -76,9 +76,13 @@ Unit of XY dimensions. Defaults to mil.
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, NULL},
 #define HA_vendor 3
 
+	{"normalize-angles", "make sure angles are between 0 and 360",
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, NULL},
+#define HA_normalize_angles 4
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 4
+#define HA_cam 5
 
 };
 
@@ -384,6 +388,20 @@ static int is_val_true(const char *val)
 	return 0;
 }
 
+static double xy_normalize_angle(double a)
+{
+	if (xy_values[HA_normalize_angles].lng && ((a < 0.0) || (a > 360.0))) {
+		a = fmod(a, 360.0);
+		if (a < 0)
+			a += 360;
+	}
+
+	if (a == -0.0)
+		a = +0.0;
+
+	return a;
+}
+
 static int subst_cb(void *ctx_, gds_t *s, const char **input)
 {
 	int pin_cnt = 0;
@@ -576,47 +594,47 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "rot%", 4) == 0) {
 			*input += 4;
-			rnd_append_printf(s, "%g", ctx->theta);
+			rnd_append_printf(s, "%g", xy_normalize_angle(ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "negrot%", 7) == 0) {
 			*input += 7;
-			rnd_append_printf(s, "%g", -ctx->theta);
+			rnd_append_printf(s, "%g", xy_normalize_angle(-ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "siderot%", 8) == 0) { /* old, broken, kept for compatibility */
 			*input += 8;
-			rnd_append_printf(s, "%g", ctx->theta);
+			rnd_append_printf(s, "%g", xy_normalize_angle(ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "side-rot%", 9) == 0) {
 			*input += 9;
-			rnd_append_printf(s, "%g", ctx->front ? ctx->theta : -ctx->theta);
+			rnd_append_printf(s, "%g", xy_normalize_angle(ctx->front ? ctx->theta : -ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "side-rot180%", 12) == 0) {
 			*input += 12;
-			rnd_append_printf(s, "%g", ctx->front ? ctx->theta : -ctx->theta + 180);
+			rnd_append_printf(s, "%g", xy_normalize_angle(ctx->front ? ctx->theta : -ctx->theta + 180));
 			return 0;
 		}
 		if (strncmp(*input, "side-negrot%", 12) == 0) {
 			*input += 12;
-			rnd_append_printf(s, "%g", ctx->front ? -ctx->theta : ctx->theta);
+			rnd_append_printf(s, "%g", xy_normalize_angle(ctx->front ? -ctx->theta : ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "side-negrot180%", 15) == 0) {
 			*input += 15;
-			rnd_append_printf(s, "%g", (ctx->front ? -ctx->theta : ctx->theta + 180));
+			rnd_append_printf(s, "%g", xy_normalize_angle((ctx->front ? -ctx->theta : ctx->theta + 180)));
 			return 0;
 		}
 		if (strncmp(*input, "270-rot%", 8) == 0) {
 			*input += 8;
-			rnd_append_printf(s, "%g", (270-ctx->theta));
+			rnd_append_printf(s, "%g", xy_normalize_angle(270-ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "side270-rot%", 12) == 0) {
 			*input += 12;
-			rnd_append_printf(s, "%g", (270-ctx->theta));
+			rnd_append_printf(s, "%g", xy_normalize_angle(270-ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "90rot%", 6) == 0) {
