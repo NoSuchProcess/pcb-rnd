@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,1999 Thomas Nau
- *  Copyright (C) 2018,2019,2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019,2020,2024 Tibor 'Igor2' Palinkas
  *
  *  This module, report.c, was written and is Copyright (C) 1997 harry eaton
  *
@@ -337,21 +337,29 @@ static void report_poly(gds_t *dst, pcb_poly_t *poly)
 
 static void report_subc(gds_t *dst, pcb_subc_t *subc)
 {
+	double rot;
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
 		r_dump_tree(PCB->Data->subc_tree, 0);
 #endif
+
+
 	rnd_append_printf(dst, "%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
 		"Refdes \"%s\".\n"
-		"Footprint \"%s\".\n"
-		"%s", USER_UNITMASK,
+		"Footprint \"%s\".\n", USER_UNITMASK,
 		subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL, 0),
 		subc->BoundingBox.X1, subc->BoundingBox.Y1,
 		subc->BoundingBox.X2, subc->BoundingBox.Y2,
 		RND_EMPTY(subc->refdes),
-		RND_EMPTY(pcb_attribute_get(&subc->Attributes, "footprint")),
-		gen_locked(subc));
+		RND_EMPTY(pcb_attribute_get(&subc->Attributes, "footprint")));
+
+	if (pcb_subc_get_rotation(subc, &rot) == 0)
+		rnd_append_printf(dst, "Rotation angle: %.3f.\n", rot);
+	else
+		gds_append_str(dst, "Bogus subcircuit: missing subc-aux vectors\n");
+
+	gds_append_str(dst, gen_locked(subc));
 }
 
 static void report_text(gds_t *dst, pcb_text_t *text)
