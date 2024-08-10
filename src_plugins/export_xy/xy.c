@@ -652,6 +652,11 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			gds_append_str(s, ctx->front ? "1" : "2");
 			return 0;
 		}
+		if (strncmp(*input, "CHAR-side%", 10) == 0) {
+			*input += 10;
+			gds_append_str(s, ctx->front ? "T" : "B");
+			return 0;
+		}
 		if (strncmp(*input, "pad_width%", 10) == 0) {
 			*input += 10;
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_w);
