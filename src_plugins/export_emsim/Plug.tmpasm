@@ -1,0 +1,10 @@
+put /local/rnd/mod {export_emsim}
+put /local/rnd/mod/OBJS [@
+	$(PLUGDIR)/export_emsim/export_emsim.o
+@]
+
+switch /local/module/export_emsim/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
