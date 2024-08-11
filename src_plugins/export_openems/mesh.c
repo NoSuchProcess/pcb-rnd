@@ -37,7 +37,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/rnd_printf.h>
 
-static pcb_mesh_t mesh;
+static openems_mesh_t mesh;
 static const char *mesh_ui_cookie = "mesh ui layer cookie";
 
 static const char *bnds[] = { "PEC", "PMC", "MUR", "PML_8", NULL };
@@ -143,7 +143,7 @@ static void mesh_auto_add_smooth(vtc0_t *v, rnd_coord_t c1, rnd_coord_t c2, rnd_
 	rnd_append_printf(dst, "%s  " #name" = %d\n", prefix, (int)me->dlg[me->name].val.lng);
 #define SAVE_COORD(name) \
 	rnd_append_printf(dst, "%s  " #name" = %.08$$mm\n", prefix, (rnd_coord_t)me->dlg[me->name].val.crd);
-void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
+void openems_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 {
 	int n;
 
@@ -318,17 +318,17 @@ int mesh_load_file(mesh_dlg_t *me, FILE *f)
 }
 
 
-static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t crd)
+static void mesh_add_edge(openems_mesh_t *mesh, openems_mesh_dir_t dir, rnd_coord_t crd)
 {
 	vtc0_append(&mesh->line[dir].edge, crd);
 }
 
-static void mesh_add_result(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t crd)
+static void mesh_add_result(openems_mesh_t *mesh, openems_mesh_dir_t dir, rnd_coord_t crd)
 {
 	vtc0_append(&mesh->line[dir].result, crd);
 }
 
-static void mesh_add_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t c1, rnd_coord_t c2, rnd_coord_t dens)
+static void mesh_add_range(openems_mesh_t *mesh, openems_mesh_dir_t dir, rnd_coord_t c1, rnd_coord_t c2, rnd_coord_t dens)
 {
 	pcb_range_t *r = vtr0_alloc_append(&mesh->line[dir].dens, 1);
 	r->begin = c1;
@@ -336,7 +336,7 @@ static void mesh_add_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t c1,
 	r->data[0].c = dens;
 }
 
-static void mesh_add_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t c1, rnd_coord_t c2, int aligned)
+static void mesh_add_obj(openems_mesh_t *mesh, openems_mesh_dir_t dir, rnd_coord_t c1, rnd_coord_t c2, int aligned)
 {
 	if (aligned) {
 		mesh_add_edge(mesh, dir, c1 - mesh->dens_obj * 2 / 3);
@@ -348,7 +348,7 @@ static void mesh_add_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t c1, r
 }
 
 /* generate edges and ranges looking at objects on the given layer */
-static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_layer_t *layer, pcb_mesh_dir_t dir)
+static int mesh_gen_obj(openems_mesh_t *mesh, pcb_layer_t *layer, openems_mesh_dir_t dir)
 {
 	pcb_data_t *data = layer->parent.data;
 	pcb_line_t *line;
@@ -455,7 +455,7 @@ TODO("mesh: text")
 }
 
 /* run mesh_gen_obj on all subc layers that match current board mesh layer */
-static int mesh_gen_obj_subc(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+static int mesh_gen_obj_subc(openems_mesh_t *mesh, openems_mesh_dir_t dir)
 {
 	pcb_data_t *data = mesh->layer->parent.data;
 	pcb_subc_t *sc;
@@ -505,7 +505,7 @@ static int cmp_maybe_add(const void *k, const void *v)
 	return -1;
 }
 
-static void mesh_maybe_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at, rnd_coord_t dist)
+static void mesh_maybe_add_edge(openems_mesh_t *mesh, openems_mesh_dir_t dir, rnd_coord_t at, rnd_coord_t dist)
 {
 	mesh_maybe_t ctx;
 	rnd_coord_t *c;
@@ -521,7 +521,7 @@ TODO(": optimization: run a second bsearch and insert instead of this; testing: 
 	}
 }
 
-static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+static int mesh_sort(openems_mesh_t *mesh, openems_mesh_dir_t dir)
 {
 	size_t n;
 	pcb_range_t *r;
@@ -631,7 +631,7 @@ static pcb_range_t *mesh_find_range(const vtr0_t *v, rnd_coord_t at, rnd_coord_t
 	return r;
 }
 
-static int mesh_auto_z(pcb_mesh_t *mesh)
+static int mesh_auto_z(openems_mesh_t *mesh)
 {
 	rnd_layergrp_id_t gid;
 	rnd_coord_t y = 0, ytop = 0, ybottom, top_dens, bottom_dens;
@@ -711,7 +711,7 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 	return 0;
 }
 
-static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at, rnd_coord_t aux1, rnd_coord_t aux2, rnd_coord_t thick)
+static void mesh_draw_line(openems_mesh_t *mesh, openems_mesh_dir_t dir, rnd_coord_t at, rnd_coord_t aux1, rnd_coord_t aux2, rnd_coord_t thick)
 {
 	if (dir == PCB_MESH_HORIZONTAL)
 		pcb_line_new(mesh->ui_layer_xy, aux1, at, aux2, at, thick, 0, pcb_no_flags());
@@ -719,7 +719,7 @@ static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at,
 		pcb_line_new(mesh->ui_layer_xy, at, aux1, at, aux2, thick, 0, pcb_no_flags());
 }
 
-static void mesh_draw_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at1, rnd_coord_t at2, rnd_coord_t aux, rnd_coord_t thick)
+static void mesh_draw_range(openems_mesh_t *mesh, openems_mesh_dir_t dir, rnd_coord_t at1, rnd_coord_t at2, rnd_coord_t aux, rnd_coord_t thick)
 {
 	if (dir == PCB_MESH_HORIZONTAL)
 		pcb_line_new(mesh->ui_layer_xy, aux, at1, aux, at2, thick, 0, pcb_no_flags());
@@ -727,7 +727,7 @@ static void mesh_draw_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at
 		pcb_line_new(mesh->ui_layer_xy, at1, aux, at2, aux, thick, 0, pcb_no_flags());
 }
 
-static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t aux, const char *label)
+static void mesh_draw_label(openems_mesh_t *mesh, openems_mesh_dir_t dir, rnd_coord_t aux, const char *label)
 {
 	aux -= RND_MM_TO_COORD(0.6);
 	if (dir == PCB_MESH_HORIZONTAL)
@@ -737,7 +737,7 @@ static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t au
 
 }
 
-static int mesh_vis_xy(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+static int mesh_vis_xy(openems_mesh_t *mesh, openems_mesh_dir_t dir)
 {
 	size_t n;
 	rnd_coord_t end;
@@ -772,7 +772,7 @@ static int mesh_vis_xy(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
-static int mesh_vis_z(pcb_mesh_t *mesh)
+static int mesh_vis_z(openems_mesh_t *mesh)
 {
 	int n;
 	rnd_layergrp_id_t gid;
@@ -878,7 +878,7 @@ static void mesh_auto_add_smooth(vtc0_t *v, rnd_coord_t c1, rnd_coord_t c2, rnd_
 	mesh_auto_add_even(v, begin, end, d);
 }
 
-static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+static int mesh_auto_build(openems_mesh_t *mesh, openems_mesh_dir_t dir)
 {
 	size_t n;
 	rnd_coord_t c1, c2;
@@ -940,7 +940,7 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
-int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+int mesh_auto(openems_mesh_t *mesh, openems_mesh_dir_t dir)
 {
 	vtc0_truncate(&mesh->line[dir].edge, 0);
 	vtr0_truncate(&mesh->line[dir].dens, 0);
@@ -1007,7 +1007,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	}
 
 	gds_init(&tmp);
-	pcb_mesh_save(&ia, &tmp, NULL);
+	openems_mesh_save(&ia, &tmp, NULL);
 	fprintf(f, "%s", tmp.array);
 	gds_uninit(&tmp);
 	free(fname);
@@ -1049,12 +1049,12 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	ia_load_file(fname);
 }
 
-static void mesh_sort_uniq(pcb_mesh_lines_t *l)
+static void mesh_sort_uniq(openems_mesh_lines_t *l)
 {
 		qsort(l->result.array, vtc0_len(&l->result), sizeof(rnd_coord_t), cmp_coord);
 }
 
-static void mesh_sort_uniq_all(pcb_mesh_t *mesh)
+static void mesh_sort_uniq_all(openems_mesh_t *mesh)
 {
 	mesh_sort_uniq(&mesh->line[PCB_MESH_HORIZONTAL]);
 	mesh_sort_uniq(&mesh->line[PCB_MESH_VERTICAL]);
@@ -1093,12 +1093,12 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	ia_gen();
 }
 
-pcb_mesh_t *pcb_mesh_get(const char *name)
+openems_mesh_t *openems_mesh_get(const char *name)
 {
 	return &mesh;
 }
 
-int pcb_mesh_interactive(void)
+int openems_mesh_interactive(void)
 {
 	int n;
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -1280,7 +1280,7 @@ const char pcb_acts_mesh[] = "mesh()";
 const char pcb_acth_mesh[] = "generate a mesh for simulation";
 fgw_error_t pcb_act_mesh(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_mesh_interactive();
+	openems_mesh_interactive();
 	RND_ACT_IRES(0);
 	return 0;
 }

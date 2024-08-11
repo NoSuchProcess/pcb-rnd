@@ -165,7 +165,7 @@ static int openems_wr_xml_layers(wctx_t *ctx)
 	return err;
 }
 
-static void openems_wr_xml_mesh_lines(wctx_t *ctx, pcb_mesh_t *mesh, char axis, pcb_mesh_lines_t *l, rnd_coord_t scale)
+static void openems_wr_xml_mesh_lines(wctx_t *ctx, openems_mesh_t *mesh, char axis, openems_mesh_lines_t *l, rnd_coord_t scale)
 {
 	rnd_cardinal_t n, i = 0, len = vtc0_len(&l->result);
 	rnd_coord_t delta, at;
@@ -197,7 +197,7 @@ static void openems_wr_xml_mesh_lines(wctx_t *ctx, pcb_mesh_t *mesh, char axis, 
 }
 
 
-static void openems_wr_xml_grid(wctx_t *ctx, pcb_mesh_t *mesh)
+static void openems_wr_xml_grid(wctx_t *ctx, openems_mesh_t *mesh)
 {
 	fprintf(ctx->f, "    <RectilinearGrid DeltaUnit='0.001' CoordSystem='0'>\n");
 	openems_wr_xml_mesh_lines(ctx, mesh, 'Y', &mesh->line[PCB_MESH_HORIZONTAL], -1);
@@ -271,7 +271,7 @@ static void openems_wr_xml_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, r
 
 static int openems_wr_xml(wctx_t *ctx)
 {
-	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
+	openems_mesh_t *mesh = openems_mesh_get(MESH_NAME);
 	char *exc;
 	int err = 0;
 

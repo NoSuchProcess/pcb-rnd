@@ -169,7 +169,7 @@ static rnd_hid_attr_val_t openems_values[NUM_OPTIONS];
 static const rnd_export_opt_t *openems_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *suffix = ".m";
-	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
+	openems_mesh_t *mesh = openems_mesh_get(MESH_NAME);
 	const char *val = openems_values[HA_openemsfile].str;
 
 	if ((dsg != NULL) && ((val == NULL) || (*val == '\0')))
@@ -535,7 +535,7 @@ TODO(": check if there is copper object on hid2 at x;y")
 	}
 }
 
-static void openems_wr_m_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
+static void openems_wr_m_mesh_lines(wctx_t *ctx, openems_mesh_lines_t *l)
 {
 	rnd_cardinal_t n;
 	for(n = 0; n < vtc0_len(&l->result); n++)
@@ -544,7 +544,7 @@ static void openems_wr_m_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
 
 static void openems_wr_m_mesh1(wctx_t *ctx)
 {
-	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
+	openems_mesh_t *mesh = openems_mesh_get(MESH_NAME);
 	char *exc = pcb_openems_excitation_get(ctx->pcb, 1);
 	int n;
 
@@ -573,7 +573,7 @@ static void openems_wr_m_mesh1(wctx_t *ctx)
 
 static void openems_wr_m_mesh2(wctx_t *ctx)
 {
-	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
+	openems_mesh_t *mesh = openems_mesh_get(MESH_NAME);
 
 	if (mesh == NULL) {
 		fprintf(ctx->f, "%%%%%% Board mesh (NOT defined in pcb-rnd)\n");

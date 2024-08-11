@@ -9,14 +9,14 @@ typedef struct {
 	vtc0_t edge;      /* input: around object edge - lines that must be in the mesh */
 	vtr0_t dens;      /* input: density ranges; data[0].c is the target density */
 	vtc0_t result;    /* resulting line coordinates */
-} pcb_mesh_lines_t;
+} openems_mesh_lines_t;
 
 typedef enum {
 	PCB_MESH_HORIZONTAL, /* variable y coord (horizontal lines) */
 	PCB_MESH_VERTICAL,   /* variable x coord (vertical lines) */
 	PCB_MESH_Z,
 	PCB_MESH_max
-} pcb_mesh_dir_t;
+} openems_mesh_dir_t;
 
 typedef struct {
 	pcb_layer_t *layer;                    /* input layer (objects are picked up from this layer) */
@@ -26,7 +26,7 @@ typedef struct {
 	rnd_coord_t min_space;                 /* make sure there's always at least this much space between two mesh lines */
 	rnd_coord_t def_subs_thick;            /* default substrate thickness */
 	rnd_coord_t def_copper_thick;          /* default copper thickness */
-	pcb_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
+	openems_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
 	const char *bnd[6];                    /* temporary: boundary conditions */
 	rnd_coord_t z_bottom_copper;           /* z coordinate of the bottom copper layer, along the z-mesh (0 is the top copper) */
 	int pml;                               /* add pml cells around the exterior of the existing mesh of "perfectly matched" impedance */
@@ -40,14 +40,14 @@ typedef struct {
 	unsigned air_top:1;                    /* add mesh lines in air above the top of the board */
 	unsigned air_bot:1;                    /* add mesh lines in air below the top of the board */
 	unsigned noimpl:1;                     /* when set, do not add extra implicit mesh lines, keep the explicit ones only */
-} pcb_mesh_t;
+} openems_mesh_t;
 
 extern const char pcb_acts_mesh[];
 extern const char pcb_acth_mesh[];
 fgw_error_t pcb_act_mesh(fgw_arg_t *res, int oargc, fgw_arg_t *oargv);
 
 /* Get one of the configured meshes */
-pcb_mesh_t *pcb_mesh_get(const char *name);
+openems_mesh_t *openems_mesh_get(const char *name);
 
 /* Return layer group thickness, warn for missing value and use fallback */
 rnd_coord_t mesh_layergrp_thickness(pcb_layergrp_t *grp, rnd_coord_t fallback);
