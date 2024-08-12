@@ -204,7 +204,7 @@ typedef struct {
 	pcb_subc_t *subc;
 	rnd_coord_t pad_cx, pad_cy, bottom_pad_cx, bottom_pad_cy;
 	rnd_coord_t pad_w, pad_h;
-	rnd_coord_t prpad_cx, prpad_cy;
+	rnd_coord_t prpad_cx, prpad_cy, bottom_prpad_cx, bottom_prpad_cy;
 	rnd_coord_t prpad_w, prpad_h;
 	rnd_cardinal_t count;
 	rnd_coord_t ox, oy, bottom_ox, bottom_oy;
@@ -339,8 +339,17 @@ static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, rnd_coord_t *pw, rnd_coo
 		pcb_data_t *tmp = pcb_buffers[PCB_MAX_BUFFER-1].Data;
 		double ang;
 		pcb_opctx_t op;
+		rnd_coord_t scox, scoy;
 
-		/* this is what we would do if we wanted to return the pre-rotation state */
+		/* Because of subc rotation terms are rotated too and non-round pads will
+		   have outer corners that will bump the bbox more. What the fab wants
+		   is "how much the original, 0 degree part needs to be rotated". This
+		   is achieved by rotating the subc back to 0 deg position, calculate
+		   the pad center and then rotate the result back to the rotated subc.
+		   So pad center and width/height derived from pre-rotation state */
+
+		/* optimization: for n*90 it's enough to swap width/heigth; pcx;pcy
+		   happens to be correct as terminal bboxes are not rotated */
 		if ((ctx->theta == 0) || (ctx->theta == 180) || (ctx->theta == -180)) {
 			calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
 			return;
@@ -349,15 +358,25 @@ static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, rnd_coord_t *pw, rnd_coo
 			calc_pad_bbox_(ctx, ph, pw, pcx, pcy);
 			return;
 		}
-		
+
+		/* generic case */
+
+		/* acquire unrotated/untransformed origin of the input subc */
+		pcb_subc_get_origin(ctx->subc, &scox, &scoy);
+
+		/* create sc_rot0 in buffer: subc rotated back to 0 deg; ctx->theta is -subc_rot */
 		sc_rot0 = pcb_subc_dup_at(NULL, tmp, ctx->subc, 0, 0, 0, rnd_false);
 		ang = ctx->theta / RND_RAD_TO_DEG;
-		pcb_subc_rotate(sc_rot0, 0, 0, cos(ang), sin(ang), ctx->theta);
+		pcb_subc_rotate(sc_rot0, scox, scoy, cos(ang), sin(ang), ctx->theta);
 
+		/* compute pad bbox on the rotated-back subc in buffer */
 		save = ctx->subc;
 		ctx->subc = sc_rot0;
 		calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
 		ctx->subc = save;
+
+		/* rotate the result so it goes back to the rotation of the live subc */
+		rnd_rotate(pcx, pcy, scox, scoy, cos(-ang), sin(-ang));
 
 		op.remove.pcb = PCB;
 		op.remove.destroy_target = tmp;
@@ -918,6 +937,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.prpad_cx, &ctx.prpad_cy);
 		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy, &ctx.bottom_pad_cx, &ctx.bottom_pad_cy, 0);
+		xy_translate(&ctx, &ctx.prpad_cx, &ctx.prpad_cy, &ctx.bottom_prpad_cx, &ctx.bottom_prpad_cy, 0);
 
 		if ((templ->skip_if_nonempty != NULL) && (*templ->skip_if_nonempty != '\0')) {
 			char *s = sprintf_templ(&ctx, templ->skip_if_nonempty);
