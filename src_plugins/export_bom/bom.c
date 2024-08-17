@@ -41,9 +41,13 @@ static rnd_export_opt_t bom_options[] = {
 	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, NULL},
 #define HA_format 1
 
+	{"part-rnd", "export a part-rnd tEDAx that contains the selected template and all data",
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, NULL},
+#define HA_part_rnd 2
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 2
+#define HA_cam 3
 };
 
 #define NUM_OPTIONS (sizeof(bom_options)/sizeof(bom_options[0]))
@@ -78,6 +82,19 @@ static const rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n, rn
 	return bom_options;
 }
 
+static const char *bom_name_prefix(bom_subst_ctx_t *ctx)
+{
+	static char tmp[256]; /* this is safe: caller will make a copy right after we return */
+	char *o = tmp;
+	const char *t;
+	int n = 0;
+
+	for(t = ctx->name; isalpha(*t) && (n < sizeof(tmp)-1); t++,n++,o++)
+		*o = *t;
+	*o = '\0';
+	return tmp;
+}
+
 static const char *subst_user(bom_subst_ctx_t *ctx, const char *key)
 {
 	if (strcmp(key, "author") == 0) return pcb_author();
@@ -87,23 +104,34 @@ static const char *subst_user(bom_subst_ctx_t *ctx, const char *key)
 
 		if (strncmp(key, "a.", 2) == 0) return pcb_attribute_get(&ctx->obj->Attributes, key+2);
 		else if (strcmp(key, "name") == 0) return ctx->name;
-		if (strcmp(key, "prefix") == 0) {
-			static char tmp[256]; /* this is safe: caller will make a copy right after we return */
-			char *o = tmp;
-			const char *t;
-			int n = 0;
-
-			for(t = ctx->name; isalpha(*t) && (n < sizeof(tmp)-1); t++,n++,o++)
-				*o = *t;
-			*o = '\0';
-			return tmp;
-		}
+		if (strcmp(key, "prefix") == 0) return bom_name_prefix(ctx);
 	}
 
 	return NULL;
 }
 
-static int print_bom(const bom_template_t *templ)
+static void part_rnd_print(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name)
+{
+	if (name == NULL) {
+		bom_tdx_fprint_safe_kv(ctx->f, "author", pcb_author());
+		bom_tdx_fprint_safe_kv(ctx->f, "title", RND_UNKNOWN(PCB->hidlib.name));
+	}
+	else {
+		int n;
+
+		bom_tdx_fprint_safe_kv(ctx->f, "name", name);
+		bom_tdx_fprint_safe_kv(ctx->f, "prefix", bom_name_prefix(ctx));
+
+		/* print all attributes */
+		for(n = 0; n < obj->Attributes.Number; n++) {
+			pcb_attribute_t *a = obj->Attributes.List + n;
+			bom_tdx_fprint_safe_kkv(ctx->f, "a.", a->name, a->value);
+		}
+	}
+}
+
+
+static int print_bom(const bom_template_t *templ, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
 	bom_subst_ctx_t ctx = {0};
@@ -113,6 +141,8 @@ static int print_bom(const bom_template_t *templ)
 		rnd_message(RND_MSG_ERROR, "Cannot open file %s for writing\n", bom_filename);
 		return 1;
 	}
+
+	bom_part_rnd_mode = options[HA_part_rnd].lng ? part_rnd_print : NULL;
 
 	bom_print_begin(&ctx, f, templ);
 
@@ -157,7 +187,7 @@ static void bom_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	}
 
 	bom_init_template(&templ, &conf_bom.plugins.export_bom.templates, *tid);
-	print_bom(&templ);
+	print_bom(&templ, options);
 	pcb_cam_end(&cam);
 }
 
