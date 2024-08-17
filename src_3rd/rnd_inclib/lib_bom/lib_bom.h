@@ -93,3 +93,21 @@ static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t 
 static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name); /* add an app_item */
 static void bom_print_all(bom_subst_ctx_t *ctx); /* sort and print all items */
 static void bom_print_end(bom_subst_ctx_t *ctx); /* print footer and uninit ctx */
+
+/* If not NULL: export part-rnd tEDAx BoM instead of printing with templates;
+   templates are still executed to figure which parts are to be exported.
+   This is the function that prints user-specified data:
+    - when called with NULL,NULL, print global template parameters
+    - when called with obj,name, print part parameters
+   Use bom_tdx_fprint_safe_kv()
+*/
+static void (*bom_part_rnd_mode)(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name);
+
+/* Low level: save print a key=value pair in tedax format, only val is
+   escaped; desn't print anything if val is NULL */
+static void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *val);
+
+/* Same as bom_tdx_fprint_safe_kv but both key and val are excaped and if
+   key_prefix is non-zero, it's prepended to key (without escaping) */
+static void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char *key, const char *val);
+

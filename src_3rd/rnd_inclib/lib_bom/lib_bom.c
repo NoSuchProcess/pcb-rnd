@@ -271,13 +271,58 @@ static int item_cmp(const void *item1, const void *item2)
 	return strcmp((*i1)->id, (*i2)->id);
 }
 
+static void bom_tdx_fprint_safe_str(FILE *f, const char *str)
+{
+	const char *s;
+
+	for(s = str; *s != '\0'; s++) {
+		switch(*s) {
+			case '\n': fputc('\\', f); fputc('n', f); break;
+			case '\r': fputc('\\', f); fputc('r', f); break;
+			case '\t': fputc('\\', f); fputc('t', f); break;
+			case ' ': fputc('\\', f); fputc(' ', f); break;
+			case '\\': fputc('\\', f); fputc('\\', f); break;
+			default:
+				if ((*s < 33) || (*s > 126))
+					fprintf(f, "\\x%.2x", (int)*s);
+				else
+					fputc(*s, f);
+		}
+	}
+}
+
+static void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *val)
+{
+	if (val == NULL)
+		return;
+
+	fprintf(f, " %s ", key);
+	bom_tdx_fprint_safe_str(f, val);
+	fputc('\n', f);
+}
+
+static void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char *key, const char *val)
+{
+	if (val == NULL)
+		return;
+
+	fputc(' ', f);
+	if (key_prefix != NULL)
+		fprintf(f, "%s", key_prefix);
+	bom_tdx_fprint_safe_str(f, key);
+	fputc(' ', f);
+	bom_tdx_fprint_safe_str(f, val);
+	fputc('\n', f);
+}
+
 static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ)
 {
 	gds_init(&ctx->tmp);
 
 	rnd_print_utc(ctx->utcTime, sizeof(ctx->utcTime), 0);
 
-	fprintf_templ(f, ctx, templ->header);
+	if (bom_part_rnd_mode == NULL)
+		fprintf_templ(f, ctx, templ->header);
 
 	htsp_init(&ctx->tbl, strhash, strkeyeq);
 	vtp0_init(&ctx->arr);
@@ -289,6 +334,30 @@ static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t 
 	ctx->list_sep = templ->list_sep;
 	if (ctx->list_sep == NULL)
 		ctx->list_sep = " ";
+
+	if (bom_part_rnd_mode != NULL) {
+		fprintf(f, "tEDAx v1\n\n");
+		fprintf(f, "begin part-rnd-bom-template v1\n");
+		bom_tdx_fprint_safe_kv(f, "header", templ->header);
+		bom_tdx_fprint_safe_kv(f, "item", templ->item);
+		bom_tdx_fprint_safe_kv(f, "footer", templ->footer);
+		bom_tdx_fprint_safe_kv(f, "sort_id", templ->sort_id);
+		bom_tdx_fprint_safe_kv(f, "escape", templ->escape);
+		bom_tdx_fprint_safe_kv(f, "needs_escape", templ->needs_escape);
+		bom_tdx_fprint_safe_kv(f, "skip_if_empty", templ->skip_if_empty);
+		bom_tdx_fprint_safe_kv(f, "skip_if_nonempty", templ->skip_if_nonempty);
+		bom_tdx_fprint_safe_kv(f, "list_sep", templ->list_sep);
+		fprintf(f, "end part-rnd-bom-template\n\n");
+
+		fprintf(f, "begin part-rnd-bom-global v1\n");
+		bom_tdx_fprint_safe_kv(f, "utcTime", ctx->utcTime);
+		bom_tdx_fprint_safe_kv(f, "name", ctx->name);
+		fprintf(f, "end part-rnd-bom-global\n\n");
+
+		fprintf(f, "begin part-rnd-bom-template-global v1\n");
+		bom_part_rnd_mode(ctx, NULL, NULL);
+		fprintf(f, "end part-rnd-bom-template-global\n\n");
+	}
 }
 
 static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name)
@@ -327,24 +396,32 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 	if (id == NULL)
 		return;
 
-	i = htsp_get(&ctx->tbl, id);
-	if (i == NULL) {
-		i = malloc(sizeof(bom_item_t));
-		i->id = id;
-		i->obj = obj;
-		i->cnt = 1;
-		gds_init(&i->name_list);
+	if (bom_part_rnd_mode == NULL) {
 
-		htsp_set(&ctx->tbl, id, i);
-		vtp0_append(&ctx->arr, i);
-		freeme = NULL;
+		i = htsp_get(&ctx->tbl, id);
+		if (i == NULL) {
+			i = malloc(sizeof(bom_item_t));
+			i->id = id;
+			i->obj = obj;
+			i->cnt = 1;
+			gds_init(&i->name_list);
+
+			htsp_set(&ctx->tbl, id, i);
+			vtp0_append(&ctx->arr, i);
+			freeme = NULL;
+		}
+		else {
+			i->cnt++;
+			gds_append_str(&i->name_list, ctx->list_sep);
+		}
+
+		gds_append_str(&i->name_list, name);
 	}
 	else {
-		i->cnt++;
-		gds_append_str(&i->name_list, ctx->list_sep);
+		fprintf(ctx->f, "begin part-rnd-bom-part v1 %s\n", name);
+		bom_part_rnd_mode(ctx, obj, name);
+		fprintf(ctx->f, "end part-rnd-bom-part\n\n");
 	}
-
-	gds_append_str(&i->name_list, name);
 
 	free(freeme);
 }
@@ -352,6 +429,9 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 static void bom_print_all(bom_subst_ctx_t *ctx)
 {
 	long n;
+
+	if (bom_part_rnd_mode != NULL)
+		return;
 
 	/* clean up and sort the array */
 	ctx->obj = NULL;
@@ -369,7 +449,8 @@ static void bom_print_all(bom_subst_ctx_t *ctx)
 
 static void bom_print_end(bom_subst_ctx_t *ctx)
 {
-	fprintf_templ(ctx->f, ctx, ctx->templ->footer);
+	if (bom_part_rnd_mode == NULL)
+		fprintf_templ(ctx->f, ctx, ctx->templ->footer);
 
 	gds_uninit(&ctx->tmp);
 
