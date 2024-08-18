@@ -24,6 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#ifndef LIB_BOM_H
+#define LIB_BOM_H
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -35,6 +38,10 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 
+#ifndef LIB_BOM_API
+#define LIB_BOM_API static
+#endif
+
 /*** formats & templates ***/
 typedef struct bom_template_s {
 	const char *header, *item, *footer, *sort_id;
@@ -44,6 +51,8 @@ typedef struct bom_template_s {
 	const char *skip_if_nonempty; /* if this template is not empty: render the template for each item and do not include the item if the rendered string is not empty */
 	const char *list_sep; /* separator sequence used when building a list */
 } bom_template_t;
+
+#ifndef LIB_BOM_DISABLE_FMTS
 
 static vts0_t bom_fmt_names; /* array of const char * long name of each format, pointing into the conf database */
 static vts0_t bom_fmt_ids;   /* array of strdup'd short name (ID) of each format */
@@ -61,6 +70,7 @@ static void bom_build_fmts(const rnd_conflist_t *templates);
    before starting an export for a specific format */
 static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templates, const char *tid);
 
+#endif
 
 /*** subst ***/
 
@@ -89,10 +99,10 @@ typedef struct {
 
 /* Export a file; call begin, then loop over all items and call _add, then call
    _all and _end. */
-static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ); /* init ctx, print header */
-static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name); /* add an app_item */
-static void bom_print_all(bom_subst_ctx_t *ctx); /* sort and print all items */
-static void bom_print_end(bom_subst_ctx_t *ctx); /* print footer and uninit ctx */
+LIB_BOM_API void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ); /* init ctx, print header */
+LIB_BOM_API void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name); /* add an app_item */
+LIB_BOM_API void bom_print_all(bom_subst_ctx_t *ctx); /* sort and print all items */
+LIB_BOM_API void bom_print_end(bom_subst_ctx_t *ctx); /* print footer and uninit ctx */
 
 /* If not NULL: export part-rnd tEDAx BoM instead of printing with templates;
    templates are still executed to figure which parts are to be exported.
@@ -101,13 +111,14 @@ static void bom_print_end(bom_subst_ctx_t *ctx); /* print footer and uninit ctx 
     - when called with obj,name, print part parameters
    Use bom_tdx_fprint_safe_kv()
 */
-static void (*bom_part_rnd_mode)(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name);
+LIB_BOM_API void (*bom_part_rnd_mode)(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name);
 
 /* Low level: save print a key=value pair in tedax format, only val is
    escaped; desn't print anything if val is NULL */
-static void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *val);
+LIB_BOM_API void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *val);
 
 /* Same as bom_tdx_fprint_safe_kv but both key and val are excaped and if
    key_prefix is non-zero, it's prepended to key (without escaping) */
-static void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char *key, const char *val);
+LIB_BOM_API void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char *key, const char *val);
 
+#endif

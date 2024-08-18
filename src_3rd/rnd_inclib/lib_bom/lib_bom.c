@@ -24,6 +24,11 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#ifndef LIB_BOM_API
+#define LIB_BOM_API static
+#endif
+
+#ifndef LIB_BOM_DISABLE_FMTS
 /*** formats ***/
 
 static void bom_free_fmts(void)
@@ -105,6 +110,7 @@ static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templ
 	templ->list_sep     = get_templ(templates, tid, "list_sep");
 
 }
+#endif
 
 /*** subst ***/
 
@@ -291,7 +297,7 @@ static void bom_tdx_fprint_safe_str(FILE *f, const char *str)
 	}
 }
 
-static void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *val)
+LIB_BOM_API void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *val)
 {
 	if (val == NULL)
 		return;
@@ -301,7 +307,7 @@ static void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *val)
 	fputc('\n', f);
 }
 
-static void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char *key, const char *val)
+LIB_BOM_API void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char *key, const char *val)
 {
 	if (val == NULL)
 		return;
@@ -315,7 +321,7 @@ static void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char 
 	fputc('\n', f);
 }
 
-static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ)
+LIB_BOM_API void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ)
 {
 	gds_init(&ctx->tmp);
 
@@ -360,7 +366,7 @@ static void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t 
 	}
 }
 
-static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name)
+LIB_BOM_API void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name)
 {
 	char *id, *freeme;
 	bom_item_t *i;
@@ -426,7 +432,7 @@ static void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char *name
 	free(freeme);
 }
 
-static void bom_print_all(bom_subst_ctx_t *ctx)
+LIB_BOM_API void bom_print_all(bom_subst_ctx_t *ctx)
 {
 	long n;
 
@@ -447,7 +453,7 @@ static void bom_print_all(bom_subst_ctx_t *ctx)
 	}
 }
 
-static void bom_print_end(bom_subst_ctx_t *ctx)
+LIB_BOM_API void bom_print_end(bom_subst_ctx_t *ctx)
 {
 	if (bom_part_rnd_mode == NULL)
 		fprintf_templ(ctx->f, ctx, ctx->templ->footer);
