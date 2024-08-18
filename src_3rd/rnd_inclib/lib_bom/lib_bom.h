@@ -42,14 +42,18 @@
 #define LIB_BOM_API static
 #endif
 
+#ifndef LIB_BOM_TEMPLATE_CONST
+#define LIB_BOM_TEMPLATE_CONST
+#endif
+
 /*** formats & templates ***/
 typedef struct bom_template_s {
-	const char *header, *item, *footer, *sort_id;
-	const char *needs_escape; /* list of characters that need escaping */
-	const char *escape; /* escape character */
-	const char *skip_if_empty; /* if this template is not empty: render the template for each item and do not include the item if the rendered string is empty */
-	const char *skip_if_nonempty; /* if this template is not empty: render the template for each item and do not include the item if the rendered string is not empty */
-	const char *list_sep; /* separator sequence used when building a list */
+	LIB_BOM_TEMPLATE_CONST char *header, *item, *footer, *sort_id;
+	LIB_BOM_TEMPLATE_CONST char *needs_escape; /* list of characters that need escaping */
+	LIB_BOM_TEMPLATE_CONST char *escape; /* escape character */
+	LIB_BOM_TEMPLATE_CONST char *skip_if_empty; /* if this template is not empty: render the template for each item and do not include the item if the rendered string is empty */
+	LIB_BOM_TEMPLATE_CONST char *skip_if_nonempty; /* if this template is not empty: render the template for each item and do not include the item if the rendered string is not empty */
+	LIB_BOM_TEMPLATE_CONST char *list_sep; /* separator sequence used when building a list */
 } bom_template_t;
 
 #ifndef LIB_BOM_DISABLE_FMTS
