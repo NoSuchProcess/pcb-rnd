@@ -43,7 +43,7 @@
 #endif
 
 #ifndef LIB_BOM_TEMPLATE_CONST
-#define LIB_BOM_TEMPLATE_CONST
+#define LIB_BOM_TEMPLATE_CONST const
 #endif
 
 /*** formats & templates ***/
