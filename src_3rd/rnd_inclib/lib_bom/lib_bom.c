@@ -432,7 +432,7 @@ LIB_BOM_API void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char 
 	free(freeme);
 }
 
-LIB_BOM_API void bom_print_all(bom_subst_ctx_t *ctx)
+LIB_BOM_API void bom_print_all_generic(bom_subst_ctx_t *ctx, void (*cb)(FILE *f, bom_subst_ctx_t *ctx, const char *templ))
 {
 	long n;
 
@@ -452,6 +452,12 @@ LIB_BOM_API void bom_print_all(bom_subst_ctx_t *ctx)
 		fprintf_templ(ctx->f, ctx, ctx->templ->item);
 	}
 }
+
+LIB_BOM_API void bom_print_all(bom_subst_ctx_t *ctx)
+{
+	bom_print_all_generic(ctx, fprintf_templ);
+}
+
 
 LIB_BOM_API void bom_print_end(bom_subst_ctx_t *ctx)
 {

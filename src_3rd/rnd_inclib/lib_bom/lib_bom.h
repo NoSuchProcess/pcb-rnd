@@ -108,6 +108,12 @@ LIB_BOM_API void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char 
 LIB_BOM_API void bom_print_all(bom_subst_ctx_t *ctx); /* sort and print all items */
 LIB_BOM_API void bom_print_end(bom_subst_ctx_t *ctx); /* print footer and uninit ctx */
 
+/* The generic form of bom_print_all() that doesn't print but calls cb() on
+   each line it would print; sets ctx->obj, ctx->name and ctx->count
+   before the call; ctx->obj is one of the objects from the group. */
+LIB_BOM_API void bom_print_all_generic(bom_subst_ctx_t *ctx, void (*cb)(FILE *f, bom_subst_ctx_t *ctx, const char *templ));
+
+
 /* If not NULL: export part-rnd tEDAx BoM instead of printing with templates;
    templates are still executed to figure which parts are to be exported.
    This is the function that prints user-specified data:
