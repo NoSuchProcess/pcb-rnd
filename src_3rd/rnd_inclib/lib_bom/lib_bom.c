@@ -114,13 +114,6 @@ static void bom_init_template(bom_template_t *templ, const rnd_conflist_t *templ
 
 /*** subst ***/
 
-typedef struct bom_item_s {
-	bom_obj_t *obj; /* one of the objects picked randomly, for the attributes */
-	char *id; /* key for sorting */
-	gds_t name_list;
-	long cnt;
-} bom_item_t;
-
 static void append_clean(bom_subst_ctx_t *ctx, int escape, gds_t *dst, const char *text)
 {
 	const char *s;

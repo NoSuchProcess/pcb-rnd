@@ -101,6 +101,15 @@ typedef struct {
 	const char *list_sep;
 } bom_subst_ctx_t;
 
+
+typedef struct bom_item_s { /* An item of bom_subst_ctx_t->arr */
+	bom_obj_t *obj; /* one of the objects picked randomly, for the attributes */
+	char *id; /* key for sorting */
+	gds_t name_list;
+	long cnt;
+} bom_item_t;
+
+
 /* Export a file; call begin, then loop over all items and call _add, then call
    _all and _end. */
 LIB_BOM_API void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_template_t *templ); /* init ctx, print header */
