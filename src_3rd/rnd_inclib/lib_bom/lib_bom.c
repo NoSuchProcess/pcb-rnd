@@ -443,13 +443,17 @@ LIB_BOM_API void bom_print_all_generic(bom_subst_ctx_t *ctx, void (*cb)(FILE *f,
 	ctx->obj = NULL;
 	qsort(ctx->arr.array, ctx->arr.used, sizeof(bom_item_t *), item_cmp);
 
+	/* skip producing output when called only for the sort */
+	if (cb == NULL)
+		return;
+
 	/* produce the actual output from the sorted array */
 	for(n = 0; n < ctx->arr.used; n++) {
 		bom_item_t *i = ctx->arr.array[n];
 		ctx->obj = i->obj;
 		ctx->name = i->name_list.array;
 		ctx->count = i->cnt;
-		fprintf_templ(ctx->f, ctx, ctx->templ->item);
+		cb(ctx->f, ctx, ctx->templ->item);
 	}
 }
 
