@@ -249,7 +249,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 
 static void fprintf_templ(FILE *f, bom_subst_ctx_t *ctx, const char *templ)
 {
-	if (templ != NULL) {
+	if ((templ != NULL) && (f != NULL)) {
 		char *tmp = rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
 		fprintf(f, "%s", tmp);
 		free(tmp);
@@ -292,7 +292,7 @@ static void bom_tdx_fprint_safe_str(FILE *f, const char *str)
 
 LIB_BOM_API void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *val)
 {
-	if (val == NULL)
+	if ((val == NULL) || (f == NULL))
 		return;
 
 	fprintf(f, " %s ", key);
@@ -302,7 +302,7 @@ LIB_BOM_API void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *va
 
 LIB_BOM_API void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char *key, const char *val)
 {
-	if (val == NULL)
+	if ((val == NULL) || (f == NULL))
 		return;
 
 	fputc(' ', f);
@@ -334,7 +334,7 @@ LIB_BOM_API void bom_print_begin(bom_subst_ctx_t *ctx, FILE *f, const bom_templa
 	if (ctx->list_sep == NULL)
 		ctx->list_sep = " ";
 
-	if (bom_part_rnd_mode != NULL) {
+	if ((bom_part_rnd_mode != NULL) && (f != NULL)) {
 		fprintf(f, "tEDAx v1\n\n");
 		fprintf(f, "begin part-rnd-bom-template v1\n");
 		bom_tdx_fprint_safe_kv(f, "header", templ->header);
@@ -416,7 +416,7 @@ LIB_BOM_API void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char 
 
 		gds_append_str(&i->name_list, name);
 	}
-	else {
+	else if (ctx->f != NULL) {
 		fprintf(ctx->f, "begin part-rnd-bom-part v1 %s\n", name);
 		bom_part_rnd_mode(ctx, obj, name);
 		fprintf(ctx->f, "end part-rnd-bom-part\n\n");
