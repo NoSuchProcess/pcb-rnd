@@ -256,7 +256,7 @@ static void fprintf_templ(FILE *f, bom_subst_ctx_t *ctx, const char *templ)
 	}
 }
 
-static char *render_templ(bom_subst_ctx_t *ctx, const char *templ)
+LIB_BOM_API char *bom_render_templ(bom_subst_ctx_t *ctx, const char *templ)
 {
 	if (templ != NULL)
 		return rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
@@ -369,7 +369,7 @@ LIB_BOM_API void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char 
 	ctx->name = (char *)name;
 
 	if ((ctx->templ->skip_if_empty != NULL) && (*ctx->templ->skip_if_empty != '\0')) {
-		char *skip = render_templ(ctx, ctx->templ->skip_if_empty);
+		char *skip = bom_render_templ(ctx, ctx->templ->skip_if_empty);
 		if (skip != NULL) {
 			while(isspace(*skip)) skip++;
 			if (*skip == '\0')
@@ -379,7 +379,7 @@ LIB_BOM_API void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char 
 	}
 
 	if ((ctx->templ->skip_if_nonempty != NULL) && (*ctx->templ->skip_if_nonempty != '\0')) {
-		char *skip = render_templ(ctx, ctx->templ->skip_if_nonempty);
+		char *skip = bom_render_templ(ctx, ctx->templ->skip_if_nonempty);
 		if (skip != NULL) {
 			while(isspace(*skip)) skip++;
 			if (*skip != '\0')
@@ -391,7 +391,7 @@ LIB_BOM_API void bom_print_add(bom_subst_ctx_t *ctx, bom_obj_t *obj, const char 
 	if (do_skip)
 		return;
 
-	id = freeme = render_templ(ctx, ctx->templ->sort_id);
+	id = freeme = bom_render_templ(ctx, ctx->templ->sort_id);
 	if (id == NULL)
 		return;
 

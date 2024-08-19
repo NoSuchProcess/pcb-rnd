@@ -140,4 +140,7 @@ LIB_BOM_API void bom_tdx_fprint_safe_kv(FILE *f, const char *key, const char *va
    key_prefix is non-zero, it's prepended to key (without escaping) */
 LIB_BOM_API void bom_tdx_fprint_safe_kkv(FILE *f, const char *key_prefix, const char *key, const char *val);
 
+/* Render a template into a dynamically allocated string */
+LIB_BOM_API char *bom_render_templ(bom_subst_ctx_t *ctx, const char *templ);
+
 #endif
