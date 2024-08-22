@@ -611,6 +611,11 @@ static void library_select_show_param_example(library_ctx_t *ctx, library_ent_t 
 			}
 		}
 	}
+#ifdef __WIN32__
+	/* wine seems to have problems killing awk if it's still writing; have to
+	   read everyhting before pclose() */
+	while(fgets(line, sizeof(line), f) != NULL) ;
+#endif
 	rnd_pclose(f);
 }
 
