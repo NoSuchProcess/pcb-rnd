@@ -238,6 +238,13 @@ fgw_error_t pcb_act_PrintPaths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("rc/default_font_file             ="); print_list(&conf_core.rc.default_font_file);
 	printf("rc/library_search_paths          ="); print_list(&conf_core.rc.library_search_paths);
 	printf("rc/library_shell                 = \"%s\"\n", conf_core.rc.library_shell);
+
+	printf("PCB_PREFIX                       = %s\n", PCB_PREFIX);
+	printf("PCBSHAREDIR                      = %s\n", PCBSHAREDIR);
+	printf("PCBLIBDIR                        = %s\n", PCBLIBDIR);
+	printf("BINDIR                           = %s\n", BINDIR);
+	printf("PCBCONFDIR                       = %s\n", PCBCONFDIR);
+
 	RND_ACT_IRES(0);
 	return 0;
 }
