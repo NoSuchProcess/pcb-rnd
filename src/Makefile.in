@@ -16,6 +16,7 @@ end
 if /local/pcb/want_static_librnd
 then
 	put /local/pcb/librnd_extra_ldlibs {$(LDFLAGS_LIBRND)}
+	append /local/rnd/LDFLAGS { $(LDFLAGS_LIBRND_STATIC) }
 else
 	put /local/pcb/librnd_extra_ldlibs {}
 end
