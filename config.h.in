@@ -27,7 +27,7 @@ switch sys/class
 #define PCBSHAREDIR rnd_w32_sharedir
 #define PCBLIBDIR rnd_w32_libdir
 #define BINDIR rnd_w32_bindir
-#define PCBCONFDIR @/local/confdir@
+#define PCBCONFDIR "@/local/confdir@"
 @]
 		end;
 	default
