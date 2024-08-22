@@ -58,6 +58,7 @@
 #include <librnd/core/misc_util.h>
 #include "report_conf.h"
 #include <librnd/core/compat_misc.h>
+#define RTREE_DEBUG_PROTOTYPES_ONLY
 #include <librnd/src_3rd/genrtree/genrtree_debug.h>
 #include "layer.h"
 #include "layer_ui.h"
