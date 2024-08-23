@@ -204,7 +204,7 @@ static char *path_to_design_relative(char *path)
 		warned = 1;
 	}
 
-	if ((*sch != '/') || (*des != '/')) {
+	if (!rnd_is_path_abs(sch) || !rnd_is_path_abs(des)) {
 		if (!warned)
 			rnd_message(RND_MSG_ERROR, "path_to_design_relative: failed to resolve to absolue\n");
 		free(sch);
