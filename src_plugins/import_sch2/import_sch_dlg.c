@@ -190,6 +190,8 @@ static void isch_arg_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	}
 }
 
+#define ISSEP(c) (((c) == '/') || ((c) == RND_DIR_SEPARATOR_C))
+
 /* Convert path to be relative to the current rc.path.design; free's path,
    returns a newly allocated path instead */
 static char *path_to_design_relative(char *path)
@@ -222,17 +224,17 @@ static char *path_to_design_relative(char *path)
 	for(; *s == *d; s++,d++) ;
 
 	/* ... only up to the last / of it */
-	for(; *s != '/'; s--,d--) ;
+	for(; !ISSEP(*s); s--,d--) ;
 
 	gds_append_str(&tmp, "$(rc.path.design)/");
 
 	/* add all the ..'s: anything left on the design path */
 	for(; *d != '\0'; d++)
-		if (*d == '/')
+		if (ISSEP(*d))
 			gds_append_str(&tmp, "../");
 
 	/* avoid //, tmp ends with / for sure */
-	if (*s == '/')
+	if (ISSEP(*s))
 		s++;
 
 	/* we are at the common ancestor path, append remaining sch */
