@@ -78,9 +78,10 @@ static rnd_coord_t maxy;
 static void *hpgl_objs = NULL;
 static int sepfiles, pens;
 static int hpgl_ovr;
+static rnd_coord_t offx, offy;
 
-#define TX(x)  ((long)(RND_COORD_TO_MM(x)/0.025))
-#define TY(y)  ((long)((RND_COORD_TO_MM(maxy)/0.025) - ((RND_COORD_TO_MM(y)/0.025))))
+#define TX(x)  ((long)((RND_COORD_TO_MM(x+offx)/0.025)))
+#define TY(y)  ((long)((RND_COORD_TO_MM(maxy)/0.025) - ((RND_COORD_TO_MM(y-offy)/0.025))))
 
 static void print_header(void)
 {

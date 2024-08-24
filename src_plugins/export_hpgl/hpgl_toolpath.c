@@ -36,7 +36,7 @@ typedef struct {
 	pcb_cam_t cam;
 	pcb_board_t *pcb;
 	pcb_layergrp_t *grp; /* layer group being exported */
-	long drawn_objs;
+	long drawn_objs, repeat;
 } hpgltp_t;
 
 static hpgltp_t gctx;
@@ -63,9 +63,21 @@ static const rnd_export_opt_t hpgltp_attribute_list[] = {
 	 RND_HATT_STRING, 0, 0, {0, def_mech_script, 0}, 0},
 #define HA_mech_script 3
 
+	{"origin-x", "add this offset to X coords to shift plot origin",
+	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0},
+#define HA_origin_x 4
+
+	{"origin-y", "add this offset to Y coords to shift plot origin",
+	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0},
+#define HA_origin_y 5
+
+	{"repeat", "draw each line this many times (rounded up to the next odd number)",
+	 RND_HATT_INTEGER, 0, 0, {0, 0, 0}, 0},
+#define HA_repeat 6
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 4
+#define HA_cam 7
 
 };
 
@@ -207,6 +219,14 @@ static void hpgltp_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_
 		options = hpgltp_values;
 	}
 
+	offx = hpgltp_values[HA_origin_x].crd;
+	offy = hpgltp_values[HA_origin_y].crd;
+	gctx.repeat = hpgltp_values[HA_repeat].lng;
+
+	if (gctx.repeat < 1) gctx.repeat =1;
+	if ((gctx.repeat % 2) == 0) gctx.repeat++;
+
+	maxy = design->dwg.Y2;
 	gctx.pcb = pcb;
 	f = NULL;
 	gctx.drawn_objs = 0;

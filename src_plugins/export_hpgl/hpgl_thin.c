@@ -137,6 +137,7 @@ static void exp_hpgl_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_att
 
 	dflg = pcb_dynflag_alloc("export_hpgl:needs_rendering");
 	maxy = design->dwg.Y2;
+	offx = offy = 0;
 
 	exp_hpgl_hid_export_to_file(design, f, options, &xform);
 
