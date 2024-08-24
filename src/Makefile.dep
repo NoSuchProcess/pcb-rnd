@@ -631,7 +631,9 @@
  polygon.h vtpadstack_t.h draw.h layer.h layer_vis.h funchash_core.h \
  funchash_core_list.h hid_cam.h ../src_plugins/export_hpgl/endp.h \
  obj_arc.h obj_line.h ../src_plugins/export_hpgl/ht_endp.h \
- ../src_plugins/export_hpgl/hpgl_thin.c
+ ../src_plugins/export_hpgl/hpgl_thin.c \
+ ../src_plugins/export_hpgl/hpgl_toolpath.c \
+ ../src_plugins/millpath/toolpath.h layer_grp.h polygon.h
 ../src_plugins/export_ipcd356/ipcd356.o: \
  ../src_plugins/export_ipcd356/ipcd356.c ../config.h board.h \
  vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
