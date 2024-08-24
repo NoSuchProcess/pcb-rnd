@@ -82,18 +82,14 @@ static const rnd_export_opt_t *hpgltp_get_export_options(rnd_hid_t *hid, int *n,
 
 static void hpgltp_print_lines_(pcb_line_t *from, pcb_line_t *to)
 {
-TODO("implement");
-#if 0
 	pcb_line_t *l;
 
 	gctx.drawn_objs++;
-	rnd_fprintf(f, "G0 Z#100\nG0 X%mm Y%mm\n", TX(from->Point1.X), TY(from->Point1.Y));
+	fprintf(f, "PU;PA%ld,%ld;PD;\n", TX(from->Point1.X), TY(from->Point1.Y));
 
-	fprintf(f, "G0 Z#%d\n", depth++);
 	for(l = from; l != to; l = l->link.next)
-		rnd_fprintf(f, "G1 X%mm Y%mm\n", TX(l->Point2.X), TY(l->Point2.Y));
-	rnd_fprintf(f, "G1 X%mm Y%mm\n", TX(to->Point2.X), TY(to->Point2.Y));
-#endif
+		fprintf(f, "PA%ld,%ld;\n", TX(l->Point2.X), TY(l->Point2.Y));
+	fprintf(f, "PA%ld,%ld;\n", TX(to->Point2.X), TY(to->Point2.Y));
 }
 
 static void hpgltp_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int thru)
