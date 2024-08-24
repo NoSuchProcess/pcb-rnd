@@ -558,6 +558,16 @@
 ../src_plugins/export_dxf/lht_template.o: \
  ../src_plugins/export_dxf/lht_template.c ../config.h \
  ../src_plugins/export_dxf/lht_template.h
+../src_plugins/export_emsim/export_emsim.o: \
+ ../src_plugins/export_emsim/export_emsim.c ../config.h conf_core.h \
+ globalconst.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
+ board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h layer.h hid_cam.h
 ../src_plugins/export_excellon/aperture.o: \
  ../src_plugins/export_excellon/aperture.c ../config.h \
  ../src_plugins/export_excellon/aperture.h
@@ -620,7 +630,8 @@
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
  polygon.h vtpadstack_t.h draw.h layer.h layer_vis.h funchash_core.h \
  funchash_core_list.h hid_cam.h ../src_plugins/export_hpgl/endp.h \
- obj_arc.h obj_line.h ../src_plugins/export_hpgl/ht_endp.h
+ obj_arc.h obj_line.h ../src_plugins/export_hpgl/ht_endp.h \
+ ../src_plugins/export_hpgl/hpgl_thin.c
 ../src_plugins/export_ipcd356/ipcd356.o: \
  ../src_plugins/export_ipcd356/ipcd356.c ../config.h board.h \
  vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
