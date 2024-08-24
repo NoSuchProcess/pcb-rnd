@@ -92,16 +92,38 @@ static const rnd_export_opt_t *hpgltp_get_export_options(rnd_hid_t *hid, int *n,
 	return hpgltp_attribute_list;
 }
 
+static void repline(long lx, long ly, long x, long y)
+{
+	fprintf(f, "PA%ld,%ld;\n", x, y);
+	if (gctx.repeat > 1) {
+		long n;
+		for(n = 0; n < gctx.repeat; n += 2) {
+			fprintf(f, "PA%ld,%ld;\n", lx, ly);
+			fprintf(f, "PA%ld,%ld;\n", x, y);
+		}
+	}
+}
+
 static void hpgltp_print_lines_(pcb_line_t *from, pcb_line_t *to)
 {
 	pcb_line_t *l;
+	long lx, ly, x, y;
 
 	gctx.drawn_objs++;
-	fprintf(f, "PU;PA%ld,%ld;PD;\n", TX(from->Point1.X), TY(from->Point1.Y));
+	fprintf(f, "PU;PA%ld,%ld;PD;\n", lx=TX(from->Point1.X), ly=TY(from->Point1.Y));
+	
 
-	for(l = from; l != to; l = l->link.next)
-		fprintf(f, "PA%ld,%ld;\n", TX(l->Point2.X), TY(l->Point2.Y));
-	fprintf(f, "PA%ld,%ld;\n", TX(to->Point2.X), TY(to->Point2.Y));
+	for(l = from; l != to; l = l->link.next) {
+		x = TX(l->Point2.X);
+		y = TY(l->Point2.Y);
+		repline(lx, ly, x, y);
+		lx = x;
+		ly = y;
+	}
+
+	x = TX(to->Point2.X);
+	y = TY(to->Point2.Y);
+	repline(lx, ly, x, y);
 }
 
 static void hpgltp_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int thru)
