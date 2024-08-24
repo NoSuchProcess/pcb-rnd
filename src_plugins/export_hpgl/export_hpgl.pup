@@ -6,4 +6,5 @@ $fmt-feature-w hpgl
 $package export
 $state works
 default buildin
+dep millpath
 autoload 1

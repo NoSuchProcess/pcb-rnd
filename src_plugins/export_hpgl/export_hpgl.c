@@ -166,12 +166,14 @@ static void hpgl_flush_layer(void)
 }
 
 #include "hpgl_thin.c"
+#include "hpgl_toolpath.c"
 
 int pplg_check_ver_export_hpgl(int ver_needed) { return 0; }
 
 void pplg_uninit_export_hpgl(void)
 {
 	hpgl_thin_uninit();
+	hpgl_toolpath_uninit();
 }
 
 int pplg_init_export_hpgl(void)
@@ -179,6 +181,9 @@ int pplg_init_export_hpgl(void)
 	RND_API_CHK_VER;
 
 	if (hpgl_thin_init() != 0)
+		return -1;
+
+	if (hpgl_toolpath_init() != 0)
 		return -1;
 
 	return 0;
