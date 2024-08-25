@@ -242,6 +242,23 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
+/* returns 1 if the list of rules in role doesn't exist or is empty */
+static int target_role_is_empty(rnd_conf_role_t role)
+{
+	lht_node_t *root, *rules;
+	const char *err;
+
+	root = rnd_conf_lht_get_first_crpol(role, RND_POL_OVERWRITE, 0);
+	if (root == NULL)
+		return 1;
+
+	rules = lht_tree_path_(root->doc, root, "plugins/drc_query/rules", 1, 1, &err);
+	if (rules == NULL)
+		return 1;
+
+	return rules->data.list.first == NULL;
+}
+
 static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	rule_edit_ctx_t *ctx = caller_data;
@@ -258,7 +275,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 	role = save_rolee[ri];
 	nd = rule_src_node(ctx->rule);
-	if ((nd == NULL) || rnd_conf_is_read_only(ctx->role)) {
+	if ((nd == NULL) || rnd_conf_is_read_only(ctx->role) || target_role_is_empty(ctx->role)) {
 		MKDIR_RULE_ROOT(nd, role, RND_POL_OVERWRITE, return);
 		MKDIR_RULES(nd, return);
 		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
