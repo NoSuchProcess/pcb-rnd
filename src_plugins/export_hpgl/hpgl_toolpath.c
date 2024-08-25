@@ -42,6 +42,7 @@ typedef struct {
 static hpgltp_t gctx;
 
 #undef HA_cam
+#undef NUM_OPTIONS
 
 static const char def_layer_script[] = "setup_negative; trace_contour; fix_overcuts";
 static const char def_mech_script[]  = "setup_positive; trace_contour; fix_overcuts";
