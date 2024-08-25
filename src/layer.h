@@ -233,7 +233,7 @@ rnd_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *ly);
 rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, rnd_layer_id_t ly);
 
 /* Returns rnd_true if the given layer is empty - non-recursive variant (doesn't deal with side effects) */
-rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer);
+rnd_bool pcb_layer_is_pure_empty(const pcb_layer_t *layer);
 
 
 /* call the gui to set a virtual layer or the UI layer group */

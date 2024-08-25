@@ -185,7 +185,7 @@ void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable)
 
 #define RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
 
-rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
+rnd_bool pcb_layer_is_pure_empty(const pcb_layer_t *layer)
 {
 	/* if any local list is non-empty, the layer is non-empty */
 	if (layer->Line.lst.length > 0) return rnd_false;
