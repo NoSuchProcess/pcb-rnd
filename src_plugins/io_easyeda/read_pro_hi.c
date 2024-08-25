@@ -1518,7 +1518,7 @@ static int easyeda_pro_parse_attr_device(easy_read_ctx_t *ctx, gdom_node_t *nd)
 			error_at(ctx, nd, ("Duplicate Device attribute for '%s'\n", sid));
 			return 0;
 		}
-		htss_set(&ctx->id2device, sid, val);
+		htss_set(&ctx->id2device, (char *)sid, (char *)val); /* these are not freed on uninit so it's safe to cast */
 	}
 	return 0;
 }
@@ -1596,7 +1596,7 @@ static int easyeda_pro_parse_component(easy_read_ctx_t *ctx, gdom_node_t *nd)
 
 	pcb_subc_rotate(subc, TRX(x), TRY(y), cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 
-	htsp_set(&ctx->id2subc, sid, subc);
+	htsp_set(&ctx->id2subc, (char *)sid, subc); /* these are not freed on uninit so it's safe to cast */
 
 	return 0;
 }
