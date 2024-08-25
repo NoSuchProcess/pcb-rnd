@@ -246,7 +246,7 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 static int target_role_is_empty(rnd_conf_role_t role)
 {
 	lht_node_t *root, *rules;
-	const char *err;
+	lht_err_t err;
 
 	root = rnd_conf_lht_get_first_crpol(role, RND_POL_OVERWRITE, 0);
 	if (root == NULL)
