@@ -3,7 +3,6 @@ $short export to emsim-rnd
 $long export in emsim-rnd tEDAx format for electromagnetic simulation
 $fmt-native no
 $fmt-feature-w emsim
-$package export
 $state  WIP
 dep lib_polyhelp
 dep io_tedax
