@@ -276,21 +276,24 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	role = save_rolee[ri];
 	nd = rule_src_node(ctx->rule);
 	if ((nd == NULL) || rnd_conf_is_read_only(ctx->role) || target_role_is_empty(ctx->role)) {
+		int copied_all = 0;
+
 		MKDIR_RULE_ROOT(nd, role, RND_POL_OVERWRITE, return);
 		MKDIR_RULES(nd, return);
 		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
 			gdl_iterator_t it;
 			rnd_conf_listitem_t *i;
-
+			copied_all = 1;
 			/* need to copy all rules! */
 			rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 				lht_node_t *nnew = lht_dom_duptree(i->prop.src);
 				lht_dom_list_append(nd, nnew);
 			}
-			rnd_message(RND_MSG_WARNING, "NOTE: Copying ALL drc rule to config role %s\n", ctx->rule, save_roles[ri]);
+			rnd_message(RND_MSG_WARNING, "NOTE: Copying ALL drc rule to config role %s\n", save_roles[ri]);
 		}
 		MKDIR_ND(nd, nd, LHT_HASH, ctx->rule, return);
-		rnd_message(RND_MSG_INFO, "NOTE: Copying drc rule '%s' to config role %s\n", ctx->rule, save_roles[ri]);
+		if (!copied_all)
+			rnd_message(RND_MSG_INFO, "NOTE: Copying drc rule '%s' to config role %s\n", ctx->rule, save_roles[ri]);
 	}
 
 	MKDIR_ND_SET_TEXT(nd, "type", ctx->dlg[ctx->wtype].val.str, return);
