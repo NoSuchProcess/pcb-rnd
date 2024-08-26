@@ -4,6 +4,7 @@
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - ANNOUNCE: io_easyeda
 - ANNOUNCE: jlc xy, bom, cam
+- ANNOUNCE: refdes and term syntax, configurable hierarchy separator; S1/S2/U4-12
 - FEATURE: emsim-rnd (dcpower)
 - revise release/packaging:
 	- remove suggesting geda-gnetlist from the debian package
@@ -15,8 +16,6 @@
 - FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
 	- need to use find.c to get "nets" of mask objects (including padstacks)
 	- then use the normal bloat-intersect code to see if two of them are closer than the required value
-- FEATURE: hierarhic: subc-in-subc syntax: refdes-refdes-term? probably a bad idea
-	- search for '-' and centralize parsing refdes-term id
 - BUG: place via in a top-layer poly; change pstk proto top copper layer, grow 50 mil -> poly not recalculated [report: aron]
 - BUG: extended object "bus" bugs:
 	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
