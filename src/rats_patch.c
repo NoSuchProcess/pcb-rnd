@@ -748,7 +748,8 @@ static int fputs_tdx_(FILE *f, const char *s, int *len, int replace_term_sep)
 	char *sep = NULL;
 	if (replace_term_sep) {
 		/* need to replace the last '-' so that subc-in-subc hierarchy like
-		   U1-R3-2 results in U1-R3 2 */
+		   U1-R3-2 results in U1-R3 2; but normally the hierarchy separator
+		   can not be - */
 		sep = strrchr(s, '-');
 	}
 
