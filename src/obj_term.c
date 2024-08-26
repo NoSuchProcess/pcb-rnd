@@ -39,16 +39,26 @@
 #include <librnd/core/rnd_printf.h>
 #include "undo.h"
 #include "polygon.h"
+#include "conf_core.h"
 
 static const char core_term_cookie[] = "core-term";
 
 static int term_name_invalid(const char *tname)
 {
+	char hsep;
+
 	if ((tname == NULL) || (*tname == '\0'))
 		return 1;
+
+	if (conf_core.design.hierarchy_sep == NULL)
+		hsep = '\0';
+	else
+		hsep = *conf_core.design.hierarchy_sep;
+
 	for(;*tname != '\0'; tname++)
-		if ((!isalnum(*tname)) && (*tname != '_'))
+		if ((*tname <= 32) || (*tname == '-') || (*tname == hsep))
 			return 1;
+
 	return 0;
 }
 
