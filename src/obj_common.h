@@ -275,7 +275,7 @@ unsigned char *pcb_obj_common_get_thermal(pcb_any_obj_t *obj, unsigned long lid,
 void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value);
 
 /* Returns the first invalid character of an ID (terminal, refdes) or NULL */
-const char *pcb_obj_id_invalid(const char *id);
+const char *pcb_obj_id_invalid(const char *id, int is_refdes);
 
 /* Fix an ID in place (replace anything invalid with '_'); returns id */
 char *pcb_obj_id_fix(char *id);

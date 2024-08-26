@@ -98,7 +98,7 @@ static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *
 	if (strcmp(name, "refdes") == 0) {
 		const char *inv;
 		sc->refdes = value;
-		inv = pcb_obj_id_invalid(sc->refdes);
+		inv = pcb_obj_id_invalid(sc->refdes, 1);
 		if (inv != NULL)
 			rnd_message(RND_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, sc->refdes);
 	}

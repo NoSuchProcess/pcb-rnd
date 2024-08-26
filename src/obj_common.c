@@ -176,7 +176,7 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 		obj->term = value;
 		if ((subc != NULL) && (obj->term != NULL)) /* add the new term */
 			pcb_term_add(&subc->terminals, obj);
-		inv = pcb_obj_id_invalid(obj->term);
+		inv = pcb_obj_id_invalid(obj->term, 0);
 		if (inv != NULL)
 			rnd_message(RND_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);
 	}
@@ -224,18 +224,26 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 	}
 }
 
-const char *pcb_obj_id_invalid(const char *id)
+const char *pcb_obj_id_invalid(const char *id, int is_refdes)
 {
-	const char *s;
-	if (id != NULL)
-		for(s = id; *s != '\0'; s++) {
-			if (isalnum(*s))
-				continue;
-			switch(*s) {
-				case '_': case '.': case '$': case '*': case ':': continue;
-			}
-			return s;
+
+	/* invalid: control chars, term sep, and in non-refdes: hierarchy sep */
+	if (id != NULL) {
+		const char *s;
+		int hsep = 0;
+
+		if (!is_refdes) {
+			if (conf_core.design.hierarchy_sep == NULL)
+				hsep = 0;
+			else
+				hsep = *conf_core.design.hierarchy_sep;
 		}
+
+		for(s = id; *s != '\0'; s++) {
+			if ((*s < 32) || (*s == hsep) || (*s == '-'))
+				return s;
+		}
+	}
 	return NULL;
 }
 

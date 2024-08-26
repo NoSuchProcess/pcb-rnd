@@ -76,7 +76,7 @@ static void chk_term(const char *whose, pcb_any_obj_t *obj)
 	const char *aterm = pcb_attribute_get(&obj->Attributes, "term");
 	const char *s_intconn = pcb_attribute_get(&obj->Attributes, "intconn");
 
-	if (pcb_obj_id_invalid(aterm))
+	if (pcb_obj_id_invalid(aterm, 0))
 		rnd_message(RND_MSG_ERROR, CHK "%s obj #%ld has term attribute '%s' with invalid characters\n", whose, obj->ID, aterm);
 
 	if ((aterm == NULL) && (obj->term == NULL))
@@ -110,7 +110,7 @@ static void chk_subc_cache(pcb_subc_t *subc)
 {
 	const char *arefdes = pcb_attribute_get(&subc->Attributes, "refdes");
 
-	if (pcb_obj_id_invalid(arefdes))
+	if (pcb_obj_id_invalid(arefdes, 1))
 		rnd_message(RND_MSG_ERROR, CHK "subc #%ld has refdes attribute '%s' with invalid characters\n", subc->ID, arefdes);
 
 	if ((subc->BoundingBox.X2 < 0) || (subc->BoundingBox.Y2 < 0))
