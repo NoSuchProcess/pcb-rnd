@@ -3493,7 +3493,7 @@ obj_term.o: obj_term.c ../config.h change.h board.h vtroutestyle.h \
  obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h
 obj_text.o: obj_text.c ../config.h brave.h rotate.h global_typedefs.h \
  board.h vtroutestyle.h attrib.h layer.h globalconst.h obj_common.h \
  flag.h data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
