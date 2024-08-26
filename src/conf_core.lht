@@ -153,6 +153,7 @@ li:pcb-rnd-conf-v1 {
 #			background_image = {}
 #			fab_author = {}
 			paste_adjust = 0
+			hierarchy_sep = {/}
 		} # design
 
 		ha:appearance {

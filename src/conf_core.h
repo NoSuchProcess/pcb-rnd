@@ -186,6 +186,7 @@ typedef struct {
 		} thermal;
 
 		RND_CFT_COORD paste_adjust;            /* Adjust paste thickness */
+		RND_CFT_STRING hierarchy_sep;          /* separator character in hierarchic design levels (only the first character is used); e.g. if it is /, S1/S2/R4-5 is interpreted as S1/S2/R4 as the refdes (5 is terminal id), and that R4 is under S2 which is under S1 in the hierarchy */
 	} design;
 
 /* @path appearance/color */
