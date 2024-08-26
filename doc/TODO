@@ -4,7 +4,6 @@
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - ANNOUNCE: io_easyeda
 - ANNOUNCE: jlc xy, bom, cam
-- ANNOUNCE: refdes and term syntax, configurable hierarchy separator; S1/S2/U4-12
 - FEATURE: emsim-rnd (dcpower)
 - revise release/packaging:
 	- remove suggesting geda-gnetlist from the debian package
