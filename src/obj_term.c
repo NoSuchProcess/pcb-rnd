@@ -62,6 +62,11 @@ static int term_name_invalid(const char *tname)
 	return 0;
 }
 
+int pcb_refdes_is_valid(const char *refdes)
+{
+	return !term_name_invalid(refdes);
+}
+
 pcb_term_err_t pcb_term_name_is_valid(const char *tname)
 {
 	if (term_name_invalid(tname))

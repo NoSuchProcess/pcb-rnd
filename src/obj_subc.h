@@ -141,6 +141,8 @@ int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr, int neg);
 int pcb_subc_move_origin(pcb_subc_t *sc, rnd_coord_t dx, rnd_coord_t dy, rnd_bool and_undo);
 int pcb_subc_move_origin_to(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, rnd_bool and_undo);
 
+/* returns 1 if refdes text is valid */
+int pcb_refdes_is_valid(const char *refdes);
 
 /* Search for the named subc; name is relative path in hierarchy. Returns
    NULL if not found */
