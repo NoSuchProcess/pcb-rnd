@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2006 Dan McMahill
- *  Copyright (C) 2016,2022 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2022,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,6 +71,13 @@ static pcb_cam_t svg_cam;
 
 static rnd_svg_t pctx_, *pctx = &pctx_;
 
+static const char *colorspace_names[] = {
+	"color",
+	"grayscale",
+	"monochrome",
+	NULL
+};
+
 static const rnd_export_opt_t svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
@@ -133,9 +140,13 @@ Flip board, look at it from the bottom side
 	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_photo_noise 6
 
+	{"colorspace", "Export in color or reduce colorspace",
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, colorspace_names},
+#define HA_colorspace 7
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0}
-#define HA_cam 7
+#define HA_cam 8
 };
 
 #define NUM_OPTIONS (sizeof(svg_attribute_list)/sizeof(svg_attribute_list[0]))
@@ -255,6 +266,8 @@ static void svg_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	rnd_svg_init(pctx, design, f, options[HA_opacity].lng, options[HA_flip].lng, options[HA_true_size].lng);
 	if (f != NULL)
 		rnd_svg_header(pctx);
+
+	pctx->colorspace = options[HA_colorspace].lng;
 
 	if (!svg_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
