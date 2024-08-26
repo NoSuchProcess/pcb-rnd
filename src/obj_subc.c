@@ -2855,3 +2855,8 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 
 	return placed;
 }
+
+int pcb_refdes_is_valid(const char *refdes)
+{
+	return pcb_obj_id_invalid(refdes, 1) == NULL;
+}

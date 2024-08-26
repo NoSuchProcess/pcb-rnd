@@ -45,26 +45,7 @@ static const char core_term_cookie[] = "core-term";
 
 static int term_name_invalid(const char *tname)
 {
-	char hsep;
-
-	if ((tname == NULL) || (*tname == '\0'))
-		return 1;
-
-	if (conf_core.design.hierarchy_sep == NULL)
-		hsep = '\0';
-	else
-		hsep = *conf_core.design.hierarchy_sep;
-
-	for(;*tname != '\0'; tname++)
-		if ((*tname <= 32) || (*tname == '-') || (*tname == hsep))
-			return 1;
-
-	return 0;
-}
-
-int pcb_refdes_is_valid(const char *refdes)
-{
-	return !term_name_invalid(refdes);
+	return pcb_obj_id_invalid(tname, 0) != NULL;
 }
 
 pcb_term_err_t pcb_term_name_is_valid(const char *tname)
