@@ -47,7 +47,7 @@ static int term_name_invalid(const char *tname)
 	if ((tname == NULL) || (*tname == '\0'))
 		return 1;
 	for(;*tname != '\0'; tname++)
-		if ((!isalnum(*tname)) && (*tname != '_') && (*tname != '-'))
+		if ((!isalnum(*tname)) && (*tname != '_'))
 			return 1;
 	return 0;
 }
