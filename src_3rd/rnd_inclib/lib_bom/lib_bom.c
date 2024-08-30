@@ -458,7 +458,7 @@ LIB_BOM_API void bom_print_all(bom_subst_ctx_t *ctx)
 
 LIB_BOM_API void bom_print_end(bom_subst_ctx_t *ctx)
 {
-	if (bom_part_rnd_mode == NULL)
+	if ((bom_part_rnd_mode == NULL) && (ctx->f != NULL))
 		fprintf_templ(ctx->f, ctx, ctx->templ->footer);
 
 	gds_uninit(&ctx->tmp);
