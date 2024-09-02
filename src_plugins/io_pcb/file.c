@@ -453,7 +453,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 
 static void io_pcb_print_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_subc_t *sc)
 {
-	const char *attr_inhibit[] = {"refdes", "value", "footprint", "io_pcb::hidename_x", "io_pcb::hidename_y", "io_pcb::hidename_direction", "io_pcb::hidename_scale", NULL}; /* these are saved in the header if the element */
+	static const char *attr_inhibit[] = {"refdes", "value", "footprint", "io_pcb::hidename_x", "io_pcb::hidename_y", "io_pcb::hidename_direction", "io_pcb::hidename_scale", NULL}; /* these are saved in the header if the element */
 	gdl_iterator_t it;
 	int l;
 
