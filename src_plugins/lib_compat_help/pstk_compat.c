@@ -891,6 +891,20 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
 		}
 		PCB_FLAG_THERM_ASSIGN_(n, nt, flg);
 	}
+
+
+	if (compat & PCB_PSTKCOMP_PCB_CLEARLINE_WORKAROUND) {
+		if (flg.f & PCB_FLAG_CLEARLINE) {
+			/* in geda/pcb CLEARLINE overlaps with show-pin-name (and CLEARLINE is implied) */
+			flg.f &= ~PCB_FLAG_CLEARLINE;
+		}
+		else {
+			/* if there's no CLEALRINE in pcb-rnd that means we have a solid conn thermal on all layers */
+			for(n = 0; n < sizeof(flg.t) / sizeof(flg.t[0]); n++)
+				PCB_FLAG_THERM_ASSIGN_(n, 3, flg);
+		}
+	}
+
 	return flg;
 }
 

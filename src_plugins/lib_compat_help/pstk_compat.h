@@ -33,7 +33,8 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, rnd_coord_t x
 rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2, rnd_coord_t *thickness, rnd_coord_t *clearance, rnd_coord_t *mask, rnd_bool *square, rnd_bool *nopaste);
 
 typedef enum {
-	PCB_PSTKCOMP_OLD_OCTAGON = 1
+	PCB_PSTKCOMP_OLD_OCTAGON = 1,
+	PCB_PSTKCOMP_PCB_CLEARLINE_WORKAROUND = 2
 } pcb_pstk_compat_t;
 
 /* Convert padstack flags to old pin/via flag. Use only in gEDA/PCB

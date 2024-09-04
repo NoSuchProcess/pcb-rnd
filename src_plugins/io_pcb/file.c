@@ -522,10 +522,27 @@ static void io_pcb_print_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_subc_t *sc)
 				pcb_print_quoted_string(FP, (char *)RND_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
 				fprintf(FP, " ");
 				pcb_print_quoted_string(FP, (char *) RND_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
-				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape, PCB_PSTKCOMP_OLD_OCTAGON), PCB_OBJ_PIN, &ic, 1));
+				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape, PCB_PSTKCOMP_OLD_OCTAGON | PCB_PSTKCOMP_PCB_CLEARLINE_WORKAROUND), PCB_OBJ_PIN, &ic, 1));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0) | (on_bot ? PCB_FLAG_ONSOLDER : 0);
+				int n;
+
+				if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps)) {
+					/* no clearline in pcb-rnd means pad has solid conneciton to poly; this is emulated with clearance=0 in pcb */
+					clearance = 0;
+				}
+				
+				/* can't save thermals on pads */
+				for(n = 0; n < sizeof(ps->Flags.t) / sizeof(ps->Flags.t[0]); n++) {
+					unsigned char *ot = pcb_pstk_get_thermal(ps, n, 0);
+					if ((ot != NULL) && ((*ot) & PCB_THERMAL_ON)) {
+						pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)ps, "smd-thermal", "SMD pad thermal", "Geda/PCB has no thermals on SMD; saved with solid connection instead, manual soldering will be very hard on this pad.");
+						clearance = 0;
+						break;
+					}
+				}
+
 				rnd_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
 					x1 - ox, y1 - oy, x2 - ox, y2 - oy, thickness, clearance, mask);
 					pcb_print_quoted_string(FP, (char *)RND_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
