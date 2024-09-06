@@ -17,7 +17,7 @@
 #define REQ_LIBRND_MINOR 2
 
 #define WANT_POLYBOOL_DEFAULT sfalse
-#define WANT_POLYBOOL2_DEFAULT sfalse
+#define WANT_POLYBOOL2_DEFAULT strue
 
 #define TOSTR_(x) #x
 #define TOSTR(x) TOSTR_(x)
