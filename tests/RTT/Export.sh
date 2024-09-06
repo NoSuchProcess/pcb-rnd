@@ -16,6 +16,12 @@ polyb=`grep "[ \t]*#define[ \t]*PCB_WANT_POLYBOOL[ \t]*1" $TRUNK/config.h`
 if test ! -z "$polyb"
 then
 	REF_FLAVOR=polybool
+else
+	polyb2=`grep "[ \t]*#define[ \t]*PCB_WANT_POLYBOOL2[ \t]*1" $TRUNK/config.h`
+	if test ! -z "$polyb2"
+	then
+		REF_FLAVOR=polybool2
+	fi
 fi
 
 if test -z "$pcb_rnd_bin"
