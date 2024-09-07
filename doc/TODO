@@ -20,10 +20,10 @@
 - BUG: extended object "bus" bugs:
 	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
 	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
-- poly lib rewrite (fixed means it works with polybool):
-	- BUG: aron's private board, aron_*, self-isc inf loop with polybool [report: aron]
+- poly lib rewrite (fixed means it works with polybool2):
+	+ BUG: aron's private board, aron_*, self-isc inf loop with polybool [report: aron]
 	+ BUG: Bdale's disappearing poly bugreport, hosted in librnd/work/poly_broken
-		- BUG: test_poly/bdale4: broken clipping
+		+ BUG: test_poly/bdale4: broken clipping
 	+ BUG: test_poly/bdale3: dicer bug: disappearing clearance: place a signal via right to the rectangular pin with no clarance overlap, rectangular pin's clearance disappears [report: Igor2]
 	+ BUG: test_poly/out-extract*.rf, on which is not autocropped, triggers assert with scrolling, but the autocropped version does not. Polygon vertex coords are well under size limit for 32 bit coords in both cases. out-minimal.rf is a more minimal polygon version of the subc which triggers assert in footprint edit mode with {ze} and scroll bar use. [Report: Erich]
 	+ BUG: thermal tool poly assert. test_poly/thermal-assert.rp and use thermal tool and shift click to start cycling through thermal types on padstack. Assert eventually occurs. [report: Erich]
