@@ -1,0 +1,18 @@
+G04 start of page 4 for group 7 layer_idx 4 *
+G04 Title: (unknown), Intern *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For: TEST *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 65000 62500 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNINTERN_COPPER_NONE_7*%
+%ADD18C,0.0315*%
+%ADD17C,0.0787*%
+G54D17*X10000Y52500D03*
+X25000D03*
+X10000Y40000D03*
+X25000D03*
+G54D18*M02*
