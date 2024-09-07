@@ -1631,6 +1631,10 @@ rnd_bool pcb_poly_isects_poly(rnd_polyarea_t * a, pcb_poly_t *p, rnd_bool fr)
 {
 	rnd_polyarea_t *x;
 	rnd_bool ans;
+
+	if (p->Clipped == NULL)
+		return 0;
+
 	ans = rnd_polyarea_touching(a, p->Clipped);
 	/* argument may be register, so we must copy it */
 	x = a;
@@ -1644,8 +1648,13 @@ rnd_bool pcb_poly_is_point_in_p(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t r, pcb
 {
 	rnd_polyarea_t *c;
 	rnd_vector_t v;
+
+	if (p->Clipped == NULL)
+		return 0;
+
 	v[0] = X;
 	v[1] = Y;
+
 	if (rnd_polyarea_contour_inside(p->Clipped, v))
 		return rnd_true;
 
