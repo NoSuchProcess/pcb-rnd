@@ -833,12 +833,12 @@ static void data_clip_all_cb(void *ctx_)
 		PCB_POLY_ALL_LOOP(data); {
 			rnd_polyarea_t *pa = polygon->Clipped;
 			if (pa != NULL) {
-			do {
-				rnd_pline_t *pl;
-				for(pl = pa->contours; pl != NULL; pl = pl->next)
-					if (pl->tree == NULL)
-						pl->tree = rnd_poly_make_edge_tree(pl);
-			} while((pa = pa->f) != polygon->Clipped);
+				do {
+					rnd_pline_t *pl;
+					for(pl = pa->contours; pl != NULL; pl = pl->next)
+						if (pl->tree == NULL)
+							pl->tree = rnd_poly_make_edge_tree(pl);
+				} while((pa = pa->f) != polygon->Clipped);
 			}
 		} PCB_ENDALL_LOOP;
 	}
