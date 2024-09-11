@@ -84,7 +84,7 @@ char *pcb_get_info_copyright(void)
 		gds_init(&info);
 
 		gds_append_str(&info, "Recent pcb-rnd copyright:\n");
-		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013..2023 (pcb-rnd)\n");
+		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013..2024 (pcb-rnd)\n");
 		gds_append_str(&info, "For a more complete list of pcb-rnd authors and\ncontributors, see http://repo.hu/cgi-bin/pcb-rnd-people.cgi\n\n");
 
 		gds_append_str(&info, "Historical copyright:\n");
