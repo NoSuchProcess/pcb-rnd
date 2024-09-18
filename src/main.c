@@ -141,12 +141,21 @@ static char *conf_fn_compat(const char *dir, const char *old_name, const char *n
 	return new_path;
 }
 
+#ifdef RND_WANT_FLOATING_FHS
+	char *pcb_floating_confdir;
+#endif
+
 /* Use the canonical name of the executed program to fix up the defaults
    for various paths */
 static void main_path_init(char *exec_prefix)
 {
 	int se = 0;
 	char *tmp;
+
+#ifdef RND_WANT_FLOATING_FHS
+	TODO("This ignores ./configure --confdir; the code is in librnd trunk/src/librnd/scconfig/hooks_common.h, search for ''set up confdir'' -> should save a variant usable here, without prefix");
+	pcb_floating_confdir = rnd_concat(rnd_w32_root, "/etc/", PCB_PACKAGE, NULL);
+#endif
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
 	tmp = rnd_concat(PCBSHAREDIR, "/footprint", NULL);
