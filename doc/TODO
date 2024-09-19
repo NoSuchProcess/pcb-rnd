@@ -4,7 +4,6 @@
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - ANNOUNCE: io_easyeda
 - ANNOUNCE: jlc xy, bom, cam
-- ANNOUNCE: svg color space (in sch-rnd and camv-rnd as well)
 - ANNOUNCE: viewport window in pcb-rnd, sch-rnd and camv-rnd
 - FEATURE: emsim-rnd (dcpower)
 - revise release/packaging:
