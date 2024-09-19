@@ -267,7 +267,8 @@
  ../src_plugins/dialogs/dlg_netlist.c \
  ../src_plugins/dialogs/dlg_netlist_patch.c \
  ../src_plugins/dialogs/dlg_printcalib.c \
- ../src_plugins/dialogs/dlg_view.h ../src_plugins/dialogs/adialogs_conf.h \
+ ../src_plugins/dialogs/dlg_view.h ../src_plugins/dialogs/dlg_viewport.h \
+ ../src_plugins/dialogs/adialogs_conf.h \
  ../src_plugins/dialogs/conf_internal.c \
  ../src_plugins/dialogs/adialogs_conf_fields.h
 ../src_plugins/dialogs/dlg_about.o: ../src_plugins/dialogs/dlg_about.c \
@@ -395,6 +396,13 @@
  obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
  board.h conf_core.h view.h idpath.h draw.h drc.h view.h actions_pcb.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h
+../src_plugins/dialogs/dlg_viewport.o: \
+ ../src_plugins/dialogs/dlg_viewport.c ../config.h board.h vtroutestyle.h \
+ attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
+ data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
+ obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h draw.h event.h \
+ ../src_plugins/dialogs/dlg_viewport.h
 ../src_plugins/dialogs/pcb_export.o: ../src_plugins/dialogs/pcb_export.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
