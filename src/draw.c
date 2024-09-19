@@ -992,11 +992,18 @@ void pcb_draw_setup_default_xform_info(rnd_hid_t *hid, pcb_draw_info_t *info)
 }
 
 int pcb_draw_stamp = 0;
+rnd_box_t pcb_last_main_expose_region;
+
 void pcb_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller)
 {
 	if (!pcb_draw_inhibit) {
 		pcb_output_t save;
 		pcb_draw_info_t info;
+
+		pcb_last_main_expose_region.X1 = ctx->view.X1;
+		pcb_last_main_expose_region.Y1 = ctx->view.Y1;
+		pcb_last_main_expose_region.X2 = ctx->view.X2;
+		pcb_last_main_expose_region.Y2 = ctx->view.Y2;
 
 		expose_begin(&save, hid);
 		pcb_draw_info_setup(&info, PCB);

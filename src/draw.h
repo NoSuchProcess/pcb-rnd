@@ -194,4 +194,6 @@ void pcb_draw_delay_label_add(pcb_any_obj_t *obj);
 void pcb_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller);
 void pcb_expose_preview(rnd_hid_t *hid, rnd_hid_expose_ctx_t *e);
 
+extern rnd_box_t pcb_last_main_expose_region;
+
 #endif

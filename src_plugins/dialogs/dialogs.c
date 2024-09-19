@@ -65,6 +65,7 @@ extern conf_dialogs_t dialogs_conf;
 #include "dlg_printcalib.c"
 
 #include "dlg_view.h"
+#include "dlg_viewport.h"
 
 #include "adialogs_conf.h"
 #include "conf_internal.c"
@@ -89,6 +90,7 @@ rnd_action_t dialogs_action_list[] = {
 	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog},
 	{"IOIncompatListDialog", pcb_act_IOIncompatListDialog, pcb_acth_IOIncompatListDialog, pcb_acts_IOIncompatListDialog},
 	{"ViewList", pcb_act_ViewList, pcb_acth_ViewList, pcb_acts_ViewList},
+	{"ViewPortDialog", pcb_act_ViewPortDialog, pcb_acth_ViewPortDialog, pcb_acts_ViewPortDialog},
 	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel},
 	{"PrintCalibrate", pcb_act_PrintCalibrate, pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate},
 	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
@@ -105,6 +107,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
+	pcb_dlg_viewport_uninit();
 	pcb_export_uninit();
 	pcb_dlg_library_uninit();
 	pcb_dlg_netlist_uninit();
@@ -141,6 +144,7 @@ rnd_conf_plug_reg(dialogs_conf, adialogs_conf_internal, dialogs_cookie);
 	pcb_dlg_fontsel_init();
 	pcb_dlg_library_init();
 	pcb_export_init();
+	pcb_dlg_viewport_init();
 
 	return 0;
 }

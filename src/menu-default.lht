@@ -591,6 +591,7 @@ ha:rnd-menu-v1 {
 				ha:Command Entry  = { li:a={a={<Key>w;<Key>c}; {<char>:};}  action=Command() }
 				ha:Pinout         = { a={<Key>w;<Key>p}; action=Display(Pinout) }
 				ha:Font selector  = { a={<Key>w;<Key>f};  action=FontSel() }
+				ha:Viewport       = { a={<Key>w;<Key>v}; action=ViewPortDialog() }
 				-
 				ha:Key Bindings {
 					li:submenu {

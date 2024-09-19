@@ -13,6 +13,7 @@ put /local/rnd/mod/OBJS [@
  $(PLUGDIR)/dialogs/dlg_padstack.o
  $(PLUGDIR)/dialogs/dlg_pref_apptab.o
  $(PLUGDIR)/dialogs/dlg_view.o
+ $(PLUGDIR)/dialogs/dlg_viewport.o
  $(PLUGDIR)/dialogs/pcb_export.o
 @]
 
