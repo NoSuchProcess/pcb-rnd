@@ -50,7 +50,6 @@
 #include <librnd/hid/hid_init.h>
 #include <librnd/hid/hid_attrib.h>
 #include "hid_cam.h"
-#include "endp.h"
 
 static rnd_hid_t exp_emsim_hid;
 
