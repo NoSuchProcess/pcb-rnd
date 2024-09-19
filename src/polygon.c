@@ -55,6 +55,11 @@
 #include <librnd/poly/polygon1_gen.h>
 #include "event.h"
 
+#if PCB_WANT_POLYBOOL2
+extern rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa);
+#endif
+
+
 #define UNSUBTRACT_BLOAT 10
 #define SUBTRACT_PIN_VIA_BATCH_SIZE 100
 #define SUBTRACT_PADSTACK_BATCH_SIZE 50
@@ -223,6 +228,17 @@ static rnd_polyarea_t *biggest(rnd_polyarea_t * p)
 	return p;
 }
 
+static long num_islands(rnd_polyarea_t *start)
+{
+	rnd_polyarea_t *pa;
+	long cnt = 1;
+
+	for(pa = start->f; pa != start; pa = pa->f)
+		cnt++;
+
+	return cnt;
+}
+
 rnd_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 {
 	rnd_pline_t *contour = NULL;
@@ -265,11 +281,20 @@ rnd_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 			contour = NULL;
 
 TODO("multiple plines within the returned polyarea np does not really work\n");
-#if 0
+#if PCB_WANT_POLYBOOL2
 			if (!rnd_poly_valid(np)) {
-				rnd_cardinal_t cnt = rnd_polyarea_split_selfint(np);
-				rnd_message(RND_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", (long)cnt);
-				if (cnt > 1)
+				int np1_is_np = (np1 == np);
+				long diff, cnt0, cnt1;
+
+				cnt0 = num_islands(np);
+				rnd_polyarea_split_selfisc(&np);
+				cnt1 = num_islands(np);
+
+				if (np1_is_np)
+					np1 = np;
+				diff = cnt1-cnt0+1;
+				rnd_message(RND_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", diff);
+				if (diff > 1)
 					*need_full = rnd_true;
 				assert(rnd_poly_valid(np));
 			}
@@ -1092,8 +1117,8 @@ int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p,
 		rnd_polyarea_free(&p->Clipped);
 	p->Clipped = pcb_poly_to_polyarea(p, &need_full);
 	if (need_full && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, p)) {
-		rnd_message(RND_MSG_WARNING, "Polygon #%ld was self intersecting; it had to be split up and\nthe full poly flag set.\n", (long)p->ID);
-		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, p);
+		/* can't set FULLPOLY because thius runs on load and changing object flags would break compatibility */
+		rnd_message(RND_MSG_WARNING, "Polygon #%ld was self intersecting; it had to be split up.\nSome islands may disappear because the FULLPOLY flag is not set.\n", (long)p->ID);
 	}
 	rnd_poly_contours_free(&p->NoHoles);
 
