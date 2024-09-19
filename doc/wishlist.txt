@@ -1,7 +1,6 @@
 Active user wishes:
 	W4: user doc [Miloh]
 	W14: pcb-rnd: subc-in-subc from hierarchic design ml=pcb-rnd@5920 [report: Vuokko]
-	W15: HPGL export (maybe a HPGL import plugin in camv-rnd for verification) [report: Erich]
 	W16: sch-rnd: block diagram editor helpers: symbol generator to create/update boxes to text; wirenets (or lines) with arrows to connect them [report: Vuokko]
 
 Being done:
@@ -25,3 +24,4 @@ User wishes fulfilled:
 		+ change or remove network attribute
 		+ add new subcircuit
 	W13: sch-rnd: alternate MCU/CPU pin functions [report: Wojciech]
+	W15: HPGL export (maybe a HPGL import plugin in camv-rnd for verification) [report: Erich]
