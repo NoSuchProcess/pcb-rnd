@@ -280,18 +280,17 @@ rnd_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 			rnd_polyarea_contour_include(np, contour);
 			contour = NULL;
 
-TODO("multiple plines within the returned polyarea np does not really work\n");
 #if PCB_WANT_POLYBOOL2
 			if (!rnd_poly_valid(np)) {
 				int np1_is_np = (np1 == np);
 				long diff, cnt0, cnt1;
 
 				cnt0 = num_islands(np);
-				rnd_polyarea_split_selfisc(&np);
+				rnd_polyarea_split_selfisc(&np); /* may result in multiple islands, even the value of np may change */
 				cnt1 = num_islands(np);
-
 				if (np1_is_np)
 					np1 = np;
+
 				diff = cnt1-cnt0+1;
 				rnd_message(RND_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", diff);
 				if (diff > 1)
