@@ -26,8 +26,6 @@
  *    mailing list: http://www.repo.hu/projects/pcb-rnd/contact.html
  */
 
-/* pen selection dialog */
-
 #include "config.h"
 
 #include <stdlib.h>
