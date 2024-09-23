@@ -105,7 +105,7 @@ static void ser_hz(int save, int widx, const char *attrkey)
 {
 	if (save) {
 		char tmp[128];
-		sprintf(tmp, "%f Hz", exc_ctx.dlg[widx].val.dbl);
+		rnd_sprintf(tmp, "%.06f Hz", exc_ctx.dlg[widx].val.dbl);
 		ser_save(tmp, attrkey);
 	}
 	else {
@@ -175,9 +175,9 @@ static void exc_gaus_dad(int idx)
 			exc_ctx.exc_data[idx].w[I_FC] = RND_DAD_CURRENT(exc_ctx.dlg);
 
 		RND_DAD_LABEL(exc_ctx.dlg, "f0");
-		RND_DAD_REAL(exc_ctx.dlg);
+		RND_DAD_SPIN_FREQ(exc_ctx.dlg);
 			RND_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
-			RND_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
+			RND_DAD_HELP(exc_ctx.dlg, "Center Frequency");
 			RND_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_F0] = RND_DAD_CURRENT(exc_ctx.dlg);
 
