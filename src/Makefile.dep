@@ -504,6 +504,15 @@
  ../src_plugins/drc_query/drc_query_stat.c \
  ../src_plugins/drc_query/drc_lht.c ../src_plugins/drc_query/dlg.c \
  actions_pcb.h ../src_plugins/drc_query/drc_query_conf_fields.h
+../src_plugins/emsim/emsim.o: ../src_plugins/emsim/emsim.c ../config.h \
+ board.h vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
+ board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h ../src_plugins/emsim/menu_internal.c
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h data.h globalconst.h layer.h attrib.h global_typedefs.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \

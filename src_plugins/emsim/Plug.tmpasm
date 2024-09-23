@@ -1,0 +1,13 @@
+put /local/rnd/mod {emsim}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/emsim/emsim.o @]
+#put /local/rnd/mod/CONF {$(PLUGDIR)/emsim/emsim_conf.h}
+#put /local/rnd/mod/CONFFILE {emsim.conf}
+#put /local/rnd/mod/CONFVAR {emsim_conf_internal}
+put /local/rnd/mod/MENUFILE {emsim-menu.lht}
+put /local/rnd/mod/MENUVAR {emsim_menu}
+
+switch /local/module/emsim/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

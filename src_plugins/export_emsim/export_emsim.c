@@ -57,6 +57,14 @@ const char *exp_emsim_cookie = "exp_emsim HID";
 
 static pcb_cam_t exp_emsim_cam;
 
+/* global states during export */
+static char *filesuff = NULL;
+static char *filename = NULL;
+static int fn_baselen = 0;
+static gds_t fn_gds;
+static FILE *f;
+
+
 #define TRX(x)  ((double)RND_COORD_TO_MM(x))
 #define TRY(y)  ((double)RND_COORD_TO_MM(y))
 
@@ -91,9 +99,6 @@ static const rnd_export_opt_t *exp_emsim_get_export_options(rnd_hid_t *hid, int 
 	if (n)
 		*n = NUM_OPTIONS;
 
-	sepfiles = exp_emsim_values[HA_exp_emsim_sepfiles].lng;
-	pens = 0;
-
 	return exp_emsim_attribute_list;
 }
 
@@ -113,7 +118,6 @@ static void exp_emsim_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
 	rnd_app.expose_main(&exp_emsim_hid, &ctx, xform);
-	emsim_flush_layer();
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
@@ -121,7 +125,6 @@ static void exp_emsim_hid_export_to_file(rnd_design_t *dsg, FILE * the_file, rnd
 static void exp_emsim_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	const char *filename;
-	int save_ons[PCB_MAX_LAYER];
 	rnd_xform_t xform;
 
 	if (!options) {
@@ -137,7 +140,6 @@ static void exp_emsim_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_at
 			filename = "board.emsim";
 
 		if (f != NULL) {
-			print_footer();
 			fclose(f);
 			f = NULL;
 		}
@@ -147,19 +149,11 @@ static void exp_emsim_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_at
 			perror(filename);
 			return;
 		}
-		print_header();
 	}
-
-	if (!exp_emsim_cam.active)
-		pcb_hid_save_and_show_layer_ons(save_ons);
 
 	exp_emsim_hid_export_to_file(design, f, options, &xform);
 
-	if (!exp_emsim_cam.active)
-		pcb_hid_restore_layer_ons(save_ons);
-
 	if (f != NULL) {
-		print_footer();
 		fclose(f);
 		f = NULL;
 	}
@@ -217,8 +211,7 @@ static int exp_emsim_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_l
 
 static rnd_hid_gc_t exp_emsim_make_gc(rnd_hid_t *hid)
 {
-	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(rnd_hid_gc_s), 1);
-	return rv;
+	return 0;
 }
 
 static void exp_emsim_destroy_gc(rnd_hid_gc_t gc)
@@ -251,7 +244,6 @@ static void exp_emsim_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rn
 
 static void exp_emsim_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
-	gc->color = *color;
 }
 
 static void exp_emsim_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)

@@ -1,0 +1,14 @@
+ha:rnd-menu-v1 {
+	li:anchored {
+		ha:@feature_plugins {
+			li:submenu {
+				ha:EM simulation {
+					li:submenu {
+						ha:DC power      = { a={<key>s;<key>e;<key>d;}; action=EmsDcpower() }
+					}
+				}
+			}
+		}
+	}
+}
+
