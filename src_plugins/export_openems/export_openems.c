@@ -343,7 +343,7 @@ static void openems_wr_m_init(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
-static void openems_wr_m_outline(wctx_t *ctx)
+static int openems_wr_m_outline(wctx_t *ctx)
 {
 	int n;
 	pcb_any_obj_t *out1;
@@ -355,6 +355,11 @@ TODO("layer: consider multiple outline layers instead")
 	if (out1 != NULL) {
 		long n;
 		pcb_poly_t *p = pcb_topoly_conn(ctx->pcb, out1, PCB_TOPOLY_KEEP_ORIG | PCB_TOPOLY_FLOATING);
+		if (p == NULL) {
+			rnd_message(RND_MSG_ERROR, "OpenEMS: failed to convert board outline to polygon\n(Outline drawing's centerline must be a closed loop)\n");
+			return -1;
+		}
+
 		for(n = 0; n < p->PointN; n++)
 			rnd_fprintf(ctx->f, "outline_xy(1, %ld) = %mm; outline_xy(2, %ld) = %mm;\n", n+1, p->Points[n].X, n+1, -p->Points[n].Y);
 		pcb_poly_free(p);
@@ -375,6 +380,7 @@ TODO("layer: consider multiple outline layers instead")
 	}
 
 	fprintf(ctx->f, "\n");
+	return 0;
 }
 
 static void openems_wr_m_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid1, rnd_layergrp_id_t gid2, const char *safe_name, double resistance, int act)
@@ -617,10 +623,11 @@ static void openems_wr_m_sim(wctx_t *wctx)
 
 #include "openems_xml.c"
 
-static void openems_hid_export_to_file(rnd_design_t *dsg, const char *filename, FILE *the_file, FILE *fsim, rnd_hid_attr_val_t *options, int fmt_matlab)
+static int openems_hid_export_to_file(rnd_design_t *dsg, const char *filename, FILE *the_file, FILE *fsim, rnd_hid_attr_val_t *options, int fmt_matlab)
 {
 	rnd_hid_expose_ctx_t ctx;
 	wctx_t wctx;
+	int res = 0;
 
 	memset(&wctx, 0, sizeof(wctx));
 	wctx.filename = filename;
@@ -649,7 +656,7 @@ static void openems_hid_export_to_file(rnd_design_t *dsg, const char *filename, 
 		openems_wr_m_mesh2(&wctx);
 		openems_wr_m_layers(&wctx);
 		openems_wr_m_init(&wctx);
-		openems_wr_m_outline(&wctx);
+		res |= openems_wr_m_outline(&wctx);
 
 		fprintf(wctx.f, "%%%%%% Copper objects\n");
 		rnd_app.expose_main(&openems_hid, &ctx, NULL);
@@ -663,6 +670,7 @@ static void openems_hid_export_to_file(rnd_design_t *dsg, const char *filename, 
 	}
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
+	return res;
 }
 
 static void openems_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
@@ -715,7 +723,8 @@ static void openems_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
-	openems_hid_export_to_file(design, filename, f, fsim, options, fmt_matlab);
+	if (openems_hid_export_to_file(design, filename, f, fsim, options, fmt_matlab) != 0)
+		rnd_message(RND_MSG_ERROR, "NOTE: exported OpenEMS files are broken because of the above. Do not try to simulate them.\n");
 
 	pcb_hid_restore_layer_ons(save_ons);
 
