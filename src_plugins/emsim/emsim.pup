@@ -2,9 +2,11 @@ $class feature
 $short bridge to emsim-rnd
 $long electro-magnetic simulation using external process emsim-rnd
 $state WIP
+#$package export-sim
 $fmt-native no
 $fmt-feature-w tEDAx trimesh board
 $fmt-feature-w tEDAx dcpower
 $package sim
+dep export_emsim
 default disable-all
 autoload 1

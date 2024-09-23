@@ -4,6 +4,7 @@ $long export in emsim-rnd tEDAx format for electromagnetic simulation
 $fmt-native no
 $fmt-feature-w emsim
 $state  WIP
+#$package export-sim
 dep lib_polyhelp
 dep io_tedax
 default disable-all
