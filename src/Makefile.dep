@@ -512,7 +512,8 @@
  board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h ../src_plugins/emsim/menu_internal.c
+ polygon.h vtpadstack_t.h ../src_plugins/emsim/menu_internal.c \
+ ../src_plugins/export_emsim/export_emsim.h
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h data.h globalconst.h layer.h attrib.h global_typedefs.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -584,7 +585,8 @@
  board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h layer.h hid_cam.h
+ polygon.h vtpadstack_t.h layer.h hid_cam.h \
+ ../src_plugins/export_emsim/export_emsim.h
 ../src_plugins/export_excellon/aperture.o: \
  ../src_plugins/export_excellon/aperture.c ../config.h \
  ../src_plugins/export_excellon/aperture.h
