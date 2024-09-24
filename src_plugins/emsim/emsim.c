@@ -34,35 +34,7 @@
 #include <librnd/hid/hid_menu.h>
 #include "menu_internal.c"
 
-typedef struct emsim_lumped_s emsim_lumped_t;
-
-struct emsim_lumped_s {
-	enum { PORT, RESISTOR, VSRC } type;
-	union {
-		struct {
-			char *name, *refdes, *term;
-		} port;
-		struct {
-			char *port1, *port2, *value;
-		} comp;
-	} data;
-	emsim_lumped_t *next;
-};
-
-typedef struct emsim_env_s {
-	emsim_lumped_t *head, *tail; /* singly linked ordered list of ports and lumped components */
-} emsim_env_t;
-
-void emsim_lumped_link(emsim_env_t *ctx, emsim_lumped_t *lump)
-{
-	lump->next = NULL;
-	if (ctx->tail != NULL) {
-		ctx->tail->next = lump;
-		ctx->tail = lump;
-	}
-	else
-		ctx->head = ctx->tail = lump;
-}
+#include "src_plugins/export_emsim/export_emsim.h"
 
 static const char pcb_acts_EmsDcpower[] = "EmsDcpower([port,name,refdes,terminal]*,[resistor|vsrc,port1,port2,value]*)";
 static const char pcb_acth_EmsDcpower[] = "DC power simulation. ";

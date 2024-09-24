@@ -51,6 +51,8 @@
 #include <librnd/hid/hid_attrib.h>
 #include "hid_cam.h"
 
+#include "export_emsim.h"
+
 static rnd_hid_t exp_emsim_hid;
 
 const char *exp_emsim_cookie = "exp_emsim HID";
@@ -295,6 +297,22 @@ static int exp_emsim_usage(rnd_hid_t *hid, const char *topic)
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x exp_emsim [exp_emsim options] foo.rp\n\n");
 	return 0;
 }
+
+/*** memory management: lumped components and env ***/
+
+void emsim_lumped_link(emsim_env_t *ctx, emsim_lumped_t *lump)
+{
+	lump->next = NULL;
+	if (ctx->tail != NULL) {
+		ctx->tail->next = lump;
+		ctx->tail = lump;
+	}
+	else
+		ctx->head = ctx->tail = lump;
+}
+
+
+/*** plugin glue ***/
 
 int pplg_check_ver_export_emsim(int ver_needed) { return 0; }
 
