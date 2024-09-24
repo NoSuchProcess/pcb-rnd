@@ -34,9 +34,9 @@
 #include <librnd/hid/hid_menu.h>
 #include "menu_internal.c"
 
-typedef struct lumped_s lumped_t;
+typedef struct emsim_lumped_s emsim_lumped_t;
 
-struct lumped_s {
+struct emsim_lumped_s {
 	enum { PORT, RESISTOR, VSRC } type;
 	union {
 		struct {
@@ -46,19 +46,23 @@ struct lumped_s {
 			char *port1, *port2, *value;
 		} comp;
 	} data;
-	lumped_t *next;
+	emsim_lumped_t *next;
 };
 
-#define LINK(lump) \
-do { \
-	lump->next = NULL; \
-	if (tail != NULL) { \
-		tail->next = lump; \
-		tail = lump; \
-	} \
-	else \
-		head = tail = lump; \
-} while(0)
+typedef struct emsim_env_s {
+	emsim_lumped_t *head, *tail; /* singly linked ordered list of ports and lumped components */
+} emsim_env_t;
+
+void emsim_lumped_link(emsim_env_t *ctx, emsim_lumped_t *lump)
+{
+	lump->next = NULL;
+	if (ctx->tail != NULL) {
+		ctx->tail->next = lump;
+		ctx->tail = lump;
+	}
+	else
+		ctx->head = ctx->tail = lump;
+}
 
 static const char pcb_acts_EmsDcpower[] = "EmsDcpower([port,name,refdes,terminal]*,[resistor|vsrc,port1,port2,value]*)";
 static const char pcb_acth_EmsDcpower[] = "DC power simulation. ";
@@ -66,32 +70,33 @@ static const char pcb_acth_EmsDcpower[] = "DC power simulation. ";
 static fgw_error_t pcb_act_EmsDcpower(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int n, retv = 0;
-	lumped_t *lump, *head = NULL, *tail = NULL;
+	emsim_env_t env = {0};
+	emsim_lumped_t *lump;
 
 	for(n = 1; n < argc; ) {
 		const char *cmd;
 		RND_ACT_CONVARG(n, FGW_STR, EmsDcpower, cmd = argv[n].val.str);
 		if (strcmp(cmd, "port") == 0) {
-			lump = malloc(sizeof(lumped_t));
+			lump = malloc(sizeof(emsim_lumped_t));
 			lump->type = PORT;
 			RND_ACT_CONVARG(n+1, FGW_STR, EmsDcpower, lump->data.port.name = argv[n+1].val.str);
 			RND_ACT_CONVARG(n+2, FGW_STR, EmsDcpower, lump->data.port.refdes = argv[n+2].val.str);
 			RND_ACT_CONVARG(n+3, FGW_STR, EmsDcpower, lump->data.port.term = argv[n+3].val.str);
 			n+=4;
-			LINK(lump);
+			emsim_lumped_link(&env, lump);
 		}
 		else if (strcmp(cmd, "resistor") == 0) {
-			lump = malloc(sizeof(lumped_t));
+			lump = malloc(sizeof(emsim_lumped_t));
 			lump->type = RESISTOR;
 			comp:;
 			RND_ACT_CONVARG(n+1, FGW_STR, EmsDcpower, lump->data.comp.port1 = argv[n+1].val.str);
 			RND_ACT_CONVARG(n+2, FGW_STR, EmsDcpower, lump->data.comp.port2 = argv[n+2].val.str);
 			RND_ACT_CONVARG(n+3, FGW_STR, EmsDcpower, lump->data.comp.value = argv[n+3].val.str);
 			n+=4;
-			LINK(lump);
+			emsim_lumped_link(&env, lump);
 		}
 		else if (strcmp(cmd, "vsrc") == 0) {
-			lump = malloc(sizeof(lumped_t));
+			lump = malloc(sizeof(emsim_lumped_t));
 			lump->type = VSRC;
 			goto comp;
 		}
