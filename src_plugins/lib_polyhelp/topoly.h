@@ -59,7 +59,7 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb);
    with df (if df is not -1) */
 pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_dynf_t df);
 
-/* Construct a cutout (multi-siland) polyarea using boundary lines/arcs and
+/* Construct a cutout (multi-island) polyarea using boundary lines/arcs and
    padstack holes/slots that are in contour (mapped using
    pcb_topoly_1st_outline_with() before this call) */
 rnd_polyarea_t *pcb_topoly_cutouts_in(pcb_board_t *pcb, pcb_dynf_t df, pcb_poly_t *contour, const pcb_topoly_cutout_opts_t *opts);
