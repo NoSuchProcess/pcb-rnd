@@ -18,3 +18,6 @@ typedef struct emsim_env_s {
 } emsim_env_t;
 
 void emsim_lumped_link(emsim_env_t *ctx, emsim_lumped_t *lump);
+
+void emsim_export_to_file(rnd_design_t *pcb, emsim_env_t *dst, FILE *f);
+
