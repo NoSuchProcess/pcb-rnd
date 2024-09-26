@@ -32,7 +32,9 @@
 #define SEP3 "#@$"
 
 static long custom_id = 100000;
-long easyeda_str2name(const char *str)
+
+/* uctx is ignored, parent may be NULL */
+long easyeda_gdom_str2name(void *uctx, gdom_node_t *parent, const char *str)
 {
 	long res = easy_sphash(str);
 	if (res < 0) {
@@ -47,6 +49,12 @@ long easyeda_str2name(const char *str)
 	}
 	return res;
 }
+
+long easyeda_str2name(const char *str)
+{
+	return easyeda_gdom_str2name(NULL, NULL, str);
+}
+
 
 static int parse_pcb_shape_any(gdom_node_t **shape);
 
@@ -381,7 +389,7 @@ static int parse_shape_svgnode(char *str, gdom_node_t **shape)
 	}
 	*so = '\0';
 
-	subtree = gdom_json_parse_str(tmp, easyeda_str2name);
+	subtree = gdom_json_parse_str(tmp, easyeda_gdom_str2name);
 	if (subtree == NULL) {
 		rnd_trace("Unquoted: '%s'\n", tmp);
 		rnd_trace("Subtree: %p\n", subtree);
@@ -520,7 +528,7 @@ gdom_node_t *easystd_low_pcb_parse(FILE *f, int is_fp)
 	gdom_node_t *root, *shapes, *canvas, *layers;
 
 	/* low level json parse -> initial dom */
-	root = gdom_json_parse(f, easyeda_str2name);
+	root = gdom_json_parse(f, easyeda_gdom_str2name);
 	if (root == NULL)
 		return NULL;
 

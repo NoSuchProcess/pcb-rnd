@@ -38,6 +38,7 @@
 #include "io_easyeda_conf.h"
 extern conf_io_easyeda_t io_easyeda_conf;
 extern void easyeda_dump_tree(FILE *f, gdom_node_t *tree); /* in the std */
+extern long easyeda_gdom_str2name(void *uctx, gdom_node_t *parent, const char *str); /* in the std */
 extern long easyeda_str2name(const char *str); /* in the std */
 
 
@@ -95,7 +96,7 @@ static gdom_node_t *easyeda_pro_parse_(FILE *f)
 	prc.f = f;
 
 	/* low level json parse -> initial dom */
-	root = gdom_json_parse_any(&prc, pro_getchr, easyeda_str2name);
+	root = gdom_json_parse_any(&prc, pro_getchr, easyeda_gdom_str2name);
 	if (root == NULL)
 		return NULL;
 
