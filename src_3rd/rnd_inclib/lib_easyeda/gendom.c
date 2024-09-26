@@ -79,7 +79,10 @@ int gdom_hash_put(gdom_node_t *parent, gdom_node_t *child)
 	if (htip_has(&parent->value.hash, child->name))
 		return -3;
 
-	htip_set(&parent->value.hash, child->name, child);
+	if (child->name == GDOM_CUSTOM_NAME)
+		htip_set(&parent->value.hash, (long)child->name_str, child);
+	else
+		htip_set(&parent->value.hash, child->name, child);
 	child->parent = parent;
 	return 0;
 }

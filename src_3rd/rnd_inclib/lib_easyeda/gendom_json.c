@@ -90,13 +90,14 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 				break;
 
 			case NJSON_EV_NAME:
-				if (str2name == NULL) {
+				if (str2name != NULL)
+					name = str2name(uctx, curr, ctx.value.string);
+
+				if ((str2name == NULL) || (name == GDOM_CUSTOM_NAME)) {
 					if (name_str != NULL)
 						free(name_str);
 					name_str = gdom_strdup(ctx.value.string);
 				}
-				else
-					name = str2name(uctx, curr, ctx.value.string);
 				break;
 
 			case NJSON_EV_STRING:

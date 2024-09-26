@@ -2,7 +2,13 @@
 #define GENDOM_H
 
 #include <stdio.h>
+#include <limits.h>
 #include <genht/htip.h>
+
+/* When str2name() returns this value or a node has this value as name,
+   it has a non-hashed custom string name which is saved in the resulting
+   node's ->name_str */
+#define GDOM_CUSTOM_NAME    LONG_MIN
 
 typedef enum gdom_node_type_e {
 	GDOM_ARRAY,
@@ -31,7 +37,7 @@ struct gdom_node_s {
 		long lng;
 	} value;
 	long lineno, col;          /* location, counting from 1; 0 means unknown location */
-	char *name_str;            /* in case str2name() is NULL */
+	char *name_str;            /* in case str2name() is NULL or name is GDOM_CUSTOM_NAME */
 };
 
 gdom_node_t *gdom_alloc(long name, gdom_node_type_t type);
