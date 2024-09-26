@@ -95,8 +95,29 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			break;
 
 		case PCB_OBJ_SUBC:
-			if (F->subc)
-				res = F->subc(ctx, (pcb_subc_t *)Ptr2);
+			if (F->subc) {
+				pcb_subc_t *subc = (pcb_subc_t *)Ptr2;
+				pcb_extobj_t *exto = pcb_extobj_get(subc);
+				int save;
+
+				if (exto != NULL) {
+					/* F->subc() will do transofrmation on subc part objects in random
+					   order; if it happens to transform floaters first, the other
+					   objects may be recalculated and then transformed by F->subc().
+					   To avoid this inhibit extobj operations and recalc the whole
+					   subc once at the end */
+					save = subc->extobj_inhibit;
+					subc->extobj_inhibit = 1;
+				}
+
+				res = F->subc(ctx, subc);
+
+				if (exto != NULL) {
+					subc->extobj_inhibit = save;
+					if (!subc->extobj_inhibit)
+						pcb_extobj_recalc(subc);
+				}
+			}
 			break;
 
 		case PCB_OBJ_PSTK:
