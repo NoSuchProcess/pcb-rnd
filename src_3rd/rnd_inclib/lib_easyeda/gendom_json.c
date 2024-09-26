@@ -29,7 +29,7 @@ do { \
 } while(0)
 
 
-gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*str2name)(const char *str))
+gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*str2name)(void *uctx, gdom_node_t *parent, const char *str))
 {
 	njson_ctx_t ctx = {0};
 	long line = 1, col = 1;
@@ -96,7 +96,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 					name_str = gdom_strdup(ctx.value.string);
 				}
 				else
-					name = str2name(ctx.value.string);
+					name = str2name(uctx, curr, ctx.value.string);
 				break;
 
 			case NJSON_EV_STRING:
@@ -160,7 +160,7 @@ gdom_node_t *gdom_json_parse_any(void *uctx, int (*getchr)(void *uctx), long (*s
 	return NULL;
 }
 
-gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(const char *str))
+gdom_node_t *gdom_json_parse(FILE *f, long (*str2name)(void *uctx, gdom_node_t *parent, const char *str))
 {
 	return gdom_json_parse_any(f, (int (*)(void *))fgetc, str2name);
 }
@@ -178,7 +178,7 @@ static int gdom_str_getc(void *uctx)
 	return res;
 }
 
-gdom_node_t *gdom_json_parse_str(const char *str, long (*str2name)(const char *str))
+gdom_node_t *gdom_json_parse_str(const char *str, long (*str2name)(void *uctx, gdom_node_t *parent, const char *str))
 {
 	return gdom_json_parse_any(&str, gdom_str_getc, str2name);
 }
