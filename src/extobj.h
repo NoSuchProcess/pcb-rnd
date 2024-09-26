@@ -97,6 +97,9 @@ pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, 
    is added */
 void pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc, pcb_any_obj_t *flt);
 
+/* Pretend that each floater is moved so all the subc is recalculated */
+int pcb_extobj_recalc(pcb_subc_t *subc);
+
 
 /* Call this after selection changes on a floater - this makes sure all floaters
    are selected or unselected at once; returns the number of objects changed */

@@ -235,3 +235,27 @@ rnd_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj
 
 	return cnt;
 }
+
+int pcb_extobj_recalc(pcb_subc_t *subc)
+{
+	pcb_extobj_t *eo;
+	pcb_data_it_t it;
+	pcb_any_obj_t *o;
+
+	eo = pcb_extobj_get(subc);
+	if (eo == NULL)
+		return -1;
+
+	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		/* sync selection */
+		if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, o))
+			continue;
+
+		if (eo->float_pre != NULL)
+			eo->float_pre(subc, o);
+		if (eo->float_geo != NULL)
+			eo->float_geo(subc, o);
+	}
+
+	return 0;
+}
