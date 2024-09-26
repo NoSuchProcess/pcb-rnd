@@ -444,6 +444,7 @@ pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how)
 }
 
 #include "topoly_cutout.c"
+#include "topoly_solid.c"
 
 const char pcb_acts_topoly[] = "ToPoly()\nToPoly(outline)\n";
 const char pcb_acth_topoly[] = "convert a closed loop of lines and arcs into a polygon";

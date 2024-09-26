@@ -69,6 +69,11 @@ rnd_polyarea_t *pcb_topoly_cutouts_in(pcb_board_t *pcb, pcb_dynf_t df, pcb_poly_
 pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how);
 
 
+/* Convert all objects that are marked with df into solid polygons and union
+   them into polyareas. Returns a vector of polygons, one polygon per layer,
+   indexed by layer ID. */
+vtp0_t *pcb_topoly_solids_in(pcb_board_t *pcb, pcb_dynf_t df);
+
 
 
 extern const char pcb_acts_topoly[];
