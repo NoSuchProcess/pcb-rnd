@@ -82,6 +82,7 @@ typedef struct {
 	unsigned poly_contour:1;
 	unsigned drill_fill:1;
 	unsigned drill_contour:1;
+	unsigned enable_line_width_enum:1;
 } dxf_ctx_t;
 
 static dxf_ctx_t dxf_ctx;
@@ -188,9 +189,14 @@ Draw drill contour with thin line
 	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0},
 #define HA_drill_contour 6
 
+	/* enum ref: https://help.autodesk.com/view/OARX/2023/ENU/?guid=OARX-RefGuide-AcDb__LineWeight */
+	{"line-width-enum", "Stick to certain line widths that are present in ObjectARX enum (in instruction 370) instead of using true width encoded in 0.01mm",
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
+#define HA_line_width_enum 7
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 7
+#define HA_cam 8
 
 };
 
@@ -230,6 +236,7 @@ void dxf_hid_export_to_file(rnd_design_t *dsg, dxf_ctx_t *ctx, rnd_hid_attr_val_
 	dxf_ctx.poly_contour = options[HA_poly_contour].lng;
 	dxf_ctx.drill_fill = options[HA_drill_fill].lng;
 	dxf_ctx.drill_contour = options[HA_drill_contour].lng;
+	dxf_ctx.enable_line_width_enum = options[HA_line_width_enum].lng;
 
 	rnd_app.expose_main(&dxf_hid, &hectx, xform);
 

@@ -34,6 +34,25 @@ static void dxf_draw_handle(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "5\n%lu\n", ctx->handle);
 }
 
+static int dxf_line_width(dxf_ctx_t *ctx, int w)
+{
+	/* enum ref: https://help.autodesk.com/view/OARX/2023/ENU/?guid=OARX-RefGuide-AcDb__LineWeight */
+	static const int enum_widths[] = {0, 5, 9, 13, 15, 18, 20, 25, 30, 35, 40, 50, 53, 60, 70, 80, 90, 100, 106, 120, 140, 158, 200, 211, -1};
+	int n;
+
+	if (!dxf_ctx.enable_line_width_enum)
+		return w;
+
+	for(n = 0; enum_widths[n+1] > 0; n++) {
+		if (enum_widths[n] == w) /* exact match */
+			return w;
+		if ((w > enum_widths[n]) && (w < enum_widths[n+1])) /* between two values: return the smaller */
+			return enum_widths[n];
+	}
+
+	return enum_widths[n]; /* largest non-negative */
+}
+
 static void dxf_draw_line_props(dxf_ctx_t *ctx, rnd_hid_gc_t gc)
 {
 	fprintf(ctx->f, "100\nAcDbEntity\n");
@@ -43,9 +62,9 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx, rnd_hid_gc_t gc)
 
 	/* lineweight enum (width in 0.01mm) */
 	if (ctx->enable_force_thin && ctx->force_thin)
-		fprintf(ctx->f, "370\n1\n");
+		fprintf(ctx->f, "370\n%d\n", dxf_line_width(ctx, 1));
 	else
-		fprintf(ctx->f, "370\n%d\n", (int)rnd_round(RND_COORD_TO_MM(gc->width)*100.0));
+		fprintf(ctx->f, "370\n%d\n", dxf_line_width(ctx, (int)rnd_round(RND_COORD_TO_MM(gc->width)*100.0)));
 }
 
 static void dxf_hatch_pre(dxf_ctx_t *ctx, rnd_hid_gc_t gc, int n_coords)
