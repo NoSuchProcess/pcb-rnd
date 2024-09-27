@@ -601,9 +601,9 @@ static void openems_wr_m_mesh2(wctx_t *ctx)
 	openems_wr_m_mesh_lines(ctx, &mesh->line[PCB_MESH_Z]);
 	fprintf(ctx->f, "];\n");
 
-	fprintf(ctx->f, "mesh.x = mesh.x .+ offset.x;\n");
-	fprintf(ctx->f, "mesh.y = offset.y .- mesh.y;\n");
-	fprintf(ctx->f, "mesh.z = z_bottom_copper .- mesh.z .+ offset.z;\n");
+	fprintf(ctx->f, "mesh.x = mesh.x + offset.x;\n");
+	fprintf(ctx->f, "mesh.y = offset.y - mesh.y;\n");
+	fprintf(ctx->f, "mesh.z = z_bottom_copper - mesh.z + offset.z;\n");
 	if (mesh->pml > 0)
 		fprintf(ctx->f, "mesh = AddPML(mesh, %d);\n", mesh->pml);
 	fprintf(ctx->f, "CSX = DefineRectGrid(CSX, unit, mesh);\n");
