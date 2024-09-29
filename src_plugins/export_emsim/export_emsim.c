@@ -42,6 +42,7 @@
 #include <librnd/core/error.h>
 #include "layer.h"
 #include "hid_cam.h"
+#include "src_plugins/lib_polyhelp/topoly.h"
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/plugins.h>
@@ -99,16 +100,17 @@ static const rnd_export_opt_t *exp_emsim_get_export_options(rnd_hid_t *hid, int 
 
 void emsim_export_to_file(pcb_board_t *pcb, emsim_env_t *dst, FILE *f)
 {
-	pcb_dynf_t df = pcb_dynflag_alloc("emsim_export_to_file");
 	emsim_lumped_t *n;
 	pcb_find_t fctx = {0};
 	pcb_any_obj_t *from;
-	long l = 0;
+	long lid, l = 0;
+	vtp0_t *poly_per_layer;
+	pcb_topoly_solid_opts_t opts;
 
-	pcb_data_dynflag_clear(pcb->Data, df);
+	opts.per_grp = 1;
+	opts.typ_mask = PCB_LYT_COPPER;
 
 	/* find objects from ports and mark them with df */
-	fctx.mark = df;
 	pcb_find_from_obj(&fctx, pcb->Data, NULL);
 	for(n = dst->head; n != NULL; n = n->next) {
 		switch(n->type) {
@@ -123,14 +125,19 @@ void emsim_export_to_file(pcb_board_t *pcb, emsim_env_t *dst, FILE *f)
 				break;
 		}
 	}
+
+	rnd_trace("df-marked %ld objs mark=%ld\n", l, (long)fctx.mark);
+
+	poly_per_layer = pcb_topoly_solids_in(pcb, fctx.mark, &opts);
+
+	rnd_trace("poly-per-layer: %ld layers\n", poly_per_layer->used);
+	for(lid = 0; lid < poly_per_layer->used; lid++) {
+		if (poly_per_layer->array[lid] != NULL)
+			rnd_trace(" [%ld] poly\n", lid);
+	}
+
 	pcb_find_free(&fctx);
 
-	rnd_trace("df-marked %ld objs\n", l);
-
-	TODO("build poly of the results");
-
-	pcb_data_dynflag_clear(pcb->Data, df);
-	pcb_dynflag_free(df);
 }
 
 static void exp_emsim_hid_export_to_file(rnd_design_t *dsg, rnd_hid_attr_val_t *options)
