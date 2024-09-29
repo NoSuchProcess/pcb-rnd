@@ -180,7 +180,6 @@ vtp0_t *pcb_topoly_solids_in(pcb_board_t *pcb, pcb_dynf_t df)
 	vtp0_t *res = calloc(sizeof(vtp0_t), 1);
 
 	vtp0_enlarge(res, pcb->Data->LayerN-1);
-	res->used = 0;
 
 	topoly_solid_add_layerobjs(pcb, res, df);
 	topoly_solid_add_pstks(pcb, res, df);
