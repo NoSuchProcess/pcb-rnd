@@ -57,6 +57,7 @@ static void topoly_solid_add_layerobjs(pcb_board_t *pcb, vtp0_t *solids_per_laye
 		pcb_layer_t *layer = &pcb->Data->Layer[lid];
 		pcb_line_t *line;
 		pcb_arc_t *arc;
+		pcb_poly_t *poly;
 		rnd_rtree_it_t it;
 		rnd_polyarea_t **solids = (rnd_polyarea_t **)&solids_per_layer->array[lid];
 
@@ -78,8 +79,12 @@ static void topoly_solid_add_layerobjs(pcb_board_t *pcb, vtp0_t *solids_per_laye
 			}
 		}
 
-		TODO("add poly, maybe text as well");
+		if (layer->polygon_tree != NULL)
+			for(poly = rnd_rtree_all_first(&it, layer->polygon_tree); poly != NULL; poly = rnd_rtree_all_next(&it))
+				if (PCB_DFLAG_TEST(&poly->Flags, df))
+					SOLID_ADD_POLY(solids, poly);
 
+		TODO("add text as well");
 	}
 }
 
