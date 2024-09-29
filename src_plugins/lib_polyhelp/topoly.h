@@ -68,11 +68,15 @@ rnd_polyarea_t *pcb_topoly_cutouts_in(pcb_board_t *pcb, pcb_dynf_t df, pcb_poly_
 /* Construct a polygon of the first line/arc on the outline layer from top-left */
 pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how);
 
+typedef struct pcb_topoly_solid_opts_s {
+	unsigned per_grp:1;            /* export per layer group; subsequent layers in the same group are mapped to the first layer of the group */
+} pcb_topoly_solid_opts_t;
+
 
 /* Convert all objects that are marked with df into solid polygons and union
    them into polyareas. Returns a vector of polygons, one polygon per layer,
    indexed by layer ID. */
-vtp0_t *pcb_topoly_solids_in(pcb_board_t *pcb, pcb_dynf_t df);
+vtp0_t *pcb_topoly_solids_in(pcb_board_t *pcb, pcb_dynf_t df, const pcb_topoly_solid_opts_t *opts);
 
 
 

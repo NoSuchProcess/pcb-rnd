@@ -49,7 +49,7 @@ do { \
 
 
 /* Add all layer-object-drawn solids (lines, arcs, etc) */
-static void topoly_solid_add_layerobjs(pcb_board_t *pcb, vtp0_t *solids_per_layer, pcb_dynf_t df)
+static void topoly_solid_add_layerobjs(pcb_board_t *pcb, vtp0_t *solids_per_layer, pcb_dynf_t df, const pcb_topoly_solid_opts_t *opts)
 {
 	rnd_layer_id_t lid;
 
@@ -60,6 +60,15 @@ static void topoly_solid_add_layerobjs(pcb_board_t *pcb, vtp0_t *solids_per_laye
 		pcb_poly_t *poly;
 		rnd_rtree_it_t it;
 		rnd_polyarea_t **solids = (rnd_polyarea_t **)&solids_per_layer->array[lid];
+
+		if (opts->per_grp) {
+			rnd_layergrp_id_t gid = pcb_layer_get_group(pcb, lid);
+			pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
+			if ((grp == NULL) || (grp->len == 0))
+				continue;
+			solids = (rnd_polyarea_t **)&solids_per_layer->array[grp->lid[0]];
+		}
+
 
 		if (layer->line_tree != NULL) {
 			for(line = rnd_rtree_all_first(&it, layer->line_tree); line != NULL; line = rnd_rtree_all_next(&it)) {
@@ -88,7 +97,7 @@ static void topoly_solid_add_layerobjs(pcb_board_t *pcb, vtp0_t *solids_per_laye
 	}
 }
 
-static void topoly_solid_add_pstk(pcb_board_t *pcb, pcb_pstk_t *pstk, rnd_layer_id_t lid, vtp0_t *solids_per_layer)
+static void topoly_solid_add_pstk(pcb_board_t *pcb, pcb_pstk_t *pstk, rnd_layer_id_t lid, vtp0_t *solids_per_layer, const pcb_topoly_solid_opts_t *opts)
 {
 	pcb_pstk_shape_t *shp;
 	rnd_polyarea_t **solids = (rnd_polyarea_t **)&solids_per_layer->array[lid];
@@ -157,7 +166,7 @@ static void topoly_solid_add_pstk(pcb_board_t *pcb, pcb_pstk_t *pstk, rnd_layer_
 }
 
 /* Add all padstack based solids */
-static void topoly_solid_add_pstks(pcb_board_t *pcb, vtp0_t *solids_per_layer, pcb_dynf_t df)
+static void topoly_solid_add_pstks(pcb_board_t *pcb, vtp0_t *solids_per_layer, pcb_dynf_t df, const pcb_topoly_solid_opts_t *opts)
 {
 	rnd_rtree_it_t it;
 	rnd_box_t *n;
@@ -169,20 +178,31 @@ static void topoly_solid_add_pstks(pcb_board_t *pcb, vtp0_t *solids_per_layer, p
 		pcb_pstk_t *ps = (pcb_pstk_t *)n;
 		if (PCB_DFLAG_TEST(&ps->Flags, df)) {
 			rnd_layer_id_t lid;
-			for(lid = 0; lid < pcb->Data->LayerN; lid++)
-				topoly_solid_add_pstk(pcb, ps, lid, solids_per_layer);
+
+			if (opts->per_grp) {
+				rnd_layergrp_id_t gid;
+				for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
+					pcb_layergrp_t *grp = &pcb->LayerGroups.grp[gid];
+					if (grp->len > 0)
+						topoly_solid_add_pstk(pcb, ps, grp->lid[0], solids_per_layer, opts);
+				}
+			}
+			else {
+				for(lid = 0; lid < pcb->Data->LayerN; lid++)
+					topoly_solid_add_pstk(pcb, ps, lid, solids_per_layer, opts);
+			}
 		}
 	}
 }
 
-vtp0_t *pcb_topoly_solids_in(pcb_board_t *pcb, pcb_dynf_t df)
+vtp0_t *pcb_topoly_solids_in(pcb_board_t *pcb, pcb_dynf_t df, const pcb_topoly_solid_opts_t *opts)
 {
 	vtp0_t *res = calloc(sizeof(vtp0_t), 1);
 
 	vtp0_enlarge(res, pcb->Data->LayerN-1);
 
-	topoly_solid_add_layerobjs(pcb, res, df);
-	topoly_solid_add_pstks(pcb, res, df);
+	topoly_solid_add_layerobjs(pcb, res, df, opts);
+	topoly_solid_add_pstks(pcb, res, df, opts);
 
 	return res;
 }
