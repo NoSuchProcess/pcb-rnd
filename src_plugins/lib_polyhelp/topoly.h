@@ -70,6 +70,8 @@ pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how);
 
 typedef struct pcb_topoly_solid_opts_s {
 	unsigned per_grp:1;            /* export per layer group; subsequent layers in the same group are mapped to the first layer of the group */
+	pcb_layer_type_t loc_mask;     /* if not 0, include only layers matching the location part of this */
+	pcb_layer_type_t typ_mask;     /* if not 0, include only layers matching the type part of this */
 } pcb_topoly_solid_opts_t;
 
 

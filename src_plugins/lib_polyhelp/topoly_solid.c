@@ -47,6 +47,12 @@ do { \
 	pcb_poly_free(src); \
 } while(0)
 
+RND_INLINE int topoly_solid_refuse_lyt(pcb_layer_type_t lyt, pcb_topoly_solid_opts_t *opts)
+{
+	if ((opts->loc_mask != 0) && ((lyt & opts->loc_mask) == 0)) return 1;
+	if ((opts->typ_mask != 0) && ((lyt & opts->typ_mask) == 0)) return 1;
+	return 0;
+}
 
 /* Add all layer-object-drawn solids (lines, arcs, etc) */
 static void topoly_solid_add_layerobjs(pcb_board_t *pcb, vtp0_t *solids_per_layer, pcb_dynf_t df, const pcb_topoly_solid_opts_t *opts)
@@ -60,6 +66,13 @@ static void topoly_solid_add_layerobjs(pcb_board_t *pcb, vtp0_t *solids_per_laye
 		pcb_poly_t *poly;
 		rnd_rtree_it_t it;
 		rnd_polyarea_t **solids = (rnd_polyarea_t **)&solids_per_layer->array[lid];
+
+
+		if ((opts->loc_mask != 0) || (opts->typ_mask != 0)) {
+			pcb_layer_type_t lyt = pcb_layer_flags_(layer);
+			if (topoly_solid_refuse_lyt(lyt, opts))
+				continue;
+		}
 
 		if (opts->per_grp) {
 			rnd_layergrp_id_t gid = pcb_layer_get_group(pcb, lid);
@@ -183,13 +196,25 @@ static void topoly_solid_add_pstks(pcb_board_t *pcb, vtp0_t *solids_per_layer, p
 				rnd_layergrp_id_t gid;
 				for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
 					pcb_layergrp_t *grp = &pcb->LayerGroups.grp[gid];
+
+					if ((opts->loc_mask != 0) || (opts->typ_mask != 0)) {
+						if (topoly_solid_refuse_lyt(grp->ltype, opts))
+							continue;
+					}
+
 					if (grp->len > 0)
 						topoly_solid_add_pstk(pcb, ps, grp->lid[0], solids_per_layer, opts);
 				}
 			}
 			else {
-				for(lid = 0; lid < pcb->Data->LayerN; lid++)
+				for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+					if ((opts->loc_mask != 0) || (opts->typ_mask != 0)) {
+						pcb_layer_type_t lyt = pcb_layer_flags(pcb, lid);
+						if (topoly_solid_refuse_lyt(lyt, opts))
+							continue;
+					}
 					topoly_solid_add_pstk(pcb, ps, lid, solids_per_layer, opts);
+				}
 			}
 		}
 	}
