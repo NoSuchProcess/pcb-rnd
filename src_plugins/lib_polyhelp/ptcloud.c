@@ -31,6 +31,8 @@
 
 #include "ptcloud.h"
 
+#include "ptcloud_debug.c"
+
 /* unit is ctx->target_dist; so value 7 means 7 * ctx->target_dist, making
    the area of a single grid tile (7*ctx->target_dist)^2 */
 #define GRID_SIZE 10
@@ -139,6 +141,8 @@ void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
 
 		qsort(&ctx->edges.array, ctx->edges.used, sizeof(rnd_coord_t), cmp_crd);
 	}
+
+	ptcloud_debug_draw(ctx, "PTcloud.svg");
 
 	vtc0_uninit(&ctx->edges);
 }
