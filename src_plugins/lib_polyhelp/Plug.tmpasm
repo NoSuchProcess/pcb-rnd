@@ -2,6 +2,7 @@ put /local/rnd/mod {lib_polyhelp}
 put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/lib_polyhelp/polyhelp.o
 	$(PLUGDIR)/lib_polyhelp/topoly.o
+	$(PLUGDIR)/lib_polyhelp/ptcloud.o
 	$(PLUGDIR)/lib_polyhelp/triangulate.o
 @]
 
