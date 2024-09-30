@@ -98,6 +98,22 @@ static const rnd_export_opt_t *exp_emsim_get_export_options(rnd_hid_t *hid, int 
 	return exp_emsim_attribute_list;
 }
 
+/* exports a single island, with holes */
+RND_INLINE void emsim_export_polyarea_to_file(pcb_board_t *pcb, FILE *f, rnd_polyline_t *contour)
+{
+
+}
+
+/* exports all islands of pa */
+RND_INLINE void emsim_export_polyarea_to_file(pcb_board_t *pcb, FILE *f, rnd_polyarea_t *start)
+{
+	rnd_polyarea_t *pa = start;
+
+	do {
+		emsim_export_polylines_to_file(pcb, f, pa->contour);
+	} while((pa = pa->f) != start);
+}
+
 void emsim_export_to_file(pcb_board_t *pcb, emsim_env_t *dst, FILE *f)
 {
 	emsim_lumped_t *n;
@@ -132,8 +148,9 @@ void emsim_export_to_file(pcb_board_t *pcb, emsim_env_t *dst, FILE *f)
 
 	rnd_trace("poly-per-layer: %ld layers\n", poly_per_layer->used);
 	for(lid = 0; lid < poly_per_layer->used; lid++) {
-		if (poly_per_layer->array[lid] != NULL)
+		if (poly_per_layer->array[lid] != NULL) {
 			rnd_trace(" [%ld] poly\n", lid);
+		}
 	}
 
 	pcb_find_free(&fctx);
