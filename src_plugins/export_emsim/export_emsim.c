@@ -110,7 +110,7 @@ RND_INLINE void emsim_export_polyarea_to_file(pcb_board_t *pcb, FILE *f, rnd_pol
 	rnd_polyarea_t *pa = start;
 
 	do {
-		emsim_export_polylines_to_file(pcb, f, pa->contours);
+		emsim_export_pline_to_file(pcb, f, pa->contours);
 	} while((pa = pa->f) != start);
 }
 
