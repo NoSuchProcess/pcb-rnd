@@ -41,6 +41,7 @@ static const char pcb_acth_EmsDcpower[] = "DC power simulation. ";
 /* DOC: ... */
 static fgw_error_t pcb_act_EmsDcpower(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int n, retv = 0;
 	emsim_env_t env = {0};
 	emsim_lumped_t *lump;
@@ -79,6 +80,7 @@ static fgw_error_t pcb_act_EmsDcpower(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
+	emsim_export_to_file(pcb, &env, stdout);
 
 	quit:;
 	return retv;
