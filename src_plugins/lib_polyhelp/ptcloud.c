@@ -146,7 +146,7 @@ void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
 	grid_alloc(ctx);
 
 	/* horizontal rays */
-	for(y = ctx->pl->ymin + half; y < ctx->pl->ymax; y += ctx->target_dist) {
+	for(y = ctx->pl->ymin + ctx->target_dist; y <= ctx->pl->ymax - ctx->target_dist; y += ctx->target_dist) {
 		rnd_rtree_box_t sb;
 
 		sb.x1 = ctx->pl->xmin - half; sb.y1 = y;
