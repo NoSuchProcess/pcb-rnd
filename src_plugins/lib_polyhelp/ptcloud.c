@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include <assert.h>
+#include <librnd/core/error.h>
 
 #include "ptcloud.h"
 
@@ -40,8 +41,8 @@
 /* returns grid idx for coords x;y */
 RND_INLINE long xy2gidx(pcb_ptcloud_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
 {
-	long gx = (x - ctx->pl->xmin / (GRID_SIZE * ctx->target_dist)) + 1; /* +1 for the border */
-	long gy = (y - ctx->pl->ymin / (GRID_SIZE * ctx->target_dist)) + 1; /* +1 for the border */
+	long gx = (x - ctx->pl->xmin) / (GRID_SIZE * ctx->target_dist) + 1; /* +1 for the border */
+	long gy = (y - ctx->pl->ymin) / (GRID_SIZE * ctx->target_dist) + 1; /* +1 for the border */
 	return gy * ctx->gsx + gx;
 }
 
@@ -126,6 +127,18 @@ static int cmp_crd(const void *A, const void *B)
 	return (*a < *b) ? -1 : +1;
 }
 
+static void ptcloud_ray_create_points(pcb_ptcloud_ctx_t *ctx)
+{
+	long n;
+	for(n = 0; n+1 < ctx->edges.used; n+=2) {
+		rnd_coord_t x, x1 = ctx->edges.array[n], x2 = ctx->edges.array[n+1];
+
+		TODO("verify there's no horizontal line overlapping");
+		for(x = x1 + ctx->target_dist; x <= x2 - ctx->target_dist; x += ctx->target_dist)
+			pt_create(ctx, x, ctx->ray_y, 100, 0);
+	}
+}
+
 void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
 {
 	rnd_coord_t y, half = ctx->target_dist/2;
@@ -147,7 +160,10 @@ rnd_trace(" y: %06mm hits: %d\n", y, ctx->edges.used);
 		if (ctx->edges.used == 0)
 			continue;
 
-		qsort(&ctx->edges.array, ctx->edges.used, sizeof(rnd_coord_t), cmp_crd);
+		assert((ctx->edges.used % 2) == 0);
+
+		qsort(ctx->edges.array, ctx->edges.used, sizeof(rnd_coord_t), cmp_crd);
+		ptcloud_ray_create_points(ctx);
 	}
 
 	ptcloud_debug_draw(ctx, "PTcloud.svg");
