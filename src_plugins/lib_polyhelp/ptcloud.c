@@ -104,12 +104,18 @@ static rnd_rtree_dir_t ptcloud_ray_cb(void *udata, void *obj, const rnd_rtree_bo
 {
 	pcb_ptcloud_ctx_t *ctx = udata;
 	rnd_vnode_t *vn = rnd_pline_seg2vnode(obj);
+	rnd_coord_t x;
 
-	/* consider edges going up (emulate that the ray is a tiny bit above the integer y coordinate) */
-	if (vn->next->point[1] < vn->point[1]) {
-		rnd_coord_t x = edge_x_for_y(vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1], ctx->ray_y);
-		vtc0_append(&ctx->edges, x);
-	}
+	/* ignore edges with endpoint hit if the edge is not going upward;
+	   emulate that the ray is a tiny bit above the integer y coordinate) */
+	if ((ctx->ray_y == vn->next->point[1]) && (vn->next->point[1] >= vn->point[1]))
+		return 0;
+	if ((ctx->ray_y == vn->point[1]) && (vn->next->point[1] <= vn->point[1]))
+		return 0;
+
+	/* add x coord of the crossing to the (yet unodreded) edge vector */
+	x = edge_x_for_y(vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1], ctx->ray_y);
+	vtc0_append(&ctx->edges, x);
 
 	return 0;
 }
@@ -135,6 +141,8 @@ void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
 		ctx->edges.used = 0;
 		ctx->ray_y = y;
 		rnd_rtree_search_obj(ctx->pl->tree, &sb, ptcloud_ray_cb, ctx);
+
+rnd_trace(" y: %06mm hits: %d\n", y, ctx->edges.used);
 
 		if (ctx->edges.used == 0)
 			continue;
