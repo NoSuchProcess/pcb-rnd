@@ -2204,7 +2204,8 @@
  vtpadstack_t.h obj_arc.h obj_line.h obj_poly.h obj_poly_draw.h draw.h \
  obj_pstk_inlines.h data.h thermal.h operation.h find.h polygon.h \
  search.h funchash_core.h funchash_core_list.h \
- ../src_plugins/lib_polyhelp/topoly_cutout.c
+ ../src_plugins/lib_polyhelp/topoly_cutout.c \
+ ../src_plugins/lib_polyhelp/topoly_solid.c
 ../src_plugins/lib_polyhelp/triangulate.o: \
  ../src_plugins/lib_polyhelp/triangulate.c ../config.h \
  ../src_plugins/lib_polyhelp/triangulate.h \
