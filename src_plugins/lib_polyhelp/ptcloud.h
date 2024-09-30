@@ -57,3 +57,6 @@ typedef struct pcb_ptcloud_ctx_s {
 	rnd_coord_t ray_y;
 	vtc0_t edges;             /* x coords of edges crossed */
 } pcb_ptcloud_ctx_t;
+
+void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx);
+
