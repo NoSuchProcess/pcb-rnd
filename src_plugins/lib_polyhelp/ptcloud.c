@@ -92,3 +92,53 @@ RND_INLINE void grid_alloc(pcb_ptcloud_ctx_t *ctx)
 	ctx->grid = calloc(sizeof(gdl_list_t), ctx->glen);
 }
 
+RND_INLINE rnd_coord_t edge_x_for_y(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t y)
+{
+	double dx = (double)(lx2 - lx1) / (double)(ly2 - ly1);
+	return rnd_round((double)lx1 + (double)(y - ly1) * dx);
+}
+
+static rnd_rtree_dir_t ptcloud_ray_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
+{
+	pcb_ptcloud_ctx_t *ctx = udata;
+	rnd_vnode_t *vn = rnd_pline_seg2vnode(obj);
+
+	/* consider edges going up (emulate that the ray is a tiny bit above the integer y coordinate) */
+	if (vn->next->point[1] < vn->point[1]) {
+		rnd_coord_t x = edge_x_for_y(vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1], ctx->ray_y);
+		vtc0_append(&ctx->edges, x);
+	}
+
+	return 0;
+}
+
+static int cmp_crd(const void *A, const void *B)
+{
+	const rnd_coord_t *a = A, *b = B;
+	return (*a < *b) ? -1 : +1;
+}
+
+void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
+{
+	rnd_coord_t y, half = ctx->target_dist/2;
+
+	grid_alloc(ctx);
+
+	/* horizontal rays */
+	for(y = ctx->pl->ymin + half; y < ctx->pl->ymax; y += ctx->target_dist) {
+		rnd_rtree_box_t sb;
+
+		sb.x1 = ctx->pl->xmin - half; sb.y1 = y;
+		sb.x2 = RND_COORD_MAX; sb.y2 = y+1;
+		ctx->edges.used = 0;
+		ctx->ray_y = y;
+		rnd_rtree_search_obj(ctx->pl->tree, &sb, ptcloud_ray_cb, ctx);
+
+		if (ctx->edges.used == 0)
+			continue;
+
+		qsort(&ctx->edges.array, ctx->edges.used, sizeof(rnd_coord_t), cmp_crd);
+	}
+
+	vtc0_uninit(&ctx->edges);
+}

@@ -29,8 +29,10 @@
 
 #include <math.h>
 #include <genlist/gendlist.h>
+#include <librnd/core/vtc0.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/polyarea.h>
+
 
 typedef struct pcb_ptcloud_pt_s {
 	rnd_coord_t x, y;     /* current coord */
@@ -41,12 +43,17 @@ typedef struct pcb_ptcloud_pt_s {
 } pcb_ptcloud_pt_t;
 
 typedef struct pcb_ptcloud_ctx_s {
+	/*** config part, filled in by the caller before pcb_ptcloud() ***/
 	rnd_pline_t *pl;
 	rnd_coord_t target_dist;  /* target distance between points */
 
+	/*** internal state/cache ***/
 	/* grid; grid cells are GRID_SIZE * target_dist in x and y directions */
 	long gsx, gsy;            /* grid size in number of elements in each dir */
 	long glen;                /* cache: gsx*gsy */
 	gdl_list_t *grid;         /* each element of this array is a grid cell with a list of pcb_ptcloud_pt_t points in it */
 
+	/* horizontal rays */
+	rnd_coord_t ray_y;
+	vtc0_t edges;             /* x coords of edges crossed */
 } pcb_ptcloud_ctx_t;
