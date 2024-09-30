@@ -99,7 +99,7 @@ static const rnd_export_opt_t *exp_emsim_get_export_options(rnd_hid_t *hid, int 
 }
 
 /* exports a single island, with holes */
-RND_INLINE void emsim_export_polyarea_to_file(pcb_board_t *pcb, FILE *f, rnd_polyline_t *contour)
+RND_INLINE void emsim_export_pline_to_file(pcb_board_t *pcb, FILE *f, rnd_pline_t *contour)
 {
 
 }
@@ -110,7 +110,7 @@ RND_INLINE void emsim_export_polyarea_to_file(pcb_board_t *pcb, FILE *f, rnd_pol
 	rnd_polyarea_t *pa = start;
 
 	do {
-		emsim_export_polylines_to_file(pcb, f, pa->contour);
+		emsim_export_polylines_to_file(pcb, f, pa->contours);
 	} while((pa = pa->f) != start);
 }
 
