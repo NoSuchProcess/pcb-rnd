@@ -61,13 +61,14 @@ RND_INLINE void debug_draw_pline(FILE *F, const rnd_pline_t *pl, const char *clr
 
 RND_INLINE void debug_draw_points(FILE *F, pcb_ptcloud_ctx_t *ctx, const char *clr)
 {
-	long gidx;
 	pcb_ptcloud_pt_t *pt;
 
-	for(gidx = 0; gidx < ctx->glen; gidx++) {
-		for(pt = gdl_first(&(ctx->grid[gidx])); pt != NULL; pt = pt->link.next) {
-			rnd_fprintf(F, " <circle cx=\"%06mm\" cy=\"%06mm\" r=\"0.05\" stroke=\"none\" fill=\"%s\" />\n",
-				pt->x, pt->y, clr);
+	for(pt = gdl_first(&ctx->points); pt != NULL; pt = pt->all.next) {
+		rnd_fprintf(F, " <circle cx=\"%06mm\" cy=\"%06mm\" r=\"0.05\" stroke=\"none\" fill=\"%s\" />\n",
+			pt->x, pt->y, clr);
+		if ((pt->dx != 0) || (pt->dy != 0)) {
+			rnd_fprintf(F, " <line x1=\"%06mm\" y1=\"%06mm\" x2=\"%06mm\" y2=\"%06mm\" stroke-width=\"0.01\" stroke=\"red\"/>\n",
+				pt->x, pt->y, pt->x + pt->dx*2, pt->y + pt->dy*2);
 		}
 	}
 }

@@ -37,6 +37,13 @@
 /* unit is ctx->target_dist; so value 7 means 7 * ctx->target_dist, making
    the area of a single grid tile (7*ctx->target_dist)^2 */
 #define GRID_SIZE 10
+#define PROXIMITY 1.42
+
+
+#define WEIGHT_CONTOUR 300
+#define WEIGHT_INTERNAL 100
+
+#define TRACE_ANNEAL 0
 
 /* returns grid idx for coords x;y */
 RND_INLINE long xy2gidx(pcb_ptcloud_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
@@ -85,12 +92,13 @@ RND_INLINE void pt_create(pcb_ptcloud_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y, 
 	pt->fixed = fixed;
 
 	gdl_append(&ctx->grid[gidx], pt, link);
+	gdl_append(&ctx->points, pt, all);
 }
 
 RND_INLINE void grid_alloc(pcb_ptcloud_ctx_t *ctx)
 {
-	ctx->gsx = (ctx->pl->xmax - ctx->pl->xmin) / (GRID_SIZE * ctx->target_dist) + 2;
-	ctx->gsy = (ctx->pl->ymax - ctx->pl->ymin) / (GRID_SIZE * ctx->target_dist) + 2;
+	ctx->gsx = (ctx->pl->xmax - ctx->pl->xmin) / (GRID_SIZE * ctx->target_dist) + 3;
+	ctx->gsy = (ctx->pl->ymax - ctx->pl->ymin) / (GRID_SIZE * ctx->target_dist) + 3;
 	ctx->glen = ctx->gsx * ctx->gsy;
 	ctx->grid = calloc(sizeof(gdl_list_t), ctx->glen);
 }
@@ -120,13 +128,13 @@ RND_INLINE void ptcloud_pline_create_points(pcb_ptcloud_ctx_t *ctx, rnd_pline_t 
 		vx = vx/len * step;
 		vy = vy/len * step;
 
-		pt_create(ctx, vn->point[0], vn->point[1], 10, 1);
+		pt_create(ctx, vn->point[0], vn->point[1], WEIGHT_CONTOUR, 1);
 		x = vn->point[0];
 		y = vn->point[1];
 		for(l = step; l < len; l += step) {
 			x += vx;
 			y += vy;
-			pt_create(ctx, rnd_round(x), rnd_round(y), 10, 1);
+			pt_create(ctx, rnd_round(x), rnd_round(y), WEIGHT_CONTOUR, 1);
 		}
 	} while((vn = vn->next) != pl->head);
 }
@@ -172,15 +180,105 @@ static void ptcloud_ray_create_points(pcb_ptcloud_ctx_t *ctx)
 
 		TODO("verify there's no horizontal line overlapping");
 		for(x = x1 + ctx->target_dist; x <= x2 - ctx->target_dist; x += ctx->target_dist)
-			pt_create(ctx, x, ctx->ray_y, 100, 0);
+			pt_create(ctx, x, ctx->ray_y, WEIGHT_INTERNAL, 0);
 	}
 }
+
+RND_INLINE void ptcloud_anneal_compute_pt(pcb_ptcloud_ctx_t *ctx, long gidx, pcb_ptcloud_pt_t *pt0)
+{
+	pcb_ptcloud_pt_t *pt;
+
+	for(pt = gdl_first(&(ctx->grid[gidx])); pt != NULL; pt = pt->all.next) {
+		rnd_coord_t dx, dy;
+		double dx2, dy2, d2, err, px, py;
+
+		if (pt == pt0) continue;
+
+
+		/* compute distance square and bail out if at any point they are already too far */
+		dx = pt->x - pt0->x;
+		if ((dx > ctx->closed) || (dx < -ctx->closed)) continue;
+		dy = pt->y - pt0->y;
+		if ((dy > ctx->closed) || (dy < -ctx->closed)) continue;
+		dx2 = (double)dx * (double)dx;
+		dy2 = (double)dy * (double)dy;
+		d2 = fabs(dx2 + dy2);
+
+/*rnd_trace("chk %.06mm %.06mm d2=%f > %f\n", pt->x, pt->y, d2, ctx->closed2);*/
+
+		if (d2 > ctx->closed2) continue;
+
+		/* compute push vector */
+		px = dx2 / d2 * pt->weight;
+		py = dy2 / d2 * pt->weight;
+		if (dx > 0) px = -px;
+		if (dy > 0) py = -py;
+
+		pt0->dx += px;
+		pt0->dy += py;
+
+		if (TRACE_ANNEAL)
+			rnd_trace("  (%.06mm %.06mm) pushes %.06mm %.06mm -> %.06mm %.06mm\n", pt->x, pt->y, (rnd_coord_t)px, (rnd_coord_t)py, pt0->dx, pt0->dy);
+	}
+}
+
+
+RND_INLINE void ptcloud_anneal_compute(pcb_ptcloud_ctx_t *ctx)
+{
+	pcb_ptcloud_pt_t *pt;
+
+	for(pt = gdl_first(&ctx->points); pt != NULL; pt = pt->all.next) {
+		long gidx;
+
+		if (pt->fixed)
+			continue;
+
+		if (TRACE_ANNEAL)
+			rnd_trace("ANN: %.06mm %.06mm\n", pt->x, pt->y);
+
+		pt->dx = pt->dy = 0;
+		gidx = pt2gidx(ctx, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx-1, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx+1, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx-ctx->gsx, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx+ctx->gsx, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx-ctx->gsx-1, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx+ctx->gsx-1, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx-ctx->gsx+1, pt);
+		ptcloud_anneal_compute_pt(ctx, gidx+ctx->gsx+1, pt);
+/*return 0;*/
+	}
+}
+
+RND_INLINE double ptcloud_anneal_execute(pcb_ptcloud_ctx_t *ctx)
+{
+	pcb_ptcloud_pt_t *pt;
+	double err = 0;
+
+	for(pt = gdl_first(&ctx->points); pt != NULL; pt = pt->all.next) {
+
+		if (pt->fixed || ((pt->dx == 0) && (pt->dy == 0)))
+			continue;
+
+		err += fabs(pt->dx) + fabs(pt->dy);
+		pt_move(ctx, pt);
+	}
+	return err;
+}
+
 
 void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
 {
 	rnd_coord_t y, half = ctx->target_dist/2;
+	double err, min_err;
+	long n;
 
 	grid_alloc(ctx);
+	ctx->closed = ceil(PROXIMITY * ctx->target_dist);
+	ctx->closed2 = (double)ctx->closed * (double)ctx->closed;
+	ctx->target2 = (double)ctx->target_dist * (double)ctx->target_dist;
+	min_err = (double)ctx->target_dist / 20.0; /* 5% */
 
 	ptcloud_contour_create_points(ctx);
 
@@ -205,7 +303,22 @@ rnd_trace(" y: %06mm hits: %d\n", y, ctx->edges.used);
 		ptcloud_ray_create_points(ctx);
 	}
 
-	ptcloud_debug_draw(ctx, "PTcloud.svg");
+
+	for(n = 0; n < 1000; n++) {
+		char fn[128];
+		
+		ptcloud_anneal_compute(ctx);
+
+		if ((n % 10) == 0) {
+			sprintf(fn, "PTcloud%04ld.svg", n);
+			ptcloud_debug_draw(ctx, fn);
+		}
+
+		err = ptcloud_anneal_execute(ctx);
+		rnd_trace("[%ld] err=%f\n", n, err);
+	}
+	
+
 
 	vtc0_uninit(&ctx->edges);
 }

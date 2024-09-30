@@ -37,9 +37,10 @@
 typedef struct pcb_ptcloud_pt_s {
 	rnd_coord_t x, y;     /* current coord */
 	rnd_coord_t dx, dy;   /* temporary: push vector in this round */
-	int weight;           /* 1 or more; the higher the value the farther this point is trying to push all other points */
+	int weight;           /* 1 or more; the higher the value the more this point pushes others */
 	unsigned fixed:1;     /* do not move */
 	gdl_elem_t link;      /* in a grid cell */
+	gdl_elem_t all;       /* in a ->points */
 } pcb_ptcloud_pt_t;
 
 typedef struct pcb_ptcloud_ctx_s {
@@ -52,6 +53,12 @@ typedef struct pcb_ptcloud_ctx_s {
 	long gsx, gsy;            /* grid size in number of elements in each dir */
 	long glen;                /* cache: gsx*gsy */
 	gdl_list_t *grid;         /* each element of this array is a grid cell with a list of pcb_ptcloud_pt_t points in it */
+
+	rnd_coord_t closed;       /* distance for 2 points being close enough for computing gravity */
+	double closed2;           /* square of ->closed */
+	double target2;           /* square of ->target_dist */
+	gdl_list_t points;        /* flat list of all points for easy iteration */
+
 
 	/* horizontal rays */
 	rnd_coord_t ray_y;
