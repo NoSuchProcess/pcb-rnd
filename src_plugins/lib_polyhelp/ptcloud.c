@@ -101,6 +101,43 @@ RND_INLINE rnd_coord_t edge_x_for_y(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_
 	return rnd_round((double)lx1 + (double)(y - ly1) * dx);
 }
 
+RND_INLINE void ptcloud_pline_create_points(pcb_ptcloud_ctx_t *ctx, rnd_pline_t *pl)
+{
+	rnd_vnode_t *vn = pl->head;
+
+	do {
+		double vx, vy, len, x, y, l, n, step;
+
+		vx = vn->next->point[0] - vn->point[0];
+		vy = vn->next->point[1] - vn->point[1];
+		len = sqrt(vx*vx + vy*vy);
+		if (len == 0)
+			continue;
+
+		n = ceil(len / ctx->target_dist);
+		step = len / n;
+
+		vx = vx/len * step;
+		vy = vy/len * step;
+
+		pt_create(ctx, vn->point[0], vn->point[1], 10, 1);
+		x = vn->point[0];
+		y = vn->point[1];
+		for(l = step; l < len; l += step) {
+			x += vx;
+			y += vy;
+			pt_create(ctx, rnd_round(x), rnd_round(y), 10, 1);
+		}
+	} while((vn = vn->next) != pl->head);
+}
+
+RND_INLINE void ptcloud_contour_create_points(pcb_ptcloud_ctx_t *ctx)
+{
+	rnd_pline_t *pl;
+	for(pl = ctx->pl; pl != NULL; pl = pl->next)
+		ptcloud_pline_create_points(ctx, pl);
+}
+
 static rnd_rtree_dir_t ptcloud_ray_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_ptcloud_ctx_t *ctx = udata;
@@ -144,6 +181,8 @@ void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
 	rnd_coord_t y, half = ctx->target_dist/2;
 
 	grid_alloc(ctx);
+
+	ptcloud_contour_create_points(ctx);
 
 	/* horizontal rays */
 	for(y = ctx->pl->ymin + ctx->target_dist; y <= ctx->pl->ymax - ctx->target_dist; y += ctx->target_dist) {
