@@ -29,6 +29,7 @@
 #include "board.h"
 #include "data.h"
 #include "obj_pstk_inlines.h"
+#include "obj_pstk_shape.h"
 #include <librnd/core/error.h>
 #include "undo.h"
 
@@ -76,6 +77,31 @@ static void chk_pstk(const char *whose, pcb_pstk_t *ps)
 {
 	if (pcb_pstk_get_proto(ps) == NULL)
 		rnd_message(RND_MSG_ERROR, CHK "%s padstack #%ld has invalid prototype\n", whose, ps->ID);
+}
+
+static void chk_pstk_protos(const char *whose, pcb_vtpadstack_proto_t *ps_protos)
+{
+	long id;
+	for(id = 0; id < ps_protos->used; id++) {
+		pcb_pstk_proto_t *proto = &ps_protos->array[id];
+		pcb_pstk_tshape_t *ts;
+
+		if (!proto->in_use)
+			continue;
+
+		if (proto->tr.used < 1) {
+			rnd_message(RND_MSG_ERROR, CHK "%s pstk proto #%ld has no transformed shape [0]\n", whose, id);
+			continue;
+		}
+
+		ts = &proto->tr.array[0];
+		if ((ts->len < 1) && (proto->hdia == 0)) {
+			rnd_message(RND_MSG_ERROR, CHK "%s pstk proto #%ld has no shapes and no hole\n", whose, id);
+			continue;
+		}
+
+		
+	}
 }
 
 
@@ -162,6 +188,8 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 	if (pcb_subc_get_side(subc, &dummi) != 0)
 		rnd_message(RND_MSG_ERROR, CHK "%s subc #%ld: can not determine subc side\n", whose, subc->ID);
 
+	chk_pstk_protos(subc->refdes, &subc->data->ps_protos);
+
 	/* check term chaches */
 	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 		chk_term("padstack", (pcb_any_obj_t *)ps);
@@ -205,6 +233,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	else if (data->parent.any != parent)
 		rnd_message(RND_MSG_ERROR, CHK "%s data: parent broken (%p != %p)\n", whose, data->parent, parent);
 
+	chk_pstk_protos("global", &data->ps_protos);
 
 	for(n = 0; n < data->LayerN; n++) {
 		pcb_line_t *lin;
