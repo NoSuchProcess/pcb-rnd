@@ -73,10 +73,10 @@
 
 static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt, void *parent, int name_chk);
 
-static void chk_pstk(const char *whose, pcb_pstk_t *ps)
+static void chk_pstk(const char *whose1, const char *whose2, pcb_pstk_t *ps)
 {
 	if (pcb_pstk_get_proto(ps) == NULL)
-		rnd_message(RND_MSG_ERROR, CHK "%s padstack #%ld has invalid prototype\n", whose, ps->ID);
+		rnd_message(RND_MSG_ERROR, CHK "%s %s padstack #%ld has invalid prototype\n", whose1, whose2, ps->ID);
 }
 
 static void chk_pstk_protos(const char *whose1, const char *whose2, pcb_vtpadstack_proto_t *ps_protos)
@@ -223,7 +223,7 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 	/* check term chaches */
 	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 		chk_term("padstack", (pcb_any_obj_t *)ps);
-		chk_pstk(subc->refdes, ps);
+		chk_pstk(whose, subc->refdes, ps);
 	}
 
 	for(n = 0; n < subc->data->LayerN; n++) {
@@ -343,7 +343,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 			check_type(ps, PCB_OBJ_PSTK);
 			chk_attr("padstack", ps);
 			chk_term("padstack", (pcb_any_obj_t *)ps);
-			chk_pstk("board", ps);
+			chk_pstk("whose", "global", ps);
 		}
 
 		for(subc = pcb_subclist_first(&data->subc); subc != NULL; subc = pcb_subclist_next(subc)) {
