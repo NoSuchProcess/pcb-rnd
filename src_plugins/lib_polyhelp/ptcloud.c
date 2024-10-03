@@ -188,7 +188,7 @@ RND_INLINE void ptcloud_anneal_compute_pt(pcb_ptcloud_ctx_t *ctx, long gidx, pcb
 {
 	pcb_ptcloud_pt_t *pt;
 
-	for(pt = gdl_first(&(ctx->grid[gidx])); pt != NULL; pt = pt->all.next) {
+	for(pt = gdl_first(&ctx->points); pt != NULL; pt = pt->all.next) {
 		rnd_coord_t dx, dy;
 		double dx2, dy2, d2, err, px, py;
 
