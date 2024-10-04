@@ -2,15 +2,6 @@
 
 Milestone C:
 
-- export for pcb fabbing [3]
-	- difference between gerber and excellon
-	- confusion about gerber file names
-	- don't use the direct gerber export
-	- cam export to jlc
-		- explain gerber + excellon
-		- explain file naming
-	- export XY and BoM (only mention)
-
 - grid, snap, wireframe [3]
 	TODO
 
