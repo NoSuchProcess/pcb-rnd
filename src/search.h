@@ -186,6 +186,7 @@ rnd_bool pcb_is_point_in_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, 
 rnd_bool pcb_is_point_in_box(rnd_coord_t X, rnd_coord_t Y, rnd_box_t *box, rnd_coord_t Radius);
 
 /* Return the distance^2 between a line-center and a point */
+double pcb_geo_point_line_dist2(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2);
 double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line);
 
 /* Return the first line object that has its centerline crossing the point;

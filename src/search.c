@@ -719,12 +719,12 @@ rnd_bool pcb_is_point_on_line_end(rnd_coord_t X, rnd_coord_t Y, pcb_rat_t *Line)
  *   distance^2 = (X-QX)^2 + (Y-QY)^2
  */
 
-double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line)
+RND_INLINE double pcb_point_line_dist2_abstract(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2)
 {
-	const double abx = Line->Point2.X - Line->Point1.X;
-	const double aby = Line->Point2.Y - Line->Point1.Y;
-	const double apx = X - Line->Point1.X;
-	const double apy = Y - Line->Point1.Y;
+	const double abx = lx2 - lx1;
+	const double aby = ly2 - ly1;
+	const double apx = px - lx1;
+	const double apy = py - ly1;
 	double qx,qy,dx,dy;
 
 	/* Calculate t, the normalised position along the line of the closest point 
@@ -738,15 +738,26 @@ double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line)
 	if(t > 1.0)		t = 1.0;
 
 	/* Calculate the point Q on the line that is closest to (X,Y) */
-	qx = Line->Point1.X + (t * abx);
-	qy = Line->Point1.Y + (t * aby);
+	qx = lx1 + (t * abx);
+	qy = ly1 + (t * aby);
 
 	/* Return the distance from Q to (X,Y), squared */
-	dx = X - qx;
-	dy = Y - qy;
+	dx = px - qx;
+	dy = py - qy;
 
 	return (dx * dx) + (dy * dy);
 }
+
+double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line)
+{
+	return pcb_point_line_dist2_abstract(X, Y, Line->Point1.X, Line->Point1.Y, Line->Point2.X, Line->Point2.Y);
+}
+
+double pcb_geo_point_line_dist2(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2)
+{
+	return pcb_point_line_dist2_abstract(px, py, lx1, ly1, lx2, ly2);
+}
+
 
 rnd_bool pcb_is_point_on_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_line_t *Line)
 {
