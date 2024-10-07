@@ -185,8 +185,14 @@ rnd_bool pcb_is_gfx_in_rectangle(const rnd_box_t *b, const pcb_gfx_t *gfx);
 rnd_bool pcb_is_point_in_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_any_line_t *Pad);
 rnd_bool pcb_is_point_in_box(rnd_coord_t X, rnd_coord_t Y, rnd_box_t *box, rnd_coord_t Radius);
 
-/* Return the distance^2 between a line-center and a point */
-double pcb_geo_point_line_dist2(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2);
+/* Return the distance^2 between a (finite) line-center and a point; of
+   offs_out is set to the offset of the point projected onto the infinite line,
+   0.0 being lx1;ly1, 1.0 being lx2;ly2. prj*_out os the projected points' x;y
+   coord. Any of the *_out arguments may be NULL. */
+double pcb_geo_point_line_dist2(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, double *offs_out, double *prjx_out, double *prjy_out);
+
+
+/* Return the distance^2 between a (finite) line-center and a point */
 double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line);
 
 /* Return the first line object that has its centerline crossing the point;

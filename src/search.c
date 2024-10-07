@@ -719,7 +719,7 @@ rnd_bool pcb_is_point_on_line_end(rnd_coord_t X, rnd_coord_t Y, pcb_rat_t *Line)
  *   distance^2 = (X-QX)^2 + (Y-QY)^2
  */
 
-RND_INLINE double pcb_point_line_dist2_abstract(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2)
+RND_INLINE double pcb_point_line_dist2_abstract(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, double *offs_out, double *prjx_out, double *prjy_out)
 {
 	const double abx = lx2 - lx1;
 	const double aby = ly2 - ly1;
@@ -732,6 +732,10 @@ RND_INLINE double pcb_point_line_dist2_abstract(rnd_coord_t px, rnd_coord_t py, 
 	 * line is within the bounds of the end points. 
 	 */
 	double t = ( (apx * abx) + (apy * aby) ) / ( (abx * abx) + (aby * aby) );
+
+	if (offs_out != NULL) *offs_out = t;
+	if (prjx_out != NULL) *prjx_out = lx1 + (t * abx);
+	if (prjy_out != NULL) *prjy_out = ly1 + (t * aby);
 
 	/* Clamp 't' to the line bounds */
 	if(t < 0.0)		t = 0.0;
@@ -750,12 +754,12 @@ RND_INLINE double pcb_point_line_dist2_abstract(rnd_coord_t px, rnd_coord_t py, 
 
 double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line)
 {
-	return pcb_point_line_dist2_abstract(X, Y, Line->Point1.X, Line->Point1.Y, Line->Point2.X, Line->Point2.Y);
+	return pcb_point_line_dist2_abstract(X, Y, Line->Point1.X, Line->Point1.Y, Line->Point2.X, Line->Point2.Y, NULL, NULL, NULL);
 }
 
-double pcb_geo_point_line_dist2(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2)
+double pcb_geo_point_line_dist2(rnd_coord_t px, rnd_coord_t py, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, double *offs_out, double *prjx_out, double *prjy_out)
 {
-	return pcb_point_line_dist2_abstract(px, py, lx1, ly1, lx2, ly2);
+	return pcb_point_line_dist2_abstract(px, py, lx1, ly1, lx2, ly2, offs_out, prjx_out, prjy_out);
 }
 
 
