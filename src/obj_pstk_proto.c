@@ -63,6 +63,8 @@ void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 	memset(dst, 0, sizeof(pcb_pstk_proto_t));
 }
 
+#include "obj_pstk_proto_cr.c"
+
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 {
 	static pcb_pstk_t dummy_ps = {0};
@@ -91,13 +93,19 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 		for(n = 0; n < ts->len; n++) {
 			if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && !(ts->shape[n].layer_mask & PCB_LYT_INTERN))
 				coppers++;
+
+			ts->shape[n].hcrescent = ts->shape[n].hfullcover = 0;
 			if (hole == &ts->shape[n])
 				ts->shape[n].hconn = 1;
 			else if (hole != NULL) {
-				if (ts->shape[n].shape == PCB_PSSH_HSHADOW)
+				if (ts->shape[n].shape == PCB_PSSH_HSHADOW) {
 					ts->shape[n].hconn = 1;
-				else
+					ts->shape[n].hfullcover = 1;
+				}
+				else {
 					ts->shape[n].hconn = pcb_pstk_shape_intersect(&dummy_ps, &ts->shape[n], &dummy_ps, hole);
+					pcb_pstk_shape_crescent_init(&ts->shape[n], hole, dst, &dummy_ps);
+				}
 				if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && !ts->shape[n].hconn)
 					dst->all_copper_connd = 0;
 			}

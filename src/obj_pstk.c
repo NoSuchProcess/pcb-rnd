@@ -1215,7 +1215,7 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, rnd_coord_t *err_minring, rnd_c
 		}
 	}
 
-TODO("slot: check if slot breaks other shapes")
+TODO("slot: check if slot breaks other shapes; rather rewrite this to use obj_pstk_proto_cr.c: once with original sizes, once with the slot/hole bloated up; if return value differs, we have a problem")
 
 	if ((mindrill > 0) && (proto->hdia > 0) && (proto->hdia < mindrill))
 		*err_minhole = proto->hdia;

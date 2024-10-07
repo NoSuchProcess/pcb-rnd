@@ -65,6 +65,9 @@ typedef struct pcb_pstk_shape_s {
 	} shape;
 	rnd_coord_t clearance;         /* per layer clearance _DOUBLED_: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A); for historial reasons this field contains the doubled value of the clearance gap */
 	unsigned hconn:1;              /* shape is connected to hole/slot; this is abstract, it ignores plating and bbvia aspects; valid only in the non-transformed proto, tr[0] */
+	unsigned hcrescent:1;          /* the hole/slot contour cuts into the outer contour of this shape (abstract) */
+	unsigned hfullcover:1;         /* the hole/slot fully covers the shape (the shape is "drilled away") */
+	rnd_polyarea_t *pa_crescent;   /* when ->hcrescent == 1, this represents the shape remaining after removig the hole/slot; NULL for non-crescent cases */
 } pcb_pstk_shape_t;
 
 /* transformed prototype */

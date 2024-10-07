@@ -3451,7 +3451,7 @@ obj_pstk_act.o: obj_pstk_act.c ../config.h obj_pstk.h obj_common.h flag.h \
  draw.h move.h
 obj_pstk_list.o: obj_pstk_list.c obj_pstk_list.h obj_pstk.h obj_common.h \
  flag.h globalconst.h attrib.h global_typedefs.h data_parent.h
-obj_pstk_proto.o: obj_pstk_proto.c ../config.h board.h vtroutestyle.h \
+obj_pstk_proto.o: obj_pstk_proto.c obj_pstk_proto_cr.c ../config.h board.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
