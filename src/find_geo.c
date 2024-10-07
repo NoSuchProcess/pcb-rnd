@@ -523,41 +523,18 @@ static void form_slanted_rectangle(rnd_point_t p[4], pcb_line_t *l)
  *  Also note that the denominators of eqn 1 & 2 are identical.
  *
  */
-rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t *Line2)
+RND_INLINE rnd_bool pcb_isc_line_line_(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2)
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line1)) {	/* pretty reckless recursion */
-		rnd_point_t p[4];
-		form_slanted_rectangle(p, Line1);
-		return pcb_is_line_in_quadrangle(p, Line2);
-	}
-	/* here come only round Line1 because pcb_is_line_in_quadrangle()
-	   calls pcb_isc_line_line() with first argument rounded */
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line2)) {
-		rnd_point_t p[4];
-		form_slanted_rectangle(p, Line2);
-		return pcb_is_line_in_quadrangle(p, Line1);
-	}
-	/* now all lines are round */
-
-	/* Check endpoints: this provides a quick exit, catches
-	 *  cases where the "real" lines don't intersect but the
-	 *  thick lines touch, and ensures that the dx/dy business
-	 *  below does not cause a divide-by-zero. */
-	if (pcb_is_point_in_line(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line1)
-			|| pcb_is_point_in_line(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line1)
-			|| pcb_is_point_in_line(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line2)
-			|| pcb_is_point_in_line(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line2))
-		return rnd_true;
 
 	/* setup some constants */
-	line1_dx = Line1->Point2.X - Line1->Point1.X;
-	line1_dy = Line1->Point2.Y - Line1->Point1.Y;
-	line2_dx = Line2->Point2.X - Line2->Point1.X;
-	line2_dy = Line2->Point2.Y - Line2->Point1.Y;
-	point1_dx = Line1->Point1.X - Line2->Point1.X;
-	point1_dy = Line1->Point1.Y - Line2->Point1.Y;
+	line1_dx = ax2 - ax1;
+	line1_dy = ay2 - ay1;
+	line2_dx = bx2 - bx1;
+	line2_dy = by2 - by1;
+	point1_dx = ax1 - bx1;
+	point1_dy = ay1 - by1;
 
 	/* If either line is a point, we have failed already, since the
 	 *   endpoint check above will have caught an "intersection". */
@@ -589,6 +566,42 @@ rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t 
 	/* intersection is at least on CD */
 	/* [removed this case since it always returns rnd_false --asp] */
 	return rnd_false;
+}
+
+rnd_bool pcb_geo_line_line(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2)
+{
+	return pcb_isc_line_line_(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2);
+}
+
+rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t *Line2)
+{
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line1)) {	/* pretty reckless recursion */
+		rnd_point_t p[4];
+		form_slanted_rectangle(p, Line1);
+		return pcb_is_line_in_quadrangle(p, Line2);
+	}
+	/* here come only round Line1 because pcb_is_line_in_quadrangle()
+	   calls pcb_isc_line_line() with first argument rounded */
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line2)) {
+		rnd_point_t p[4];
+		form_slanted_rectangle(p, Line2);
+		return pcb_is_line_in_quadrangle(p, Line1);
+	}
+	/* now all lines are round */
+
+	/* Check endpoints: this provides a quick exit, catches
+	 *  cases where the "real" lines don't intersect but the
+	 *  thick lines touch, and ensures that the dx/dy business
+	 *  below does not cause a divide-by-zero. */
+	if (pcb_is_point_in_line(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line1)
+			|| pcb_is_point_in_line(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line1)
+			|| pcb_is_point_in_line(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line2)
+			|| pcb_is_point_in_line(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line2))
+		return rnd_true;
+
+	return pcb_isc_line_line_(
+		Line1->Point1.X, Line1->Point1.Y, Line1->Point2.X, Line1->Point2.Y,
+		Line2->Point1.X, Line2->Point1.Y, Line2->Point2.X, Line2->Point2.Y);
 }
 
 /*---------------------------------------------------

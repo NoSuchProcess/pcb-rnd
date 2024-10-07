@@ -126,6 +126,10 @@ rnd_bool_t pcb_isc_pstk_line_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line
 rnd_polyarea_t *pcb_pstk_shape2polyarea(pcb_pstk_t *ps, pcb_pstk_shape_t *shape);
 #endif
 
+/* low level thin line-line intersection between a and b */
+rnd_bool pcb_geo_line_line(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2);
+
+
 /* Return whether obj is marked as already visited by the current search context */
 #define PCB_FIND_IS_MARKED(ctx, obj) PCB_DFLAG_TEST(&((obj)->Flags), (ctx)->mark)
 
