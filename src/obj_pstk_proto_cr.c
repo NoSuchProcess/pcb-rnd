@@ -634,12 +634,16 @@ RND_INLINE cres_st_t cress_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 
 RND_INLINE cres_st_t cress_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	
+	assert(shape->shape == PCB_PSSH_CIRC);
+	assert(hole->shape == PCB_PSSH_POLY);
+
 }
 
 RND_INLINE cres_st_t cress_st_poly_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	
+	assert(shape->shape == PCB_PSSH_POLY);
+	assert(hole->shape == PCB_PSSH_POLY);
+
 }
 
 /* assume ->hfullcover and ->hcrescnet are set to 0 before the call */
