@@ -568,7 +568,68 @@ RND_INLINE cres_st_t cress_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 
 RND_INLINE cres_st_t cress_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	
+	rnd_vnode_t *vn;
+	double sr = shape->data.line.thickness / 2.0;
+	double sx1 = shape->data.line.x1, sy1 = shape->data.line.y1;
+	double sx2 = shape->data.line.x2, sy2 = shape->data.line.y2;
+	double snx, sny, sax1, say1, sax2, say2, sbx1, sby1, sbx2, sby2;
+	rnd_vector_t v;
+	rnd_point_t qs[4];
+
+	assert(shape->shape == PCB_PSSH_LINE);
+	assert(hole->shape == PCB_PSSH_POLY);
+
+	if (hole->data.poly.pa == NULL)
+		return CRES_ST_DISJOINT;
+
+	/* generate side coords: sa and sb */
+	cress_geo_line_normal(shape, &snx, &sny);
+	sax1 = sx1 + sr * snx; say1 = sy1 + sr * sny;
+	sax2 = sx2 + sr * snx; say2 = sy2 + sr * sny;
+	sbx1 = sx1 - sr * snx; sby1 = sy1 - sr * sny;
+	sbx2 = sx2 - sr * snx; sby2 = sy2 - sr * sny;
+
+	/* first check for crossing; simplepoly: enough to check a single island */
+	vn = hole->data.poly.pa->contours->head;
+	do {
+		/* check for side crossings */
+		if (pcb_geo_line_line(sax1, say1, sax2, say2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			return CRES_ST_CROSSING;
+		if (pcb_geo_line_line(sbx1, sby1, sbx2, sby2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			return CRES_ST_CROSSING;
+
+		/* check end cap */
+		if (shape->data.line.square) {
+			/* a spike of the poly can hit the flat end cap without touching any sides... */
+			if (pcb_geo_line_line(sax1, say1, sbx1, sby1, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+				return CRES_ST_CROSSING;
+			if (pcb_geo_line_line(sax2, say2, sbx2, sby2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+				return CRES_ST_CROSSING;
+		}
+		else {
+			/* round cap - check full circles */
+			if (cress_geo_circ_crossing_line(sx1, sy1, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+				return CRES_ST_CROSSING;
+			if (cress_geo_circ_crossing_line(sx2, sy2, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+				return CRES_ST_CROSSING;
+		}
+	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
+
+	/* there's no crossing; if any of the line is in the poly, the whole line is in the poly */
+	v[0] = shape->data.line.x1; v[1] = shape->data.line.y1;
+	if (rnd_poly_contour_inside(hole->data.poly.pa->contours, v))
+		return CRES_ST_SHAPE_IN_HOLE;
+
+	/* there's no crossing; if any of the poly is in the line, the whole poly is in the line */
+	qs[0].X = rnd_round(sax1); qs[0].Y = rnd_round(say1);
+	qs[1].X = rnd_round(sax2); qs[1].Y = rnd_round(say2);
+	qs[2].X = rnd_round(sbx2); qs[2].Y = rnd_round(sby2);
+	qs[3].X = rnd_round(sbx1); qs[3].Y = rnd_round(sby1);
+
+	if (cress_geo_pt_in_line(vn->point[0], vn->point[1], shape, sr*sr, qs))
+		return CRES_ST_HOLE_IN_SHAPE;
+
+	return CRES_ST_DISJOINT;
 }
 
 RND_INLINE cres_st_t cress_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
