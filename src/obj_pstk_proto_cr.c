@@ -634,8 +634,30 @@ RND_INLINE cres_st_t cress_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 
 RND_INLINE cres_st_t cress_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
+	double sr = shape->data.circ.dia/2.0;
+	rnd_vnode_t *vn;
+	rnd_vector_t v;
+
 	assert(shape->shape == PCB_PSSH_CIRC);
 	assert(hole->shape == PCB_PSSH_POLY);
+
+	/* first check for crossing; simplepoly: enough to check a single island */
+	vn = hole->data.poly.pa->contours->head;
+	do {
+		if (cress_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			return CRES_ST_CROSSING;
+	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
+
+	/* there's no crossing; circ center is in the poly, the whole circle is in the poly */
+	v[0] = shape->data.circ.x; v[1] = shape->data.circ.y;
+	if (rnd_poly_contour_inside(hole->data.poly.pa->contours, v))
+		return CRES_ST_SHAPE_IN_HOLE;
+
+	/* there's no crossing; if any of the poly is in the line, the whole poly is in the line */
+	if (cress_geo_pt_insied_circle2(vn->point[0], vn->point[1], shape->data.circ.x, shape->data.circ.y, sr*sr))
+		return CRES_ST_HOLE_IN_SHAPE;
+
+	return CRES_ST_DISJOINT;
 
 }
 
