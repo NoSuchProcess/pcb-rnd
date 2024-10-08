@@ -849,7 +849,7 @@ rnd_bool pcb_is_line_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2
 }
 
 /*checks if a point (of null radius) is in a slanted rectangle */
-static int IsPointInQuadrangle(rnd_point_t p[4], rnd_point_t *l)
+RND_INLINE int IsPointInQuadrangle(rnd_point_t p[4], rnd_point_t *l)
 {
 	rnd_coord_t dx, dy, x, y;
 	double prod0, prod1;
@@ -874,6 +874,12 @@ static int IsPointInQuadrangle(rnd_point_t p[4], rnd_point_t *l)
 	}
 	return rnd_false;
 }
+
+int pcb_geo_pt_in_quadrangle(rnd_point_t p[4], rnd_point_t *l)
+{
+	return IsPointInQuadrangle(p, l);
+}
+
 
 /* ---------------------------------------------------------------------------
  * checks if a line crosses a quadrangle or is within the quadrangle: almost

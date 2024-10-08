@@ -185,6 +185,9 @@ rnd_bool pcb_is_gfx_in_rectangle(const rnd_box_t *b, const pcb_gfx_t *gfx);
 rnd_bool pcb_is_point_in_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_any_line_t *Pad);
 rnd_bool pcb_is_point_in_box(rnd_coord_t X, rnd_coord_t Y, rnd_box_t *box, rnd_coord_t Radius);
 
+/* returns whether l is inside the quadrangle p */
+int pcb_geo_pt_in_quadrangle(rnd_point_t p[4], rnd_point_t *l);
+
 /* Return the distance^2 between a (finite) line-center and a point; of
    offs_out is set to the offset of the point projected onto the infinite line,
    0.0 being lx1;ly1, 1.0 being lx2;ly2. prj*_out os the projected points' x;y
