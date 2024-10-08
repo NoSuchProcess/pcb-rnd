@@ -51,7 +51,7 @@ do { \
 
 
 /*** low level "geo vs. geo to state" converters ***/
-RND_INLINE cres_st_t cress_geo_circ_circ(rnd_coord_t scx, rnd_coord_t scy, double sr, rnd_coord_t hcx, rnd_coord_t hcy, double hr)
+RND_INLINE cres_st_t cres_geo_circ_circ(rnd_coord_t scx, rnd_coord_t scy, double sr, rnd_coord_t hcx, rnd_coord_t hcy, double hr)
 {
 	if ((scx == hcx) && (scy == hcy)) {
 		/* optimisation for a common case when centers match */
@@ -83,14 +83,14 @@ RND_INLINE cres_st_t cress_geo_circ_circ(rnd_coord_t scx, rnd_coord_t scy, doubl
 		return CRES_ST_CROSSING;
 	}
 	else { /* (hr < sr): swap them so "hole" is the bigger */
-		cres_st_t st = cress_geo_circ_circ(hcx, hcy, hr, scx, scy, sr);
+		cres_st_t st = cres_geo_circ_circ(hcx, hcy, hr, scx, scy, sr);
 		CRESS_INVERT_ST(st);
 		return st;
 	}
 }
 
 /* Compute the normal vector of a line shape; return line length */
-RND_INLINE double cress_geo_line_normal(pcb_pstk_shape_t *line, double *nx, double *ny)
+RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, double *ny)
 {
 	double len, dx, dy, dx2, dy2;
 
@@ -118,7 +118,7 @@ RND_INLINE double cress_geo_line_normal(pcb_pstk_shape_t *line, double *nx, doub
    or 2 for x2;y2. If nxp;nyp are non-NULL they are the normal of the line;
    input value 0;0 indicates it is not yet calculated. Result is written to
    ex1;ey1 and ex2;ey2 */
-RND_INLINE void cress_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, double *ex1, double *ey1, double *ex2, double *ey2, double *nxp, double *nyp)
+RND_INLINE void cres_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, double *ex1, double *ey1, double *ex2, double *ey2, double *nxp, double *nyp)
 {
 	double nx, ny, ex, ey, r;
 
@@ -127,7 +127,7 @@ RND_INLINE void cress_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, doubl
 
 	/* ensure line normal vectors */
 	if ((nxp == NULL) || (nyp == NULL) || ((*nxp == 0) && (*nyp == 0))) {
-		cress_geo_line_normal(line, &nx, &ny);
+		cres_geo_line_normal(line, &nx, &ny);
 		if (nxp != NULL) *nxp = nx;
 		if (nyp != NULL) *nyp = ny;
 	}
@@ -157,20 +157,20 @@ RND_INLINE void cress_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, doubl
 
 /* Returns whether px;py is inside a circle (not on perimeter and not outside);
    cr2 is circle radius squared */
-RND_INLINE int cress_geo_pt_insied_circle2(double px, double py, double cx, double cy, double cr2)
+RND_INLINE int cres_geo_pt_insied_circle2(double px, double py, double cx, double cy, double cr2)
 {
 	double dx = cx - px, dy = cy - py;
 	return (dx*dx + dy*dy) < cr2;
 }
 
 /* Returns whether a circle is crossing a line segment (contour cross but no touch) */
-RND_INLINE int cress_geo_circ_crossing_line(double cx, double cy, double cr, double lx1, double ly1, double lx2, double ly2)
+RND_INLINE int cres_geo_circ_crossing_line(double cx, double cy, double cr, double lx1, double ly1, double lx2, double ly2)
 {
 	double offs, cr2 = cr*cr, dist2;
 	int in1, in2;
 
-	in1 = cress_geo_pt_insied_circle2(lx1, ly1, cx, cy, cr2);
-	in2 = cress_geo_pt_insied_circle2(lx2, ly2, cx, cy, cr2);
+	in1 = cres_geo_pt_insied_circle2(lx1, ly1, cx, cy, cr2);
+	in2 = cres_geo_pt_insied_circle2(lx2, ly2, cx, cy, cr2);
 
 	if (in1 && in2) return 0; /* the whole line is inside */
 	if (in1 != in2) return 1; /* one endpoint in, another out */
@@ -185,7 +185,7 @@ RND_INLINE int cress_geo_circ_crossing_line(double cx, double cy, double cr, dou
 
 /* returns if line lx1;ly1 lx2;ly2 crosses the outer contour of either round
    end cap of ls (lsr is ls's radius, ls_quad is the quadrangle of ls body) */
-RND_INLINE int cress_geo_line_roundcap_crossing(double lx1, double ly1, double lx2, double ly2, pcb_pstk_shape_t *ls, double lsr, rnd_point_t ls_quad[4])
+RND_INLINE int cres_geo_line_roundcap_crossing(double lx1, double ly1, double lx2, double ly2, pcb_pstk_shape_t *ls, double lsr, rnd_point_t ls_quad[4])
 {
 	rnd_point_t pt;
 	int in1, in2;
@@ -209,16 +209,16 @@ RND_INLINE int cress_geo_line_roundcap_crossing(double lx1, double ly1, double l
 	   but that line would also need to cross the side of the line. Since
 	   this function is called in a special case only, when side-side intersections
 	   are already checked, we won't need to deal with that here */
-	if (cress_geo_circ_crossing_line(ls->data.line.x1, ls->data.line.y1, lsr, lx1, ly1, lx2, ly2))
+	if (cres_geo_circ_crossing_line(ls->data.line.x1, ls->data.line.y1, lsr, lx1, ly1, lx2, ly2))
 		return 1;
-	if (cress_geo_circ_crossing_line(ls->data.line.x2, ls->data.line.y2, lsr, lx1, ly1, lx2, ly2))
+	if (cres_geo_circ_crossing_line(ls->data.line.x2, ls->data.line.y2, lsr, lx1, ly1, lx2, ly2))
 		return 1;
 
 	return 0;
 }
 
 /* Returns if pt is inside a line shape; lsr2 is square(line radius) */
-RND_INLINE int cress_geo_pt_in_line(rnd_coord_t ptx, rnd_coord_t pty, pcb_pstk_shape_t *ls, double lsr2, rnd_point_t ls_quad[4])
+RND_INLINE int cres_geo_pt_in_line(rnd_coord_t ptx, rnd_coord_t pty, pcb_pstk_shape_t *ls, double lsr2, rnd_point_t ls_quad[4])
 {
 	rnd_point_t pt;
 
@@ -231,9 +231,9 @@ RND_INLINE int cress_geo_pt_in_line(rnd_coord_t ptx, rnd_coord_t pty, pcb_pstk_s
 
 	/* check round end caps */
 	if (!ls->data.line.square) {
-		if (cress_geo_pt_insied_circle2(ptx, pty, ls->data.line.x1, ls->data.line.y1, lsr2))
+		if (cres_geo_pt_insied_circle2(ptx, pty, ls->data.line.x1, ls->data.line.y1, lsr2))
 			return 1;
-		if (cress_geo_pt_insied_circle2(ptx, pty, ls->data.line.x2, ls->data.line.y2, lsr2))
+		if (cres_geo_pt_insied_circle2(ptx, pty, ls->data.line.x2, ls->data.line.y2, lsr2))
 			return 1;
 	}
 
@@ -246,13 +246,13 @@ RND_INLINE int cress_geo_pt_in_line(rnd_coord_t ptx, rnd_coord_t pty, pcb_pstk_s
    special case when the cap of a tiny line in a large line crosses the
    invisible section of the large line's cap; that happens only if the
    tiny line's cap center is within the body of the large line */
-RND_INLINE int cress_geo_roundcap_roundcap_crossing(pcb_pstk_shape_t *a, double ar, rnd_point_t qa[4], pcb_pstk_shape_t *b, double br, rnd_point_t qb[4])
+RND_INLINE int cres_geo_roundcap_roundcap_crossing(pcb_pstk_shape_t *a, double ar, rnd_point_t qa[4], pcb_pstk_shape_t *b, double br, rnd_point_t qb[4])
 {
 	rnd_point_t apt, bpt;
 
 	apt.X = a->data.line.x1; apt.Y = a->data.line.y1;
 	bpt.X = b->data.line.x1; bpt.Y = b->data.line.y1;
-	if (cress_geo_circ_circ(apt.X, apt.Y, ar, bpt.X, bpt.Y, br) == CRES_ST_CROSSING) {
+	if (cres_geo_circ_circ(apt.X, apt.Y, ar, bpt.X, bpt.Y, br) == CRES_ST_CROSSING) {
 		if (ar < br) {
 			if (!pcb_geo_pt_in_quadrangle(qa, &bpt))
 				return 1;
@@ -265,7 +265,7 @@ RND_INLINE int cress_geo_roundcap_roundcap_crossing(pcb_pstk_shape_t *a, double 
 
 	apt.X = a->data.line.x1; apt.Y = a->data.line.y1;
 	bpt.X = b->data.line.x2; bpt.Y = b->data.line.y2;
-	if (cress_geo_circ_circ(apt.X, apt.Y, ar, bpt.X, bpt.Y, br) == CRES_ST_CROSSING) {
+	if (cres_geo_circ_circ(apt.X, apt.Y, ar, bpt.X, bpt.Y, br) == CRES_ST_CROSSING) {
 		if (ar < br) {
 			if (!pcb_geo_pt_in_quadrangle(qa, &bpt))
 				return 1;
@@ -278,7 +278,7 @@ RND_INLINE int cress_geo_roundcap_roundcap_crossing(pcb_pstk_shape_t *a, double 
 
 	apt.X = a->data.line.x2; apt.Y = a->data.line.y2;
 	bpt.X = b->data.line.x1; bpt.Y = b->data.line.y1;
-	if (cress_geo_circ_circ(apt.X, apt.Y, ar, bpt.X, bpt.Y, br) == CRES_ST_CROSSING) {
+	if (cres_geo_circ_circ(apt.X, apt.Y, ar, bpt.X, bpt.Y, br) == CRES_ST_CROSSING) {
 		if (ar < br) {
 			if (!pcb_geo_pt_in_quadrangle(qa, &bpt))
 				return 1;
@@ -291,7 +291,7 @@ RND_INLINE int cress_geo_roundcap_roundcap_crossing(pcb_pstk_shape_t *a, double 
 
 	apt.X = a->data.line.x2; apt.Y = a->data.line.y2;
 	bpt.X = b->data.line.x2; bpt.Y = b->data.line.y2;
-	if (cress_geo_circ_circ(apt.X, apt.Y, ar, bpt.X, bpt.Y, br) == CRES_ST_CROSSING) {
+	if (cres_geo_circ_circ(apt.X, apt.Y, ar, bpt.X, bpt.Y, br) == CRES_ST_CROSSING) {
 		if (ar < br) {
 			if (!pcb_geo_pt_in_quadrangle(qa, &bpt))
 				return 1;
@@ -306,7 +306,7 @@ RND_INLINE int cress_geo_roundcap_roundcap_crossing(pcb_pstk_shape_t *a, double 
 }
 
 /* returns whether one of a's square cap and b's round cap are crossing */
-RND_INLINE int cress_geo_square_roundcap_crossing_(pcb_pstk_shape_t *a, double ar, rnd_point_t qa[4], int aend, pcb_pstk_shape_t *b, double br2, rnd_point_t qb[4])
+RND_INLINE int cres_geo_square_roundcap_crossing_(pcb_pstk_shape_t *a, double ar, rnd_point_t qa[4], int aend, pcb_pstk_shape_t *b, double br2, rnd_point_t qb[4])
 {
 	int in1, in2, n;
 	rnd_coord_t lx1, ly1, lx2, ly2, cx, cy;
@@ -346,8 +346,8 @@ RND_INLINE int cress_geo_square_roundcap_crossing_(pcb_pstk_shape_t *a, double a
 		}
 
 		/* if one end in and other end is out, they are crossing */
-		in1 = cress_geo_pt_insied_circle2(lx1, ly1, cx, cy, br2);
-		in2 = cress_geo_pt_insied_circle2(lx2, ly2, cx, cy, br2);
+		in1 = cres_geo_pt_insied_circle2(lx1, ly1, cx, cy, br2);
+		in2 = cres_geo_pt_insied_circle2(lx2, ly2, cx, cy, br2);
 		if (in1 != in2)
 			return 1;
 
@@ -360,24 +360,24 @@ RND_INLINE int cress_geo_square_roundcap_crossing_(pcb_pstk_shape_t *a, double a
 	return 0;
 }
 
-RND_INLINE int cress_geo_square_roundcap_crossing(pcb_pstk_shape_t *a, double ar, rnd_point_t qa[4], pcb_pstk_shape_t *b, double br, rnd_point_t bs[4])
+RND_INLINE int cres_geo_square_roundcap_crossing(pcb_pstk_shape_t *a, double ar, rnd_point_t qa[4], pcb_pstk_shape_t *b, double br, rnd_point_t bs[4])
 {
 	double br2 = br*br;
-	if (cress_geo_square_roundcap_crossing_(a, ar, qa, 1, b, br2, bs)) return 1;
-	if (cress_geo_square_roundcap_crossing_(a, ar, qa, 2, b, br2, bs)) return 1;
+	if (cres_geo_square_roundcap_crossing_(a, ar, qa, 1, b, br2, bs)) return 1;
+	if (cres_geo_square_roundcap_crossing_(a, ar, qa, 2, b, br2, bs)) return 1;
 	return 0;
 }
 
 
 /*** "shape vs. shape to state" converters ***/
-RND_INLINE cres_st_t cress_st_circ_circ(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
+RND_INLINE cres_st_t cres_st_circ_circ(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	assert(shape->shape == PCB_PSSH_CIRC);
 	assert(hole->shape == PCB_PSSH_CIRC);
-	return cress_geo_circ_circ(shape->data.circ.x, shape->data.circ.y, shape->data.circ.dia/2.0, hole->data.circ.x, hole->data.circ.y, hole->data.circ.dia/2.0);
+	return cres_geo_circ_circ(shape->data.circ.x, shape->data.circ.y, shape->data.circ.dia/2.0, hole->data.circ.x, hole->data.circ.y, hole->data.circ.dia/2.0);
 }
 
-RND_INLINE cres_st_t cress_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
+RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	double dist, dist2, adist2, cr = shape->data.circ.dia/2.0, hr = hole->data.line.thickness/2.0;
 
@@ -415,8 +415,8 @@ RND_INLINE cres_st_t cress_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 		/* square cap: the circle is beyond normal range; it's crossing only if it is
 		   crossing and endcap line; else it must be out because the projection is not
 		   within range */
-		cress_geo_line_sqcap_line(hole, (offs < 0) ? 1 : 2, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
-		if (cress_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
+		cres_geo_line_sqcap_line(hole, (offs < 0) ? 1 : 2, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
+		if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
 			return CRES_ST_CROSSING;
 
 		return CRES_ST_DISJOINT;
@@ -426,8 +426,8 @@ RND_INLINE cres_st_t cress_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 		int in1, in2;
 		double cr2 = cr*cr;
 
-		in1 = cress_geo_pt_insied_circle2(hole->data.line.x1, hole->data.line.y1, shape->data.circ.x, shape->data.circ.y, cr2);
-		in2 = cress_geo_pt_insied_circle2(hole->data.line.x2, hole->data.line.y2, shape->data.circ.x, shape->data.circ.y, cr2);
+		in1 = cres_geo_pt_insied_circle2(hole->data.line.x1, hole->data.line.y1, shape->data.circ.x, shape->data.circ.y, cr2);
+		in2 = cres_geo_pt_insied_circle2(hole->data.line.x2, hole->data.line.y2, shape->data.circ.x, shape->data.circ.y, cr2);
 
 		if (in1 != in2)
 			return CRES_ST_CROSSING;
@@ -436,17 +436,17 @@ RND_INLINE cres_st_t cress_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 		if (hole->data.line.square) {
 			/* square: crossing if end cap lines are crossing the circle */
 			double ex1, ey1, ex2, ey2;
-			cress_geo_line_sqcap_line(hole, 1, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
-			if (cress_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
+			cres_geo_line_sqcap_line(hole, 1, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
+			if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
 				return CRES_ST_CROSSING;
-			cress_geo_line_sqcap_line(hole, 2, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
-			if (cress_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
+			cres_geo_line_sqcap_line(hole, 2, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
+			if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
 				return CRES_ST_CROSSING;
 		}
 		else {
-			if (cress_geo_circ_circ(shape->data.circ.x, shape->data.circ.y, cr, hole->data.line.x1, hole->data.line.y1, hr) == CRES_ST_CROSSING)
+			if (cres_geo_circ_circ(shape->data.circ.x, shape->data.circ.y, cr, hole->data.line.x1, hole->data.line.y1, hr) == CRES_ST_CROSSING)
 				return CRES_ST_CROSSING;
-			if (cress_geo_circ_circ(shape->data.circ.x, shape->data.circ.y, cr, hole->data.line.x2, hole->data.line.y2, hr) == CRES_ST_CROSSING)
+			if (cres_geo_circ_circ(shape->data.circ.x, shape->data.circ.y, cr, hole->data.line.x2, hole->data.line.y2, hr) == CRES_ST_CROSSING)
 				return CRES_ST_CROSSING;
 		}
 
@@ -470,7 +470,7 @@ RND_INLINE cres_st_t cress_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 	abort(); /* can't get here */
 }
 
-RND_INLINE cres_st_t cress_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
+RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	double sx1 = shape->data.line.x1, sy1 = shape->data.line.y1;
 	double sx2 = shape->data.line.x2, sy2 = shape->data.line.y2;
@@ -485,8 +485,8 @@ RND_INLINE cres_st_t cress_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 	assert(hole->shape == PCB_PSSH_LINE);
 
 	/* precompute side lines: sa and sb for side, ha and hb for hole */
-	cress_geo_line_normal(shape, &snx, &sny);
-	cress_geo_line_normal(hole, &hnx, &hny);
+	cres_geo_line_normal(shape, &snx, &sny);
+	cres_geo_line_normal(hole, &hnx, &hny);
 	sax1 = sx1 + sr * snx; say1 = sy1 + sr * sny;
 	sax2 = sx2 + sr * snx; say2 = sy2 + sr * sny;
 	sbx1 = sx1 - sr * snx; sby1 = sy1 - sr * sny;
@@ -521,32 +521,32 @@ RND_INLINE cres_st_t cress_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 	/* check endcap-side crossings; square cap line endcap can't cross without
 	   a side-side crossing */
 	if (!hole->data.line.square) {
-		if (cress_geo_line_roundcap_crossing(sax1, say1, sax2, say2, hole, hr, qh))
+		if (cres_geo_line_roundcap_crossing(sax1, say1, sax2, say2, hole, hr, qh))
 			return CRES_ST_CROSSING;
-		if (cress_geo_line_roundcap_crossing(sbx1, sby1, sbx2, sby2, hole, hr, qh))
+		if (cres_geo_line_roundcap_crossing(sbx1, sby1, sbx2, sby2, hole, hr, qh))
 			return CRES_ST_CROSSING;
 	}
 	if (!shape->data.line.square) {
-		if (cress_geo_line_roundcap_crossing(hax1, hay1, hax2, hay2, shape, sr, qs))
+		if (cres_geo_line_roundcap_crossing(hax1, hay1, hax2, hay2, shape, sr, qs))
 			return CRES_ST_CROSSING;
-		if (cress_geo_line_roundcap_crossing(hbx1, hby1, hbx2, hby2, shape, sr, qs))
+		if (cres_geo_line_roundcap_crossing(hbx1, hby1, hbx2, hby2, shape, sr, qs))
 			return CRES_ST_CROSSING;
 	}
 
 	/* check endcap-endcap crossings */
 	if (!shape->data.line.square && !hole->data.line.square) {
 		/* round round */
-		if (cress_geo_roundcap_roundcap_crossing(hole, hr, qh, shape, sr, qs))
+		if (cres_geo_roundcap_roundcap_crossing(hole, hr, qh, shape, sr, qs))
 			return CRES_ST_CROSSING;
 	}
 	else if (shape->data.line.square && !hole->data.line.square) {
 		/* square round */
-		if (cress_geo_square_roundcap_crossing(hole, hr, qh, shape, sr, qs))
+		if (cres_geo_square_roundcap_crossing(hole, hr, qh, shape, sr, qs))
 			return CRES_ST_CROSSING;
 	}
 	else if (!shape->data.line.square && hole->data.line.square) {
 		/* round square */
-		if (cress_geo_square_roundcap_crossing(shape, sr, qs, hole, hr, qh))
+		if (cres_geo_square_roundcap_crossing(shape, sr, qs, hole, hr, qh))
 			return CRES_ST_CROSSING;
 	}
 	else {
@@ -557,16 +557,16 @@ RND_INLINE cres_st_t cress_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 	/* They are not crossing so if both ends are within the other line that
 	   means inside. If there are no crossing this also means either both
 	   or neither ends are inside so it's enough to check one end */
-	if (cress_geo_pt_in_line(shape->data.line.x1, shape->data.line.y1, hole, hr*hr, qh))
+	if (cres_geo_pt_in_line(shape->data.line.x1, shape->data.line.y1, hole, hr*hr, qh))
 		return CRES_ST_SHAPE_IN_HOLE;
 
-	if (cress_geo_pt_in_line(hole->data.line.x1, hole->data.line.y1, shape, sr*sr, qs))
+	if (cres_geo_pt_in_line(hole->data.line.x1, hole->data.line.y1, shape, sr*sr, qs))
 		return CRES_ST_HOLE_IN_SHAPE;
 
 	return CRES_ST_DISJOINT;
 }
 
-RND_INLINE cres_st_t cress_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
+RND_INLINE cres_st_t cres_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	rnd_vnode_t *vn;
 	double sr = shape->data.line.thickness / 2.0;
@@ -583,7 +583,7 @@ RND_INLINE cres_st_t cress_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 		return CRES_ST_DISJOINT;
 
 	/* generate side coords: sa and sb */
-	cress_geo_line_normal(shape, &snx, &sny);
+	cres_geo_line_normal(shape, &snx, &sny);
 	sax1 = sx1 + sr * snx; say1 = sy1 + sr * sny;
 	sax2 = sx2 + sr * snx; say2 = sy2 + sr * sny;
 	sbx1 = sx1 - sr * snx; sby1 = sy1 - sr * sny;
@@ -608,9 +608,9 @@ RND_INLINE cres_st_t cress_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 		}
 		else {
 			/* round cap - check full circles */
-			if (cress_geo_circ_crossing_line(sx1, sy1, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			if (cres_geo_circ_crossing_line(sx1, sy1, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
 				return CRES_ST_CROSSING;
-			if (cress_geo_circ_crossing_line(sx2, sy2, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			if (cres_geo_circ_crossing_line(sx2, sy2, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
 				return CRES_ST_CROSSING;
 		}
 	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
@@ -626,13 +626,13 @@ RND_INLINE cres_st_t cress_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 	qs[2].X = rnd_round(sbx2); qs[2].Y = rnd_round(sby2);
 	qs[3].X = rnd_round(sbx1); qs[3].Y = rnd_round(sby1);
 
-	if (cress_geo_pt_in_line(vn->point[0], vn->point[1], shape, sr*sr, qs))
+	if (cres_geo_pt_in_line(vn->point[0], vn->point[1], shape, sr*sr, qs))
 		return CRES_ST_HOLE_IN_SHAPE;
 
 	return CRES_ST_DISJOINT;
 }
 
-RND_INLINE cres_st_t cress_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
+RND_INLINE cres_st_t cres_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	double sr = shape->data.circ.dia/2.0;
 	rnd_vnode_t *vn;
@@ -644,7 +644,7 @@ RND_INLINE cres_st_t cress_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 	/* first check for crossing; simplepoly: enough to check a single island */
 	vn = hole->data.poly.pa->contours->head;
 	do {
-		if (cress_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+		if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
 			return CRES_ST_CROSSING;
 	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
 
@@ -654,14 +654,14 @@ RND_INLINE cres_st_t cress_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 		return CRES_ST_SHAPE_IN_HOLE;
 
 	/* there's no crossing; if any of the poly is in the line, the whole poly is in the line */
-	if (cress_geo_pt_insied_circle2(vn->point[0], vn->point[1], shape->data.circ.x, shape->data.circ.y, sr*sr))
+	if (cres_geo_pt_insied_circle2(vn->point[0], vn->point[1], shape->data.circ.x, shape->data.circ.y, sr*sr))
 		return CRES_ST_HOLE_IN_SHAPE;
 
 	return CRES_ST_DISJOINT;
 
 }
 
-RND_INLINE cres_st_t cress_st_poly_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
+RND_INLINE cres_st_t cres_st_poly_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	assert(shape->shape == PCB_PSSH_POLY);
 	assert(hole->shape == PCB_PSSH_POLY);
@@ -669,7 +669,7 @@ RND_INLINE cres_st_t cress_st_poly_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_
 }
 
 /* assume ->hfullcover and ->hcrescnet are set to 0 before the call */
-RND_INLINE void cress_output(pcb_pstk_shape_t *dst, cres_st_t st)
+RND_INLINE void cres_output(pcb_pstk_shape_t *dst, cres_st_t st)
 {
 	switch(st) {
 		case CRES_ST_SHAPE_IN_HOLE: dst->hfullcover = 1; break; /* drilled away the whole shape */
@@ -681,61 +681,61 @@ RND_INLINE void cress_output(pcb_pstk_shape_t *dst, cres_st_t st)
 
 RND_INLINE void cres_class_poly_in_poly(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_poly_poly(shape, hole);
-	cress_output(dst, st);
+	cres_st_t st = cres_st_poly_poly(shape, hole);
+	cres_output(dst, st);
 }
 
 
 RND_INLINE void cres_class_poly_in_line(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_line_poly(hole, shape);
+	cres_st_t st = cres_st_line_poly(hole, shape);
 	CRESS_INVERT_ST(st);
-	cress_output(dst, st);
+	cres_output(dst, st);
 }
 
 RND_INLINE void cres_class_poly_in_circ(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_circ_poly(hole, shape);
+	cres_st_t st = cres_st_circ_poly(hole, shape);
 	CRESS_INVERT_ST(st);
-	cress_output(dst, st);
+	cres_output(dst, st);
 }
 
 RND_INLINE void cres_class_line_in_poly(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_line_poly(shape, hole);
-	cress_output(dst, st);
+	cres_st_t st = cres_st_line_poly(shape, hole);
+	cres_output(dst, st);
 }
 
 RND_INLINE void cres_class_line_in_line(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_line_line(shape, hole);
-	cress_output(dst, st);
+	cres_st_t st = cres_st_line_line(shape, hole);
+	cres_output(dst, st);
 }
 
 RND_INLINE void cres_class_line_in_circ(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_circ_line(hole, shape);
+	cres_st_t st = cres_st_circ_line(hole, shape);
 	CRESS_INVERT_ST(st);
-	cress_output(dst, st);
+	cres_output(dst, st);
 }
 
 RND_INLINE void cres_class_circ_in_poly(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_circ_poly(shape, hole);
-	cress_output(dst, st);
+	cres_st_t st = cres_st_circ_poly(shape, hole);
+	cres_output(dst, st);
 }
 
 
 RND_INLINE void cres_class_circ_in_line(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_circ_line(shape, hole);
-	cress_output(dst, st);
+	cres_st_t st = cres_st_circ_line(shape, hole);
+	cres_output(dst, st);
 }
 
 RND_INLINE void cres_class_circ_in_circ(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	cres_st_t st = cress_st_circ_circ(shape, hole);
-	cress_output(dst, st);
+	cres_st_t st = cres_st_circ_circ(shape, hole);
+	cres_output(dst, st);
 }
 
 
