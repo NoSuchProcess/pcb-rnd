@@ -90,7 +90,7 @@ RND_INLINE cres_st_t cres_geo_circ_circ(rnd_coord_t scx, rnd_coord_t scy, double
 }
 
 /* Compute the normal vector of a line shape; return line length */
-RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, double *ny)
+RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, double *ny, double *vx, double *vy)
 {
 	double len, dx, dy, dx2, dy2;
 
@@ -99,6 +99,8 @@ RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, doubl
 	dy = line->data.line.y2 - line->data.line.y1;
 	if ((dx == 0) && (dy == 0)) {
 		zero_length:;
+		if (vx != NULL) *vx = 0;
+		if (vy != NULL) *vy = 0;
 		*nx = *ny = 0;
 		return 0.0;
 	}
@@ -108,8 +110,13 @@ RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, doubl
 	if (len == 0) goto zero_length;
 
 	len = sqrt(len);
-	*nx = -dy / len;
-	*ny = dx / len;
+	dy /= len;
+	dy /= len;
+
+	if (vx != NULL) *vx = dx;
+	if (vy != NULL) *vy = dy;
+	*nx = -dy;
+	*ny = dx;
 
 	return len;
 }
@@ -120,14 +127,14 @@ RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, doubl
    ex1;ey1 and ex2;ey2 */
 RND_INLINE void cres_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, double *ex1, double *ey1, double *ex2, double *ey2, double *nxp, double *nyp)
 {
-	double nx, ny, ex, ey, r;
+	double vx, vy, nx, ny, ex, ey, r;
 
 	assert(line->shape = PCB_PSSH_LINE);
 	assert((end == 1) || (end == 2));
 
 	/* ensure line normal vectors */
 	if ((nxp == NULL) || (nyp == NULL) || ((*nxp == 0) && (*nyp == 0))) {
-		cres_geo_line_normal(line, &nx, &ny);
+		cres_geo_line_normal(line, &nx, &ny, &vx, &vy);
 		if (nxp != NULL) *nxp = nx;
 		if (nyp != NULL) *nyp = ny;
 	}
@@ -149,10 +156,10 @@ RND_INLINE void cres_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, double
 	}
 
 	r = line->data.line.thickness / 2.0;
-	*ex1 = ex + nx*r;
-	*ey1 = ey + ny*r;
-	*ex2 = ex - nx*r;
-	*ey2 = ey - ny*r;
+	*ex1 = ex + nx*r + vx*r;
+	*ey1 = ey + ny*r + vy*r;
+	*ex2 = ex - nx*r + vx*r;
+	*ey2 = ey - ny*r + vy*r;
 }
 
 /* Returns whether px;py is inside a circle (not on perimeter and not outside);
@@ -485,8 +492,8 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	assert(hole->shape == PCB_PSSH_LINE);
 
 	/* precompute side lines: sa and sb for side, ha and hb for hole */
-	cres_geo_line_normal(shape, &snx, &sny);
-	cres_geo_line_normal(hole, &hnx, &hny);
+	cres_geo_line_normal(shape, &snx, &sny, NULL, NULL);
+	cres_geo_line_normal(hole, &hnx, &hny, NULL, NULL);
 	sax1 = sx1 + sr * snx; say1 = sy1 + sr * sny;
 	sax2 = sx2 + sr * snx; say2 = sy2 + sr * sny;
 	sbx1 = sx1 - sr * snx; sby1 = sy1 - sr * sny;
@@ -583,7 +590,7 @@ RND_INLINE cres_st_t cres_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		return CRES_ST_DISJOINT;
 
 	/* generate side coords: sa and sb */
-	cres_geo_line_normal(shape, &snx, &sny);
+	cres_geo_line_normal(shape, &snx, &sny, NULL, NULL);
 	sax1 = sx1 + sr * snx; say1 = sy1 + sr * sny;
 	sax2 = sx2 + sr * snx; say2 = sy2 + sr * sny;
 	sbx1 = sx1 - sr * snx; sby1 = sy1 - sr * sny;
