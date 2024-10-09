@@ -593,24 +593,24 @@ RND_INLINE cres_st_t cres_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	vn = hole->data.poly.pa->contours->head;
 	do {
 		/* check for side crossings */
-		if (pcb_geo_line_line(sax1, say1, sax2, say2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+		if (pcb_geo_line_line(sax1, say1, sax2, say2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1]))
 			return CRES_ST_CROSSING;
-		if (pcb_geo_line_line(sbx1, sby1, sbx2, sby2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+		if (pcb_geo_line_line(sbx1, sby1, sbx2, sby2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1]))
 			return CRES_ST_CROSSING;
 
 		/* check end cap */
 		if (shape->data.line.square) {
 			/* a spike of the poly can hit the flat end cap without touching any sides... */
-			if (pcb_geo_line_line(sax1, say1, sbx1, sby1, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			if (pcb_geo_line_line(sax1, say1, sbx1, sby1, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1]))
 				return CRES_ST_CROSSING;
-			if (pcb_geo_line_line(sax2, say2, sbx2, sby2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			if (pcb_geo_line_line(sax2, say2, sbx2, sby2, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1]))
 				return CRES_ST_CROSSING;
 		}
 		else {
 			/* round cap - check full circles */
-			if (cres_geo_circ_crossing_line(sx1, sy1, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			if (cres_geo_circ_crossing_line(sx1, sy1, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1]))
 				return CRES_ST_CROSSING;
-			if (cres_geo_circ_crossing_line(sx2, sy2, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+			if (cres_geo_circ_crossing_line(sx2, sy2, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1]))
 				return CRES_ST_CROSSING;
 		}
 	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
@@ -644,7 +644,7 @@ RND_INLINE cres_st_t cres_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	/* first check for crossing; simplepoly: enough to check a single island */
 	vn = hole->data.poly.pa->contours->head;
 	do {
-		if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0]))
+		if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, sr, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1]))
 			return CRES_ST_CROSSING;
 	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
 
@@ -683,7 +683,7 @@ RND_INLINE cres_st_t cres_st_poly_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	}
 	vn = pshort->head;
 	do {
-		if (rnd_pline_isect_line(plong, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0], NULL, NULL))
+		if (rnd_pline_isect_line(plong, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[1], NULL, NULL))
 			return CRES_ST_CROSSING;
 	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
 
