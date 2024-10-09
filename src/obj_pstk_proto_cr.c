@@ -89,8 +89,12 @@ RND_INLINE cres_st_t cres_geo_circ_circ(rnd_coord_t scx, rnd_coord_t scy, double
 	}
 }
 
+typedef struct cres_line_norm_s {
+	double nx, ny, vx, vy;
+} cres_line_norm_t;
+
 /* Compute the normal vector of a line shape; return line length */
-RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, double *ny, double *vx, double *vy)
+RND_INLINE double cres_geo_line_normal(cres_line_norm_t *dst, pcb_pstk_shape_t *line)
 {
 	double len, dx, dy, dx2, dy2;
 
@@ -99,9 +103,7 @@ RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, doubl
 	dy = line->data.line.y2 - line->data.line.y1;
 	if ((dx == 0) && (dy == 0)) {
 		zero_length:;
-		if (vx != NULL) *vx = 0;
-		if (vy != NULL) *vy = 0;
-		*nx = *ny = 0;
+		dst->vx = dst->vy = dst->nx = dst->ny = 0;
 		return 0.0;
 	}
 	dx2 = dx*dx;
@@ -113,35 +115,22 @@ RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, doubl
 	dy /= len;
 	dx /= len;
 
-	if (vx != NULL) *vx = dx;
-	if (vy != NULL) *vy = dy;
-	*nx = -dy;
-	*ny = dx;
+	dst->vx = dx;
+	dst->vy = dy;
+	dst->nx = -dy;
+	dst->ny = dx;
 
 	return len;
 }
 
 /* Return the line of a square end cap of a line shape; end is 1 for x1;y2
-   or 2 for x2;y2. If nxp;nyp are non-NULL they are the normal of the line;
-   input value 0;0 indicates it is not yet calculated. Result is written to
-   ex1;ey1 and ex2;ey2 */
-RND_INLINE void cres_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, double *ex1, double *ey1, double *ex2, double *ey2, double *nxp, double *nyp)
+   or 2 for x2;y2. Result is written to ex1;ey1 and ex2;ey2 */
+RND_INLINE void cres_geo_line_sqcap_line(const pcb_pstk_shape_t *line, const cres_line_norm_t *norm, int end, double *ex1, double *ey1, double *ex2, double *ey2)
 {
-	double vx, vy, nx, ny, ex, ey, r;
+	double ex, ey, r;
 
-	assert(line->shape = PCB_PSSH_LINE);
+	assert(line->shape == PCB_PSSH_LINE);
 	assert((end == 1) || (end == 2));
-
-	/* ensure line normal vectors */
-	if ((nxp == NULL) || (nyp == NULL) || ((*nxp == 0) && (*nyp == 0))) {
-		cres_geo_line_normal(line, &nx, &ny, &vx, &vy);
-		if (nxp != NULL) *nxp = nx;
-		if (nyp != NULL) *nyp = ny;
-	}
-	else {
-		nx = *nxp;
-		ny = *nyp;
-	}
 
 	switch(end) {
 		case 1: ex = line->data.line.x1; ey = line->data.line.y1; break;
@@ -149,41 +138,38 @@ RND_INLINE void cres_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, double
 	}
 
 	/* invalid */
-	if ((nx == 0) && (ny == 0)) {
+	if ((norm->nx == 0) && (norm->ny == 0)) {
 		*ex1 = *ex2 = ex;
 		*ey1 = *ey2 = ey;
 		return;
 	}
 
 	r = line->data.line.thickness / 2.0;
-	*ex1 = ex + nx*r + vx*r;
-	*ey1 = ey + ny*r + vy*r;
-	*ex2 = ex - nx*r + vx*r;
-	*ey2 = ey - ny*r + vy*r;
+	*ex1 = ex + norm->nx*r + norm->vx*r;
+	*ey1 = ey + norm->ny*r + norm->vy*r;
+	*ex2 = ex - norm->nx*r + norm->vx*r;
+	*ey2 = ey - norm->ny*r + norm->vy*r;
 }
 
 /* Return the thin lines for the two sides of the line of radius sr */
-RND_INLINE void cres_geo_line_side_lines(pcb_pstk_shape_t *line, double sr, double *sax1, double *say1, double *sax2, double *say2, double *sbx1, double *sby1, double *sbx2, double *sby2)
+RND_INLINE void cres_geo_line_side_lines(const pcb_pstk_shape_t *line, const cres_line_norm_t *norm, double sr, double *sax1, double *say1, double *sax2, double *say2, double *sbx1, double *sby1, double *sbx2, double *sby2)
 {
 	double sx1 = line->data.line.x1, sy1 = line->data.line.y1;
 	double sx2 = line->data.line.x2, sy2 = line->data.line.y2;
-	double nx, ny, vx, vy;
-
-	cres_geo_line_normal(line, &nx, &ny, &vx, &vy);
 
 	if (line->data.line.square) {
 		/* square cap sides extend beyond centerline length by radius */
-		*sax1 = sx1 + sr * nx - sr * vx; *say1 = sy1 + sr * ny - sr * vy;
-		*sax2 = sx2 + sr * nx + sr * vx; *say2 = sy2 + sr * ny + sr * vy;
-		*sbx1 = sx1 - sr * nx - sr * vx; *sby1 = sy1 - sr * ny - sr * vy;
-		*sbx2 = sx2 - sr * nx + sr * vx; *sby2 = sy2 - sr * ny + sr * vy;
+		*sax1 = sx1 + sr * norm->nx - sr * norm->vx; *say1 = sy1 + sr * norm->ny - sr * norm->vy;
+		*sax2 = sx2 + sr * norm->nx + sr * norm->vx; *say2 = sy2 + sr * norm->ny + sr * norm->vy;
+		*sbx1 = sx1 - sr * norm->nx - sr * norm->vx; *sby1 = sy1 - sr * norm->ny - sr * norm->vy;
+		*sbx2 = sx2 - sr * norm->nx + sr * norm->vx; *sby2 = sy2 - sr * norm->ny + sr * norm->vy;
 	}
 	else {
 		/* round cap sides are only as long as the centerline */
-		*sax1 = sx1 + sr * nx; *say1 = sy1 + sr * ny;
-		*sax2 = sx2 + sr * nx; *say2 = sy2 + sr * ny;
-		*sbx1 = sx1 - sr * nx; *sby1 = sy1 - sr * ny;
-		*sbx2 = sx2 - sr * nx; *sby2 = sy2 - sr * ny;
+		*sax1 = sx1 + sr * norm->nx; *say1 = sy1 + sr * norm->ny;
+		*sax2 = sx2 + sr * norm->nx; *say2 = sy2 + sr * norm->ny;
+		*sbx1 = sx1 - sr * norm->nx; *sby1 = sy1 - sr * norm->ny;
+		*sbx2 = sx2 - sr * norm->nx; *sby2 = sy2 - sr * norm->ny;
 	}
 }
 
@@ -413,6 +399,7 @@ RND_INLINE cres_st_t cres_st_circ_circ(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	double dist, dist2, adist2, cr = shape->data.circ.dia/2.0, hr = hole->data.line.thickness/2.0;
+	cres_line_norm_t nh;
 
 	assert(shape->shape == PCB_PSSH_CIRC);
 	assert(hole->shape == PCB_PSSH_LINE);
@@ -448,7 +435,8 @@ RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		/* square cap: the circle is beyond normal range; it's crossing only if it is
 		   crossing and endcap line; else it must be out because the projection is not
 		   within range */
-		cres_geo_line_sqcap_line(hole, (offs < 0) ? 1 : 2, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
+		cres_geo_line_normal(&nh, shape);
+		cres_geo_line_sqcap_line(hole, &nh, (offs < 0) ? 1 : 2, &ex1, &ey1, &ex2, &ey2);
 		if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
 			return CRES_ST_CROSSING;
 
@@ -459,8 +447,13 @@ RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		int in1, in2;
 		double cr2 = cr*cr;
 
-		in1 = cres_geo_pt_insied_circle2(hole->data.line.x1, hole->data.line.y1, shape->data.circ.x, shape->data.circ.y, cr2);
-		in2 = cres_geo_pt_insied_circle2(hole->data.line.x2, hole->data.line.y2, shape->data.circ.x, shape->data.circ.y, cr2);
+		if (hole->data.line.square) {
+			cres_geo_line_normal(&nh, shape);
+		}
+		else {
+			in1 = cres_geo_pt_insied_circle2(hole->data.line.x1, hole->data.line.y1, shape->data.circ.x, shape->data.circ.y, cr2);
+			in2 = cres_geo_pt_insied_circle2(hole->data.line.x2, hole->data.line.y2, shape->data.circ.x, shape->data.circ.y, cr2);
+		}
 
 		if (in1 != in2)
 			return CRES_ST_CROSSING;
@@ -469,10 +462,10 @@ RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		if (hole->data.line.square) {
 			/* square: crossing if end cap lines are crossing the circle */
 			double ex1, ey1, ex2, ey2;
-			cres_geo_line_sqcap_line(hole, 1, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
+			cres_geo_line_sqcap_line(hole, &nh, 1, &ex1, &ey1, &ex2, &ey2);
 			if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
 				return CRES_ST_CROSSING;
-			cres_geo_line_sqcap_line(hole, 2, &ex1, &ey1, &ex2, &ey2, NULL, NULL);
+			cres_geo_line_sqcap_line(hole, &nh, 2, &ex1, &ey1, &ex2, &ey2);
 			if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
 				return CRES_ST_CROSSING;
 		}
@@ -509,16 +502,16 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	double sax1, say1, sax2, say2, sbx1, sby1, sbx2, sby2;
 	double hax1, hay1, hax2, hay2, hbx1, hby1, hbx2, hby2;
 	rnd_point_t qh[4], qs[4];
+	cres_line_norm_t ns, nh;
 
 	assert(shape->shape == PCB_PSSH_LINE);
 	assert(hole->shape == PCB_PSSH_LINE);
 
 	/* precompute side lines: sa and sb for side, ha and hb for hole */
-	cres_geo_line_side_lines(shape, sr, &sax1, &say1, &sax2, &say2, &sbx1, &sby1, &sbx2, &sby2);
-	cres_geo_line_side_lines(hole,  hr, &hax1, &hay1, &hax2, &hay2, &hbx1, &hby1, &hbx2, &hby2);
-
-/*	cres_geo_line_normal(shape, &snx, &sny, NULL, NULL);
-	cres_geo_line_normal(hole, &hnx, &hny, NULL, NULL);*/
+	cres_geo_line_normal(&ns, shape);
+	cres_geo_line_normal(&nh, shape);
+	cres_geo_line_side_lines(shape, &ns, sr, &sax1, &say1, &sax2, &say2, &sbx1, &sby1, &sbx2, &sby2);
+	cres_geo_line_side_lines(hole,  &nh, hr, &hax1, &hay1, &hax2, &hay2, &hbx1, &hby1, &hbx2, &hby2);
 
 
 	/* First check if they are crossing */
@@ -599,6 +592,7 @@ RND_INLINE cres_st_t cres_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	double sax1, say1, sax2, say2, sbx1, sby1, sbx2, sby2;
 	rnd_vector_t v;
 	rnd_point_t qs[4];
+	cres_line_norm_t ns;
 
 	assert(shape->shape == PCB_PSSH_LINE);
 	assert(hole->shape == PCB_PSSH_POLY);
@@ -607,7 +601,8 @@ RND_INLINE cres_st_t cres_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		return CRES_ST_DISJOINT;
 
 	/* generate side coords: sa and sb */
-	cres_geo_line_side_lines(shape, sr, &sax1, &say1, &sax2, &say2, &sbx1, &sby1, &sbx2, &sby2);
+	cres_geo_line_normal(&ns, shape);
+	cres_geo_line_side_lines(shape, &ns, sr, &sax1, &say1, &sax2, &say2, &sbx1, &sby1, &sbx2, &sby2);
 
 
 	/* first check for crossing; simplepoly: enough to check a single island */
