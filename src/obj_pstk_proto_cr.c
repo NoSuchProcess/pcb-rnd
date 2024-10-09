@@ -162,6 +162,22 @@ RND_INLINE void cres_geo_line_sqcap_line(pcb_pstk_shape_t *line, int end, double
 	*ey2 = ey - ny*r + vy*r;
 }
 
+/* Return the thin lines for the two sides of the line of radius sr */
+RND_INLINE void cres_geo_line_side_lines(pcb_pstk_shape_t *line, double sr, double *sax1, double *say1, double *sax2, double *say2, double *sbx1, double *sby1, double *sbx2, double *sby2)
+{
+	double sx1 = line->data.line.x1, sy1 = line->data.line.y1;
+	double sx2 = line->data.line.x2, sy2 = line->data.line.y2;
+	double nx, ny, vx, vy;
+
+	cres_geo_line_normal(line, &nx, &ny, &vx, &vy);
+
+	*sax1 = sx1 + sr * nx; *say1 = sy1 + sr * ny;
+	*sax2 = sx2 + sr * nx; *say2 = sy2 + sr * ny;
+	*sbx1 = sx1 - sr * nx; *sby1 = sy1 - sr * ny;
+	*sbx2 = sx2 - sr * nx; *sby2 = sy2 - sr * ny;
+}
+
+
 /* Returns whether px;py is inside a circle (not on perimeter and not outside);
    cr2 is circle radius squared */
 RND_INLINE int cres_geo_pt_insied_circle2(double px, double py, double cx, double cy, double cr2)
@@ -479,29 +495,20 @@ RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 
 RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	double sx1 = shape->data.line.x1, sy1 = shape->data.line.y1;
-	double sx2 = shape->data.line.x2, sy2 = shape->data.line.y2;
-	double hx1 = hole->data.line.x1, hy1 = hole->data.line.y1;
-	double hx2 = hole->data.line.x2, hy2 = hole->data.line.y2;
 	double sr = shape->data.line.thickness / 2.0, hr = hole->data.line.thickness / 2.0;
-	double sax1, say1, sax2, say2, sbx1, sby1, sbx2, sby2, snx, sny;
-	double hax1, hay1, hax2, hay2, hbx1, hby1, hbx2, hby2, hnx, hny;
+	double sax1, say1, sax2, say2, sbx1, sby1, sbx2, sby2;
+	double hax1, hay1, hax2, hay2, hbx1, hby1, hbx2, hby2;
 	rnd_point_t qh[4], qs[4];
 
 	assert(shape->shape == PCB_PSSH_LINE);
 	assert(hole->shape == PCB_PSSH_LINE);
 
 	/* precompute side lines: sa and sb for side, ha and hb for hole */
-	cres_geo_line_normal(shape, &snx, &sny, NULL, NULL);
-	cres_geo_line_normal(hole, &hnx, &hny, NULL, NULL);
-	sax1 = sx1 + sr * snx; say1 = sy1 + sr * sny;
-	sax2 = sx2 + sr * snx; say2 = sy2 + sr * sny;
-	sbx1 = sx1 - sr * snx; sby1 = sy1 - sr * sny;
-	sbx2 = sx2 - sr * snx; sby2 = sy2 - sr * sny;
-	hax1 = hx1 + hr * hnx; hay1 = hy1 + hr * hny;
-	hax2 = hx2 + hr * hnx; hay2 = hy2 + hr * hny;
-	hbx1 = hx1 - hr * hnx; hby1 = hy1 - hr * hny;
-	hbx2 = hx2 - hr * hnx; hby2 = hy2 - hr * hny;
+	cres_geo_line_side_lines(shape, sr, &sax1, &say1, &sax2, &say2, &sbx1, &sby1, &sbx2, &sby2);
+	cres_geo_line_side_lines(hole,  hr, &hax1, &hay1, &hax2, &hay2, &hbx1, &hby1, &hbx2, &hby2);
+
+/*	cres_geo_line_normal(shape, &snx, &sny, NULL, NULL);
+	cres_geo_line_normal(hole, &hnx, &hny, NULL, NULL);*/
 
 
 	/* First check if they are crossing */
@@ -579,7 +586,7 @@ RND_INLINE cres_st_t cres_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	double sr = shape->data.line.thickness / 2.0;
 	double sx1 = shape->data.line.x1, sy1 = shape->data.line.y1;
 	double sx2 = shape->data.line.x2, sy2 = shape->data.line.y2;
-	double snx, sny, sax1, say1, sax2, say2, sbx1, sby1, sbx2, sby2;
+	double sax1, say1, sax2, say2, sbx1, sby1, sbx2, sby2;
 	rnd_vector_t v;
 	rnd_point_t qs[4];
 
@@ -590,11 +597,8 @@ RND_INLINE cres_st_t cres_st_line_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		return CRES_ST_DISJOINT;
 
 	/* generate side coords: sa and sb */
-	cres_geo_line_normal(shape, &snx, &sny, NULL, NULL);
-	sax1 = sx1 + sr * snx; say1 = sy1 + sr * sny;
-	sax2 = sx2 + sr * snx; say2 = sy2 + sr * sny;
-	sbx1 = sx1 - sr * snx; sby1 = sy1 - sr * sny;
-	sbx2 = sx2 - sr * snx; sby2 = sy2 - sr * sny;
+	cres_geo_line_side_lines(shape, sr, &sax1, &say1, &sax2, &say2, &sbx1, &sby1, &sbx2, &sby2);
+
 
 	/* first check for crossing; simplepoly: enough to check a single island */
 	vn = hole->data.poly.pa->contours->head;
