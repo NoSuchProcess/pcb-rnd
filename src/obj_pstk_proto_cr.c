@@ -785,6 +785,7 @@ RND_INLINE void pcb_pstk_shape_crescent_init(pcb_pstk_shape_t *dst, pcb_pstk_sha
 				case PCB_PSSH_POLY: cres_class_poly_in_poly(dst, dst, hole); break;
 				case PCB_PSSH_LINE: cres_class_poly_in_line(dst, dst, hole); break;
 				case PCB_PSSH_CIRC: cres_class_poly_in_circ(dst, dst, hole); break;
+				case PCB_PSSH_HSHADOW: /* already checked */ break;
 			}
 			break;
 		case PCB_PSSH_LINE:
@@ -792,6 +793,7 @@ RND_INLINE void pcb_pstk_shape_crescent_init(pcb_pstk_shape_t *dst, pcb_pstk_sha
 				case PCB_PSSH_POLY: cres_class_line_in_poly(dst, dst, hole); break;
 				case PCB_PSSH_LINE: cres_class_line_in_line(dst, dst, hole); break;
 				case PCB_PSSH_CIRC: cres_class_line_in_circ(dst, dst, hole); break;
+				case PCB_PSSH_HSHADOW: /* already checked */ break;
 			}
 			break;
 		case PCB_PSSH_CIRC:
@@ -799,6 +801,7 @@ RND_INLINE void pcb_pstk_shape_crescent_init(pcb_pstk_shape_t *dst, pcb_pstk_sha
 				case PCB_PSSH_POLY: cres_class_circ_in_poly(dst, dst, hole); break;
 				case PCB_PSSH_LINE: cres_class_circ_in_line(dst, dst, hole); break;
 				case PCB_PSSH_CIRC: cres_class_circ_in_circ(dst, dst, hole); break;
+				case PCB_PSSH_HSHADOW: /* already checked */ break;
 			}
 			break;
 		case PCB_PSSH_HSHADOW:
