@@ -773,8 +773,6 @@ RND_INLINE void cres_class_circ_in_circ(pcb_pstk_shape_t *dst, pcb_pstk_shape_t 
    pcb_pstk_proto_update() */
 RND_INLINE void pcb_pstk_shape_crescent_init(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *hole, pcb_pstk_proto_t *proto, pcb_pstk_t *dummy_ps)
 {
-	int cres, olap;
-
 	dst->hcrescent = dst->hfullcover = 0;
 	if (hole->shape == PCB_PSSH_HSHADOW) {
 		assert("invalid slot shape");
