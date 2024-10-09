@@ -243,6 +243,10 @@ typedef struct {
 		} misc;
 	} appearance;
 
+	const struct {                         /* debug (and testing) */
+		RND_CFT_BOOLEAN trace_pstk_crescent; /* print trace messages to stdout about crescent padstack classification (used in autotest */
+	} debug;                               /* and testing */
+
 } conf_core_t;
 
 extern conf_core_t conf_core;

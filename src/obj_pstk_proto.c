@@ -46,6 +46,7 @@
 
 static const char core_proto_cookie[] = "padstack prototypes";
 
+#define CRES_TRACE   if (conf_core.debug.trace_pstk_crescent) printf
 
 void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 {
@@ -111,7 +112,9 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 			}
 			else
 				ts->shape[n].hconn = 0;
-/*rnd_trace(" [%d]: %d\n", n, ts->shape[n].hconn);*/
+			CRES_TRACE("CRES proto '%s' n=%d hconn=%d hcrescent=%d hfullcover=%d\n",
+				(dst->name == NULL ? "<anon>" : dst->name), n,
+				ts->shape[n].hconn, ts->shape[n].hcrescent, ts->shape[n].hfullcover);
 		}
 		
 		/* special case: if there's only one non-intern copper shape and no hole/slot
