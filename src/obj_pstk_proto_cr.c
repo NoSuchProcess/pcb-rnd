@@ -111,7 +111,7 @@ RND_INLINE double cres_geo_line_normal(pcb_pstk_shape_t *line, double *nx, doubl
 
 	len = sqrt(len);
 	dy /= len;
-	dy /= len;
+	dx /= len;
 
 	if (vx != NULL) *vx = dx;
 	if (vy != NULL) *vy = dy;
