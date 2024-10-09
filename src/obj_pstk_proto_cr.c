@@ -648,14 +648,16 @@ RND_INLINE cres_st_t cres_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 			return CRES_ST_CROSSING;
 	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
 
+	/* Order of the following two checks does matter */
+
+	/* there's no crossing; if any of the poly is in the line, the whole poly is in the circle */
+	if (cres_geo_pt_insied_circle2(vn->point[0], vn->point[1], shape->data.circ.x, shape->data.circ.y, sr*sr))
+		return CRES_ST_HOLE_IN_SHAPE;
+
 	/* there's no crossing; circ center is in the poly, the whole circle is in the poly */
 	v[0] = shape->data.circ.x; v[1] = shape->data.circ.y;
 	if (rnd_poly_contour_inside(hole->data.poly.pa->contours, v))
 		return CRES_ST_SHAPE_IN_HOLE;
-
-	/* there's no crossing; if any of the poly is in the line, the whole poly is in the line */
-	if (cres_geo_pt_insied_circle2(vn->point[0], vn->point[1], shape->data.circ.x, shape->data.circ.y, sr*sr))
-		return CRES_ST_HOLE_IN_SHAPE;
 
 	return CRES_ST_DISJOINT;
 
