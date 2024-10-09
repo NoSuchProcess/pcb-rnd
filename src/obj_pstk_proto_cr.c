@@ -127,14 +127,14 @@ RND_INLINE double cres_geo_line_normal(cres_line_norm_t *dst, pcb_pstk_shape_t *
    or 2 for x2;y2. Result is written to ex1;ey1 and ex2;ey2 */
 RND_INLINE void cres_geo_line_sqcap_line(const pcb_pstk_shape_t *line, const cres_line_norm_t *norm, int end, double *ex1, double *ey1, double *ex2, double *ey2)
 {
-	double ex, ey, r;
+	double ex, ey, r, vx, vy;
 
 	assert(line->shape == PCB_PSSH_LINE);
 	assert((end == 1) || (end == 2));
 
 	switch(end) {
-		case 1: ex = line->data.line.x1; ey = line->data.line.y1; break;
-		case 2: ex = line->data.line.x2; ey = line->data.line.y2; break;
+		case 1: ex = line->data.line.x1; ey = line->data.line.y1; vx = -norm->vx; vy = -norm->vy; break;
+		case 2: ex = line->data.line.x2; ey = line->data.line.y2; vx = +norm->vx; vy = +norm->vy; break;
 	}
 
 	/* invalid */
@@ -145,10 +145,10 @@ RND_INLINE void cres_geo_line_sqcap_line(const pcb_pstk_shape_t *line, const cre
 	}
 
 	r = line->data.line.thickness / 2.0;
-	*ex1 = ex + norm->nx*r + norm->vx*r;
-	*ey1 = ey + norm->ny*r + norm->vy*r;
-	*ex2 = ex - norm->nx*r + norm->vx*r;
-	*ey2 = ey - norm->ny*r + norm->vy*r;
+	*ex1 = ex + norm->nx*r + vx*r;
+	*ey1 = ey + norm->ny*r + vy*r;
+	*ex2 = ex - norm->nx*r + vx*r;
+	*ey2 = ey - norm->ny*r + vy*r;
 }
 
 /* Return the thin lines for the two sides of the line of radius sr */
