@@ -98,7 +98,7 @@ RND_INLINE double cres_geo_line_normal(cres_line_norm_t *dst, pcb_pstk_shape_t *
 {
 	double len, dx, dy, dx2, dy2;
 
-	assert(line->shape = PCB_PSSH_LINE);
+	assert(line->shape == PCB_PSSH_LINE);
 	dx = line->data.line.x2 - line->data.line.x1;
 	dy = line->data.line.y2 - line->data.line.y1;
 	if ((dx == 0) && (dy == 0)) {
@@ -435,7 +435,7 @@ RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		/* square cap: the circle is beyond normal range; it's crossing only if it is
 		   crossing and endcap line; else it must be out because the projection is not
 		   within range */
-		cres_geo_line_normal(&nh, shape);
+		cres_geo_line_normal(&nh, hole);
 		cres_geo_line_sqcap_line(hole, &nh, (offs < 0) ? 1 : 2, &ex1, &ey1, &ex2, &ey2);
 		if (cres_geo_circ_crossing_line(shape->data.circ.x, shape->data.circ.y, cr, ex1, ey1, ex2, ey2))
 			return CRES_ST_CROSSING;
