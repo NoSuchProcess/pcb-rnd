@@ -171,10 +171,20 @@ RND_INLINE void cres_geo_line_side_lines(pcb_pstk_shape_t *line, double sr, doub
 
 	cres_geo_line_normal(line, &nx, &ny, &vx, &vy);
 
-	*sax1 = sx1 + sr * nx; *say1 = sy1 + sr * ny;
-	*sax2 = sx2 + sr * nx; *say2 = sy2 + sr * ny;
-	*sbx1 = sx1 - sr * nx; *sby1 = sy1 - sr * ny;
-	*sbx2 = sx2 - sr * nx; *sby2 = sy2 - sr * ny;
+	if (line->data.line.square) {
+		/* square cap sides extend beyond centerline length by radius */
+		*sax1 = sx1 + sr * nx - sr * vx; *say1 = sy1 + sr * ny - sr * vy;
+		*sax2 = sx2 + sr * nx + sr * vx; *say2 = sy2 + sr * ny + sr * vy;
+		*sbx1 = sx1 - sr * nx - sr * vx; *sby1 = sy1 - sr * ny - sr * vy;
+		*sbx2 = sx2 - sr * nx + sr * vx; *sby2 = sy2 - sr * ny + sr * vy;
+	}
+	else {
+		/* round cap sides are only as long as the centerline */
+		*sax1 = sx1 + sr * nx; *say1 = sy1 + sr * ny;
+		*sax2 = sx2 + sr * nx; *say2 = sy2 + sr * ny;
+		*sbx1 = sx1 - sr * nx; *sby1 = sy1 - sr * ny;
+		*sbx2 = sx2 - sr * nx; *sby2 = sy2 - sr * ny;
+	}
 }
 
 
