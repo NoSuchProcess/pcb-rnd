@@ -3,12 +3,14 @@ include $(ROOT)/Makefile.conf
 
 SRC=$(ROOT)/src
 TDIR=../tests/pstk_crescent
-GFLT=grep -v "<anon>" | sort
+GFLT=grep -v "<anon>" | grep " n=0 " | sort
 PCBRND=./pcb-rnd
 GLOBARGS=-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1 -c debug/trace_pstk_crescent=1  --gui batch
 
 TESTS = \
 	line-circ.diff \
+	poly-line.diff \
+	poly-qline.diff \
 	qline-circ.diff \
 	circ-circ.diff \
 	poly-circ.diff
@@ -22,6 +24,18 @@ line-circ.diff: line-circ.out
 
 line-circ.out: FORCE
 	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/line-circ.rp | $(GFLT) > $(TDIR)/line-circ.out
+
+poly-line.diff: poly-line.out
+	@diff -u poly-line.ref poly-line.out && rm poly-line.out
+
+poly-line.out: FORCE
+	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/poly-line.rp | $(GFLT) > $(TDIR)/poly-line.out
+
+poly-qline.diff: poly-qline.out
+	@diff -u poly-qline.ref poly-qline.out && rm poly-qline.out
+
+poly-qline.out: FORCE
+	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/poly-qline.rp | $(GFLT) > $(TDIR)/poly-qline.out
 
 qline-circ.diff: qline-circ.out
 	@diff -u qline-circ.ref qline-circ.out && rm qline-circ.out
