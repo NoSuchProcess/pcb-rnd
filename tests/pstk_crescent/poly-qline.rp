@@ -76,8 +76,8 @@ ha:pcb-rnd-board-v9 {
            li:ps_poly {
             -5.0mil  
             -80.0mil  
-            -55.0mil  
-            -55.0mil  
+            -35.0mil  
+            -85.0mil  
             -5.0mil  
             -30.0mil  
            }
