@@ -209,7 +209,7 @@ RND_INLINE int cres_geo_line_roundcap_crossing(double lx1, double ly1, double lx
 	rnd_point_t pt;
 	int in1, in2;
 	assert(ls->shape == PCB_PSSH_LINE);
-	assert(ls->data.line.square = 0);
+	assert(ls->data.line.square == 0);
 
 	/* if both ends of the line are within the body of the line any circle
 	   intersections are inside too, which means the line is not intersecting
