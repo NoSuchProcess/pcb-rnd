@@ -9,6 +9,7 @@ GLOBARGS=-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1 -c debug/trac
 
 TESTS = \
 	line-circ.diff \
+	qline-circ.diff \
 	circ-circ.diff \
 	poly-circ.diff
 
@@ -21,6 +22,12 @@ line-circ.diff: line-circ.out
 
 line-circ.out: FORCE
 	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/line-circ.rp | $(GFLT) > $(TDIR)/line-circ.out
+
+qline-circ.diff: qline-circ.out
+	@diff -u qline-circ.ref qline-circ.out && rm qline-circ.out
+
+qline-circ.out: FORCE
+	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/qline-circ.rp | $(GFLT) > $(TDIR)/qline-circ.out
 
 circ-circ.diff: circ-circ.out
 	@diff -u circ-circ.ref circ-circ.out && rm circ-circ.out
