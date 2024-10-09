@@ -663,9 +663,39 @@ RND_INLINE cres_st_t cres_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 
 RND_INLINE cres_st_t cres_st_poly_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
+	rnd_pline_t *pls, *plh, *pshort, *plong;
+	rnd_vnode_t *vn;
+
 	assert(shape->shape == PCB_PSSH_POLY);
 	assert(hole->shape == PCB_PSSH_POLY);
 
+	pls = shape->data.poly.pa->contours;
+	plh = hole->data.poly.pa->contours;
+
+	/* first check for crossing; simplepoly: enough to check a single island */
+	if (pls->Count < plh->Count) {
+		pshort = pls;
+		plong = plh;
+	}
+	else {
+		pshort = plh;
+		plong = pls;
+	}
+	vn = pshort->head;
+	do {
+		if (rnd_pline_isect_line(plong, vn->point[0], vn->point[1], vn->next->point[0], vn->next->point[0], NULL, NULL))
+			return CRES_ST_CROSSING;
+	} while((vn = vn->next) != hole->data.poly.pa->contours->head);
+
+	/* there's no crossing; if any point of either poly is within the other, the
+	   whole poly is inside */
+	if (rnd_poly_contour_inside(plh, pls->head->point))
+		return CRES_ST_SHAPE_IN_HOLE;
+
+	if (rnd_poly_contour_inside(pls, plh->head->point))
+		return CRES_ST_HOLE_IN_SHAPE;
+
+	return CRES_ST_DISJOINT;
 }
 
 /* assume ->hfullcover and ->hcrescnet are set to 0 before the call */
