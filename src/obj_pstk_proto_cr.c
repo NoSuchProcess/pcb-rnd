@@ -447,14 +447,11 @@ RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		int in1, in2;
 		double cr2 = cr*cr;
 
-		if (hole->data.line.square) {
-			cres_geo_line_normal(&nh, shape);
-		}
-		else {
-			in1 = cres_geo_pt_insied_circle2(hole->data.line.x1, hole->data.line.y1, shape->data.circ.x, shape->data.circ.y, cr2);
-			in2 = cres_geo_pt_insied_circle2(hole->data.line.x2, hole->data.line.y2, shape->data.circ.x, shape->data.circ.y, cr2);
-		}
+		cres_geo_line_normal(&nh, hole);
 
+		/* use real endpoints (far end of the caps) */
+		in1 = cres_geo_pt_insied_circle2(hole->data.line.x1 - nh.vx * hr, hole->data.line.y1 - nh.vy * hr, shape->data.circ.x, shape->data.circ.y, cr2);
+		in2 = cres_geo_pt_insied_circle2(hole->data.line.x2 + nh.vx * hr, hole->data.line.y2 + nh.vy * hr, shape->data.circ.x, shape->data.circ.y, cr2);
 		if (in1 != in2)
 			return CRES_ST_CROSSING;
 
