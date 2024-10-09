@@ -8,10 +8,10 @@ PCBRND=./pcb-rnd
 GLOBARGS=-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1 -c debug/trace_pstk_crescent=1  --gui batch
 
 TESTS = \
-	line-circ.diff
+	line-circ.diff \
+	circ-circ.diff
 
 test: $(TESTS)
-	@echo "pstk_crescent: *** QC PASS ***"
 
 all:
 
@@ -20,6 +20,12 @@ line-circ.diff: line-circ.out
 
 line-circ.out: FORCE
 	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/line-circ.rp | $(GFLT) > $(TDIR)/line-circ.out
+
+circ-circ.diff: circ-circ.out
+	@diff -u circ-circ.ref circ-circ.out && rm circ-circ.out
+
+circ-circ.out: FORCE
+	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/circ-circ.rp | $(GFLT) > $(TDIR)/circ-circ.out
 
 clean:
 	@echo "a" > dummy.out
