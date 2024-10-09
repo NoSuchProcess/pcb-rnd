@@ -42,7 +42,7 @@ typedef enum {
 } cres_st_t;
 
 /* adjust st if (shape, hole) order was swapped for the call */
-#define CRESS_INVERT_ST(st) \
+#define CRES_INVERT_ST(st) \
 do { \
 	if (st == CRES_ST_SHAPE_IN_HOLE) st = CRES_ST_HOLE_IN_SHAPE; \
 	else if (st == CRES_ST_HOLE_IN_SHAPE) st = CRES_ST_SHAPE_IN_HOLE;\
@@ -84,7 +84,7 @@ RND_INLINE cres_st_t cres_geo_circ_circ(rnd_coord_t scx, rnd_coord_t scy, double
 	}
 	else { /* (hr < sr): swap them so "hole" is the bigger */
 		cres_st_t st = cres_geo_circ_circ(hcx, hcy, hr, scx, scy, sr);
-		CRESS_INVERT_ST(st);
+		CRES_INVERT_ST(st);
 		return st;
 	}
 }
@@ -734,14 +734,14 @@ RND_INLINE void cres_class_poly_in_poly(pcb_pstk_shape_t *dst, pcb_pstk_shape_t 
 RND_INLINE void cres_class_poly_in_line(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	cres_st_t st = cres_st_line_poly(hole, shape);
-	CRESS_INVERT_ST(st);
+	CRES_INVERT_ST(st);
 	cres_output(dst, st);
 }
 
 RND_INLINE void cres_class_poly_in_circ(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	cres_st_t st = cres_st_circ_poly(hole, shape);
-	CRESS_INVERT_ST(st);
+	CRES_INVERT_ST(st);
 	cres_output(dst, st);
 }
 
@@ -760,7 +760,7 @@ RND_INLINE void cres_class_line_in_line(pcb_pstk_shape_t *dst, pcb_pstk_shape_t 
 RND_INLINE void cres_class_line_in_circ(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
 	cres_st_t st = cres_st_circ_line(hole, shape);
-	CRESS_INVERT_ST(st);
+	CRES_INVERT_ST(st);
 	cres_output(dst, st);
 }
 
