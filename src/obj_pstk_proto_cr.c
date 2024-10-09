@@ -176,7 +176,7 @@ RND_INLINE void cres_geo_line_side_lines(const pcb_pstk_shape_t *line, const cre
 
 /* Returns whether px;py is inside a circle (not on perimeter and not outside);
    cr2 is circle radius squared */
-RND_INLINE int cres_geo_pt_insied_circle2(double px, double py, double cx, double cy, double cr2)
+RND_INLINE int cres_geo_pt_inside_circle2(double px, double py, double cx, double cy, double cr2)
 {
 	double dx = cx - px, dy = cy - py;
 	return (dx*dx + dy*dy) < cr2;
@@ -188,8 +188,8 @@ RND_INLINE int cres_geo_circ_crossing_line(double cx, double cy, double cr, doub
 	double offs, cr2 = cr*cr, dist2;
 	int in1, in2;
 
-	in1 = cres_geo_pt_insied_circle2(lx1, ly1, cx, cy, cr2);
-	in2 = cres_geo_pt_insied_circle2(lx2, ly2, cx, cy, cr2);
+	in1 = cres_geo_pt_inside_circle2(lx1, ly1, cx, cy, cr2);
+	in2 = cres_geo_pt_inside_circle2(lx2, ly2, cx, cy, cr2);
 
 	if (in1 && in2) return 0; /* the whole line is inside */
 	if (in1 != in2) return 1; /* one endpoint in, another out */
@@ -250,9 +250,9 @@ RND_INLINE int cres_geo_pt_in_line(rnd_coord_t ptx, rnd_coord_t pty, pcb_pstk_sh
 
 	/* check round end caps */
 	if (!ls->data.line.square) {
-		if (cres_geo_pt_insied_circle2(ptx, pty, ls->data.line.x1, ls->data.line.y1, lsr2))
+		if (cres_geo_pt_inside_circle2(ptx, pty, ls->data.line.x1, ls->data.line.y1, lsr2))
 			return 1;
-		if (cres_geo_pt_insied_circle2(ptx, pty, ls->data.line.x2, ls->data.line.y2, lsr2))
+		if (cres_geo_pt_inside_circle2(ptx, pty, ls->data.line.x2, ls->data.line.y2, lsr2))
 			return 1;
 	}
 
@@ -365,8 +365,8 @@ RND_INLINE int cres_geo_square_roundcap_crossing_(pcb_pstk_shape_t *a, double ar
 		}
 
 		/* if one end in and other end is out, they are crossing */
-		in1 = cres_geo_pt_insied_circle2(lx1, ly1, cx, cy, br2);
-		in2 = cres_geo_pt_insied_circle2(lx2, ly2, cx, cy, br2);
+		in1 = cres_geo_pt_inside_circle2(lx1, ly1, cx, cy, br2);
+		in2 = cres_geo_pt_inside_circle2(lx2, ly2, cx, cy, br2);
 		if (in1 != in2)
 			return 1;
 
@@ -450,8 +450,8 @@ RND_INLINE cres_st_t cres_st_circ_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		cres_geo_line_normal(&nh, hole);
 
 		/* use real endpoints (far end of the caps) */
-		in1 = cres_geo_pt_insied_circle2(hole->data.line.x1 - nh.vx * hr, hole->data.line.y1 - nh.vy * hr, shape->data.circ.x, shape->data.circ.y, cr2);
-		in2 = cres_geo_pt_insied_circle2(hole->data.line.x2 + nh.vx * hr, hole->data.line.y2 + nh.vy * hr, shape->data.circ.x, shape->data.circ.y, cr2);
+		in1 = cres_geo_pt_inside_circle2(hole->data.line.x1 - nh.vx * hr, hole->data.line.y1 - nh.vy * hr, shape->data.circ.x, shape->data.circ.y, cr2);
+		in2 = cres_geo_pt_inside_circle2(hole->data.line.x2 + nh.vx * hr, hole->data.line.y2 + nh.vy * hr, shape->data.circ.x, shape->data.circ.y, cr2);
 		if (in1 != in2)
 			return CRES_ST_CROSSING;
 
@@ -664,7 +664,7 @@ RND_INLINE cres_st_t cres_st_circ_poly(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	/* Order of the following two checks does matter */
 
 	/* there's no crossing; if any of the poly is in the line, the whole poly is in the circle */
-	if (cres_geo_pt_insied_circle2(vn->point[0], vn->point[1], shape->data.circ.x, shape->data.circ.y, sr*sr))
+	if (cres_geo_pt_inside_circle2(vn->point[0], vn->point[1], shape->data.circ.x, shape->data.circ.y, sr*sr))
 		return CRES_ST_HOLE_IN_SHAPE;
 
 	/* there's no crossing; circ center is in the poly, the whole circle is in the poly */
