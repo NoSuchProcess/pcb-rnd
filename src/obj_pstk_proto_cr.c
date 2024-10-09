@@ -506,7 +506,7 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 
 	/* precompute side lines: sa and sb for side, ha and hb for hole */
 	cres_geo_line_normal(&ns, shape);
-	cres_geo_line_normal(&nh, shape);
+	cres_geo_line_normal(&nh, hole);
 	cres_geo_line_side_lines(shape, &ns, sr, &sax1, &say1, &sax2, &say2, &sbx1, &sby1, &sbx2, &sby2);
 	cres_geo_line_side_lines(hole,  &nh, hr, &hax1, &hay1, &hax2, &hay2, &hbx1, &hby1, &hbx2, &hby2);
 
