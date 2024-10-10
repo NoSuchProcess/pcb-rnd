@@ -5,7 +5,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996, 2005 Thomas Nau
- *  pcb-rnd Copyright (C) 2020,2022,2023 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2020,2022,2023,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1160,25 +1160,61 @@ do { \
 	return rnd_false; \
 } while(0)
 
+/* Return true shape of a padstackon a layer, considering the effect of
+   drilled hole or slot; in crescent case returns tmp. After the call
+   tmp needs to be free'd using isc_pstk_shape_free */
+static pcb_pstk_shape_t *isc_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *ly, pcb_pstk_shape_t *tmp)
+{
+	pcb_pstk_shape_t *shp = pcb_pstk_shape_at(PCB, ps, ly);
+
+	tmp->shape = PCB_PSSH_HSHADOW;
+
+	if (shp == NULL)
+		return NULL;
+
+	if (shp->hfullcover)
+		return NULL; /* shp is really drilled away */
+
+
+	if (shp->hcrescent) {
+		rnd_trace("ouch crescent padstack\n");
+		TODO("handle crescent case by computing a polygon shape");
+/*		tmp->shape = PCB_PSSH_POLY;*/
+	}
+
+	return shp;
+}
+
+RND_INLINE void isc_pstk_shape_free(pcb_pstk_shape_t *tmp)
+{
+	if (tmp->shape == PCB_PSSH_POLY)
+		pcb_pstk_shape_free(tmp);
+}
+
 rnd_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line, rnd_bool anylayer)
 {
-	pcb_pstk_shape_t *shape;
+	pcb_pstk_shape_t *shape, tmpshape;
 	pcb_pstk_proto_t *proto;
 
 	if (anylayer)
 		PCB_ISC_PSTK_ANYLAYER(ps, pcb_isc_pstk_line_shp(ctx, ps, line, &tshp->shape[n]));
 
-	shape = pcb_pstk_shape_at(PCB, ps, line->parent.layer);
-	if (pcb_isc_pstk_line_shp(ctx, ps, line, shape))
+	shape = isc_pstk_shape_at(PCB, ps, line->parent.layer, &tmpshape);
+	if (pcb_isc_pstk_line_shp(ctx, ps, line, shape)) {
+		isc_pstk_shape_free(&tmpshape);
 		return rnd_true;
+	}
 
 	proto = pcb_pstk_get_proto(ps);
 	if (proto->hplated) {
 		shape = pcb_pstk_shape_mech_at(PCB, ps, line->parent.layer);
-		if (pcb_isc_pstk_line_shp(ctx, ps, line, shape))
+		if (pcb_isc_pstk_line_shp(ctx, ps, line, shape)) {
+			isc_pstk_shape_free(&tmpshape);
 			return rnd_true;
+		}
 	}
 
+	isc_pstk_shape_free(&tmpshape);
 	return rnd_false;
 }
 
@@ -1235,23 +1271,28 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_arc_shp(const pcb_find_t *ctx, pcb_pstk_t *ps
 
 RND_INLINE rnd_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc, rnd_bool anylayer)
 {
-	pcb_pstk_shape_t *shape;
+	pcb_pstk_shape_t *shape, tmpshape;
 	pcb_pstk_proto_t *proto;
 
 	if (anylayer)
 		PCB_ISC_PSTK_ANYLAYER(ps, pcb_isc_pstk_arc_shp(ctx, ps, arc, &tshp->shape[n]));
 
-	shape = pcb_pstk_shape_at(PCB, ps, arc->parent.layer);
-	if (pcb_isc_pstk_arc_shp(ctx, ps, arc, shape))
+	shape = isc_pstk_shape_at(PCB, ps, arc->parent.layer, &tmpshape);
+	if (pcb_isc_pstk_arc_shp(ctx, ps, arc, shape)) {
+		isc_pstk_shape_free(&tmpshape);
 		return rnd_true;
+	}
 
 	proto = pcb_pstk_get_proto(ps);
 	if (proto->hplated) {
 		shape = pcb_pstk_shape_mech_at(PCB, ps, arc->parent.layer);
-		if (pcb_isc_pstk_arc_shp(ctx, ps, arc, shape))
+		if (pcb_isc_pstk_arc_shp(ctx, ps, arc, shape)) {
+			isc_pstk_shape_free(&tmpshape);
 			return rnd_true;
+		}
 	}
 
+	isc_pstk_shape_free(&tmpshape);
 	return rnd_false;
 }
 
@@ -1382,7 +1423,7 @@ rnd_polyarea_t *pcb_pstk_shape2polyarea(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 
 RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, rnd_bool anylayer)
 {
-	pcb_pstk_shape_t *shape;
+	pcb_pstk_shape_t *shape, tmpshape;
 	pcb_pstk_proto_t *proto;
 	rnd_coord_t clr;
 
@@ -1402,17 +1443,22 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 		}
 	}
 
-	shape = pcb_pstk_shape_at(PCB, ps, poly->parent.layer);
-	if (pcb_isc_pstk_poly_shp(ctx, ps, poly, shape))
+	shape = isc_pstk_shape_at(PCB, ps, poly->parent.layer, &tmpshape);
+	if (pcb_isc_pstk_poly_shp(ctx, ps, poly, shape)) {
+		isc_pstk_shape_free(&tmpshape);
 		return rnd_true;
+	}
 
 	proto = pcb_pstk_get_proto(ps);
 	if (proto->hplated) {
 		shape = pcb_pstk_shape_mech_at(PCB, ps, poly->parent.layer);
-		if (pcb_isc_pstk_poly_shp(ctx, ps, poly, shape))
+		if (pcb_isc_pstk_poly_shp(ctx, ps, poly, shape)) {
+			isc_pstk_shape_free(&tmpshape);
 			return rnd_true;
+		}
 	}
 
+	isc_pstk_shape_free(&tmpshape);
 	return rnd_false;
 }
 
@@ -1516,6 +1562,7 @@ rnd_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, p
 RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_t *ps2, rnd_bool anylayer)
 {
 	pcb_layer_t *ly;
+	pcb_pstk_shape_t tmpshape1, tmpshape2;
 	pcb_pstk_proto_t *proto1, *proto2;
 	int n;
 
@@ -1542,21 +1589,25 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, 
 		if (!ctx->allow_noncopper_pstk && !(lyt & PCB_LYT_COPPER)) /* consider only copper for connections */
 			continue;
 
-		shape1 = pcb_pstk_shape_at(PCB, ps1, ly);
-		shape2 = pcb_pstk_shape_at(PCB, ps2, ly);
+#define CLEANUP isc_pstk_shape_free(&tmpshape1); isc_pstk_shape_free(&tmpshape2)
+		shape1 = isc_pstk_shape_at(PCB, ps1, ly, &tmpshape1);
+		shape2 = isc_pstk_shape_at(PCB, ps2, ly, &tmpshape2);
 
-		if ((shape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, shape1, ps2, shape2)) return rnd_true;
+		if ((shape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, shape1, ps2, shape2)) { CLEANUP; return rnd_true; }
 
 		if (proto1->hplated)
 			slshape1 = pcb_pstk_shape_mech_or_hole_at(PCB, ps1, ly, &sltmp1);
 		if (proto2->hplated)
 			slshape2 = pcb_pstk_shape_mech_or_hole_at(PCB, ps2, ly, &sltmp2);
 
-		if ((slshape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, slshape1, ps2, shape2)) return rnd_true;
-		if ((slshape2 != NULL) && (shape1 != NULL) && pcb_pstk_shape_intersect_(ctx, ps2, slshape2, ps1, shape1)) return rnd_true;
-		if ((slshape1 != NULL) && (slshape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, slshape1, ps2, slshape2)) return rnd_true;
+		if ((slshape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, slshape1, ps2, shape2)) { CLEANUP; return rnd_true; }
+		if ((slshape2 != NULL) && (shape1 != NULL) && pcb_pstk_shape_intersect_(ctx, ps2, slshape2, ps1, shape1)) { CLEANUP; return rnd_true; }
+		if ((slshape1 != NULL) && (slshape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, slshape1, ps2, slshape2)) { CLEANUP; return rnd_true; }
 	}
+
+	CLEANUP;
 	return rnd_false;
+#undef CLEANUP
 }
 
 
@@ -1565,6 +1616,9 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_rat(const pcb_find_t *ctx, pcb_pstk_t *ps, pc
 	pcb_board_t *pcb = PCB;
 
 	PCB_ISC_RAT_BY_IDPATH(ctx, rat, (pcb_any_obj_t *)ps);
+
+	/* this is the only case where we use pcb_pstk_shape_at() directly because
+	   the rat code wouldn't filter out non-existing copper either */
 
 	if ((rat->Point1.X == ps->x) && (rat->Point1.Y == ps->y)) {
 		pcb_layer_t *layer = pcb_get_layer(pcb->Data, pcb->LayerGroups.grp[rat->group1].lid[0]);
