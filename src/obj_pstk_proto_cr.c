@@ -559,8 +559,8 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 			return CRES_ST_CROSSING;
 	}
 	else if (!shape->data.line.square && hole->data.line.square) {
-		/* round square */
-		if (cres_geo_square_roundcap_crossing(shape, sr, qs, hole, hr, qh))
+		/* round square; round shape, square hole but square needs to be passed first */
+		if (cres_geo_square_roundcap_crossing(hole, hr, qh, shape, sr, qs))
 			return CRES_ST_CROSSING;
 	}
 	else {
