@@ -532,8 +532,9 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 	qs[2].X = rnd_round(sbx2); qs[2].Y = rnd_round(sby2);
 	qs[3].X = rnd_round(sbx1); qs[3].Y = rnd_round(sby1);
 
-	/* check endcap-side crossings; square cap line endcap can't cross without
-	   a side-side crossing */
+	/* check round endcap-side crossings; square cap line endcap can't cross
+	   without a side-side crossing; "square-square endcap crossing" is
+	   tested later */
 	if (!hole->data.line.square) {
 		if (cres_geo_line_roundcap_crossing(sax1, say1, sax2, say2, hole, hr, qh))
 			return CRES_ST_CROSSING;
@@ -564,7 +565,18 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 			return CRES_ST_CROSSING;
 	}
 	else {
-		/* square-sqaure: it's not possible to have a crossing without the sides also crossing */
+		/* "square-sqaure endcap crossing": the only case not checked is endcap vs.
+		   side crossing; this happens if a thick hole sqline's end cap is crossed
+		   by a small copper sqline's endcap. It's always a side-endcapline
+		   intersection, tho */
+		if (pcb_geo_line_line(sax1, say1, sax2, say2, hax1, hay1, hbx1, hby1))
+			return CRES_ST_CROSSING;
+		if (pcb_geo_line_line(sax1, say1, sax2, say2, hax2, hay2, hbx2, hby2))
+			return CRES_ST_CROSSING;
+		if (pcb_geo_line_line(sbx1, sby1, sbx2, sby2, hax1, hay1, hbx1, hby1))
+			return CRES_ST_CROSSING;
+		if (pcb_geo_line_line(sbx1, sby1, sbx2, sby2, hax2, hay2, hbx2, hby2))
+			return CRES_ST_CROSSING;
 	}
 
 
