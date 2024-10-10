@@ -317,12 +317,14 @@ int pcb_poly_is_valid(pcb_poly_t *p)
 		/* check if holes do not cross anything */
 		for(h = 1; h < p->HoleIndexN; h++) {
 			hp = holes.array[h];
+			if (hp == NULL) continue;
 			if (rnd_polyarea_touching(hp, np)) {
 				valid = 0;
 				goto bad;
 			}
 			for(n = 1; n < h; n++) {
 				hp2 = holes.array[n];
+				if (hp2 == NULL) continue;
 				if (rnd_polyarea_touching(hp, hp2)) {
 					valid = 0;
 					goto bad;
