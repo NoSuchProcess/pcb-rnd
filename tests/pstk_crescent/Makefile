@@ -16,7 +16,8 @@ TESTS = \
 	qline-circ.diff \
 	qline-qline.diff \
 	circ-circ.diff \
-	poly-circ.diff
+	poly-circ.diff \
+	poly-poly.diff
 
 test: $(TESTS)
 
@@ -75,6 +76,12 @@ poly-circ.diff: poly-circ.out
 
 poly-circ.out: FORCE
 	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/poly-circ.rp | $(GFLT) > $(TDIR)/poly-circ.out
+
+poly-poly.diff: poly-poly.out
+	@diff -u poly-poly.ref poly-poly.out && rm poly-poly.out
+
+poly-poly.out: FORCE
+	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/poly-poly.rp | $(GFLT) > $(TDIR)/poly-poly.out
 
 clean:
 	@echo "a" > dummy.out
