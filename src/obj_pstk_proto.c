@@ -104,8 +104,11 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 					ts->shape[n].hfullcover = 1;
 				}
 				else {
-					ts->shape[n].hconn = pcb_pstk_shape_intersect(&dummy_ps, &ts->shape[n], &dummy_ps, hole);
 					pcb_pstk_shape_crescent_init(&ts->shape[n], hole, dst, &dummy_ps);
+					/* check that the old way of overlap calculation (misnamed as
+					   intersect) gives the same as the new implementation in
+					   crescent_init() for hconn */
+					assert(ts->shape[n].hconn == pcb_pstk_shape_intersect(&dummy_ps, &ts->shape[n], &dummy_ps, hole));
 				}
 				if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && !ts->shape[n].hconn)
 					dst->all_copper_connd = 0;

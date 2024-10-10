@@ -756,7 +756,7 @@ RND_INLINE void cres_output(pcb_pstk_shape_t *dst, cres_st_t st)
 		case CRES_ST_SHAPE_IN_HOLE: dst->hfullcover = 1; break; /* drilled away the whole shape */
 		case CRES_ST_HOLE_IN_SHAPE: break; /* the normal via case */
 		case CRES_ST_CROSSING: dst->hcrescent = 1; break;
-		case CRES_ST_DISJOINT: assert(dst->hconn == 0); TODO("could set it instead"); break;
+		case CRES_ST_DISJOINT: dst->hconn = 0; break; /* the only case when they are not connected */
 	}
 }
 
@@ -824,11 +824,19 @@ RND_INLINE void cres_class_circ_in_circ(pcb_pstk_shape_t *dst, pcb_pstk_shape_t 
    pcb_pstk_proto_update() */
 RND_INLINE void pcb_pstk_shape_crescent_init(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *hole, pcb_pstk_proto_t *proto, pcb_pstk_t *dummy_ps)
 {
+	dst->hconn = 1; /* normally the shape is connected with the hole; this is set to 0 explicitly in the disjoint case */
+
 	dst->hcrescent = dst->hfullcover = 0;
 	if (hole->shape == PCB_PSSH_HSHADOW) {
 		assert("invalid slot shape");
+		dst->hconn = 0; /* hshadow can not connect to anything */
 		return;
 	}
+
+	if ((dst->shape == PCB_PSSH_POLY) && (dst->data.poly.pa == NULL))
+		pcb_pstk_shape_update_pa(&dst->data.poly);
+	if ((hole->shape == PCB_PSSH_POLY) && (hole->data.poly.pa == NULL))
+		pcb_pstk_shape_update_pa(&hole->data.poly);
 
 	switch(dst->shape) {
 		case PCB_PSSH_POLY:
@@ -857,6 +865,7 @@ RND_INLINE void pcb_pstk_shape_crescent_init(pcb_pstk_shape_t *dst, pcb_pstk_sha
 			break;
 		case PCB_PSSH_HSHADOW:
 			assert("caller should have handled this");
+			dst->hconn = 0; /* hshadow can not connect to anything */
 			break;
 	}
 }
