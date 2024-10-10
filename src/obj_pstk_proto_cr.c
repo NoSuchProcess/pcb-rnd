@@ -569,6 +569,8 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		   side crossing; this happens if a thick hole sqline's end cap is crossed
 		   by a small copper sqline's endcap. It's always a side-endcapline
 		   intersection, tho */
+
+		/* shape side vs. hole end */
 		if (pcb_geo_line_line(sax1, say1, sax2, say2, hax1, hay1, hbx1, hby1))
 			return CRES_ST_CROSSING;
 		if (pcb_geo_line_line(sax1, say1, sax2, say2, hax2, hay2, hbx2, hby2))
@@ -576,6 +578,16 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 		if (pcb_geo_line_line(sbx1, sby1, sbx2, sby2, hax1, hay1, hbx1, hby1))
 			return CRES_ST_CROSSING;
 		if (pcb_geo_line_line(sbx1, sby1, sbx2, sby2, hax2, hay2, hbx2, hby2))
+			return CRES_ST_CROSSING;
+
+		/* hole side vs. shape end */
+		if (pcb_geo_line_line(hax1, hay1, hax2, hay2, sax1, say1, sbx1, sby1))
+			return CRES_ST_CROSSING;
+		if (pcb_geo_line_line(hax1, hay1, hax2, hay2, sax2, say2, sbx2, sby2))
+			return CRES_ST_CROSSING;
+		if (pcb_geo_line_line(hbx1, hby1, hbx2, hby2, sax1, say1, sbx1, sby1))
+			return CRES_ST_CROSSING;
+		if (pcb_geo_line_line(hbx1, hby1, hbx2, hby2, sax2, say2, sbx2, sby2))
 			return CRES_ST_CROSSING;
 	}
 
