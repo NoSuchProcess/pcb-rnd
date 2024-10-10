@@ -1165,7 +1165,7 @@ do { \
    tmp needs to be free'd using isc_pstk_shape_free */
 static pcb_pstk_shape_t *isc_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *ly, pcb_pstk_shape_t *tmp)
 {
-	pcb_pstk_shape_t *shp = pcb_pstk_shape_at(PCB, ps, ly);
+	pcb_pstk_shape_t *shp = pcb_pstk_shape_at(PCB, ps, ly), htmp;
 
 	tmp->shape = PCB_PSSH_HSHADOW;
 
@@ -1176,10 +1176,31 @@ static pcb_pstk_shape_t *isc_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb
 		return NULL; /* shp is really drilled away */
 
 
+
+	/* deal with unplated hole/slot and crescent shapes only; in case of plated,
+	   we can take the whole hole/slot filled with copper conceptually */
 	if (shp->hcrescent) {
-		rnd_trace("ouch crescent padstack\n");
-		TODO("handle crescent case by computing a polygon shape");
-/*		tmp->shape = PCB_PSSH_POLY;*/
+		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+
+		if (!proto->hplated) {
+			pcb_pstk_shape_t *hole = pcb_pstk_shape_mech_at(pcb, ps, ly);
+
+			if ((hole == NULL) && (proto->hdia <= 0))
+				return shp;
+
+			if (hole == NULL) {
+				memset(&htmp, 0, sizeof(pcb_pstk_shape_t));
+				htmp.shape = PCB_PSSH_HSHADOW; /* hackish way indicate to pcb_pstk_shape_crescent_render() that it's a raw polygon */
+				htmp.data.poly.pa = rnd_poly_from_circle(ps->x, ps->y, rnd_round(proto->hdia/2.0));
+				hole = &htmp;
+			}
+
+			memset(tmp, 0, sizeof(pcb_pstk_shape_t));
+			tmp->shape = PCB_PSSH_POLY;
+			tmp->data.poly.pa = pcb_pstk_shape_crescent_render(ps, shp, hole);
+			rnd_polyarea_move(tmp->data.poly.pa, -ps->x, -ps->y); /* the caller expects non-transformed whiel all our shapes were transformed */
+			return tmp;
+		}
 	}
 
 	return shp;

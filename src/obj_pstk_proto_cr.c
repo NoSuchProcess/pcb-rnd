@@ -871,8 +871,24 @@ RND_INLINE void pcb_pstk_shape_crescent_init(pcb_pstk_shape_t *dst, pcb_pstk_sha
 }
 
 
-rnd_polyarea_t *pcb_pstk_shape_crescent_render(pcb_pstk_shape_t *dst, pcb_pstk_shape_t *hole)
+rnd_polyarea_t *pcb_pstk_shape_crescent_render(pcb_pstk_t *ps, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole)
 {
-	TODO("implement me");
-	return NULL;
+	rnd_polyarea_t *shpa, *hlpa, *res;
+
+	shpa = pcb_pstk_shape2polyarea(ps, shape);
+
+	/* special case hack:
+	   don't call pcb_pstk_shape2polyarea() as the caller
+	   may have supplied fake hole with only data.poly.pa filled in;
+	   in that case it is already transformed */
+	if (hole->shape == PCB_PSSH_HSHADOW) {
+		rnd_polyarea_copy0(&hlpa, hole->data.poly.pa);
+		hole->shape = PCB_PSSH_POLY;
+	}
+	else
+		hlpa = pcb_pstk_shape2polyarea(ps, hole);
+
+	rnd_polyarea_boolean_free(shpa, hlpa, &res, RND_PBO_SUB);
+
+	return res;
 }

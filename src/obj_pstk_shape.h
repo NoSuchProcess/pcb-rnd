@@ -87,4 +87,7 @@ void pcb_pstk_shape_smirror(pcb_pstk_shape_t *sh);
    of layer positions) */
 rnd_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2);
 
+/* Render the crescent polyarea by subtracting hole from shape */
+rnd_polyarea_t *pcb_pstk_shape_crescent_render(pcb_pstk_t *ps, pcb_pstk_shape_t *shape, pcb_pstk_shape_t *hole);
+
 #endif
