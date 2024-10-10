@@ -1,0 +1,7 @@
+CRES proto 'c1' n=0 hconn=1 hcrescent=1 hfullcover=0
+CRES proto 'c2' n=0 hconn=1 hcrescent=1 hfullcover=0
+CRES proto 'c3' n=0 hconn=1 hcrescent=1 hfullcover=0
+CRES proto 'c4' n=0 hconn=1 hcrescent=1 hfullcover=0
+CRES proto 'd1' n=0 hconn=0 hcrescent=0 hfullcover=0
+CRES proto 'n1' n=0 hconn=1 hcrescent=0 hfullcover=0
+CRES proto 'o1' n=0 hconn=1 hcrescent=0 hfullcover=1
