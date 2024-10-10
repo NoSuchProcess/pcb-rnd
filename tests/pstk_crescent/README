@@ -1,0 +1,18 @@
+padstack proto padstack shape crescent classification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The code in padstack update decides for each shape vs. drilledhole-or-slot
+("hole") if:
+ - the hole is fully within the shape ("normal case")
+ - the hole contour and the shape contour intersect ("crescent case")
+ - the shape is fully within the hole (overlaps fully so the shape is really drilled away)
+ - they are disjoint
+
+Test cases are padstacks with top copper and hole/slot only. The padstack
+prototypes to test are named. The name starts with "n" for the normal case,
+"c" for crescent, "o" for overlap and "d" for disjoint.
+
+Note: for slotted prototypes, within the padstack prototype copper shape
+must be the first and slot shape. This needs to be verified and maybe fixed
+using a text editor because pcb-rnd GUI won't reveal the storage index of
+shapes.
