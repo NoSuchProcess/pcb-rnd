@@ -570,11 +570,13 @@ RND_INLINE cres_st_t cres_st_line_line(pcb_pstk_shape_t *shape, pcb_pstk_shape_t
 
 	/* They are not crossing so if both ends are within the other line that
 	   means inside. If there are no crossing this also means either both
-	   or neither ends are inside so it's enough to check one end */
-	if (cres_geo_pt_in_line(shape->data.line.x1, shape->data.line.y1, hole, hr*hr, qh))
+	   or neither ends are inside so it's enough to check one end. Have to use
+	   the true end (furthest point) not centerline ends; for example in a classic
+	   line-line slot case both centerline ends are within the other shape */
+	if (cres_geo_pt_in_line(shape->data.line.x1 - ns.vx * sr, shape->data.line.y1 - ns.vy * sr, hole, hr*hr, qh))
 		return CRES_ST_SHAPE_IN_HOLE;
 
-	if (cres_geo_pt_in_line(hole->data.line.x1, hole->data.line.y1, shape, sr*sr, qs))
+	if (cres_geo_pt_in_line(hole->data.line.x1 - nh.vx * hr, hole->data.line.y1 - nh.vy * hr, shape, sr*sr, qs))
 		return CRES_ST_HOLE_IN_SHAPE;
 
 	return CRES_ST_DISJOINT;
