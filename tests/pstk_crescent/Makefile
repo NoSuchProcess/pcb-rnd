@@ -14,6 +14,7 @@ TESTS = \
 	poly-line.diff \
 	poly-qline.diff \
 	qline-circ.diff \
+	qline-qline.diff \
 	circ-circ.diff \
 	poly-circ.diff
 
@@ -38,6 +39,12 @@ line-qline.diff: line-qline.out
 
 line-qline.out: FORCE
 	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/line-qline.rp | $(GFLT) > $(TDIR)/line-qline.out
+
+qline-qline.diff: qline-qline.out
+	@diff -u qline-qline.ref qline-qline.out && rm qline-qline.out
+
+qline-qline.out: FORCE
+	@cd $(SRC) && echo "" | $(PCBRND) $(GLOBARGS) $(TDIR)/qline-qline.rp | $(GFLT) > $(TDIR)/qline-qline.out
 
 poly-line.diff: poly-line.out
 	@diff -u poly-line.ref poly-line.out && rm poly-line.out
