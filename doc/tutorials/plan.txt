@@ -3,8 +3,32 @@
 Milestone C:
 
 - grid, snap, wireframe [3]
-	TODO
-
+	- red grid dots
+	- if not visible set editor/cross_grid
+	- crosshair snapping to grid
+	- useful for spacing traces and objects
+	- change grid spacing:
+		- menu view -> grid -> grid size -> tear-off
+		- switching up and down in predefined with hotkeys
+		- grid unit does not need to match display unit
+		- custom grid from menu
+	- object endpoint snap
+		- draw arc, line, padstack and poly
+		- happens best when grid is large
+		- line/arc ends
+		- line middle
+		- polygon corners
+		- padstack origin
+	- thin
+		- wireframe draw with {mdw}
+		- thin draw with {mdt}
+		- uses:
+			- especially useful on mask layers
+			- hidden object overlaps like lines going inside polygons and padstacks (smd!)
+			- misaligned corner (outline!)
+		- selective:
+			- {m d p} for poly only
+			- per layer from right click transformation
 
 
 Milestone D:
