@@ -292,7 +292,8 @@ rnd_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 					np1 = np;
 
 				diff = cnt1-cnt0+1;
-				rnd_message(RND_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", diff);
+				rnd_message(RND_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\nThis is an error in your data, please fix your polygon!\nObject ID: #%ld, first as-drawn point is %.3$mm;%.3$mm\n",
+					diff, p->ID, p->Points[0].X, p->Points[0].Y);
 				if (diff > 1)
 					*need_full = rnd_true;
 				assert(rnd_poly_valid(np));
