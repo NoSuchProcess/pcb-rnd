@@ -997,7 +997,7 @@ void *pcb_polyop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	}
 	return Polygon;
 }
-/* moves a polygon-point */
+/* moves a polygon-point (outline or hole) */
 void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, rnd_point_t *Point)
 {
 	pcb_poly_pprestore(Polygon);
