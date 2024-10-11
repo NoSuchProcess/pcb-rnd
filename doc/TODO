@@ -21,7 +21,6 @@
 	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
 	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
 - poly lib rewrite (fixed means it works with polybool2):
-	+ BUG: aron's private board, aron_*, self-isc inf loop with polybool [report: aron]
 	+ BUG: Bdale's disappearing poly bugreport, hosted in librnd/work/poly_broken
 		+ BUG: test_poly/bdale4: broken clipping
 	+ BUG: test_poly/bdale3: dicer bug: disappearing clearance: place a signal via right to the rectangular pin with no clarance overlap, rectangular pin's clearance disappears [report: Igor2]
