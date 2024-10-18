@@ -3,25 +3,49 @@
 Milestone D:
 
 - remove and buffer basics [2]
-	TODO
-	(include mirror and arb. rotation)
+	- remove tool
+	- remove by del (no selection needed)
+	- remove by selection
+		- menu
+		- {s r}
+	- cut selection to buffer
+	- paste
+	- copy selection to buffer
 
 - advanced buffer use [5]
+	- buffer transformations
+		- copy
+		- rotate
 	- save buffer content
 	- save single footprint
 	- save footprint lib
 	- loading buffer content
 	- loading footprint to buffer
-		- that's really happening with the lib window
-		- but also from the import menu
+		- what's really happening with the lib window (buffer, library searches)
+		- special casing: top/bottom view for placement does matter
+		- load file directly from the import menu
 	- using multiple buffers
 	- buffer survives board switch
 	- explain buffer layer bindings
+		- copy-paste retains side/layer; demo: smd + wire
 
 - connectivity [2]
+	- preparation
+		- place two resistors
+		- name them
+		- connect pairs of pads with rats and a stub of wire from one resistor
 	- {c r}
+		- move things around and use {c r} -> always shortest path
+		- cause a short with stubs -> {c r} warns
+		- mincut vs. no-mincut (requres next release!)
 	- {c f}
-	- shorts and mincut
+		- galvanic connections on copper
+		- {c f} on another
+		- {c f} away or {c c} to clear
+		- remove some wires, {c r}
+		- ... and rats
+		- del the rat, {c f}
+
 
 - netlist window basics [3]
 	TODO
