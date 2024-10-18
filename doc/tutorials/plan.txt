@@ -48,7 +48,13 @@ Milestone D:
 
 
 - D4: netlist window basics [3]
-	TODO
+	- open the window
+	- show how nets and pads are visually highlighted
+	- select/unslect
+	- find/clear
+	- rat disable, rat enable (gnd!)
+	- all enable/disable
+	- single net rat'ing
 
 - D5: netlist window advanced [5]
 	TODO
