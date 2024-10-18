@@ -55,9 +55,26 @@ Milestone D:
 	- rat disable, rat enable (gnd!)
 	- all enable/disable
 	- single net rat'ing
+	- ripup
 
 - D5: netlist window advanced [5]
-	TODO
+	- drawing new nets:
+		- place and name some subcircuits
+		- open the netlist window
+		- select the line tool and the rat layer
+		- draw the rat
+		- show result in the netlist window
+	- show back annotation window
+	- close back annot window
+	- show rename
+	- create another net drawing rats
+	- merge selected net into another net by name
+	- change attrib
+	- claim:
+		- draw a connection
+		- click on claim by different methods
+		- enter name for the new net
+	- length calc; TODO: buggy, always thinks there's a junction
 
 - D6: advanced thermals [3]
 	TODO
