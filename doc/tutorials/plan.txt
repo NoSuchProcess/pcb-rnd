@@ -2,7 +2,7 @@
 
 Milestone D:
 
-- remove and buffer basics [2]
+- D1: remove and buffer basics [2]
 	- remove tool
 	- remove by del (no selection needed)
 	- remove by selection
@@ -12,7 +12,7 @@ Milestone D:
 	- paste
 	- copy selection to buffer
 
-- advanced buffer use [5]
+- D2: advanced buffer use [5]
 	- buffer transformations
 		- copy
 		- rotate
@@ -29,7 +29,7 @@ Milestone D:
 	- explain buffer layer bindings
 		- copy-paste retains side/layer; demo: smd + wire
 
-- connectivity [2]
+- D3: connectivity [2]
 	- preparation
 		- place two resistors
 		- name them
@@ -47,13 +47,13 @@ Milestone D:
 		- del the rat, {c f}
 
 
-- netlist window basics [3]
+- D4: netlist window basics [3]
 	TODO
 
-- netlist window advanced [5]
+- D5: netlist window advanced [5]
 	TODO
 
-- advanced thermals [3]
+- D6: advanced thermals [3]
 	TODO
 
 
