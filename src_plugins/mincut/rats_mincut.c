@@ -57,7 +57,7 @@ static const char *pcb_mincut_cookie = "mincut";
 
 /* define to 1 to enable debug prints */
 #if 0
-#	define debprintf pcb_trace
+#	define debprintf rnd_trace
 #else
 	static void debprintf(const char *fmt, ...) {}
 #endif
