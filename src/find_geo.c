@@ -166,21 +166,31 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 	rnd_coord_t pdx, pdy;
 	rnd_coord_t box[8];
 
+	if (Bloat < 0) {
+		/* negative bloat is so severe that the whole arc disappears */
+		if ((Bloat < -Arc1->Thickness) || (Bloat < -Arc2->Thickness))
+			return rnd_false;
+	}
+
 	t = 0.5 * Arc1->Thickness + Bloat;
 	t2 = 0.5 * Arc2->Thickness;
 	t1 = t2 + Bloat;
 
-	/* too thin arc */
-	if (t < 0 || t1 < 0)
-		return rnd_false;
+	/* negative bloat can be larger arc thickness radius (thickness/2) but
+	   still smaller than the whole thickness  - the endpoint won't move
+	   by bloating, revert to using centerline (radius=0) */
+	if (t < 0)
+		t = 0;
+	if (t1 < 0)
+		t1 = 0;
 
 	/* try the end points first */
 	get_arc_ends(&box[0], Arc1);
 	get_arc_ends(&box[4], Arc2);
 	if (pcb_is_point_on_arc(box[0], box[1], t, Arc2)
 			|| pcb_is_point_on_arc(box[2], box[3], t, Arc2)
-			|| pcb_is_point_on_arc(box[4], box[5], t, Arc1)
-			|| pcb_is_point_on_arc(box[6], box[7], t, Arc1))
+			|| pcb_is_point_on_arc(box[4], box[5], t1, Arc1)
+			|| pcb_is_point_on_arc(box[6], box[7], t1, Arc1))
 		return rnd_true;
 
 	pdx = Arc2->X - Arc1->X;
