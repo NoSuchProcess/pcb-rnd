@@ -490,7 +490,7 @@ static void xform_setup(pcb_draw_info_t *info, rnd_xform_t *dst, const pcb_layer
 			pcb_xform_copy(dst, info->xform_caller);
 		}
 		else
-			pcb_xform_add(dst, info->xform_caller);
+			pcb_xform_add(info->xform, info->xform_caller);
 	}
 	if (info->xform_exporter != NULL) {
 		if (info->xform == NULL) {
@@ -498,7 +498,7 @@ static void xform_setup(pcb_draw_info_t *info, rnd_xform_t *dst, const pcb_layer
 			pcb_xform_copy(dst, info->xform_exporter);
 		}
 		else
-			pcb_xform_add(dst, info->xform_exporter);
+			pcb_xform_add(info->xform, info->xform_exporter);
 	}
 }
 
