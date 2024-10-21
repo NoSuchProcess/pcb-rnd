@@ -325,6 +325,8 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, cons
 
 		curr = rnd_str_strip(curr);
 		numg = pcb_layergrp_list_by_addr(pcb, curr, gids, spk, spv, spc, &vid, &xf, &xf_, "CAM rule: ");
+
+		/* copy temporary xf to the per group xform cache in dst->xform[] or dst->vxform[] */
 		if (numg < 0)
 			goto err;
 		else if (numg >= 1) {
