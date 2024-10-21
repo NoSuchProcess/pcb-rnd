@@ -97,7 +97,7 @@ static void fill_contour(rnd_hid_gc_t gc, rnd_pline_t * pl)
 	while ((v = v->next) != pl->head->next);
 
 	if (i < 3) {
-		rnd_hid_set_line_width(gc, RND_MM_TO_COORD(0.01));
+		rnd_hid_set_line_width(gc, -1);
 		rnd_hid_set_line_cap(gc, rnd_cap_round);
 		rnd_render->draw_line(gc, last_x, last_y, this_x, this_y);
 	}
@@ -200,6 +200,21 @@ static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t *pl, const rnd_box
 {
 	static pa_dic_ctx_t ctx = {0};
 	fill_ctx_t fc;
+	int smallx, smally;
+
+	fc.mindist = rnd_render->coord_per_pix * 2;
+
+	smallx = (pl->xmax - pl->xmin) <= fc.mindist;
+	smally = (pl->ymax - pl->ymin) <= fc.mindist;
+	if (smallx || smally) {
+		if ((smallx >= fc.mindist) || (smally >= fc.mindist)) { /* narrow line poly */
+			rnd_hid_set_line_width(gc, -1);
+			rnd_hid_set_line_cap(gc, rnd_cap_round);
+			rnd_render->draw_line(gc, pl->xmin, pl->ymin, pl->xmax, pl->ymax);
+		}
+		/* else point poly: don't draw */
+		return;
+	}
 
 	/* Optimization: the polygon has no holes; if it is smaller than the clip_box,
 	   it is safe to draw directly */
@@ -215,7 +230,6 @@ static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t *pl, const rnd_box
 	ctx.user_data = &fc;
 	fc.gc = gc;
 	fc.used = 0;
-	fc.mindist = rnd_render->coord_per_pix * 2;
 
 	rnd_pline_solid_clip_box_emit(&ctx, pl);
 }
