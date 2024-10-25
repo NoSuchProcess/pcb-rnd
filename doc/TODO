@@ -5,11 +5,6 @@
 - ANNOUNCE: camv-rnd -s and doc for stored projects
 - ANNOUNCE: viewport window in pcb-rnd, sch-rnd and camv-rnd
 - FEATURE: emsim-rnd (dcpower)
-- revise release/packaging:
-	- remove suggesting geda-gnetlist from the debian package
-	- add suggesting sch-rnd and camv-rnd and route-rnd
-	- consider a ringdove metapackage?
-	(check for the packager's mailing list there was probably a mail on this)
 + FEATURE: svg colorspaces: bug_files/TODO/SVG.patch [report: Erich]
 + BUG: bug_files/tc-mult-attr.pcb: load, save, load: error messages on duplicate element attr [report: John Wehle ml:6363]
 - FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
