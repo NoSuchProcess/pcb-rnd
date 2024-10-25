@@ -2,7 +2,7 @@
 
 Milestone D:
 
-- D1: remove and buffer basics [2]
++ D1: remove and buffer basics [2]
 	- remove tool
 	- remove by del (no selection needed)
 	- remove by selection
@@ -29,7 +29,7 @@ Milestone D:
 	- explain buffer layer bindings
 		- copy-paste retains side/layer; demo: smd + wire
 
-- D3: connectivity [2]
++ D3: connectivity [2]
 	- preparation
 		- place two resistors
 		- name them
