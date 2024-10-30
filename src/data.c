@@ -467,6 +467,11 @@ void pcb_data_mirror(pcb_data_t *data, rnd_coord_t y_offs, pcb_data_mirror_text_
 		pcb_poly_mirror(polygon, y_offs, undoable);
 	}
 	PCB_ENDALL_LOOP;
+	PCB_GFX_ALL_LOOP(data);
+	{
+		pcb_gfx_mirror(gfx, y_offs, undoable);
+	}
+	PCB_ENDALL_LOOP;
 
 	switch(mtxt & PCB_TXM_MASK_OP) {
 		case PCB_TXM_NONE:
