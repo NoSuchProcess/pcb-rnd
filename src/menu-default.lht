@@ -461,7 +461,7 @@ ha:rnd-menu-v1 {
 				ha:Mirror buffer (up/down)    = { a={<key>b;<key>m;<key>u}; li:action={Tool(buffer); PasteBuffer(Mirror)} }
 				ha:Mirror buffer (left/right) = { a={<key>b;<key>m;<key>l}; li:action={Tool(buffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
 				ha:Scale                      = { action=ScaleBuffer(); }
-				ha:Normalize                  = { a={<key>b;<key>n}; li:action={Tool(buffer); PasteBuffer(Rotate,1); PasteBuffer(Normalize);} }
+				ha:Normalize                  = { a={<key>b;<key>n}; li:action={Tool(buffer); PasteBuffer(Normalize);} }
 				-
 				ha:Clear buffer                    = { a={<key>b;<key>c;<key>c;}; action=PasteBuffer(Clear) }
 				ha:Save buffer content to file     = { a={<key>b;<key>f;<key>s;}; action=PasteBuffer(SaveAll) }
