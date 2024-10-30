@@ -528,15 +528,13 @@ void pcb_gfx_mirror(pcb_gfx_t *gfx, rnd_coord_t y_offs, rnd_bool undoable)
 	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(gfx->parent.layer->parent.data), &undo_gfx_geo, sizeof(undo_gfx_geo_t));
 
 	g->gfx = gfx;
-	g->cx = gfx->cx;
-	g->cy = gfx->cy;
+	g->cx = PCB_SWAP_X(gfx->cx);
+	g->cy = PCB_SWAP_Y(gfx->cy) + y_offs;
 	g->sx = gfx->sx;
 	g->sy = gfx->sy;
 	g->rot = gfx->rot;
 	g->xmirror = gfx->xmirror;
-	g->ymirror = gfx->ymirror;
-
-TODO("probably need to swap y mirror");
+	g->ymirror = !gfx->ymirror;
 
 	undo_gfx_geo_swap(g);
 	if (undoable) pcb_undo_inc_serial();
