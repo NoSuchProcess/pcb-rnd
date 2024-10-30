@@ -513,7 +513,7 @@ static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	ctx.Type = Type;
 	ctx.Polygon = Polygon;
 	ctx.Point = Point;
-	ctx.found = rnd_false;;
+	ctx.found = rnd_false;
 	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
 	rnd_rtree_search_any(SearchLayer->polygon_tree, (rnd_rtree_box_t *)&SearchBox, NULL, polypoint_callback, &ctx, NULL);
@@ -577,7 +577,7 @@ static rnd_bool SearchGfxPointByLocation(unsigned long Type, unsigned long objst
 	ctx.Type = Type;
 	ctx.gfx = gfx;
 	ctx.Point = Point;
-	ctx.found = rnd_false;;
+	ctx.found = rnd_false;
 	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
 	rnd_rtree_search_any(SearchLayer->gfx_tree, (rnd_rtree_box_t *)&SearchBox, NULL, gfxpoint_callback, &ctx, NULL);
