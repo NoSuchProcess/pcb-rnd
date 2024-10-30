@@ -554,6 +554,11 @@ void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recu
 		pcb_text_scale(text, sx, sy, sth);
 	}
 	PCB_ENDALL_LOOP;
+	PCB_GFX_ALL_LOOP(data);
+	{
+		pcb_gfx_scale(gfx, sx, sy, sth);
+	}
+	PCB_ENDALL_LOOP;
 }
 
 
