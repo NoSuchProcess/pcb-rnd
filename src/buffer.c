@@ -434,6 +434,15 @@ void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number)
 			rnd_rtree_insert(layer->polygon_tree, polygon, (rnd_rtree_box_t *)polygon);
 	}
 	PCB_ENDALL_LOOP;
+	PCB_GFX_ALL_LOOP(Buffer->Data);
+	{
+		if (layer->gfx_tree != NULL)
+			rnd_rtree_delete(layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
+		pcb_gfx_rotate90(gfx, Buffer->X, Buffer->Y, Number);
+		if (layer->gfx_tree != NULL)
+			rnd_rtree_insert(layer->gfx_tree, gfx, (rnd_rtree_box_t *)gfx);
+	}
+	PCB_ENDALL_LOOP;
 
 	/* finally the origin and the bounding box */
 	RND_COORD_ROTATE90(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
