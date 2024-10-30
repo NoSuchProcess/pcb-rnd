@@ -599,8 +599,8 @@ void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth)
 	if (onbrd)
 		pcb_gfx_pre(gfx);
 
-	if (sx != 1.0) gfx->sx = rnd_round((double)gfx->sx * sx);
-	if (sy != 1.0) gfx->sy = rnd_round((double)gfx->sy * sy);
+	if (sx != 1.0) { gfx->sx = rnd_round((double)gfx->sx * sx); gfx->cx *= sx; }
+	if (sy != 1.0) { gfx->sy = rnd_round((double)gfx->sy * sy); gfx->cy *= sy; }
 
 	pcb_gfx_bbox(gfx);
 	if (onbrd)
