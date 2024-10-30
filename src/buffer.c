@@ -495,6 +495,11 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, rnd_angle_t angle)
 		pcb_poly_rotate(layer, polygon, Buffer->X, Buffer->Y, cosa, sina);
 	}
 	PCB_ENDALL_LOOP;
+	PCB_GFX_ALL_LOOP(Buffer->Data);
+	{
+		pcb_gfx_rotate(layer, gfx, Buffer->X, Buffer->Y, cosa, sina, angle);
+	}
+	PCB_ENDALL_LOOP;
 
 	pcb_set_buffer_bbox(Buffer);
 	pcb_undo_unfreeze_add();
