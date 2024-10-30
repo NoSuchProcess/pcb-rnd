@@ -503,6 +503,7 @@ void pcb_gfx_rotate90(pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, unsigned Num
 {
 	gfx->rot = rnd_normalize_angle(gfx->rot + Number * 90);
 	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->sx, gfx->sy, gfx->xmirror, gfx->ymirror);
+	RND_COORD_ROTATE90(gfx->cx, gfx->cy, X, Y, Number);
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 }
