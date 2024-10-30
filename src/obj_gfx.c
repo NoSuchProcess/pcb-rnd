@@ -515,6 +515,7 @@ void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord
 
 	gfx->rot = rnd_normalize_angle(gfx->rot + angle);
 	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->sx, gfx->sy, gfx->xmirror, gfx->ymirror);
+	rnd_rotate(&gfx->cx, &gfx->cy, X, Y, cosa, sina);
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 
