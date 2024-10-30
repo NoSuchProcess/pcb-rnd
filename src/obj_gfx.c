@@ -699,6 +699,8 @@ void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rn
 	g->cy = gfx->cy + rnd_round((double)dy / 2.0);;
 	g->sx = nsx;
 	g->sy = nsy;
+	g->xmirror = gfx->xmirror;
+	g->ymirror = gfx->ymirror;
 	g->rot = gfx->rot;
 
 	undo_gfx_geo_swap(g);
