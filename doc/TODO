@@ -10,7 +10,7 @@
 - FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
 	- need to use find.c to get "nets" of mask objects (including padstacks)
 	- then use the normal bloat-intersect code to see if two of them are closer than the required value
-- BUG: place via in a top-layer poly; change pstk proto top copper layer, grow 50 mil -> poly not recalculated [report: aron]
++ BUG: place via in a top-layer poly; change pstk proto top copper layer, grow 50 mil -> poly not recalculated [report: aron]
 - BUG: extended object "bus" bugs:
 	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
 	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
