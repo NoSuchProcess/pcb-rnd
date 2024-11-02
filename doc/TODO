@@ -7,7 +7,6 @@
 - FEATURE: emsim-rnd (dcpower)
 + FEATURE: svg colorspaces: bug_files/TODO/SVG.patch [report: Erich]
 + BUG: bug_files/tc-mult-attr.pcb: load, save, load: error messages on duplicate element attr [report: John Wehle ml:6363]
-+ BUG: place via in a top-layer poly; change pstk proto top copper layer, grow 50 mil -> poly not recalculated [report: aron]
 - BUG: extended object "bus" bugs:
 	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
 	- BUG: box-select the whole bus, copy to buffer, rotate buffer -> bus is not regenerated in buffer [report: aron]
