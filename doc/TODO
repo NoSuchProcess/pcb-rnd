@@ -74,7 +74,7 @@
 	- FEATURE: librnd API: library window: allow long tags and long location text to split: rich text widget in librnd [report: Igor2]
 
 3. Long term ===============================================================================
-- multi: merge sch-rnd r4718 for proper multiboard support later
+- FEATURE: multi: merge sch-rnd r4718 for proper multiboard support later
 - FEATURE: copy sch-rnd's RtreeList action in act_read
 - CLEANUP: footprint lib rework
 	- BUG: bug_files/TODO/TO247.rp, { w l }, select TO247, shift click onto subc in TO247.rp layout: 90 degree error [report: Erich]
@@ -101,7 +101,7 @@
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
 	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
 - FEATURE: depth controlled mech layers (routed) for internal cavities: http://www.saturnelectronics.com/products_capabilities/internal-cavity_boards.html -> user script, similar to on_every_layer: convert lines into bbvia slot padstacks; only when we already export bbvia in excellon; alternative: layer attribute on mech layers
-- XOR rendering upgrade:
+- FEATURE: XOR rendering upgrade:
 		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
 		- if worked: allow padstack xor draw to draw all shapes on all layers
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic - use libualloc stack with reasonable page size and local var first page
