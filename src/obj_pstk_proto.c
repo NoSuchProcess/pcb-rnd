@@ -64,6 +64,77 @@ void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 	memset(dst, 0, sizeof(pcb_pstk_proto_t));
 }
 
+static rnd_rtree_dir_t make_dirty(void *closure, void *obj, const rnd_rtree_box_t *box)
+{
+	pcb_poly_t *poly = (pcb_poly_t *)obj;
+rnd_trace("DIRTY: %p\n", poly);
+	poly->clip_dirty = 1;
+	return 0;
+}
+
+typedef enum {
+	UPDATE_CLIP_BEGIN = 1,
+	UPDATE_CLIP_END = 2
+} update_clip_type;
+
+/* Update data's polygon clipping after a prototype changed; clip polygons
+   in board data, look for matching padstack objects in proto->parent; e.g.
+   a protowithin a subcircuit is interested in subcircuit's padstacks only
+   but the actual clipping is for polygons on the board's rtree */
+static void pcb_pstk_proto_update_clip_(pcb_data_t *board_data, pcb_pstk_proto_t *proto, update_clip_type ty)
+{
+	rnd_cardinal_t pid = pcb_pstk_get_proto_id(proto);
+
+	PCB_PADSTACK_LOOP(proto->parent) {
+		if (padstack->proto == pid) {
+			pcb_layer_t *ly;
+			rnd_layer_id_t lid;
+
+			if (ty == UPDATE_CLIP_END)
+				pcb_pstk_bbox(padstack);
+
+			for(lid = 0, ly = board_data->Layer; lid < board_data->LayerN; lid++,ly++) {
+				if (ly->polygon_tree != NULL)
+					rnd_rtree_search_any(ly->polygon_tree, (rnd_rtree_box_t *)&padstack->BoundingBox, NULL, make_dirty, NULL, NULL);
+			}
+		}
+	}
+	PCB_END_LOOP;
+}
+
+static void pcb_pstk_proto_update_clip(pcb_pstk_proto_t *proto, update_clip_type ty)
+{
+	pcb_data_t *data = proto->parent;
+
+	/* clip on board's data */
+	while((data != NULL) && (data->parent_type != PCB_PARENT_BOARD)) {
+		switch(data->parent_type) {
+			case PCB_PARENT_LAYER: data = data->parent.layer->parent.data; break;
+			case PCB_PARENT_SUBC: data = data->parent.subc->parent.data; break;
+			case PCB_PARENT_BOARD: break;
+
+			case PCB_PARENT_NET:
+			case PCB_PARENT_UI:
+			case PCB_PARENT_DATA:    /* data in data?! */
+			case PCB_PARENT_INVALID:
+				return;
+		}
+	}
+
+	if (data == NULL)
+		return;
+
+
+	
+	if (ty == UPDATE_CLIP_BEGIN)
+		pcb_data_clip_inhibit_inc(data);
+
+	pcb_pstk_proto_update_clip_(data, proto, ty);
+
+	if (ty == UPDATE_CLIP_END)
+		pcb_data_clip_inhibit_dec(data, 1);
+}
+
 #include "obj_pstk_proto_cr.c"
 
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
@@ -1536,7 +1607,10 @@ void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_boo
 		}
 	}
 
+
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
 	pcb_pstk_shape_grow_(shp, is_absolute, val);
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
 }
 
 void pcb_pstk_shape_move(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_coord_t dx, rnd_coord_t dy, int undoable)
