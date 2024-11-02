@@ -81,10 +81,8 @@ typedef enum {
    in board data, look for matching padstack objects in proto->parent; e.g.
    a protowithin a subcircuit is interested in subcircuit's padstacks only
    but the actual clipping is for polygons on the board's rtree */
-static void pcb_pstk_proto_update_clip_(pcb_data_t *board_data, pcb_pstk_proto_t *proto, update_clip_type ty)
+static void pcb_pstk_proto_update_clip_(pcb_data_t *board_data, pcb_pstk_proto_t *proto, rnd_cardinal_t pid, update_clip_type ty)
 {
-	rnd_cardinal_t pid = pcb_pstk_get_proto_id(proto);
-
 	PCB_PADSTACK_LOOP(proto->parent) {
 		if (padstack->proto == pid) {
 			pcb_layer_t *ly;
@@ -105,6 +103,13 @@ static void pcb_pstk_proto_update_clip_(pcb_data_t *board_data, pcb_pstk_proto_t
 static void pcb_pstk_proto_update_clip(pcb_pstk_proto_t *proto, update_clip_type ty)
 {
 	pcb_data_t *data = proto->parent;
+	rnd_cardinal_t pid = pcb_pstk_get_proto_id_failsafe(proto);
+
+	/* temporary proto not added to data -> ignore; happens on
+	   {e g s} size change in pcb_pstkop_change_size(), and in some
+	   plugins as well */
+	if (pid == PCB_PADSTACK_INVALID)
+		return;
 
 	/* clip on board's data */
 	while((data != NULL) && (data->parent_type != PCB_PARENT_BOARD)) {
@@ -124,12 +129,10 @@ static void pcb_pstk_proto_update_clip(pcb_pstk_proto_t *proto, update_clip_type
 	if (data == NULL)
 		return;
 
-
-	
 	if (ty == UPDATE_CLIP_BEGIN)
 		pcb_data_clip_inhibit_inc(data);
 
-	pcb_pstk_proto_update_clip_(data, proto, ty);
+	pcb_pstk_proto_update_clip_(data, proto, pid, ty);
 
 	if (ty == UPDATE_CLIP_END)
 		pcb_data_clip_inhibit_dec(data, 1);
@@ -1606,7 +1609,6 @@ void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_boo
 			pcb_undo_inc_serial();
 		}
 	}
-
 
 	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
 	pcb_pstk_shape_grow_(shp, is_absolute, val);
