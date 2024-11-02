@@ -67,7 +67,6 @@ void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 static rnd_rtree_dir_t make_dirty(void *closure, void *obj, const rnd_rtree_box_t *box)
 {
 	pcb_poly_t *poly = (pcb_poly_t *)obj;
-rnd_trace("DIRTY: %p\n", poly);
 	poly->clip_dirty = 1;
 	return 0;
 }
