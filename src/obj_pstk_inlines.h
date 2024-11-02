@@ -41,15 +41,28 @@ typedef enum {
 	PCB_BB_INVALID
 } pcb_bb_type_t;
 
-/* Returns the ID of a proto within its parent's cache */
-RND_INLINE rnd_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
+/* Returns the ID of a proto within its parent's cache - don't assert on
+   error; caller MUST check return value for PCB_PADSTACK_INVALID. 
+    !  Rather use pcb_pstk_get_proto_id()  !
+*/
+RND_INLINE rnd_cardinal_t pcb_pstk_get_proto_id_failsafe(const pcb_pstk_proto_t *proto)
 {
 	pcb_data_t *data = proto->parent;
 	if ((proto >= data->ps_protos.array) && (proto < data->ps_protos.array + data->ps_protos.used))
 		return proto - data->ps_protos.array;
-	assert(!"padstack proto is not in its own parent!");
 	return PCB_PADSTACK_INVALID;
 }
+
+/* Returns the ID of a proto within its parent's cache */
+RND_INLINE rnd_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
+{
+	rnd_cardinal_t res = pcb_pstk_get_proto_id_failsafe(proto);
+	if (res == PCB_PADSTACK_INVALID) {
+		assert(!"padstack proto is not in its own parent!");
+	}
+	return res;
+}
+
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
 RND_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, rnd_cardinal_t proto)
