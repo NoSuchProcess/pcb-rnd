@@ -599,11 +599,11 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 
 	if (strncmp(st->name, "p/board/", 8) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
-		    (pcb_board_change_name(rnd_strdup(st->s)))) DONE;
+		    (pcb_board_change_name(rnd_strdup(st->s == NULL ? "" : st->s)))) DONE;
 
 		if ((strcmp(pn, "filename") == 0)) {
 			free(pcb->hidlib.loadname);
-			pcb->hidlib.loadname = rnd_strdup(st->s);
+			pcb->hidlib.loadname = rnd_strdup(st->s == NULL ? "" : st->s);
 			DONE;
 		}
 
