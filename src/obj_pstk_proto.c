@@ -1754,6 +1754,8 @@ int pcb_pstk_shape_swap_layer(pcb_pstk_proto_t *proto, int idx1, int idx2)
 	if ((idx2 < 0) || (idx2 > proto->tr.array[0].len))
 		return -1;
 
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
+
 	for(n = 0; n < proto->tr.used; n++) {
 		lm = proto->tr.array[n].shape[idx1].layer_mask;
 		lc = proto->tr.array[n].shape[idx1].comb;
@@ -1762,6 +1764,9 @@ int pcb_pstk_shape_swap_layer(pcb_pstk_proto_t *proto, int idx1, int idx2)
 		proto->tr.array[n].shape[idx2].layer_mask = lm;
 		proto->tr.array[n].shape[idx2].comb = lc;
 	}
+
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
+
 	return 0;
 }
 
