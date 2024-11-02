@@ -111,6 +111,19 @@ static void pcb_pstk_proto_update_clip(pcb_pstk_proto_t *proto, update_clip_type
 	if (pid == PCB_PADSTACK_INVALID)
 		return;
 
+	switch(ty) {
+		case UPDATE_CLIP_BEGIN:
+			proto->update_clip_inhibit++;
+			if (proto->update_clip_inhibit > 1)
+				return; /* do not nest */
+			break;
+		case UPDATE_CLIP_END:
+			proto->update_clip_inhibit--;
+			if (proto->update_clip_inhibit > 0)
+				return; /* do not nest */
+			break;
+	}
+
 	/* clip on board's data */
 	while((data != NULL) && (data->parent_type != PCB_PARENT_BOARD)) {
 		switch(data->parent_type) {
