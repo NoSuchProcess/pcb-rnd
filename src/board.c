@@ -263,7 +263,7 @@ rnd_bool pcb_board_change_name(char *Name)
 {
 	free(PCB->hidlib.name);
 	PCB->hidlib.name = Name;
-	pcb_board_replaced();
+	rnd_event(&PCB->hidlib, RND_EVENT_DESIGN_META_CHANGED, NULL, NULL);
 	return rnd_true;
 }
 
