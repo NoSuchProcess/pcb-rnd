@@ -1806,11 +1806,14 @@ void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx)
 	if ((proto->tr.used == 0) || (idx < 0) || (idx >= proto->tr.array[0].len))
 		return;
 
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
+
 	/* delete the shape from all transformed variants */
 	for(n = 0; n < proto->tr.used; n++)
 		pcb_pstk_tshape_del_idx(&proto->tr.array[n], idx);
 
 	pcb_pstk_proto_update(proto);
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
 }
 
 void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
