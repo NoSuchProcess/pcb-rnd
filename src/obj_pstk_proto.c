@@ -1661,7 +1661,9 @@ void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double
 		}
 	}
 
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
 	pcb_pstk_shape_scale_(shp, sx, sy);
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
 }
 
 
