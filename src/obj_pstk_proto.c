@@ -1667,11 +1667,15 @@ void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, rnd_bool is_absolute, rnd_coor
 {
 	int n, i, undoable = 0;;
 
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
+
 	/* do the same growth on all shapes of all transformed variants */
 	for(n = 0; n < proto->tr.used; n++)
 		for(i = 0; i < proto->tr.array[n].len; i++)
 			pcb_pstk_shape_grow(proto, n, i, is_absolute, val, undoable);
 	pcb_pstk_proto_update(proto);
+
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
 }
 
 void pcb_pstk_proto_move(pcb_pstk_proto_t *proto, rnd_coord_t dx, rnd_coord_t dy, int undoable)
