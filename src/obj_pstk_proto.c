@@ -1775,6 +1775,8 @@ void pcb_pstk_shape_add_hshadow(pcb_pstk_proto_t *proto, pcb_layer_type_t mask, 
 {
 	int n;
 
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
+
 	/* do the same on all shapes of all transformed variants */
 	for(n = 0; n < proto->tr.used; n++) {
 		int d = proto->tr.array[n].len;
@@ -1785,6 +1787,7 @@ void pcb_pstk_shape_add_hshadow(pcb_pstk_proto_t *proto, pcb_layer_type_t mask, 
 		proto->tr.array[n].shape[d].comb = comb;
 	}
 	pcb_pstk_proto_update(proto);
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
 }
 
 
