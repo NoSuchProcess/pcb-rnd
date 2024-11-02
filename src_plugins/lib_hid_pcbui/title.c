@@ -65,7 +65,7 @@ static void pcb_title_board_changed_ev(rnd_design_t *hidlib, void *user_data, in
 	update_title(hidlib, pcb->Changed, pcb->is_footprint);
 }
 
-static char last_hl_name;
+static char *last_hl_name;
 
 static void pcb_title_meta_changed_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
