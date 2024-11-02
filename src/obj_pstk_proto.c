@@ -1642,7 +1642,9 @@ void pcb_pstk_shape_move(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_coo
 		}
 	}
 
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
 	pcb_pstk_shape_move_(shp, dx, dy);
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
 }
 
 void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double sx, double sy, int undoable)
@@ -1682,6 +1684,8 @@ void pcb_pstk_proto_move(pcb_pstk_proto_t *proto, rnd_coord_t dx, rnd_coord_t dy
 {
 	int n, i;
 
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
+
 	/* do the same move on all shapes of all transformed variants */
 	for(n = 0; n < proto->tr.used; n++) {
 		pcb_pstk_tshape_t *ts = &proto->tr.array[n];
@@ -1700,6 +1704,8 @@ void pcb_pstk_proto_move(pcb_pstk_proto_t *proto, rnd_coord_t dx, rnd_coord_t dy
 			pcb_pstk_shape_move(proto, n, i, tx, ty, undoable);
 	}
 	pcb_pstk_proto_update(proto);
+
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
 }
 
 int pcb_pstk_alloc_shape_idx(pcb_pstk_proto_t *proto, int tr_idx)
