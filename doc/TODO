@@ -7,9 +7,6 @@
 - FEATURE: emsim-rnd (dcpower)
 + FEATURE: svg colorspaces: bug_files/TODO/SVG.patch [report: Erich]
 + BUG: bug_files/tc-mult-attr.pcb: load, save, load: error messages on duplicate element attr [report: John Wehle ml:6363]
-- FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
-	- need to use find.c to get "nets" of mask objects (including padstacks)
-	- then use the normal bloat-intersect code to see if two of them are closer than the required value
 + BUG: place via in a top-layer poly; change pstk proto top copper layer, grow 50 mil -> poly not recalculated [report: aron]
 - BUG: extended object "bus" bugs:
 	- BUG: new doc layer; draw line on it; convert to extended obj bus; "E" mark doesn't appear (but does after a reload or copy&paste) [report: aron]
@@ -37,6 +34,9 @@
 	- at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
 
 2. For later releases ===============================================================================
+- FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
+	- need to use find.c to get "nets" of mask objects (including padstacks)
+	- then use the normal bloat-intersect code to see if two of them are closer than the required value
 - librnd 4.3: search for TODO("librnd 4.3.0
 - FEATURE: shift-click subc replace or reimport subc-replace: attempt to preserve floater positions and per terminal clearances and thermals [report: aron]
 - DOC: pool node on how to use pixmap for breadboading
