@@ -38,7 +38,7 @@
 #define RND_TIMED_CHG_TIMEOUT 1000
 #include <librnd/plugins/lib_hid_common/timed_chg.h>
 
-typedef struct{
+typedef struct fmprv_ctx_s {
 	RND_DAD_DECL_NOINIT(dlg)
 	int wprev, wpend;
 	int wbaseline, wtab_width, wline_height, wentt, wkernt;
