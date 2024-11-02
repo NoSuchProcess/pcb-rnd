@@ -340,8 +340,8 @@ fgw_error_t pcb_act_PadstackMoveOrigin(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	pcb_objtype_t type;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, PadstackMoveOrigin, op = fgw_keyword(&argv[1]));
-	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, PadstackMoveOrigin, sx = argv[2].val.str);
-	RND_ACT_MAY_CONVARG(3, FGW_KEYWORD, PadstackMoveOrigin, sy = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, PadstackMoveOrigin, sx = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, PadstackMoveOrigin, sy = argv[3].val.str);
 
 	if (op != F_Object) {
 		rnd_message(RND_MSG_ERROR, "PadstackMoveOrigin: first argument must be \"object\"\n");
@@ -384,8 +384,8 @@ fgw_error_t pcb_act_PadstackMoveOrigin(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	}
 
 	if (relative) {
-		dx = x;
-		dy = y;
+		dx = -x;
+		dy = -y;
 	}
 	else {
 		dx = ps->x - x;
