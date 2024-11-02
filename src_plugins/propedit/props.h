@@ -75,7 +75,7 @@ typedef struct {
 	unsigned core:1;  /* 1 if it is a core property */
 } pcb_props_t;
 
-typedef struct {
+typedef struct pcb_propedit_s {
 	htsp_t props;
 
 	/* scope */
