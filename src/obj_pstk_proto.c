@@ -1722,6 +1722,8 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, rn
 {
 	int n, undoable = 0;
 
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_BEGIN);
+
 	/* do the same copy on all shapes of all transformed variants */
 	for(n = 0; n < proto->tr.used; n++) {
 		int d = dst_idx;
@@ -1738,6 +1740,7 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, rn
 			pcb_pstk_shape_grow(proto, n, d, rnd_false, bloat, undoable);
 	}
 	pcb_pstk_proto_update(proto);
+	pcb_pstk_proto_update_clip(proto, UPDATE_CLIP_END);
 }
 
 int pcb_pstk_shape_swap_layer(pcb_pstk_proto_t *proto, int idx1, int idx2)
