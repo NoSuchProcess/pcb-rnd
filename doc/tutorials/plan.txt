@@ -91,6 +91,25 @@ Milestone D:
 
 === advanced: extended objects ===
 - F1: line-of-vias
+	- draw poly on top copper & lock
+	- create a documentation layer, name it extended obj (#name doesn't matter)
+	- draw horizontal line on the doc layer
+	- verify style/via
+	- right click on doc line, convert to ext obj
+	- show extending the line
+	- right click on the E -> specific edit
+		- pitch
+		- #explain 0 clearance and non-0 clearance
+	- right click on the E -> generic edit
+		- resize the window bigger
+		- point to:
+			- subcircuit ID
+			- attributes
+		- #explain:
+			- an extended obj is just a subcircuit with extra attributes
+			- and code to assist with edit (extobj attribute names the code)
+	- right click convert to plain subc
+
 - F2: dimension
 - F3: cord
 - F4: bus
