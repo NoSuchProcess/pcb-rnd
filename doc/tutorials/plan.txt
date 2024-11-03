@@ -80,13 +80,22 @@ Milestone D:
 	TODO
 
 
+=== advanced: layer usage ===
 
-=== advanced ===
-- layer compositing
-- creating doc layers
-- mechanical keepout layers
-- doc layers: assy and custom
-- fab layers
-- subcircuit layer bindings
+- E1: fab layers
+- E2: mechanical keepout layers
+- E3: doc layers: assy and custom
+- E4: creating custom doc layers
+- E5: layer compositing
+- E6: subcircuit and buffer layer bindings
+
+=== advanced: extended objects ===
+- F1: line-of-vias
+- F2: dimension
+- F3: cord
+- F4: bus
+- F5: teardrop
+
+=== advanced (unsorted) ===
 - footprint creation basics [5]
 - TODO: extended objects....
