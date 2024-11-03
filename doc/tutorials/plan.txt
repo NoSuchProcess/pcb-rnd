@@ -117,4 +117,4 @@ Milestone D:
 
 === advanced (unsorted) ===
 - footprint creation basics [5]
-- TODO: extended objects....
+
