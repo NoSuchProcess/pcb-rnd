@@ -73,6 +73,23 @@ RND_INLINE void debug_draw_points(FILE *F, pcb_ptcloud_ctx_t *ctx, const char *c
 	}
 }
 
+RND_INLINE void debug_draw_tri(FILE *F, pcb_ptcloud_ctx_t *ctx, const char *clr)
+{
+	long n;
+	for(n = 0; n < ctx->tri.TriangleCount; n++) {
+		fp2t_triangle_t *t = ctx->tri.Triangles[n];
+
+		rnd_fprintf(F, " <line x1=\"%06mm\" y1=\"%06mm\" x2=\"%06mm\" y2=\"%06mm\" stroke-width=\"0.01\" stroke=\"%s\"/>\n",
+			(rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, clr);
+
+		rnd_fprintf(F, " <line x1=\"%06mm\" y1=\"%06mm\" x2=\"%06mm\" y2=\"%06mm\" stroke-width=\"0.01\" stroke=\"%s\"/>\n",
+			(rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, clr);
+
+		rnd_fprintf(F, " <line x1=\"%06mm\" y1=\"%06mm\" x2=\"%06mm\" y2=\"%06mm\" stroke-width=\"0.01\" stroke=\"%s\"/>\n",
+			(rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, clr);
+	}
+}
+
 RND_INLINE void ptcloud_debug_draw(pcb_ptcloud_ctx_t *ctx, const char *fn)
 {
 	FILE *F = rnd_fopen(NULL, fn, "w");
@@ -87,6 +104,7 @@ RND_INLINE void ptcloud_debug_draw(pcb_ptcloud_ctx_t *ctx, const char *fn)
 	rnd_fprintf(F, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"1000\" height=\"1000\" viewBox=\"%.06mm %.06mm %.06mm %.06mm\">\n", ctx->pl->xmin, ctx->pl->ymin, ctx->pl->xmax, ctx->pl->ymax);
 
 	debug_draw_pline(F, ctx->pl, "#FF0000", 0.3);
+	debug_draw_tri(F, ctx, "#00FF00");
 	debug_draw_points(F, ctx, "#000000");
 
 	fprintf(F, "</svg>\n");

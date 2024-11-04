@@ -32,7 +32,7 @@
 #include <librnd/core/vtc0.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/polyarea.h>
-
+#include <src_plugins/lib_polyhelp/triangulate.h>
 
 typedef struct pcb_ptcloud_pt_s {
 	rnd_coord_t x, y;     /* current coord */
@@ -59,6 +59,10 @@ typedef struct pcb_ptcloud_ctx_s {
 	double target2;           /* square of ->target_dist */
 	gdl_list_t points;        /* flat list of all points for easy iteration */
 
+	/* triangulation */
+	fp2t_t tri;
+	void *tri_mem;
+	long num_pt_edge;
 
 	/* horizontal rays */
 	rnd_coord_t ray_y;
@@ -66,4 +70,5 @@ typedef struct pcb_ptcloud_ctx_s {
 } pcb_ptcloud_ctx_t;
 
 void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx);
+void pcb_ptcloud_free(pcb_ptcloud_ctx_t *ctx);
 

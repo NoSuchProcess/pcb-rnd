@@ -192,33 +192,6 @@ RND_INLINE void ptcloud_anneal_compute_pt(pcb_ptcloud_ctx_t *ctx, long gidx, pcb
 		rnd_coord_t dx, dy;
 		double dx2, dy2, d2, err, px, py;
 
-		if (pt == pt0) continue;
-
-
-		/* compute distance square and bail out if at any point they are already too far */
-		dx = pt->x - pt0->x;
-		if ((dx > ctx->closed) || (dx < -ctx->closed)) continue;
-		dy = pt->y - pt0->y;
-		if ((dy > ctx->closed) || (dy < -ctx->closed)) continue;
-		dx2 = (double)dx * (double)dx;
-		dy2 = (double)dy * (double)dy;
-		d2 = fabs(dx2 + dy2);
-
-/*rnd_trace("chk %.06mm %.06mm d2=%f > %f\n", pt->x, pt->y, d2, ctx->closed2);*/
-
-		if (d2 > ctx->closed2) continue;
-
-		/* compute push vector */
-		px = dx2 / d2 * pt->weight;
-		py = dy2 / d2 * pt->weight;
-		if (dx > 0) px = -px;
-		if (dy > 0) py = -py;
-
-		pt0->dx += px;
-		pt0->dy += py;
-
-		if (TRACE_ANNEAL)
-			rnd_trace("  (%.06mm %.06mm) pushes %.06mm %.06mm -> %.06mm %.06mm\n", pt->x, pt->y, (rnd_coord_t)px, (rnd_coord_t)py, pt0->dx, pt0->dy);
 	}
 }
 
@@ -238,16 +211,8 @@ RND_INLINE void ptcloud_anneal_compute(pcb_ptcloud_ctx_t *ctx)
 
 		pt->dx = pt->dy = 0;
 		gidx = pt2gidx(ctx, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx-1, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx+1, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx-ctx->gsx, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx+ctx->gsx, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx-ctx->gsx-1, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx+ctx->gsx-1, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx-ctx->gsx+1, pt);
-		ptcloud_anneal_compute_pt(ctx, gidx+ctx->gsx+1, pt);
-/*return 0;*/
+
+return 0;
 	}
 }
 
@@ -267,6 +232,34 @@ RND_INLINE double ptcloud_anneal_execute(pcb_ptcloud_ctx_t *ctx)
 	return err;
 }
 
+RND_INLINE int ptcloud_triangulate(pcb_ptcloud_ctx_t *ctx)
+{
+	size_t mem_req;
+	long n, num_pt = gdl_length(&ctx->points);
+	pcb_ptcloud_pt_t *pt;
+
+	mem_req = fp2t_memory_required(num_pt);
+	ctx->tri_mem = calloc(mem_req, 1);
+
+	if (!fp2t_init(&ctx->tri, ctx->tri_mem, num_pt)) {
+		free(ctx->tri_mem);
+		return -1;
+	}
+
+	for(pt = gdl_first(&ctx->points), n = 0; pt != NULL; pt = pt->all.next, n++) {
+		fp2t_point_t *fpt = fp2t_push_point(&ctx->tri);
+		fpt->X = pt->x;
+		fpt->Y = pt->y;
+		if (n == ctx->num_pt_edge)
+			fp2t_add_edge(&ctx->tri);
+
+		assert(num_pt-- > 0);
+	}
+
+	fp2t_triangulate(&ctx->tri);
+
+	return 0;
+}
 
 void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
 {
@@ -281,6 +274,8 @@ void pcb_ptcloud(pcb_ptcloud_ctx_t *ctx)
 	min_err = (double)ctx->target_dist / 20.0; /* 5% */
 
 	ptcloud_contour_create_points(ctx);
+
+	ctx->num_pt_edge = gdl_length(&ctx->points);
 
 	/* horizontal rays */
 	for(y = ctx->pl->ymin + ctx->target_dist; y <= ctx->pl->ymax - ctx->target_dist; y += ctx->target_dist) {
@@ -300,11 +295,15 @@ rnd_trace(" y: %06mm hits: %d\n", y, ctx->edges.used);
 		assert((ctx->edges.used % 2) == 0);
 
 		qsort(ctx->edges.array, ctx->edges.used, sizeof(rnd_coord_t), cmp_crd);
-		ptcloud_ray_create_points(ctx);
+/*		ptcloud_ray_create_points(ctx);*/
 	}
 
 
-	for(n = 0; n < 1000; n++) {
+	ptcloud_triangulate(ctx);
+	ptcloud_debug_draw(ctx, "PTcloud.svg");
+
+/*
+	for(n = 0; n < 1; n++) {
 		char fn[128];
 		
 		ptcloud_anneal_compute(ctx);
@@ -317,8 +316,15 @@ rnd_trace(" y: %06mm hits: %d\n", y, ctx->edges.used);
 		err = ptcloud_anneal_execute(ctx);
 		rnd_trace("[%ld] err=%f\n", n, err);
 	}
-	
+	*/
 
 
 	vtc0_uninit(&ctx->edges);
 }
+
+void pcb_ptcloud_free(pcb_ptcloud_ctx_t *ctx)
+{
+	free(ctx->tri_mem);
+	TODO("free points and grid");
+}
+
