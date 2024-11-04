@@ -47,7 +47,7 @@ do { \
 	pcb_poly_free(src); \
 } while(0)
 
-RND_INLINE int topoly_solid_refuse_lyt(pcb_layer_type_t lyt, pcb_topoly_solid_opts_t *opts)
+RND_INLINE int topoly_solid_refuse_lyt(pcb_layer_type_t lyt, const pcb_topoly_solid_opts_t *opts)
 {
 	if ((opts->loc_mask != 0) && ((lyt & opts->loc_mask) == 0)) return 1;
 	if ((opts->typ_mask != 0) && ((lyt & opts->typ_mask) == 0)) return 1;
