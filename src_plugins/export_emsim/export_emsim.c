@@ -43,6 +43,7 @@
 #include "layer.h"
 #include "hid_cam.h"
 #include "src_plugins/lib_polyhelp/topoly.h"
+#include "src_plugins/lib_polyhelp/ptcloud.h"
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/plugins.h>
@@ -101,7 +102,12 @@ static const rnd_export_opt_t *exp_emsim_get_export_options(rnd_hid_t *hid, int 
 /* exports a single island, with holes */
 RND_INLINE void emsim_export_pline_to_file(pcb_board_t *pcb, FILE *f, rnd_pline_t *contour)
 {
+	pcb_ptcloud_ctx_t cloud = {0};
 
+	cloud.pl = contour;
+	cloud.target_dist = RND_MM_TO_COORD(1);
+
+	pcb_ptcloud(&cloud);
 }
 
 /* exports all islands of pa */
@@ -150,6 +156,8 @@ void emsim_export_to_file(pcb_board_t *pcb, emsim_env_t *dst, FILE *f)
 	for(lid = 0; lid < poly_per_layer->used; lid++) {
 		if (poly_per_layer->array[lid] != NULL) {
 			rnd_trace(" [%ld] poly\n", lid);
+			emsim_export_polyarea_to_file(pcb, NULL, poly_per_layer->array[lid]);
+			break;
 		}
 	}
 
