@@ -43,6 +43,7 @@ ha:pcb-rnd-board-v9 {
        }
 
      }
+     name = a
    }
 
      unused = 1
@@ -72,6 +73,7 @@ ha:pcb-rnd-board-v9 {
        }
 
      }
+     name = b
    }
 
    ha:ps_proto_v6.5 {
@@ -89,6 +91,7 @@ ha:pcb-rnd-board-v9 {
        }
 
      }
+     name = c
    }
 
     ha:ps_proto_v6.6 {
@@ -105,6 +108,7 @@ ha:pcb-rnd-board-v9 {
          clearance=40.0mil
         }
       }
+     name = d
     }
   }
 
