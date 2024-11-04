@@ -212,7 +212,7 @@ RND_INLINE void ptcloud_anneal_compute(pcb_ptcloud_ctx_t *ctx)
 		pt->dx = pt->dy = 0;
 		gidx = pt2gidx(ctx, pt);
 
-return 0;
+return;
 	}
 }
 
