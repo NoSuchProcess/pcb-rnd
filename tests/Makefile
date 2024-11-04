@@ -9,6 +9,7 @@ test:
 	cd query && $(MAKE) test
 	cd menu && $(MAKE) test
 	cd cam && $(MAKE) test
+	cd cam_partial && $(MAKE) test
 	cd vendordrill && $(MAKE) test
 	cd pstk_crescent && $(MAKE) test
 	@echo " "
@@ -27,6 +28,7 @@ clean:
 	cd query && $(MAKE) clean
 	cd menu && $(MAKE) clean
 	cd cam && $(MAKE) clean
+	cd cam_partial && $(MAKE) clean
 	cd vendordrill && $(MAKE) clean
 	cd pstk_crescent && $(MAKE) clean
 
