@@ -21,6 +21,7 @@
 	+ BUG: pcb-rnd/work/test_poly/line-arc-del-assert.rp load layout, delete bottom most horizontal line, note strange clipping that shorts across adjacent arc [report: Erich]
 	+ BUG: pcb-rnd/work/test_poly/line-arc-del-assert.rp load layout, delete bottom most arc, note strange clipping that across where arc used to be [report: Erich]
 	- BUG: pcb-rnd/work/test_poly/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
+		-> simpler test: PolyOffs(-10mil) also breaks
 	+ BUG: pcb-rnd/work/test_poly/derive.rp, edit pstk proto, add mask shape, derive -> derived polygon is broken (invalid coords) [report: Scott]
 	/ BUG: pcb-rnd/work/test_poly/clipping-2154-1676.* see txt [report: Erich]
 		-> not a bug:
