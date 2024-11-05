@@ -16,7 +16,6 @@
 	+ BUG: pcb-rnd/work/test_poly/bdale3: dicer bug: disappearing clearance: place a signal via right to the rectangular pin with no clarance overlap, rectangular pin's clearance disappears [report: Igor2]
 	+ BUG: pcb-rnd/work/test_poly/out-extract*.rf, on which is not autocropped, triggers assert with scrolling, but the autocropped version does not. Polygon vertex coords are well under size limit for 32 bit coords in both cases. out-minimal.rf is a more minimal polygon version of the subc which triggers assert in footprint edit mode with {ze} and scroll bar use. [Report: Erich]
 	+ BUG: thermal tool poly assert. pcb-rnd/work/test_poly/thermal-assert.rp and use thermal tool and shift click to start cycling through thermal types on padstack. Assert eventually occurs. [report: Erich]
-	- BUG: pcb-rnd/work/test_poly/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 	+ BUG: pcb-rnd/work/test_poly/intersect.* (thin hair gerber bug) [report: cuvoodoo]
 	+ BUG: pcb-rnd/work/test_poly/line-arc-del-assert.rp load layout, delete right most vertical, line, poly validity assert ensues [report: Erich]
 	+ BUG: pcb-rnd/work/test_poly/line-arc-del-assert.rp load layout, delete bottom most horizontal line, note strange clipping that shorts across adjacent arc [report: Erich]
@@ -42,6 +41,12 @@
 - BUG: bug_files/TODO/ppc_full.*: poly-clear-poly should respect full-poly flag and apply all islands only if full-poly is set
 - BUG?: enforce style clearance doesn't work with middle-line rubber band move, see bug_files/TODO/drag.rs [report: Majenko]
 	-> may be a non-bug, if we take this as a line move operation (doesn't enforce)
+	- BUG?: pcb-rnd/work/test_poly/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
+		-> enable {m d d} (poly as-drawn) -> that clearance is the corner of the triangular poly
+		-> there are two ways this could be interpreted:
+			1. circle clears triangle first then smaller triangle clears big poly (no clearance blob in the top-left corner)
+			2. triangle clears big poly first then circle clears both (blob in the top-left corner)
+		-> if there is any bug: at the moment the order of operations is not guaranteed
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
 - CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
