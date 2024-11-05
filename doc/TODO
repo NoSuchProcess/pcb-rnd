@@ -13,6 +13,7 @@
 - polygon related bugs:
 	- BUG: pcb-rnd/work/test_poly/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
 		-> simpler test: PolyOffs(-10mil) also breaks
+		-> polybool2 bug: autotest2/offset03
 	/ BUG: pcb-rnd/work/test_poly/clipping-2154-1676.* see txt [report: Erich]
 		-> not a bug:
 		-> remove the upper polygon it doesn't play any role, but confuses the user
