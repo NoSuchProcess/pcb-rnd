@@ -24,6 +24,11 @@
 	- at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
 
 2. For later releases ===============================================================================
+- FEATURE: lock/unlock objects (various queries; in menu) [report: Igor2]
+	- all objects
+	- polygons
+	- subcircuits
+	- only on current layer
 - FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
 	- need to use find.c to get "nets" of mask objects (including padstacks)
 	- then use the normal bloat-intersect code to see if two of them are closer than the required value
