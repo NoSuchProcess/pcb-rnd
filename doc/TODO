@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - ANNOUNCE: camv-rnd -s and doc for stored projects
+	-> http://repo.hu/cgi-bin/pool.cgi?project=camv-rnd&cmd=show&node=precfg_prj
 - ANNOUNCE: viewport window in pcb-rnd, sch-rnd and camv-rnd
 - FEATURE: emsim-rnd (dcpower)
 + FEATURE: svg colorspaces: bug_files/TODO/SVG.patch [report: Erich]
