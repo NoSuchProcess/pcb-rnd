@@ -5,7 +5,6 @@
 - ANNOUNCE: camv-rnd -s and doc for stored projects
 	-> http://repo.hu/cgi-bin/pool.cgi?project=camv-rnd&cmd=show&node=precfg_prj
 - ANNOUNCE: viewport window in pcb-rnd, sch-rnd and camv-rnd
-+ FEATURE: svg colorspaces: bug_files/TODO/SVG.patch [report: Erich]
 + BUG: bug_files/tc-mult-attr.pcb: load, save, load: error messages on duplicate element attr [report: John Wehle ml:6363]
 - polygon related bugs:
 	- BUG: pcb-rnd/work/test_poly/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
