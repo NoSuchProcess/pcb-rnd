@@ -11,13 +11,6 @@
 	- BUG: pcb-rnd/work/test_poly/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
 		-> simpler test: PolyOffs(-10mil) also breaks
 		-> polybool2 bug: autotest2/offset03
-	/ BUG: pcb-rnd/work/test_poly/clipping-2154-1676.* see txt [report: Erich]
-		-> not a bug:
-		-> remove the upper polygon it doesn't play any role, but confuses the user
-		-> observe the tiny bridge of the remaining bottom poly above the vertical line's clearance
-		-> perform the move of the rightmost vertex down
-		-> the upper edge is now cut in half by the line's clearance; the whole poly is cut in half
-		-> so removing the smaller half of the poly is the proper thing to do
 	- at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
 
 2. For later releases ===============================================================================
