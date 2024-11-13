@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019,2023 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2023,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -259,14 +259,16 @@ static void save_timer(rnd_hidval_t user_data)
 
 	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].val.lng)) {
 		rnd_event_arg_t res;
-		char *end;
 
-		save->fmtsub->parent_poke(save->fmtsub, "get_path", &res, 0, NULL);
-		end = strrchr(res.d.s, '.');
-		if (end != NULL)
-			save_guess_format(save, end);
+		if (save->fmtsub->parent_poke(save->fmtsub, "get_path", &res, 0, NULL) == 0) {
+			char *end;
 
-		free((char *)res.d.s);
+			end = strrchr(res.d.s, '.');
+			if (end != NULL)
+				save_guess_format(save, end);
+
+			free((char *)res.d.s);
+		}
 	}
 }
 
