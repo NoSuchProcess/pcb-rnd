@@ -2,16 +2,6 @@
 
 Milestone D:
 
-+ D1: remove and buffer basics [2]
-	- remove tool
-	- remove by del (no selection needed)
-	- remove by selection
-		- menu
-		- {s r}
-	- cut selection to buffer
-	- paste
-	- copy selection to buffer
-
 - D2: advanced buffer use [5]
 	- buffer transformations
 		- copy

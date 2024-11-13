@@ -265,3 +265,13 @@ Milestone B:
 		- selective:
 			- {m d p} for poly only
 			- per layer from right click transformation
+
++ D1: remove and buffer basics [2]
+	- remove tool
+	- remove by del (no selection needed)
+	- remove by selection
+		- menu
+		- {s r}
+	- cut selection to buffer
+	- paste
+	- copy selection to buffer
