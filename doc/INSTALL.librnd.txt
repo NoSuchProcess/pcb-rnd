@@ -36,7 +36,7 @@ Non-standard librnd installation
 
 2.2. Before compiling pcb-rnd
 
-  Nothing special, make should work as usual. 
+  Nothing special, make should work as usual.
 
   (LIBRND_PREFIX doesn't need to be set, ./configure ironed that in to
   compile time config files.)
