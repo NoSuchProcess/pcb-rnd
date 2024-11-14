@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- repo.hu CRL expired
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - ANNOUNCE: camv-rnd -s and doc for stored projects
 	-> http://repo.hu/cgi-bin/pool.cgi?project=camv-rnd&cmd=show&node=precfg_prj
@@ -9,6 +10,12 @@
 	- BUG: pcb-rnd/work/test_poly/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
 		-> simpler test: PolyOffs(-10mil) also breaks
 		-> polybool2 bug: autotest2/offset03
+		-> solution:
+			-> write and expose a function that works on polyarea instead of pline because of offset04 where a single pline would end up as two islands
+			-> use pline_dup_with_offset_corner()
+			-> then do a new self isc resolver that trusts input edge directions and removes loops with negative direction (unless we are doing holes!)
+		-> revise the original offset calls in pcb-rnd and decide where to use the new one
+		-> consider rnd_pline_dup_offset() to start with: if (offs < 0) return pline_dup_with_offset_corner(src, offs, RND_PLINE_CORNER_SHARP); (also move #include offset2.c to the top of the file for this)
 	- at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
 
 2. For later releases ===============================================================================
