@@ -1,14 +1,41 @@
-pcb-rnd 3.1.5
+pcb-rnd 3.1.6
 ~~~~~~~~~~~~~
 
-This release adds minor features and fixes a bunch of bugs.
-Change highlights:
+This release features a lot of bugfixes and new features; highlights:
 
-1. CAM export: default pnp (pick-and-place) doc export jobs to ps and gerber
+1. librnd's polybool2 is testable (need to enable it:
+   ./configure --enable-polybool2
 
-2. RefdesText() action and menu, shorthand for creating refdes floater text
-   object for subcircuits
+2. new alien file format: io_easyeda, for loading easyeda std and pro
+   boards and footpritns
 
-3. optional auto-generated pick-and-place helper layer
+3. non-modal viewport dialog that gives an exrta view in a separate window
+   (zoomable/scrollable)
 
-4. centerline draw export in the HP-GL (plotter) format
+4. cam job for jlcpcb assembly service (pick and place files)
+
+5. mincut critical bugfix; the bug rendered mincut not delivering the result
+   it conputed on shorts
+
+6. svg export: selectable colorspace
+
+7. toolpath based HP-GL export - usable for paint removal with pen plotter
+   (home board etching)
+
+8. relaxed rules in object id verification: accept hier-sep (normally '/')
+   in refdes but not in terminal name; this makes the syntax a/b/c-4 with
+   no / or - after the first and only -
+
+9. bugfixes: proper support for crescent padstacks (hole/slot cutting
+   the "ring")
+
+10. bugfixes on gfx object (pixmap): buffer transformations affect the object
+
+11. padstack clearance in polygon recomputed after padstack prototype modified
+    (padstack shape changed)
+
+12. floating fhs support for Ringdove binpack
+
+13. bom export format for part-rnd
+
+14. alien format: io_pcb upgrade for reading file format 20180318

@@ -1,3 +1,211 @@
+pcb-rnd 3.1.6 (r39694)
+~~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Fix: typo in paths for the win32 port
+		-Fix: when static librnd is requested, LDFLAGS shall include $(LDFLAGS_LIBRND_STATIC)
+		-Fix: /local/pcb/want_static_librnd is not a mandatory scconfig var
+		-Change: base static/dynamic path decision on floating-fhs setting, not on system type
+
+	[cam]
+		-Fix: the PCBWay job did not export slots
+		-Add: cam job in default config for asm service of JLCPCB (xy and bom)
+
+	[core]
+		-Fix: text centering bug when printing vertical terminal label while the board is viewed from the bottom side
+		-Fix: arc: arbitrary angle rotation: recompute bbox after arc modification before it is added back in the rtree
+		-Fix: don't free polygon fields before unregstering polygons from rtree in layer_free_fields, this may result double rtree entries for some polygons
+		-Fix: find.c: off-by-one bug in edge loop of poly-poly check: last edge of c1 not checked in pcb_isc_poly_poly_bloated()
+		-Fix: const correctness: pcb_layer_is_pure_empty() can take const pcb_layer_t * as it's not going to modify it
+		-Fix: don't accept '-' in term name, it's the refdes-term separator
+		-Fix: don't crash on 'polygon cleared out of existence' on low level poly queries
+		-Fix: conf dir is runtime built in floating fhs mode
+		-Fix: potential NULL pointer deref in pcb_poly_is_valid() for invalid holes
+		-Fix: find.c: arc-arc endpoint with negative bloat produced false positive "insufficied overlap" drc checks
+		-Fix: xform_setup() adds export transformations and GUI transformations on top of an existing caller transformation
+		-Fix: gfx object: when scaled, also scale up center x;y coords - on other vector objects coords are simply multipled on scale and this also shifts objects, gfx should follow
+		-Fix: data scale should scale gfx objects as well
+		-Fix: gfx object mirror call should flip y-mirror and adjust x and y coords
+		-Fix: data mirror should also mirror gfx objects
+		-Fix: gfx rotate90: also rotate cx;cy
+		-Fix: buffer rotate90 should also rotate gfx objects
+		-Fix: gfx: arbitrary rotate should rotate cx;cy as well
+		-Fix: arbitrary rotate buffer should rotate gfx objects as well
+		-Fix: search.c: return gfx point (corner) before gfx so it's possible to grab corners for resize
+		-Fix: gfx corner grab resize shouldn't ever mirror gfx (happened due to uninitialized fields)
+		-Fix: board name change shouldn't perform a full board switch but only trigger a design metadata changed event; it's not only cheaper but also avoids a crash in propedit during editing the name of the board
+		-Fix: udpate bbox of all affected padstacks and sorrunding poly clip after pstk proto grow
+		-Fix: various typos that made action PadstackMoveOrigin() unusable
+		-Fix: ensure padstack bbox and poly clipping after proto or proto shape move (e.g. from PadstackMoveOrigin)
+		-Fix: ensure padstack bbox and poly clipping after proto shape scale (not directly invoked, tho)
+		-Fix: ensure padstack bbox and poly clipping after proto shape derive
+		-Fix: ensure padstack bbox and poly clipping after proto shape swap with another shape
+		-Fix: ensure padstack bbox and poly clipping after proto shape replacement to hshadow
+		-Fix: ensure padstack bbox and poly clipping after proto shape removal
+		-Add: --show-paths also prints internal (non-config) paths for debugging
+		-Add: config node for hierarchy separator; don't accept the hierarchy separator character in term name
+		-Add: function for checking if a refdes text is valid
+		-Add: object id verification: accept hier-sep (normally '/') in refdes but not in terminal name; this makes the syntax a/b/c-4 with no / or - after the first and only -
+		-Add: draw: main expose remembers last viewbox shown
+		-Add: generalize line-point distance^2 call: provide a version that doesn't require a line object
+		-Add: make pcb_geo_point_line_dist2() optionally return projected point's details (offset and coords)
+		-Add: padstack prototype: framework for classifying crescent shapes
+		-Add: padstack crescent: proper support for padstacks where the slot or hole cuts into the ring making it "C" shaped
+
+	[diag]
+		-Add: integrity: detect invalid padstack prototype value
+		-Add: integrity: error for padstack proto with no shapes or hole
+		-Add: integrity: check for invalid padstack prototypes
+		-Add: integrity: pstk check mentions if the problem is in the buffer
+
+	[dialogs]
+		-Fix: parametric lib entry: work around wine/windows bug: read all input before calling pclose()
+		-Fix: missing include for rnd_w32_bindir
+		-Fix: save dialog crash on deleting characters in empty input (parent poke return value check missing)
+		-Add: ViewPortDialog() with action and menu
+
+	[doc]
+		-Fix: clarify volunteer feature vs. project goals
+		-Fix: faq duplicate html ids
+		-Fix: terminology on scripting: user script for embedded scripting
+		-Update: motivation doc for sch-rnd stable back in 2023
+		-Update: remove fedora, parrot, and raspbian from the official package list because they don't deliver 3.x.x
+		-Add: document extras and limitations in io_pcb
+		-Add: Devuan on the official packaging list
+		-Add: export_xy: explain board origin object
+		-Add: mention project goals in contrib howto
+		-Add: win32 doc section on native windows compilation, msys and cygwin
+
+	[drc_query]
+		-Fix: drc rule edit: if rules list on target role list is empty, copy all rules first
+		-Fix: edit dialog: less confusing log messages when all rules are copied
+		-Fix: wrong error type passed to lihata path lookup
+
+	[export_bom]
+		-Add: template for JLC assembly
+		-Add: part-rnd option (bool) that exports in part-rnd tEDAx
+
+	[export_dxf]
+		-Add: --line-width-enum option for sticking to specific line widths listed instead of threating it as a size
+
+	[export_hpgl]
+		-Split: thin draw hpgl export code from export_hpgl.c; export_hpgl.c should hold common code only to make room for the toolpath variant
+		-Add: hpgltp (toolpath) exporter
+		-Add: hpgltp: --repeat option
+
+	[export_openems]
+		-Change: rename pcb_mesh_* to openems_mesh_* - this is not a generic mesh but an openems-specific one that implements details relevant to openems only
+		-Fix: frequency widget handling in excitation: both fc and f0 should be freq and should be converted as double
+		-Fix: error message on broken outline loop instead of crash
+		-Fix: don't use .+ and .- matlab operators on vector-scalar when transforming mesh as it fails with recent versions of octave; see ml6514, ml6560
+
+	[export_svg]
+		-Add: color space export option (color/grayscale/b&w)
+
+	[export_xy]
+		-Fix: pad based center coords for non-90-deg rotation - the original code did not rotate the result back and did not transform it
+		-Add: %subc.CHAR-side% to print T or B for jlc
+		-Add: template for JLC pick-and-place service
+		-Add: --normalize-angles option so that output angles are between 0 and 360
+
+	[extobj]
+		-Fix: subc operation(): inhibit recalculating extobj while doing the operation and recalc the whole thing only once, at the end
+		-Add: pcb_extobj_recalc() to force full recalc of an object, useful after an operation()
+
+	[import_sch2]
+		-Fix: use rnd_is_path_abs() instead of local non-portable solution
+		-Fix: accept both / and \ as path separator on win32
+
+	[io_easyeda]
+		-Add: plugin for loading EasyEDA std and pro boards and footprints
+
+	[io_pcb]
+		-Fix: do not save io_pcb::hidename* subc attributes - these are encoded in the Element header in this format
+		-Fix: emulate Pad[] solid connection (no clearline) with clearance=0 and throw io incompatibility error on SMD thermal
+		-Optimize: make Element attribute inhibit list on save static so it can be stored as read-only
+		-Add: read file format 20180318: new VIA line
+		-Add: read file format 20180318: route style parser: load the optional extra dimension for mask, seen in file format version 20180318
+		-Add: read file format 20180318: create blind/burried vias
+		-Add: set preliminary number-of-copper-layers var compat_pstk_cop_grps when reading the layer group string, for the compat bbvia function
+		-Add: support PX as unit (same as NM) because geda/pcb added that in its format probably after 2017
+		-Add: support for old-unit 1.7c pads, added in geda/pcb probably after 2017
+		-Add: loader: throw error on bbvia layer index larger than number of copper layers
+		-Change: reorder the pad*c rules in the .y to match the order of rules in geda/pcb's .y for easier comparison in the future; also rename the pad 4.3 rule to pcb's c suffixed variant
+
+	[lib_bom]
+		-Fix: don't run the bom print loop if printer callback cb() is NULL
+		-Fix: don't write footer if ctx->f is NULL on _end() - relevant for part-rnd
+		-Change: make template struct field const qualifier optional (part-rnd needs to dynamically allocate them)
+		-Add: support for alternate output in part-rnd tEDAx format, inlcuding the template, all global and per part attributes
+		-Add: make multi-template rnd-config part optional
+		-Add: make 'static' configurable so the code can be linked with public API (for part-rnd)
+		-Add: generic version of the print all function that operats a callbakc instead of printing the template
+		-Add: publish bom_item_t, required for part-rnd
+		-Add: don't print anything if FILE *f is NULL (useful in part-rnd for dry sort)
+		-Add: expose bom_render_templ() in the public API for part-rnd
+
+	[lib_compat_help]
+		-Add: implement compat bbvia call
+		-Add: publish pcb_old_via_new_bbvia()
+		-Add: more specific error message on mask opening while saving gEDA/pcb route style - explain that we load newer file format version than we save
+		-Add: PCB clearline flag workaround on pins (confusion with pin name show)
+
+	[lib_easyeda]
+		-Change: when loading json with string keys convert hashes to arrays because we are not going to have an integer value to hash with
+		-Add: json-from-string parser
+		-Add: gendom option to save node names as string if there's no function to translate them to integer
+		-Add: str2name() callback of gendom passes on uctx and current node to help decision on whether an unresolvable name is actually an error or not
+		-Add: gendom concept of GDOM_CUSTOM_NAME for user assigned names stoerd in ->name_str (optional)
+		-Import: zip command helpers from sch-rnd
+
+	[lib_geo]
+		-Add: license in arc_sed
+		-Fix: arc_sed doesn't depend on non-c89 M_PI
+
+	[lib_hid_pcbui]
+		-Fix: also update the title on design meta change if design name changed
+
+	[lib_polyhelp]
+		-Add: topoly_solid: build per layer polyarea of objects marked with a dynamic flag
+
+	[menu]
+		-Fix: buffer normalize shouldn't rotate the buffer
+
+	[mincut]
+		-Fix: typo permanently disabled showing mincut results
+
+	[polybool2]
+		-Fix: avoid null ptr deref for polygon cleared out of existence
+		-Fix: cheap-draw optimization should use pixel sized line to avoid blobs forming
+		-Fix: don't run the line-poly otpimization outside of the gui
+		-Fix: line-poly optimization: wrong comparison on size vs. bool
+		-Add: enable automatic self-isc resolve when polybool2 is enabled, but never change the FULLPOLY flag (just warn about it) because that'd break load compatibility
+		-Add: when fixing up a self-intersecting polygon, the error message shall include poly ID and a coord and ask the user to fix it
+		-Add: extra optimization for pixel-size polygons - draw them as a single line without oterating over the contour; single pixel polygons shouldn't drawn at all
+
+	[propedit]
+		-Fix: don't crash if empty string (NULL) is set for board properties
+
+	[report]
+		-Fix: when available, use rtree debug define to avoid multiple definitions of rtree debug functions link-time
+		-Add: report on subc incldues rotation angle (deduced from subc-aux vectors)
+
+	[rtt]
+		-Add: prepare Export.sh for flavored test refs for polybool2
+		-Add: flavored polybool2 refs
+
+	[shape]
+		-Add: round rect gen API for working in an existing polygon
+
+	[show_netnames]
+		-Fix: compensate for board flips so the text is never rendered in mirror image in any combination of board flip_x and flip_y
+		-Add: auto-rotate text to make it readable from bottom and right (no text upside-down)
+
+	[tests]
+		-Add: central make test runs new pstk_crescent tests
+		-Add: cam_partial: autotest for query based partial export (from the pool node filledvia)
+		-Add: (inactive) find tests: name padstack prototypes for easier debugging
+
+
 pcb-rnd 3.1.5 (r39029)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[build]
