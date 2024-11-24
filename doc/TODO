@@ -2,8 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
-- ANNOUNCE: camv-rnd -s and doc for stored projects
-	-> http://repo.hu/cgi-bin/pool.cgi?project=camv-rnd&cmd=show&node=precfg_prj
 - RELEASE: polybool2: at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
 
 2. For later releases ===============================================================================
