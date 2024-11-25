@@ -1,9 +1,20 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.1.5
+  ver=3.1.6
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
+
+Packaging changes between 3.1.6 and 3.1.5
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A. changes that probably don't need action
+
+(none)
+
+B. changes that probably DO need action
+
+1. new plugin in existing package: io_easyeda in pcb-rnd-io-alien
 
 Packaging changes between 3.1.5 and 3.1.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

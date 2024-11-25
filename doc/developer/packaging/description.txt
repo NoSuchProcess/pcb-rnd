@@ -27,6 +27,8 @@ File formats and compatibility:
     * dsn board
     * eagle xml board version 6, 7, 8
     * eagle binary board version 3, 4, 5
+    * EasyEDA std board
+    * EasyEDA pro board
     * hyperlynx board, version 2 and above
     * kicad board, version 3, 4 and 5 (s-expr)
     * lihata pcb-rnd board (any version)
@@ -47,6 +49,8 @@ File formats and compatibility:
     * eagle xml footprint lib .lbr (as board)
     * eagle xml footprint lib .lbr (as footprint)
     * eagle binary footprint lib (as board)
+    * EasyEDA std footprint
+    * EasyEDA pro footprint
     * lihata pcb-rnd footprint (any version)
     * Mentor Graphics cell footprints
     * gEDA/PCB .fp footprints
