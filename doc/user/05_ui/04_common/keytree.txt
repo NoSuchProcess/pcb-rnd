@@ -90,7 +90,7 @@ b;f;l;	menu-default.lht	PasteBuffer(Clear);PasteBuffer(LoadAll)	Load buffer cont
 b;f;s;	menu-default.lht	PasteBuffer(SaveAll) 	Save buffer content to file
 b;m;l	menu-default.lht	Tool(buffer);PasteBuffer(Rotate,1);PasteBuffer(Mirror);PasteBuffer(Rotate,3)	Mirror buffer (left\057right)
 b;m;u	menu-default.lht	Tool(buffer);PasteBuffer(Mirror)	Mirror buffer (up\057down)
-b;n	menu-default.lht	Tool(buffer);PasteBuffer(Rotate,1);PasteBuffer(Normalize)	Normalize
+b;n	menu-default.lht	Tool(buffer);PasteBuffer(Normalize)	Normalize
 b;r;a	menu-default.lht	Tool(buffer);FreeRotateBuffer()	Arbitrarily Rotate Buffer
 b;r;l	menu-default.lht	Tool(buffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
 b;r;r	menu-default.lht	Tool(buffer);PasteBuffer(Rotate,3)	Rotate buffer 90 deg CW (right)
@@ -252,6 +252,8 @@ r;r;+	menu-default.lht	conf(delta, editor/route_radius, +0.5, design)	Route radi
 r;r;-	menu-default.lht	conf(delta, editor/route_radius, -0.5, design)	Route radius -0.5
 r;r;m	menu-default.lht	conf(delta, editor/route_radius, -0.5, design)	Route radius -0.5
 r;r;p	menu-default.lht	conf(delta, editor/route_radius, +0.5, design)	Route radius +0.5
+r;s;c;	rbs_routing-menu.lht	RbsConnect() 	Connect
+r;s;s;	rbs_routing-menu.lht	RbsStretch() 	Stretch
 right	menu-default.lht	Cursor(Warp,1,0,grid) 	Step Right
 right-ctrl	menu-default.lht	Scroll(right) 	Scroll Right
 right-shift	menu-default.lht	Cursor(Pan,50,0,view) 	Step +Right
@@ -265,6 +267,7 @@ s;b;s	menu-default.lht	PasteBuffer(Push);PasteBuffer(5);PasteBuffer(Clear);Paste
 s;c;e;	menu-default.lht	ExtobjConvFrom(Selected, @gui)	Convert selection to extended object...
 s;c;p;	menu-default.lht	PadstackConvert(selected);Tool(buffer)	Convert selection to padstack
 s;c;s;	menu-default.lht	Select(ConvertSubc) 	Convert selection to subcircuit
+s;e;d;	emsim-menu.lht	EmsDcpower() 	DC power
 s;f;	menu-default.lht	Flip(SelectedElements) 	Move selected subcircuits to other side
 s;i;	menu-default.lht	Select(Invert) 	Invert selection
 s;k;	menu-default.lht	query(view, "@.p.flag.lock == 1 && isvoid(@.subc)")	List locked objects
@@ -324,6 +327,7 @@ w;l	menu-default.lht	LibraryDialog() 	Library
 w;m	menu-default.lht	LogDialog() 	Message Log
 w;n	menu-default.lht	NetlistDialog() 	Netlist
 w;p	menu-default.lht	Display(Pinout) 	Pinout
+w;v	menu-default.lht	ViewPortDialog() 	Viewport
 y-ctrl	menu-default.lht	Redo() 	Redo last undone operation
 z-ctrl	menu-default.lht	Undo() 	Undo last operation
 z;e;	menu-default.lht	Zoom() 	Zoom Extents
