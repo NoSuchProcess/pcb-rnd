@@ -1,9 +1,10 @@
 $class io
 $short EasyEDA board & footprint
 $long load boards and footprints in the EasyEDA
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-r EasyEDA std board
+$fmt-feature-r EasyEDA pro board
 $fmt-feature-r EasyEDA std footprint
 $fmt-feature-r EasyEDA pro footprint
 $package io-alien
