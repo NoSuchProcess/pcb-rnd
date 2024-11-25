@@ -11,13 +11,13 @@
 #include "util/arg_auto_set.h"
 #include "Rev.h"
 
-#define version "3.1.6-dev"
+#define version "3.1.6-rc1"
 
 #define REQ_LIBRND_MAJOR 4
 #define REQ_LIBRND_MINOR 2
 
 #define WANT_POLYBOOL_DEFAULT sfalse
-#define WANT_POLYBOOL2_DEFAULT strue
+#define WANT_POLYBOOL2_DEFAULT sfalse
 
 #define TOSTR_(x) #x
 #define TOSTR(x) TOSTR_(x)
