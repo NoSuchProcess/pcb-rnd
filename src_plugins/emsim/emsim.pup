@@ -6,7 +6,7 @@ $state WIP
 $fmt-native no
 $fmt-feature-w tEDAx trimesh board
 $fmt-feature-w tEDAx dcpower
-$package sim
+#$package sim
 dep export_emsim
 default disable-all
 autoload 1
