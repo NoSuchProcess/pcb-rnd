@@ -5,6 +5,12 @@
 - RELEASE: polybool2: at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
 
 2. For later releases ===============================================================================
+- BUG: polygon: search for #isle in the code
+	- mark the config node obsolete and explain it was used only in MorphPolygon()
+	- remove it from MorphPolygon()
+	- indicate this in the preferences dialog sizes tab too - or maybe remove the value from there?
+	- keep the dummy value in config because io_pcb depends on it
+	- list it in the feature removal pool node
 - FEATURE: emsim-rnd (dcpower)
 - FEATURE: lock/unlock objects (various queries; in menu) [report: Igor2]
 	- all objects
