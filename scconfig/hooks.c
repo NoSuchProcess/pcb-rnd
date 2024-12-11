@@ -11,7 +11,7 @@
 #include "util/arg_auto_set.h"
 #include "Rev.h"
 
-#define version "3.1.6"
+#define version "3.1.7-dev"
 
 #define REQ_LIBRND_MAJOR 4
 #define REQ_LIBRND_MINOR 2
