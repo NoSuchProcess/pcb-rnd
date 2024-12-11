@@ -1,4 +1,4 @@
-pcb-rnd 3.1.6 (r39694)
+pcb-rnd 3.1.6 (r39711)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[build]
 		-Fix: typo in paths for the win32 port
