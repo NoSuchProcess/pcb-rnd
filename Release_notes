@@ -7,7 +7,7 @@ This release features a lot of bugfixes and new features; highlights:
    ./configure --enable-polybool2
 
 2. new alien file format: io_easyeda, for loading easyeda std and pro
-   boards and footpritns
+   boards and footprints; please ./configure with --buildin-io_easyeda
 
 3. non-modal viewport dialog that gives an exrta view in a separate window
    (zoomable/scrollable)
