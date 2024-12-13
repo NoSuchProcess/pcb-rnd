@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 - RELEASE: enable polybool2 for dev, disable polybool2 by default before the release
 - RELEASE: polybool2: at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
+- ANNOUNCE: RFC on extra drc check on missing mask/paste (attribute based, perhaps coming via tEDAx netlist from devmap?)
 - BUG: polybool2 assert on invalid zero size polygon: bug_files/TODO/nullpoly.rp
 
 2. For later releases ===============================================================================
