@@ -31,7 +31,7 @@ static void dxf_draw_handle(dxf_ctx_t *ctx)
 {
 	ctx->drawn_objs++;
 	ctx->handle++;
-	fprintf(ctx->f, "5\n%lu\n", ctx->handle);
+	fprintf(ctx->f, "5\n%lX\n", ctx->handle);
 }
 
 static int dxf_line_width(dxf_ctx_t *ctx, int w)

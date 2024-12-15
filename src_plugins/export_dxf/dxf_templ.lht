@@ -16,7 +16,7 @@ ha:template {
 				9
 				$HANDSEED
 				5
-				20000
+				100000000
 				9
 				$DWGCODEPAGE
 				3
