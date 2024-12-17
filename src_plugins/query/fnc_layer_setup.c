@@ -563,3 +563,25 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 	return -1;
 }
 
+
+
+#include "htko.h"
+
+static int fnc_layer_ko_match(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	pcb_any_obj_t *obj, *koobj;
+	pcb_layer_t *ly, *koly;
+
+	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || (argv[1].type != PCBQ_VT_OBJ))
+		return -1;
+
+	/* figure the two layers */
+	obj = (pcb_any_obj_t *)argv[0].data.obj;
+	koobj = (pcb_any_obj_t *)argv[1].data.obj;
+	ly = pcb_layer_get_real(obj->parent.layer);
+	koly = pcb_layer_get_real(obj->parent.layer);
+
+
+	return -1;
+}
+

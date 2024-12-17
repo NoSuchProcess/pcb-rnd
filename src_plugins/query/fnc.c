@@ -177,4 +177,5 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("intersect", fnc_intersect);
 
 	pcb_qry_fnc_reg("layer_setup", fnc_layer_setup);
+	pcb_qry_fnc_reg("layer_ko_match", fnc_layer_ko_match);
 }

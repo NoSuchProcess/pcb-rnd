@@ -57,6 +57,7 @@ struct pcb_qry_exec_s {
 	vtp0_t layer_setup_netobjs;  /* fnc layer_setup(): tmp allocation cache for object listing */
 	void *layer_setup_res_cache; /* fnc layer_setup(): cached results for each condition evaluated - requests tend to repeat */
 	time_t last_prog_cb;
+	htpi_t layer_ko_match;       /* fnc layer_ko_match(); key is a fake pointer build of two layer group indices */
 
 	unsigned obj2netterm_inited:1;
 	unsigned obj2lenseg_inited:1;

@@ -11,6 +11,7 @@ put /local/rnd/mod/OBJS [@
  $(PLUGDIR)/query/net_len.o
  $(PLUGDIR)/query/fields_sphash.o
  $(PLUGDIR)/query/dlg_search.o
+ $(PLUGDIR)/query/htko.o
 @]
 put /local/rnd/mod/YACC {$(PLUGDIR)/query/query_y}
 put /local/rnd/mod/LEX  {$(PLUGDIR)/query/query_l}
