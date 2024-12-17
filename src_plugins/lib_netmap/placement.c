@@ -64,8 +64,7 @@ void pcb_placement_build(pcb_placement_t *ctx, pcb_data_t *data)
 				pcb_data_mirror(proto->data, ctx->fix_ymirr ? -ctx->pcb->hidlib.dwg.Y2 : 0, PCB_TXM_SIDE, 1, 0);
 				for(n = 0; n < proto->data->LayerN; n++) {
 					pcb_layer_t *ly = proto->data->Layer + n;
-					ly->meta.bound.type = pcb_layer_mirror_type(ly->meta.bound.type);
-					ly->meta.bound.stack_offs = -ly->meta.bound.stack_offs;
+					pcb_layer_smirror_bound(ly);
 				}
 			}
 

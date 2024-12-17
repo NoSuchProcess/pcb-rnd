@@ -2128,8 +2128,7 @@ rnd_bool pcb_subc_change_side(pcb_subc_t *subc, rnd_coord_t yoff)
 
 	for(n = 0; n < subc->data->LayerN; n++) {
 		pcb_layer_t *ly = subc->data->Layer + n;
-		ly->meta.bound.type = pcb_layer_mirror_type(ly->meta.bound.type);
-		ly->meta.bound.stack_offs = -ly->meta.bound.stack_offs;
+		pcb_layer_smirror_bound(ly);
 	}
 	pcb_subc_rebind(pcb, subc);
 

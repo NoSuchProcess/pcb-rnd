@@ -1299,6 +1299,8 @@ static int strcmp_score(const char *s1, const char *s2)
 			score += 2;
 	}
 
+rnd_trace(" strcmp_score: '%s' '%s' -> %d\n", s1, s2, score);
+
 	return score;
 }
 
@@ -1351,6 +1353,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 			lyt = PCB_LYT_BOUNDARY;
 			rnd_message(RND_MSG_WARNING, "Ignoring invalid layer flag combination for %s: boundary layer must be global\n(fixed up by removing location specifier bits)\n", src->name);
 		}
+rnd_trace("searching: name=%s purpose=%s\n", src->name, src->meta.bound.purpose);
 		for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++)
 			if ((grp->ltype & lyt) == lyt)
 				pcb_layer_resolve_best(pcb, grp, src, &best_score, &best);
@@ -1413,6 +1416,13 @@ pcb_layer_type_t pcb_layer_mirror_type(pcb_layer_type_t lyt)
 		return (lyt & ~PCB_LYT_BOTTOM) | PCB_LYT_TOP;
 	return lyt;
 }
+
+void pcb_layer_smirror_bound(pcb_layer_t *ly)
+{
+	ly->meta.bound.type = pcb_layer_mirror_type(ly->meta.bound.type);
+	ly->meta.bound.stack_offs = -ly->meta.bound.stack_offs;
+}
+
 
 int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name))
 {

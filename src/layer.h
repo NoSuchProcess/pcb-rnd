@@ -344,6 +344,10 @@ unsigned int pcb_layer_hash_bound(pcb_layer_t *ly, rnd_bool smirror);
 /* Calculate mirrored version of some (bound) layer properties */
 pcb_layer_type_t pcb_layer_mirror_type(pcb_layer_type_t lyt);
 
+/* side-mirror a bound layer (layer recipe): modify type, offs, and in some
+   cases purpose string as well */
+void pcb_layer_smirror_bound(pcb_layer_t *ly);
+
 
 /* Modify tree pointers in dst to point to src's; allocates trees for src if they are not yet allocated */
 void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src);
