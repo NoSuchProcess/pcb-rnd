@@ -258,15 +258,24 @@ void pcb_ui_move_obj_to_layer(pcb_board_t *pcb, pcb_any_obj_t *o, pcb_layer_t *t
 	   under the subc to under the board as an unwanted side effect */
 	if ((o->parent_type == PCB_PARENT_LAYER) && (o->parent.layer->parent.data->parent_type == PCB_PARENT_SUBC)) {
 		pcb_subc_t *subc= o->parent.layer->parent.data->parent.subc;
-		pcb_layer_type_t lyt = pcb_layer_flags_(PCB_CURRLAYER(pcb));
+		pcb_layer_t *currly = PCB_CURRLAYER(pcb);
+		pcb_layer_type_t lyt = pcb_layer_flags_(currly);
 		int old_len = subc->data->LayerN;
-		target = pcb_subc_get_layer(subc, lyt, PCB_CURRLAYER(pcb)->comb, 1, PCB_CURRLAYER(pcb)->name, 0);
+		target = pcb_subc_get_layer(subc, lyt, currly->comb, 1, currly->name, 0);
 		if (target == NULL) {
 			rnd_message(RND_MSG_ERROR, "Failed to find or allocate the matching subc layer\n");
 			return;
 		}
-		if (old_len != subc->data->LayerN)
+		if (old_len != subc->data->LayerN) {
+			const char *curr_purpose = NULL;
+
+			/* also copy the purpose string so binding is more stable, especially on side mirror */
+			pcb_layer_purpose_(currly, &curr_purpose);
+			if (curr_purpose != NULL)
+				target->meta.bound.purpose = rnd_strdup(curr_purpose);
+
 			pcb_subc_rebind(pcb, subc); /* had to alloc a new layer */
+		}
 	}
 
 	if (pcb_move_obj_to_layer(o->type, ly, o, o, target, rnd_false))
