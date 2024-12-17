@@ -2,6 +2,9 @@
 #define HT(x) htko_ ## x
 #include <genht/ht.c>
 
+#include <genht/hash.h>
+
+
 int htko_keyeq(htko_key_t a, htko_key_t b)
 {
 	return (a.lid == b.lid) && (a.ko_lid == b.ko_lid);
