@@ -6,7 +6,7 @@
 - ANNOUNCE: RFC on extra drc check on missing mask/paste (attribute based, perhaps coming via tEDAx netlist from devmap?)
 - BUG: polybool2 assert on invalid zero size polygon: bug_files/TODO/nullpoly.rp
 + BUG: Gabriel's keepout flip bug: bug_files/TODO/kof.rp - move subc to other side, ko.top-copper layer is now bound to bottom courtyard instead [report: gpaubert]
-- BUG: missing drc rule for ko.* copper: bug_files/TODO/kof.rp - DRC not warning for copper over ko [report: gpaubert]
++ BUG: missing drc rule for ko@ copper: bug_files/TODO/kof.rp - DRC not warning for copper over ko [report: gpaubert]
 
 2. For later releases ===============================================================================
 - BUG: polygon: search for #isle in the code
