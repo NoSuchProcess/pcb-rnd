@@ -567,6 +567,56 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 
 #include "htko.h"
 
+RND_INLINE int ko_match(pcb_layer_t *ly, pcb_layer_t *koly)
+{
+	const char *koprp = NULL, *stype;
+	pcb_layer_type_t loc, typ, flg;
+
+	pcb_layer_purpose_(koly, &koprp);
+	if ((koprp == NULL) || (koprp[0] != 'k') || (koprp[1] != 'o') || (koprp[2] != '@'))
+		return 0;
+
+	koprp += 3;
+
+	if ((*koprp == 't') && (strncmp(koprp, "top-", 4) == 0)) {
+		stype = koprp+4;
+		loc = PCB_LYT_TOP;
+	}
+	else if ((*koprp == 'b') && (strncmp(koprp, "bottom-", 7) == 0)) {
+		stype = koprp+7;
+		loc = PCB_LYT_BOTTOM;
+	}
+	else if ((*koprp == 'i') && (strncmp(koprp, "intern-", 7) == 0)) {
+		stype = koprp+7;
+		loc = PCB_LYT_INTERN;
+	}
+	else if ((*koprp == 'l') && (strncmp(koprp, "logical-", 8) == 0)) {
+		stype = koprp+8;
+		loc = PCB_LYT_LOGICAL;
+	}
+	else if ((*koprp == 'a') && (strncmp(koprp, "any-", 4) == 0)) {
+		stype = koprp+4;
+		loc = PCB_LYT_ANYWHERE;
+	}
+	else {
+		rnd_message(RND_MSG_ERROR, "query layer_ko_match(): invalid ko@ layer type: '%s' (invalid location before the dash)\n", koprp);
+		return 0;
+	}
+
+	if ((*stype == 'a') && (strcmp(stype, "any") == 0))
+		typ = PCB_LYT_ANYTHING;
+	else
+		typ = pcb_layer_type_str2bit(stype);
+
+	if (typ == 0) {
+		rnd_message(RND_MSG_ERROR, "query layer_ko_match(): invalid ko@ layer type: '%s' (invalid type after the dash)\n", koprp);
+		return 0;
+	}
+
+	flg = pcb_layer_flags_(ly);
+	return (flg & loc) && (flg & typ);
+}
+
 static int fnc_layer_ko_match(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	pcb_any_obj_t *obj, *koobj;
@@ -579,9 +629,8 @@ static int fnc_layer_ko_match(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *arg
 	obj = (pcb_any_obj_t *)argv[0].data.obj;
 	koobj = (pcb_any_obj_t *)argv[1].data.obj;
 	ly = pcb_layer_get_real(obj->parent.layer);
-	koly = pcb_layer_get_real(obj->parent.layer);
+	koly = pcb_layer_get_real(koobj->parent.layer);
 
-
-	return -1;
+	PCB_QRY_RET_INT(res, ko_match(ly, koly));
 }
 
