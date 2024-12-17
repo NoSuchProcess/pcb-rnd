@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2020,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -564,8 +564,25 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 }
 
 
+/*** ko match ***/
 
 #include "htko.h"
+
+void pcb_qry_uninit_layer_ko_match(pcb_qry_exec_t *ectx)
+{
+	if (!ectx->layer_ko_match_inited)
+		return;
+
+	htko_free((htko_t *)ectx->layer_ko_match);
+	ectx->layer_ko_match_inited = 0;
+}
+
+static void pcb_qry_init_layer_ko_match(pcb_qry_exec_t *ectx)
+{
+	ectx->layer_ko_match = htko_alloc(htko_keyhash, htko_keyeq);
+	ectx->layer_ko_match_inited = 1;
+}
+
 
 RND_INLINE int ko_match(pcb_layer_t *ly, pcb_layer_t *koly)
 {
@@ -621,9 +638,17 @@ static int fnc_layer_ko_match(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *arg
 {
 	pcb_any_obj_t *obj, *koobj;
 	pcb_layer_t *ly, *koly;
+	rnd_layer_id_t lid, kolid;
+	htko_key_t key;
+	htko_entry_t *e;
+	int m;
 
 	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || (argv[1].type != PCBQ_VT_OBJ))
 		return -1;
+
+	/* init cache on-demand */
+	if (!ectx->layer_ko_match_inited)
+		pcb_qry_init_layer_ko_match(ectx);
 
 	/* figure the two layers */
 	obj = (pcb_any_obj_t *)argv[0].data.obj;
@@ -631,6 +656,24 @@ static int fnc_layer_ko_match(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *arg
 	ly = pcb_layer_get_real(obj->parent.layer);
 	koly = pcb_layer_get_real(koobj->parent.layer);
 
-	PCB_QRY_RET_INT(res, ko_match(ly, koly));
-}
+	lid = pcb_layer2id(ectx->pcb->Data, ly);
+	kolid = pcb_layer2id(ectx->pcb->Data, koly);
 
+	if ((lid == -1) || (kolid == -1))
+		return 0; /* invalid layers can't match */
+
+	/* look up lid-kolid pair in cache */
+	key = htko_mkkey(lid, kolid);
+	e = htko_getentry((htko_t *)ectx->layer_ko_match, key);
+	if (e != NULL) {
+/*		rnd_trace("KO cache HIT %ld-%ld: %d\n", lid, kolid, e->value);*/
+		PCB_QRY_RET_INT(res, e->value);
+	}
+
+	/* not in cache: compute and remember */
+	m = ko_match(ly, koly);
+/*	rnd_trace("KO cache set %ld-%ld: %d\n", lid, kolid, m);*/
+	htko_insert((htko_t *)ectx->layer_ko_match, key, m);
+
+	PCB_QRY_RET_INT(res, m);
+}

@@ -13,6 +13,8 @@ typedef char htko_value_t;
 #undef HT
 
 int htko_keyeq(htko_key_t a, htko_key_t b);
+unsigned htko_keyhash(htko_key_t a);
+
 
 RND_INLINE htko_key_t htko_mkkey(rnd_layer_id_t lid, rnd_layer_id_t ko_lid)
 {

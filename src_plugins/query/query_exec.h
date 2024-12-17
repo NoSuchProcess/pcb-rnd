@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,11 +57,12 @@ struct pcb_qry_exec_s {
 	vtp0_t layer_setup_netobjs;  /* fnc layer_setup(): tmp allocation cache for object listing */
 	void *layer_setup_res_cache; /* fnc layer_setup(): cached results for each condition evaluated - requests tend to repeat */
 	time_t last_prog_cb;
-	htpi_t layer_ko_match;       /* fnc layer_ko_match(); key is a fake pointer build of two layer group indices */
+	void *layer_ko_match;       /* fnc layer_ko_match(); key is a fake pointer build of two layer group indices */
 
 	unsigned obj2netterm_inited:1;
 	unsigned obj2lenseg_inited:1;
 	unsigned layer_setup_inited:1;
+	unsigned layer_ko_match_inited:1;
 	unsigned warned_missing_thickness:1;
 	unsigned trace:1;
 };

@@ -75,6 +75,7 @@ void pcb_qry_autofree(pcb_qry_exec_t *ctx)
 }
 
 extern void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx);
+extern void pcb_qry_uninit_layer_ko_match(pcb_qry_exec_t *ectx);
 
 void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 {
@@ -99,6 +100,7 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 
 	vtp0_uninit(&ctx->tmplst);
 	pcb_qry_uninit_layer_setup(ctx);
+	pcb_qry_uninit_layer_ko_match(ctx);
 
 	ctx->obj2netterm_inited = ctx->obj2lenseg_inited = \
 	ctx->layer_setup_inited = ctx->warned_missing_thickness = 0;
