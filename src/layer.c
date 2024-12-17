@@ -1417,10 +1417,27 @@ pcb_layer_type_t pcb_layer_mirror_type(pcb_layer_type_t lyt)
 	return lyt;
 }
 
+
+#define IS_KO_(s)  ((s[0] == 'k') && (s[1] == 'o') && (s[2] == '@'))
+#define IS_KO(s)   (((s) != NULL) && IS_KO_((s)))
+
 void pcb_layer_smirror_bound(pcb_layer_t *ly)
 {
 	ly->meta.bound.type = pcb_layer_mirror_type(ly->meta.bound.type);
 	ly->meta.bound.stack_offs = -ly->meta.bound.stack_offs;
+
+	/* mirror side in ko@location-type, e.g. ko@top-copper becomes ko@bottom-copper */
+	if (IS_KO(ly->meta.bound.purpose)) {
+		char *orig = ly->meta.bound.purpose;
+		if (strncmp(orig+3, "top-", 4) == 0) {
+			ly->meta.bound.purpose = rnd_concat("ko@bottom-", orig+7, NULL);
+			free(orig);
+		}
+		else if (strncmp(orig+3, "bottom-", 7) == 0) {
+			ly->meta.bound.purpose = rnd_concat("ko@top-", orig+10, NULL);
+			free(orig);
+		}
+	}
 }
 
 
