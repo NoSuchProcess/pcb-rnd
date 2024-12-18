@@ -193,21 +193,6 @@ static rnd_polyarea_t *biggest(rnd_polyarea_t * p)
 		return NULL;
 	n = p;
 	do {
-#if 0
-		TODO("#isle: remove this code: was disabled in pcb 2007 and latest 4.3 too");
-		if (n->contours->area < conf_core.design.poly_isle_area) {
-			n->b->f = n->f;
-			n->f->b = n->b;
-			rnd_poly_contour_del(&n->contours);
-			if (n == p)
-				p = n->f;
-			n = n->f;
-			if (!n->contours) {
-				free(n);
-				return NULL;
-			}
-		}
-#endif
 		if (n->contours->area > big) {
 			top = n;
 			big = n->contours->area;
