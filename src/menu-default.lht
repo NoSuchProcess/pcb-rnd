@@ -413,7 +413,22 @@ ha:rnd-menu-v1 {
 				ha:Invert selection                = { a={<key>s; <key>i; }; action=Select(Invert) }
 				-
 				ha:Advanced search and select      = { a={<key>s; <key>s;} action=SearchDialog() }
-				ha:List locked objects             = { a={<key>s; <key>k;} action={query(view, "@.p.flag.lock == 1 && isvoid(@.subc)")} }
+				ha:Mass (un)lock {
+					li:submenu {
+						ha:List locked objects             = { a={<key>s; <key>k; <key>l;} action={query(view, "@.p.flag.lock == 1 && isvoid(@.subc)")} }
+						-
+						ha:Select all locked objects       = { a={<key>s; <key>k; <key>a;} action={query(select, "@.p.flag.lock == 1 && isvoid(@.subc)")} }
+						ha:Select locked polygons          = { a={<key>s; <key>k; <key>p;} action={query(select, "@.p.flag.lock == 1 && @.type == POLYGON")} }
+						ha:Select locked subcircuits       = { a={<key>s; <key>k; <key>s;} action={query(select, "@.p.flag.lock == 1 && @.type == SUBC")} }
+						-
+						ha:Select all unlocked objects     = { a={<key>s; <key>k; Shift<key>a;} action={query(select, "@.p.flag.lock == 0 && isvoid(@.subc)")} }
+						ha:Select unlocked polygons        = { a={<key>s; <key>k; Shift<key>p;} action={query(select, "@.p.flag.lock == 0 && @.type == POLYGON")} }
+						ha:Select unlocked subcircuits     = { a={<key>s; <key>k; Shift<key>s;} action={query(select, "@.p.flag.lock == 0 && @.type == SUBC")} }
+						-
+						ha:Unlock selected objects         = { a={<key>s; <key>k; <key>u;} action={propset(selection, p/flags/lock, 0)} }
+						ha:Lock selected objects           = { a={<key>s; <key>k; <key>k;} action={propset(selection, p/flags/lock, 1)} }
+					}
+				}
 				-
 				ha:Move selected subcircuits to other side= { a={<key>s; <key>f;} action=Flip(SelectedElements) }
 				ha:Move selected objects to current layer = { a={<key>s; <key>l;} action=MoveToCurrentLayer(Selected) }
