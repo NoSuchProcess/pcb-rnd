@@ -1771,6 +1771,8 @@ rnd_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 		else {
 			rnd_polyarea_t *t = p;
 
+			rnd_message(RND_MSG_WARNING, "pcb_poly_morph(): removed island with area too small at %$mm;%$mm\n", t->contours->xmin, t->contours->ymin);
+
 			p = p->f;
 			rnd_poly_contour_del(&t->contours);
 			free(t);
