@@ -152,7 +152,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 		RND_DAD_END(ctx->dlg);
 
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			RND_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");
+			RND_DAD_LABEL(ctx->dlg, "polygon isle minimum size\nfor MorphPolygon(); [square um]");
 			RND_DAD_REAL(ctx->dlg);
 				tabdata->wisle = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
