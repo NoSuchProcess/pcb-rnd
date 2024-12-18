@@ -15,11 +15,6 @@
 	- indicate this in the preferences dialog sizes tab too - or maybe remove the value from there?
 	- keep the dummy value in config because io_pcb depends on it
 	- list it in the feature removal pool node
-- FEATURE: lock/unlock objects (various queries; in menu) [report: Igor2]
-	- all objects
-	- polygons
-	- subcircuits
-	- only on current layer
 
 2. For later releases ===============================================================================
 - FEATURE: emsim-rnd (dcpower)
