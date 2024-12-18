@@ -270,7 +270,15 @@ s;c;s;	menu-default.lht	Select(ConvertSubc) 	Convert selection to subcircuit
 s;e;d;	emsim-menu.lht	EmsDcpower() 	DC power
 s;f;	menu-default.lht	Flip(SelectedElements) 	Move selected subcircuits to other side
 s;i;	menu-default.lht	Select(Invert) 	Invert selection
-s;k;	menu-default.lht	query(view, "@.p.flag.lock == 1 && isvoid(@.subc)")	List locked objects
+s;k;a-shift;	menu-default.lht	query(select, "@.p.flag.lock == 0 && isvoid(@.subc)")	Select all unlocked objects
+s;k;a;	menu-default.lht	query(select, "@.p.flag.lock == 1 && isvoid(@.subc)")	Select all locked objects
+s;k;k;	menu-default.lht	propset(selection, p/flags/lock, 1)	Lock selected objects
+s;k;l;	menu-default.lht	query(view, "@.p.flag.lock == 1 && isvoid(@.subc)")	List locked objects
+s;k;p-shift;	menu-default.lht	query(select, "@.p.flag.lock == 0 && @.type == POLYGON")	Select unlocked polygons
+s;k;p;	menu-default.lht	query(select, "@.p.flag.lock == 1 && @.type == POLYGON")	Select locked polygons
+s;k;s-shift;	menu-default.lht	query(select, "@.p.flag.lock == 0 && @.type == SUBC")	Select unlocked subcircuits
+s;k;s;	menu-default.lht	query(select, "@.p.flag.lock == 1 && @.type == SUBC")	Select locked subcircuits
+s;k;u;	menu-default.lht	propset(selection, p/flags/lock, 0)	Unlock selected objects
 s;l;	menu-default.lht	MoveToCurrentLayer(Selected) 	Move selected objects to current layer
 s;p	menu-default.lht	propedit(selection) 	Edit properties
 s;r;	menu-default.lht	RemoveSelected() 	Remove selected objects

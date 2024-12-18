@@ -2733,9 +2733,89 @@
 &nbsp;
 <td> menu-default.lht
 <tr bgcolor="#DDFFFF">
-	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp; <td>
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;a-shift<br>&nbsp;&nbsp;&nbsp; <td>
+&nbsp;
+<I>Select all unlocked objects</I><br>query(select, "@.p.flag.lock == 0 && isvoid(@.subc)")
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<td> menu-default.lht
+<tr bgcolor="#FFFFFF">
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp; <td>
+&nbsp;
+<I>Select all locked objects</I><br>query(select, "@.p.flag.lock == 1 && isvoid(@.subc)")
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<td> menu-default.lht
+<tr bgcolor="#DDFFFF">
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;k<br>&nbsp;&nbsp;&nbsp; <td>
+&nbsp;
+<I>Lock selected objects</I><br>propset(selection, p/flags/lock, 1)
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<td> menu-default.lht
+<tr bgcolor="#FFFFFF">
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp; <td>
 &nbsp;
 <I>List locked objects</I><br>query(view, "@.p.flag.lock == 1 && isvoid(@.subc)")
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<td> menu-default.lht
+<tr bgcolor="#DDFFFF">
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;p-shift<br>&nbsp;&nbsp;&nbsp; <td>
+&nbsp;
+<I>Select unlocked polygons</I><br>query(select, "@.p.flag.lock == 0 && @.type == POLYGON")
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<td> menu-default.lht
+<tr bgcolor="#FFFFFF">
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;p<br>&nbsp;&nbsp;&nbsp; <td>
+&nbsp;
+<I>Select locked polygons</I><br>query(select, "@.p.flag.lock == 1 && @.type == POLYGON")
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<td> menu-default.lht
+<tr bgcolor="#DDFFFF">
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;s-shift<br>&nbsp;&nbsp;&nbsp; <td>
+&nbsp;
+<I>Select unlocked subcircuits</I><br>query(select, "@.p.flag.lock == 0 && @.type == SUBC")
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<td> menu-default.lht
+<tr bgcolor="#FFFFFF">
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp; <td>
+&nbsp;
+<I>Select locked subcircuits</I><br>query(select, "@.p.flag.lock == 1 && @.type == SUBC")
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<td> menu-default.lht
+<tr bgcolor="#DDFFFF">
+	<th align=left>s<br>&nbsp;k<br>&nbsp;&nbsp;u<br>&nbsp;&nbsp;&nbsp; <td>
+&nbsp;
+<I>Unlock selected objects</I><br>propset(selection, p/flags/lock, 0)
 &nbsp;
 &nbsp;
 &nbsp;
