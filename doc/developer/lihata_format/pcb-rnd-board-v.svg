@@ -380,7 +380,7 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/meta/children/size/children/isle_area_nm2 -->
 <g id="node15" class="node">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/meta/children/size/children/isle_area_nm2</title>
-<g id="a_node15"><a xlink:href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*/children/meta/children/size/children/isle_area_nm2" xlink:title="remove polygon islands smaller than this value, specified in nm&lt;sup&gt;2&lt;/sup&gt;">
+<g id="a_node15"><a xlink:href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*/children/meta/children/size/children/isle_area_nm2" xlink:title="remove polygon islands smaller than this value, specified in nm&lt;sup&gt;2&lt;/sup&gt;; used in MorphPolygon() action only and is buggy: depending on polygon lib version it may have trigger at half or double the area">
 <ellipse fill="none" stroke="#000000" cx="852.0624" cy="-1227.4327" rx="67.7647" ry="26.7407"/>
 <text text-anchor="middle" x="852.0624" y="-1231.2327" font-family="Times,serif" font-size="14.00" fill="#000000">isle_area_nm2</text>
 <text text-anchor="middle" x="852.0624" y="-1216.2327" font-family="Times,serif" font-size="14.00" fill="#000000">double</text>

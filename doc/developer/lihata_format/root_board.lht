@@ -32,7 +32,7 @@ ha:lht_tree_doc { ha:roots {
 							ha:y1 { ver {>=9}; valtype=coord; desc={drawing area box Y1 (upper)}}
 							ha:x2 { ver {>=9}; valtype=coord; desc={drawing area box X2 (right)}}
 							ha:y2 { ver {>=9}; valtype=coord; desc={drawing area box Y2 (lower)}}
-							ha:isle_area_nm2 { valtype=double; desc={remove polygon islands smaller than this value, specified in nm<sup>2</sup>}}
+							ha:isle_area_nm2 { valtype=double; desc={remove polygon islands smaller than this value, specified in nm<sup>2</sup>; used in MorphPolygon() action only and is buggy: depending on polygon lib version it may have trigger at half or double the area}}
 							ha:thermal_scale { valtype=double; desc={scale all thermals on the board by this factor}}
 						}
 					}
