@@ -1763,8 +1763,8 @@ rnd_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 			newone->BoundingBox.Y2 = p->contours->ymax + 1;
 			pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, newone, newone);
 			newone->Clipped = p;
-			p = p->f;									/* go to next pline */
-			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
+			p = p->f; /* go to next pline */
+			newone->Clipped->b = newone->Clipped->f = newone->Clipped; /* unlink from others */
 			rnd_rtree_insert(layer->polygon_tree, newone, (rnd_rtree_box_t *)newone);
 			pcb_poly_invalidate_draw(layer, newone);
 		}
