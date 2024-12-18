@@ -9,12 +9,6 @@
 + BUG: missing drc rule for ko@ copper: bug_files/TODO/kof.rp - DRC not warning for copper over ko [report: gpaubert]
 - BUG: bug_files/TODO/dxf_drill/*: drill color not detected properly and/or not reset [report: John Wehle ml: 6670]
 	-> when drill_fill is enabled, the copper shape is filled
-- BUG: polygon: search for #isle in the code
-	- mark the config node obsolete and explain it was used only in MorphPolygon()
-	- remove it from MorphPolygon()
-	- indicate this in the preferences dialog sizes tab too - or maybe remove the value from there?
-	- keep the dummy value in config because io_pcb depends on it
-	- list it in the feature removal pool node
 
 2. For later releases ===============================================================================
 - FEATURE: emsim-rnd (dcpower)
