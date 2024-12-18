@@ -177,7 +177,7 @@ typedef struct {
 			RND_CFT_BOOLEAN dummy;               /* placeholder, not used */
 		} drc_disable;
 
-		RND_CFT_REAL poly_isle_area;           /* polygon min area */
+		RND_CFT_REAL poly_isle_area;           /* polygon island mininum area used to throw out islands too small in MorphPolygon; specified in nm^2; note: due to historical bugs, half or double of the value may be used by the code. */
 		RND_CFT_STRING fab_author;             /* Full name of author for FAB drawings */
 		RND_CFT_STRING initial_layer_stack;    /* deprecated. */
 
