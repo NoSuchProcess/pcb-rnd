@@ -660,7 +660,7 @@ static int fnc_layer_ko_match(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *arg
 	kolid = pcb_layer2id(ectx->pcb->Data, koly);
 
 	if ((lid == -1) || (kolid == -1))
-		return 0; /* invalid layers can't match */
+		PCB_QRY_RET_INT(res, 0); /* invalid layers can't match */
 
 	/* look up lid-kolid pair in cache */
 	key = htko_mkkey(lid, kolid);
