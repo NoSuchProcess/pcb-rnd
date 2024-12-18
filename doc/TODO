@@ -5,7 +5,6 @@
 - RELEASE: polybool2: at the end of the full rewrite, remove /local/pcb/want_polybool and PCB_WANT_POLYBOOL (from scconfig and config.h too!)
 - ANNOUNCE: RFC on extra drc check on missing mask/paste (attribute based, perhaps coming via tEDAx netlist from devmap?)
 - BUG: polybool2 assert on invalid zero size polygon: bug_files/TODO/nullpoly.rp
-+ BUG: missing drc rule for ko@ copper: bug_files/TODO/kof.rp - DRC not warning for copper over ko [report: gpaubert]
 - BUG: bug_files/TODO/dxf_drill/*: drill color not detected properly and/or not reset [report: John Wehle ml: 6670]
 	-> when drill_fill is enabled, the copper shape is filled
 
