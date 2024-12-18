@@ -156,7 +156,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx, rnd_design_t *dsg)
 			RND_DAD_REAL(ctx->dlg);
 				tabdata->wisle = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
-				ctx->dlg[tabdata->wisle].val.dbl = (conf_core.design.poly_isle_area / 1000000.0);
+				RND_DAD_DEFAULT_NUM(ctx->dlg, (conf_core.design.poly_isle_area / 1000000.0));
 				RND_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
 		RND_DAD_END(ctx->dlg);
 
