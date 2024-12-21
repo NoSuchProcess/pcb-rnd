@@ -28,6 +28,7 @@ Plug.tmpasm to set the file name:
 <pre>
 put /local/rnd/mod/CONFFILE {<i>pluginname</i>.conf}
 put /local/rnd/mod/CONF {$(PLUGDIR)/<i>pluginname</i>/<i>pluginname</i>_conf.h}
+put /local/rnd/mod/CONFVAR {<i>pluginname</i>_conf_internal}
 </pre>
 
 <h2> Create the conf variable </h2>
@@ -37,6 +38,8 @@ The conf access variable should be a global variable in the main plugin c file:
 #include "<i>pluginname</i>_conf.h"
 
 const conf_<i>pluginname</i>_t conf_<i>pluginname</i>;
+
+#include "conf_internal.c"
 </pre>
 <p>
 From now on, the example fields can be accessed like:
