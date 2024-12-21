@@ -54,7 +54,7 @@ Copy these lines in the plugin init callback:
 <pre>
 rnd_conf_plug_reg(conf_<i>pluginname</i>, <i>pluginname</i>_conf_internal, <i>pluginname</i>_cookie);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_<i>pluginname</i>, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_<i>pluginname</i>, field,isarray,type_name,cpath,cname,desc,flags);
 #include "<i>pluginname</i>_conf_fields.h"
 </pre>
 
