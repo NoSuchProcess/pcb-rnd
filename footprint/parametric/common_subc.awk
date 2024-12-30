@@ -65,6 +65,8 @@
 BEGIN {
 	q="\""
 
+	common_subc_api_version = 20241230
+
 	DEFAULT["pin_ringdia"] = mil(80)
 	DEFAULT["pin_ringdia", "dim"] = 1
 
@@ -345,6 +347,8 @@ function subc_end(     layer,n,v,L,lt,UID,lc)
 			if (L[n] != "")
 				print "      " L[n] " = 1"
 		print "     }"
+		if (LAYER_PURPOSE[layer] != "")
+			print "     purpose = " LAYER_PURPOSE[layer]
 		print "     li:objects {"
 		print LAYER[layer]
 		print "     }"
