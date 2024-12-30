@@ -445,11 +445,12 @@ function subc_pstk_add_shape_circ(proto, layer, x, y, dia    ,s)
 	PROTO[proto] = PROTO[proto] s
 }
 
-function subc_pstk_add_shape_square(proto, layer, x, y, sx, sy    ,s)
+function subc_pstk_add_shape_square(proto, layer, x, y, sx, sy    ,s,minc)
 {
 # clamp at minimum to avoid broken polygons (can't do squares smaller than 4 nanometer)
-	if (sx < 4) sx = 4;
-	if (sy < 4) sy = 4;
+	minc = mm(0.000004)
+	if (sx < minc) sx = minc;
+	if (sy < minc) sy = minc;
 
 	sx = sx / 2
 	sy = sy / 2
