@@ -469,12 +469,21 @@ function subc_pstk_add_shape_square(proto, layer, x, y, sx, sy    ,s,minc)
 	PROTO[proto] = PROTO[proto] s
 }
 
-function poly_arc(cx, cy, r, sa, ea, astep     ,a,s)
+function poly_arc(cx, cy, r, sa_orig, ea_orig, astep     ,a,s,sa,ea)
 {
-	sa += astep
-	ea -= astep
-	if (sa >= ea)
-		return
+# this indicateds error on caller side
+	if (sa_orig >= ea_orig)
+		return ""
+
+# steps < 3: use a single point at halfway
+	sa = sa_orig + astep
+	ea = ea_orig - astep
+	if (sa >= ea) {
+		a = (sa_orig + ea_orig)/2
+		s = s unit(cx + r*cos(a)) ";" unit(cy + r*sin(a)) ";"
+		return s
+	}
+
 	for(a = sa; a <= ea; a+=astep)
 		s = s unit(cx + r*cos(a)) ";" unit(cy + r*sin(a)) ";"
 	return s
@@ -499,6 +508,8 @@ function subc_pstk_add_shape_rsquare(proto, layer, x, y, sx, sy, r    ,s,minc,st
 		steps = 4
 	else if (r >= 0.1)
 		steps = 3
+	else if (r >= 0.02)
+		steps = 2
 	else
 		steps = 0
 
