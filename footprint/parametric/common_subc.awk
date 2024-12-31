@@ -65,7 +65,7 @@
 BEGIN {
 	q="\""
 
-	common_subc_api_version = 20241230
+	common_subc_api_version = 20241231
 
 	DEFAULT["pin_ringdia"] = mil(80)
 	DEFAULT["pin_ringdia", "dim"] = 1
@@ -463,6 +463,86 @@ function subc_pstk_add_shape_square(proto, layer, x, y, sx, sy    ,s,minc)
 	s = s "       li:ps_poly {" NL
 	s = s "        " unit(x - sx) ";" unit(y - sy) ";  " unit(x + sx) ";" unit(y - sy) ";" NL
 	s = s "        " unit(x + sx) ";" unit(y + sy) ";  " unit(x - sx) ";" unit(y + sy) ";" NL
+	s = s "       }" NL
+	s = s subc_pstk_shape_layer(layer)
+	s = s "      }" NL
+	PROTO[proto] = PROTO[proto] s
+}
+
+function poly_arc(cx, cy, r, sa, ea, astep     ,a,s)
+{
+	sa += astep
+	ea -= astep
+	if (sa >= ea)
+		return
+	for(a = sa; a <= ea; a+=astep)
+		s = s unit(cx + r*cos(a)) ";" unit(cy + r*sin(a)) ";"
+	return s
+}
+
+function subc_pstk_add_shape_rsquare(proto, layer, x, y, sx, sy, r    ,s,minc,steps,astep)
+{
+# clamp at minimum to avoid broken polygons (can't do squares smaller than 4 nanometer)
+	minc = mm(0.000004)
+	if (sx < minc) sx = minc;
+	if (sy < minc) sy = minc;
+
+# how many steps an 1/4th circle should have so that line length is 0.5mm
+	if (r > 5)
+		steps = 8
+	else if (r >= 1)
+		steps = 6
+	else if (r >= 0.5)
+		steps = 4
+	else if (r >= 0.1)
+		steps = 3
+	else
+		steps = 0
+
+# angle stepping
+	if (steps > 0)
+		astep = (pi/2) / steps
+
+	sx = sx / 2
+	sy = sy / 2
+	s = s "      ha:ps_shape_v4 {" NL
+	s = s "       clearance = 0" NL
+	s = s "       li:ps_poly {" NL
+
+	# north side
+	s = s "        " unit(x - sx+r) ";" unit(y - sy) ";" NL
+	s = s "        " unit(x + sx-r) ";" unit(y - sy) ";" NL
+
+	# north-east corner
+	if (steps > 0)
+		s = s "        " poly_arc(x + sx-r, y - sy+r, r, 1.5*pi, 2*pi, astep) NL
+
+	# east
+	s = s "        " unit(x + sx) ";" unit(y - sy+r) ";" NL
+	s = s "        " unit(x + sx) ";" unit(y + sy-r) ";" NL
+
+	# south-east corner
+	if (steps > 0)
+		s = s "        " poly_arc(x + sx-r, y + sy-r, r, 0, 0.5*pi, astep) NL
+
+
+	# south
+	s = s "        " unit(x + sx-r) ";" unit(y + sy) ";" NL
+	s = s "        " unit(x - sx+r) ";" unit(y + sy) ";" NL
+
+	# south-west corner
+	if (steps > 0)
+		s = s "        " poly_arc(x - sx+r, y + sy-r, r, 0.5*pi, 1.0*pi, astep) NL
+
+	# sest
+	s = s "        " unit(x - sx) ";" unit(y + sy-r) ";" NL
+	s = s "        " unit(x - sx) ";" unit(y - sy+r) ";" NL
+
+	# north-west corner
+	if (steps > 0)
+		s = s "        " poly_arc(x - sx+r, y - sy+r, r, 1.0*pi, 1.5*pi, astep) NL
+
+
 	s = s "       }" NL
 	s = s subc_pstk_shape_layer(layer)
 	s = s "      }" NL
