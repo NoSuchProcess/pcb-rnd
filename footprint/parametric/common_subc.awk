@@ -482,6 +482,9 @@ function poly_arc(cx, cy, r, sa, ea, astep     ,a,s)
 
 function subc_pstk_add_shape_rsquare(proto, layer, x, y, sx, sy, r    ,s,minc,steps,astep)
 {
+	if (r+0 <= 0)
+		return subc_pstk_add_shape_square(proto, layer, x, y, sx, sy)
+
 # clamp at minimum to avoid broken polygons (can't do squares smaller than 4 nanometer)
 	minc = mm(0.000004)
 	if (sx < minc) sx = minc;
