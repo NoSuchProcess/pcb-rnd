@@ -22,7 +22,7 @@ all: rect-union-rnd$(LIBRND_EXE)
 include ../../Makefile.conf
 
 rect-union-rnd$(LIBRND_EXE): rect-union-rnd.o
-	$(CC) -o rect-union-rnd$(LIBRND_EXE) $(LDFLAGS) rect-union-rnd.o
+	$(CC) -o rect-union-rnd$(LIBRND_EXE) rect-union-rnd.o $(LDFLAGS)
 
 rect-union-rnd.o: rect-union-rnd.c
 	$(CC) -c $(CFLAGS) rect-union-rnd.c -o rect-union-rnd.o
