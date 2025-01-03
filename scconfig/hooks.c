@@ -341,6 +341,7 @@ int hook_generate()
 
 	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
 	printf("Generating util/bxl2txt/Makefile (%d)\n", generr |= tmpasm("../util", "bxl2txt/Makefile.in", "bxl2txt/Makefile"));
+	printf("Generating util/rect-union-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "rect-union-rnd/Makefile.in", "rect-union-rnd/Makefile"));
 
 	printf("Generating pcb-rnd config.h (%d)\n", generr |= tmpasm("..", "config.h.in", "config.h"));
 

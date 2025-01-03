@@ -28,14 +28,17 @@ install:
 	$(MAKE) install_all HOW="install -f"
 	cd gsch2pcb-rnd && $(MAKE) install
 	cd bxl2txt && $(MAKE) install
+	cd rect-union-rnd && $(MAKE) install
 
 linstall:
 	$(MAKE) install_all HOW="linstall -f"
 	cd gsch2pcb-rnd && $(MAKE) linstall
 	cd bxl2txt && $(MAKE) linstall
+	cd rect-union-rnd && $(MAKE) linstall
 
 uninstall:
 	$(MAKE) install_all HOW="uninstall"
 	cd gsch2pcb-rnd && $(MAKE) uninstall
 	cd bxl2txt && $(MAKE) uninstall
+	cd rect-union-rnd && $(MAKE) uninstall
 
