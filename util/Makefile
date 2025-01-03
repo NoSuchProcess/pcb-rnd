@@ -4,16 +4,20 @@ ROOT=..
 all:
 	cd gsch2pcb-rnd && $(MAKE) all
 	cd bxl2txt && $(MAKE) all
+	cd rect-union-rnd && $(MAKE) all
 
 include $(ROOT)/Makefile.conf
 
 clean:
 	cd gsch2pcb-rnd && $(MAKE) clean
 	cd bxl2txt && $(MAKE) clean
+	cd rect-union-rnd && $(MAKE) clean
 
 distclean:
 	cd gsch2pcb-rnd && $(MAKE) distclean
 	cd bxl2txt && $(MAKE) distclean
+	cd rect-union-rnd && $(MAKE) distclean
+
 
 install_all:
 	$(SCCBOX) mkdir -p  "$(BINDIR)" "$(LIBDIR)"
