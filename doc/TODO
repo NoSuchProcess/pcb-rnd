@@ -9,6 +9,7 @@
 	-> when drill_fill is enabled, the copper shape is filled
 
 2. For later releases ===============================================================================
+- FEATURE: footprint versioning: http://repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=footprint_ver
 - FEATURE: emsim-rnd (dcpower)
 - FEATURE: DRC: minimum mask bridge width check [report: John Wehle]
 	- need to use find.c to get "nets" of mask objects (including padstacks)
