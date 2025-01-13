@@ -121,9 +121,9 @@ then
 	exit
 fi
 
-if test "$QS_output" = "png"
+if test "$QS_output" = "svg"
 then
-	echo "Content-type: image/png"
+	echo "Content-type: image/svg"
 	echo ""
 	cparm=""
 	if test ! -z "$QS_mm"
@@ -222,7 +222,7 @@ echo "<h2> Result </h2>"
 
 	echo "<table border=0>"
 	echo "<tr><td valign=top>"
-	echo "<img src=\"$CGI?$QUERY_STRING&output=png\">"
+	echo "<img src=\"$CGI?$QUERY_STRING&output=svg\">"
 
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 

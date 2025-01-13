@@ -150,7 +150,7 @@ function thumb(prv, gthumbsize, lthumbsize, thumbnum    ,lnk,lnk_gen, thumbsize,
 		thumbsize = gthumbsize
 	if (!thumbnum)
 		ann="&annotation=none"
-	lnk=q CGI "?cmd=" prv "&output=png&grid=none" ann "&thumb=" thumbsize q
+	lnk=q CGI "?cmd=" prv "&output=svg&grid=none" ann "&thumb=" thumbsize q
 	lnk_gen=q CGI "?cmd=" prv q
 	print "<a href=" lnk_gen ">"
 	print "<img src=" lnk ">"
@@ -364,9 +364,9 @@ then
 	exit
 fi
 
-if test "$QS_output" = "png"
+if test "$QS_output" = "svg"
 then
-	cgi_png
+	cgi_svg
 	exit
 fi
 
@@ -465,7 +465,7 @@ echo "<h2> Result </h2>"
 
 	echo "<table border=0>"
 	echo "<tr><td valign=top>"
-	echo "<img src=\"$CGI?$QUERY_STRING&output=png\">"
+	echo "<img src=\"$CGI?$QUERY_STRING&output=svg\">"
 
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 

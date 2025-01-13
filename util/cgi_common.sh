@@ -62,11 +62,11 @@ fix_ltgt()
 	sed "s/</\&lt;/g;s/>/\&gt;/g"
 }
 
-cgi_png()
+cgi_svg()
 {
 	local fptmp
 	echo "#$fp_full#" > /tmp/L13
-	echo "Content-type: image/png"
+	echo "Content-type: image/svg+xml"
 	echo ""
 	cparm=""
 	if test ! -z "$QS_mm"

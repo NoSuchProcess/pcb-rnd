@@ -24,7 +24,7 @@
 photo=0
 grid_unit="mil"
 dpi=600
-outfile=fp2preview.png
+outfile=fp2preview.svg
 
 annotation=pins
 
@@ -267,7 +267,7 @@ END {
 	else
 		photo = ""
 	print "autocrop()"
-	print "Export(png, --dpi, " dpi ", --as-shown, " photo " --outfile, " q outfile q ")"
+	print "Export(svg, --as-shown, " photo " --outfile, " q outfile q ")"
 	print "Save(LayoutAs, \"A.lht\")"
 }
 
