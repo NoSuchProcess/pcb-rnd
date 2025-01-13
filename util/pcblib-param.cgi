@@ -323,7 +323,7 @@ else
 	gen=`awk -v "n=$QS_cmd" '
 	BEGIN {
 		sub("[(].*", "", n)
-		gsub("[^a-zA-Z0-9_]", "", n)
+		gsub("[^a-zA-Z0-9_-]", "", n)
 		print n
 	}
 	'`
