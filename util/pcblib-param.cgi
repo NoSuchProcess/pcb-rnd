@@ -48,7 +48,7 @@ function proc_include(fn)
 function proc_line()
 {
 	if (/^[^\"]*@@include/) {
-		proc_include(gendir $2)
+		proc_include(gendir "/" $2)
 		return
 	}
 
