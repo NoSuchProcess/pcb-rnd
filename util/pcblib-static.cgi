@@ -124,7 +124,7 @@ fi
 
 if test "$QS_output" = "svg"
 then
-	echo "Content-type: image/svg"
+	echo "Content-type: image/svg+xml"
 	echo ""
 	cparm=""
 	if test ! -z "$QS_mm"
