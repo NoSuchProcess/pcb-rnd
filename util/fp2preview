@@ -49,11 +49,9 @@ do
 	shift 1
 done
 
-rfp=`realpath $fp`
-
 echo '
 	DumpLibFootprint("'$fp'", origin, bbox);
-' | pcb-rnd --gui batch | awk -v "fp=$rfp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" -v "annotation=$annotation" -v "photo=$photo" '
+' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" -v "annotation=$annotation" -v "photo=$photo" '
 
 BEGIN {
 	q="\""
