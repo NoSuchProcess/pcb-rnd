@@ -135,6 +135,10 @@ then
 	then
 		cparm="$cparm --photo"
 	fi
+	if test ! -z "$QS_struct"
+	then
+		cparm="$cparm --struct"
+	fi
 
 	fptmp=`mktemp`
 	$fp2preview --outfile $fptmp $cparm "$QS_fp" >/dev/null 2>&1
@@ -206,6 +210,7 @@ echo "name: <input name=\"fp\" value=\"$QS_fp\">"
 echo "<ul>"
 echo "	<li><input type=\"checkbox\" name=\"mm\" value=\"1\" `checked $QS_mm`> draw grid in mm"
 echo "	<li><input type=\"checkbox\" name=\"photo\" value=\"1\" `checked $QS_photo`> draw in \"photo mode\""
+echo "	<li><input type=\"checkbox\" name=\"struct\" value=\"1\" `checked $QS_struct`> draw in \"mask and paste\""
 echo "</ul>"
 echo "<p>"
 echo "<input type=\"submit\" value=\"Find my footprint!\">"

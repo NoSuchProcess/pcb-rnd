@@ -34,6 +34,7 @@ do
 		--outfile) outfile="$2"; shift 1;;
 		--dpi) dpi="$2"; shift 1;;
 		--photo|p) photo=1;;
+		--struct) struct=1;;
 		--grid-unit|g) grid_unit="$2"; shift 1;;
 		--mm) grid_unit="mm";;
 		--annotation) annotation="$2"; shift 1;;
@@ -51,7 +52,7 @@ done
 
 echo '
 	DumpLibFootprint("'$fp'", origin, bbox);
-' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" -v "annotation=$annotation" -v "photo=$photo" '
+' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" -v "annotation=$annotation" -v "photo=$photo" -v "struct=$struct" '
 
 BEGIN {
 	q="\""
@@ -259,14 +260,21 @@ END {
 		print "query(unselect, @)"
 	}
 
-	if (photo) {
-		photo = "--photo-mode, "
+
+	args = "--as-shown"
+	outfa = ", --outfile, " q outfile q
+
+	if (photo)
+		args = "--photo-mode"
+	else if (struct) {
+		outfa = ""
+		args = "--cam, " q outfile "=top-copper,top-silk,top-mask,top-paste,bottom-copper" q
 	}
-	else
-		photo = ""
+
 	print "autocrop()"
-	print "Export(svg, --as-shown, " photo " --outfile, " q outfile q ")"
-	print "Save(LayoutAs, \"A.lht\")"
+	print "Export(svg, " args outfa ")"
+	print "Export(svg, " args outfa ")" > "/tmp/D3"
+#	print "SaveTo(LayoutAs, /tmp/A.lht)"
 }
 
-' | pcb-rnd --gui batch
+' | pcb-rnd --gui batch 

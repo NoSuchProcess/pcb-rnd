@@ -85,6 +85,10 @@ cgi_svg()
 	then
 		cparm="$cparm --photo"
 	fi
+	if test ! -z "$QS_struct"
+	then
+		cparm="$cparm --struct"
+	fi
 	if test ! -z "$QS_dimvalue"
 	then
 		annot="$annot:dimvalue"
