@@ -36,6 +36,7 @@ list_fps()
 {
 	find $fpdir | awk -v "fpdir=$fpdir" -v "CGI=$CGI" '
 		/.svn/ { next }
+		/.scad$/ { next }
 		/parametric/ { next }
 
 		{
