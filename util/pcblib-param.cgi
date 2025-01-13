@@ -40,7 +40,7 @@ function urlencode(s)
 function proc_include(fn)
 {
 	close(fn)
-	while(getline < fn)
+	while((getline < fn) == 1)
 		proc_line()
 	close(fn)
 }
@@ -57,7 +57,7 @@ function proc_line()
 		key=substr($0, RSTART, RLENGTH)
 		sub(".*" key "[ \t]*", "", txt)
 		HELP[key] = HELP[key] " " txt
-		next
+		return
 	}
 
 	if (/@@thumbsize/) {
