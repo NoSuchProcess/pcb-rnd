@@ -463,19 +463,9 @@ then
 echo "<h2> Result </h2>"
 	echo "<h3> $QS_cmd </H3>"
 
-	echo "<table border=0>"
-	echo "<tr><td valign=top>"
-	echo "<img src=\"$CGI?$QUERY_STRING&output=svg\" width=100%>"
+	echo "<p>Download <a href=\"$CGI?$QUERY_STRING&output=text\">footprint file</a>"
 
-	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-
-	echo "<td valign=top>"
-	echo "<pre>"
-	echo "$fptext"
-	echo "</pre>"
-	echo "<p>Downloads:"
-	echo "<br> <a href=\"$CGI?$QUERY_STRING&output=text\">footprint file</a>"
-	echo "</table>"
+	echo "<br><img src=\"$CGI?$QUERY_STRING&output=svg\" width=100%>"
 fi
 
 

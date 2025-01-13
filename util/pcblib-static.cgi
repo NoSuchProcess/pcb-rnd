@@ -221,19 +221,8 @@ then
 echo "<h2> Result </h2>"
 	echo "<h3> $QS_fp </H3>"
 
-	echo "<table border=0>"
-	echo "<tr><td valign=top>"
-	echo "<img src=\"$CGI?$QUERY_STRING&output=svg\" width=100%>"
-
-	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-
-	echo "<td valign=top>"
-	echo "<pre>"
-	echo "$fptext"
-	echo "</pre>"
-	echo "<p>Downloads:"
-	echo "<br> <a href=\"$CGI?fp=$QS_fp&output=text\">footprint file</a>"
-	echo "</table>"
+	echo "<p>Download <a href=\"$CGI?fp=$QS_fp&output=text\">footprint file</a>"
+	echo "<br><img src=\"$CGI?$QUERY_STRING&output=svg\" width=100%>"
 fi
 
 
