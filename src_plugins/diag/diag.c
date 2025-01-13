@@ -402,7 +402,7 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		/* print exrtas */
 		if (want_bbox || want_origin) {
 			pcb_buffer_clear(PCB, &SCRATCH);
-			if (!pcb_buffer_load_footprint(&SCRATCH, fctx.filename, NULL)) {
+			if (!pcb_buffer_load_footprint(&SCRATCH, fpn, NULL)) {
 				RND_ACT_IRES(1);
 				return 0;
 			}
