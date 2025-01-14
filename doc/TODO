@@ -23,6 +23,7 @@
 			-> then do a new self isc resolver that trusts input edge directions and removes loops with negative direction (unless we are doing holes!)
 		-> revise the original offset calls in pcb-rnd and decide where to use the new one
 		-> consider rnd_pline_dup_offset() to start with: if (offs < 0) return pline_dup_with_offset_corner(src, offs, RND_PLINE_CORNER_SHARP); (also move #include offset2.c to the top of the file for this)
+- FEATURE: alien file format: IDF (for 3D cads; spec comes with free permissive license; ml: geda-user 18921; work/alien_formats/IDF)
 - librnd 4.3: search for TODO("librnd 4.3.0
 - FEATURE: shift-click subc replace or reimport subc-replace: attempt to preserve floater positions and per terminal clearances and thermals [report: aron]
 - DOC: pool node on how to use pixmap for breadboading
