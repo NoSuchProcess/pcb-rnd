@@ -96,6 +96,12 @@ then
 	gen=connector
 fi
 
+case "$QS_fp"
+in
+	*/*) error "invalid footprint name";;
+esac
+
+
 fn=`find_fp`
 if test ! "$?" = 0
 then
